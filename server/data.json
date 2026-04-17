@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nickname": "饼饼大人",
+      "password": "1007",
+      "coinBalance": 3,
+      "lastSignInDate": "Fri Apr 17 2026",
+      "createdAt": "2026-04-15T12:32:21.271Z",
+      "todayCard": {
+        "name": "宝剑五",
+        "isReversed": true
+      },
+      "dailyHistory": {
+        "2026-04-17": {
+          "name": "宝剑五",
+          "isReversed": true
+        }
+      }
+    }
+  ],
+  "requests": [],
+  "nextUserId": 5,
+  "nextRequestId": 1
+}

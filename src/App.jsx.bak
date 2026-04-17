@@ -1,0 +1,780 @@
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, MessageCircle, Coins, Send, X, Bell, User, Lock, ArrowLeft } from 'lucide-react';
+import TarotCard from './TarotCard';
+import { drawRandomCard, drawThreeCards, generateReading } from './data';
+
+const API_URL = 'http://localhost:3001';
+
+function App() {
+  // 用户信息
+  const [user, setUser] = useState(null);
+  const [isLogin, setIsLogin] = useState(true);
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+  const [coinBalance, setCoinBalance] = useState(0);
+  const [lastSignInDate, setLastSignInDate] = useState(null);
+
+  // 页面状态
+  // home - 首页
+  // drawing-input - 问题输入页
+  // drawing - 抽牌结果页
+  // chat - 聊天页
+  // messages - 消息列表
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isHumanMode, setIsHumanMode] = useState(false); // 是否真人解读模式
+  const [userQuestion, setUserQuestion] = useState('');
+  const [drawnCards, setDrawnCards] = useState([]);
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [readingComplete, setReadingComplete] = useState(false);
+  const [aiReading, setAiReading] = useState('');
+
+  // 聊天相关
+  const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [messageText, setMessageText] = useState('');
+  const [isWaitingForReply, setIsWaitingForReply] = useState(false);
+
+  // 签到相关
+  const [dailyCard, setDailyCard] = useState(null);
+  const [showDailyResult, setShowDailyResult] = useState(false);
+
+  // 打字机效果
+  const [displayedText, setDisplayedText] = useState('');
+  const typingRef = useRef(null);
+
+  // 模拟AI解读文案
+  const sampleReadings = [
+    '这张牌代表着新的开始和可能性。愚人牌提醒你要保持开放的心态，勇敢迈出第一步。正如牌面上的愚人背着行囊向前走，你也应该放下顾虑，相信前方的路会有惊喜等着你。',
+    '魔术师象征着意志力和创造力。你拥有实现目标所需的所有能力和资源。现在正是将梦想转化为现实的最佳时机。保持专注相信自己内在的力量，你就能创造奇迹。',
+    '女祭司传达着内在的智慧和直觉。这个时刻需要你倾听内心的声音，而不是仅仅依赖理性。牌面上的月亮象征着潜意识正在给你重要的指引。',
+    '命运之轮在转动，这代表着生活中即将发生的变化。无论你现在处于什么位置，转变都在进行中。保持平衡和开放的心态，接受生命循环中的起起落落。',
+  ];
+
+  // 检查本地登录状态
+  useEffect(() => {
+    const savedUser = localStorage.getItem('tarot_user');
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      setUser(userData);
+      setNickname(userData.nickname);
+      fetchUserProfile(userData.nickname);
+    }
+  }, []);
+
+  // 获取用户信息
+  const fetchUserProfile = async (nick) => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/${nick}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCoinBalance(data.coinBalance || 0);
+        setLastSignInDate(data.lastSignInDate);
+        setUser({ nickname: nick, ...data });
+      }
+    } catch (error) {
+      console.log('获取用户信息失败');
+    }
+  };
+
+  // 注册
+  const handleRegister = async () => {
+    if (!nickname.trim() || !password.trim()) {
+      alert('请输入昵称和密码');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname: nickname.trim(), password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('注册成功！请登录');
+        setIsLogin(true);
+        setPassword('');
+      } else {
+        alert(data.error || '注册失败');
+      }
+    } catch (error) {
+      alert('网络错误，请稍后重试');
+    }
+  };
+
+  // 登录
+  const handleLogin = async () => {
+    if (!nickname.trim() || !password.trim()) {
+      alert('请输入昵称和密码');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname: nickname.trim(), password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setUser({ nickname: data.nickname });
+        setCoinBalance(data.coinBalance || 0);
+        setLastSignInDate(data.lastSignInDate);
+        localStorage.setItem('tarot_user', JSON.stringify({
+          nickname: data.nickname,
+          password: password
+        }));
+        setPassword('');
+      } else {
+        alert(data.error || '登录失败');
+      }
+    } catch (error) {
+      alert('网络错误，请稍后重试');
+    }
+  };
+
+  // 登出
+  const handleLogout = () => {
+    localStorage.removeItem('tarot_user');
+    setUser(null);
+    setNickname('');
+    setPassword('');
+    setCoinBalance(0);
+    setLastSignInDate(null);
+    setCurrentPage('home');
+  };
+
+  // 每日签到
+  const handleDailySignIn = async () => {
+    const today = new Date().toDateString();
+    if (lastSignInDate === today) {
+      alert('今日已签到！明天再来吧～');
+      return;
+    }
+
+    const card = drawRandomCard();
+    setDailyCard(card);
+    setShowDailyResult(true);
+
+    const newBalance = coinBalance + 1;
+    setCoinBalance(newBalance);
+    setLastSignInDate(today);
+
+    try {
+      await fetch(`${API_URL}/api/user/${nickname}/coins`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coinBalance: newBalance }),
+      });
+      await fetch(`${API_URL}/api/user/${nickname}/signin`, {
+        method: 'PATCH',
+      });
+    } catch (error) {
+      console.log('签到同步失败');
+    }
+  };
+
+  // 开始免费抽牌
+  const handleStartFreeReading = () => {
+    setIsHumanMode(false);
+    setCurrentPage('drawing-input');
+    setDrawnCards([]);
+    setIsRevealing(false);
+    setReadingComplete(false);
+    setAiReading('');
+    setUserQuestion('');
+  };
+
+  // 开始真人解读（需要10饼币）
+  const handleStartHumanReading = () => {
+    if (coinBalance < 10) {
+      alert('饼币不足！签到可以获取饼币哦～');
+      return;
+    }
+    setIsHumanMode(true);
+    setCurrentPage('drawing-input');
+    setDrawnCards([]);
+    setIsRevealing(false);
+    setReadingComplete(false);
+    setAiReading('');
+    setUserQuestion('');
+  };
+
+  // 确定问题，开始抽牌
+  const handleConfirmQuestion = () => {
+    if (!userQuestion.trim()) return;
+
+    setCurrentPage('drawing');
+
+    setTimeout(() => {
+      const cards = drawThreeCards();
+      setDrawnCards(cards);
+
+      setTimeout(() => {
+        setIsRevealing(true);
+
+        setTimeout(() => {
+          setReadingComplete(true);
+          // 根据抽到的牌生成真实解读
+          const reading = generateReading(cards, userQuestion);
+          setAiReading(reading);
+        }, 1200);
+      }, 300);
+    }, 500);
+  };
+
+  // 提交真人解读请求
+  const handleSubmitHumanRequest = async () => {
+    if (!userQuestion.trim() || drawnCards.length === 0) return;
+
+    const newBalance = coinBalance - 10;
+    setCoinBalance(newBalance);
+
+    try {
+      await fetch(`${API_URL}/api/user/${nickname}/coins`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ coinBalance: newBalance }),
+      });
+
+      const response = await fetch(`${API_URL}/api/request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: nickname,
+          userNickname: nickname,
+          question: userQuestion,
+          cards: drawnCards,
+        }),
+      });
+
+      const data = await response.json();
+
+      setCurrentChatId(data.id);
+      setMessages([]);
+      setIsWaitingForReply(true);
+      setCurrentPage('chat');
+
+      startPollingReply(data.id);
+    } catch (error) {
+      alert('网络错误，请稍后重试');
+    }
+  };
+
+  // 轮询获取回复
+  const startPollingReply = (chatId) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/request/${chatId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.messages && data.messages.length > messages.length) {
+            setMessages(data.messages);
+            setIsWaitingForReply(false);
+          }
+          if (data.status === 'closed') {
+            clearInterval(pollInterval);
+          }
+        }
+      } catch (error) {
+        // ignore
+      }
+    }, 2000);
+
+    return () => clearInterval(pollInterval);
+  };
+
+  // 发送消息
+  const handleSendMessage = async () => {
+    if (!messageText.trim() || !currentChatId) return;
+
+    const newMessage = {
+      id: Date.now(),
+      sender: 'user',
+      text: messageText,
+      timestamp: new Date().toISOString(),
+    };
+
+    const updatedMessages = [...messages, newMessage];
+    setMessages(updatedMessages);
+    setMessageText('');
+
+    try {
+      await fetch(`${API_URL}/api/request/${currentChatId}/message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMessage),
+      });
+    } catch (error) {
+      console.log('发送失败');
+    }
+  };
+
+  // 打字机效果
+  useEffect(() => {
+    if (aiReading && readingComplete) {
+      setDisplayedText('');
+      let index = 0;
+      typingRef.current = setInterval(() => {
+        if (index < aiReading.length) {
+          setDisplayedText(aiReading.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(typingRef.current);
+        }
+      }, 30);
+    }
+    return () => {
+      if (typingRef.current) clearInterval(typingRef.current);
+    };
+  }, [aiReading, readingComplete]);
+
+  // 加载未读消息
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchPendingRequests = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/requests/user/${nickname}`);
+        if (response.ok) {
+          const data = await response.json();
+          const pending = data.filter(r =>
+            r.status === 'pending' && r.messages?.some(m => m.sender === 'teacher')
+          );
+          setUnreadCount(pending.reduce((acc, r) =>
+            acc + (r.messages?.filter(m => m.sender === 'teacher').length || 0), 0
+          ));
+        }
+      } catch (error) {
+        // ignore
+      }
+    };
+
+    fetchPendingRequests();
+    const interval = setInterval(fetchPendingRequests, 5000);
+    return () => clearInterval(interval);
+  }, [user, nickname]);
+
+  // 返回首页并重置状态
+  const goHome = () => {
+    setCurrentPage('home');
+    setUserQuestion('');
+    setDrawnCards([]);
+    setReadingComplete(false);
+    setIsRevealing(false);
+    setAiReading('');
+    setIsHumanMode(false);
+  };
+
+  // ========== 登录/注册页面 ==========
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-8">
+        <h1 className="font-serif text-4xl mb-2 text-black">饼饼の塔罗</h1>
+        <p className="text-gray-500 text-sm mb-8">
+          {isLogin ? '欢迎回来' : '创建你的账号'}
+        </p>
+
+        <div className="w-64 space-y-4">
+          <div className="flex items-center border-2 border-black bg-white">
+            <User className="w-5 h-5 text-gray-400 ml-3" />
+            <input
+              type="text"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              placeholder="昵称"
+              className="w-full px-4 py-3 bg-transparent text-black focus:outline-none"
+            />
+          </div>
+
+          <div className="flex items-center border-2 border-black bg-white">
+            <Lock className="w-5 h-5 text-gray-400 ml-3" />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="密码"
+              className="w-full px-4 py-3 bg-transparent text-black focus:outline-none"
+              onKeyDown={(e) => e.key === 'Enter' && (isLogin ? handleLogin() : handleRegister())}
+            />
+          </div>
+
+          <button
+            onClick={isLogin ? handleLogin : handleRegister}
+            className="w-full py-3 bg-black text-white font-serif hover:bg-gray-800 transition-colors"
+          >
+            {isLogin ? '登录' : '注册'}
+          </button>
+
+          <p className="text-center text-sm text-gray-500">
+            {isLogin ? '还没有账号？' : '已有账号？'}
+            <span
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setPassword('');
+              }}
+              className="text-black underline cursor-pointer ml-1"
+            >
+              {isLogin ? '注册' : '登录'}
+            </span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ========== 首页 ==========
+  if (currentPage === 'home') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h1 className="font-serif text-xl text-black">饼饼の塔罗</h1>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setCurrentPage('messages')}
+              className="relative p-2"
+            >
+              <Bell className="w-6 h-6 text-black" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+            <div className="flex items-center gap-1 text-black">
+              <Coins className="w-5 h-5" />
+              <span className="font-serif">{coinBalance}</span>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="text-sm text-gray-500 underline"
+            >
+              退出
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 flex flex-col items-center justify-center p-8">
+          <div className="text-center mb-12">
+            <p className="text-gray-600 font-serif mb-2">欢迎，{nickname}</p>
+            <p className="text-gray-400 text-sm">你有 {coinBalance} 饼币</p>
+          </div>
+
+          <div className="mb-8 text-center">
+            <p className="text-gray-500 text-sm mb-4">
+              {lastSignInDate === new Date().toDateString()
+                ? '今日已签到 ✨'
+                : '每日签到可获得1饼币'}
+            </p>
+            <button
+              onClick={handleDailySignIn}
+              disabled={lastSignInDate === new Date().toDateString()}
+              className={`px-6 py-3 font-serif flex items-center gap-2 transition-colors ${
+                lastSignInDate === new Date().toDateString()
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-black text-white hover:bg-gray-800'
+              }`}
+            >
+              <Sparkles className="w-5 h-5" />
+              {lastSignInDate === new Date().toDateString() ? '已签到' : '获取今日运势'}
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-4 w-64">
+            <button
+              onClick={handleStartFreeReading}
+              className="px-6 py-4 border-2 border-black bg-white text-black font-serif hover:bg-gray-50 transition-colors"
+            >
+              免费抽牌（本地解读）
+            </button>
+
+            <button
+              onClick={handleStartHumanReading}
+              className="px-6 py-4 border-2 border-black bg-black text-white font-serif hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+            >
+              <MessageCircle className="w-5 h-5" />
+              请求真人解读（10饼币）
+            </button>
+          </div>
+
+          <p className="text-gray-400 text-xs mt-8">
+            Welcome bingbing's tarot
+          </p>
+        </main>
+
+        <AnimatePresence>
+          {showDailyResult && dailyCard && (
+            <motion.div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowDailyResult(false)}
+            >
+              <motion.div
+                className="bg-white p-8 max-w-sm mx-4 text-center"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.8 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="font-serif text-xl mb-4">今日运势</h3>
+                <p className="text-2xl font-serif mb-2">{dailyCard.name}</p>
+                {dailyCard.isReversed && (
+                  <p className="text-gray-500 text-sm mb-4">（逆位）</p>
+                )}
+                <p className="text-gray-600 text-sm mb-6">
+                  获得 +1 饼币
+                </p>
+                <button
+                  onClick={() => setShowDailyResult(false)}
+                  className="px-6 py-2 bg-black text-white font-serif"
+                >
+                  确定
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  // ========== 问题输入页面 ==========
+  if (currentPage === 'drawing-input') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="flex justify-between items-center p-4 border-b border-gray-200">
+          <button onClick={goHome} className="p-2">
+            <X className="w-6 h-6 text-black" />
+          </button>
+          <h1 className="font-serif text-lg text-black">
+            {isHumanMode ? '真人解读' : '免费抽牌'}
+          </h1>
+          <div className="w-10" />
+        </header>
+
+        <main className="flex-1 flex flex-col items-center justify-center p-8">
+          <div className="w-full max-w-md">
+            <p className="text-gray-600 font-serif text-center mb-4">
+              {isHumanMode
+                ? '输入你的问题，饼饼将为你解读（消耗10饼币）'
+                : '输入你的问题，获取塔罗指引'}
+            </p>
+            <textarea
+              value={userQuestion}
+              onChange={(e) => setUserQuestion(e.target.value)}
+              placeholder="在此输入你的问题..."
+              className="w-full p-4 border-2 border-black bg-white text-black placeholder-gray-400 font-serif focus:outline-none resize-none"
+              rows={4}
+              autoFocus
+            />
+            <button
+              onClick={handleConfirmQuestion}
+              disabled={!userQuestion.trim()}
+              className="w-full mt-4 px-6 py-3 bg-black text-white font-serif disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              确定并抽牌
+            </button>
+          </div>
+        </main>
+
+        <p className="text-gray-400 text-xs p-4 text-center">
+          Welcome bingbing's tarot
+        </p>
+      </div>
+    );
+  }
+
+  // ========== 抽牌结果页面 ==========
+  if (currentPage === 'drawing') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="flex justify-between items-center p-4 border-b border-gray-200">
+          <button onClick={goHome} className="p-2">
+            <X className="w-6 h-6 text-black" />
+          </button>
+          <h1 className="font-serif text-lg text-black">抽牌结果</h1>
+          <div className="w-10" />
+        </header>
+
+        <main className="flex-1 flex flex-col items-center justify-center p-8">
+          <p className="text-gray-600 font-serif text-center mb-8 max-w-md">
+            「{userQuestion}」
+          </p>
+
+          <div className="flex gap-4 mb-8">
+            {drawnCards.map((card, index) => (
+              <TarotCard
+                key={card.id + index}
+                card={card}
+                isRevealed={isRevealing}
+                index={index}
+              />
+            ))}
+          </div>
+
+          {readingComplete && (
+            <motion.div
+              className="max-w-md text-center mt-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <p className="font-serif text-lg leading-relaxed text-gray-800 whitespace-pre-line">
+                {displayedText}
+                <span className="animate-pulse">|</span>
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3">
+                {isHumanMode && (
+                  <button
+                    onClick={handleSubmitHumanRequest}
+                    className="px-6 py-3 bg-black text-white font-serif flex items-center justify-center gap-2 mx-auto"
+                  >
+                    <MessageCircle className="w-5 h-5" />
+                    发送给饼饼解读（消耗10饼币）
+                  </button>
+                )}
+
+                <button
+                  onClick={goHome}
+                  className="px-6 py-3 border-2 border-black bg-white text-black font-serif"
+                >
+                  返回首页
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </main>
+
+        <p className="text-gray-400 text-xs p-4 text-center">
+          Welcome bingbing's tarot
+        </p>
+      </div>
+    );
+  }
+
+  // ========== 聊天页面 ==========
+  if (currentPage === 'chat') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="flex justify-between items-center p-4 border-b border-gray-200">
+          <button
+            onClick={() => {
+              setCurrentPage('home');
+              setCurrentChatId(null);
+              setIsWaitingForReply(false);
+            }}
+            className="p-2"
+          >
+            <ArrowLeft className="w-6 h-6 text-black" />
+          </button>
+          <h1 className="font-serif text-lg text-black">与饼饼对话</h1>
+          <div className="w-10" />
+        </header>
+
+        <main className="flex-1 p-4 overflow-y-auto">
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <p className="text-gray-500 text-sm mb-3">你的问题：{userQuestion}</p>
+            <div className="flex gap-2 justify-center">
+              {drawnCards.map((card, index) => (
+                <div key={index} className="text-center">
+                  <p className="font-serif text-sm">{card.name}</p>
+                  {card.isReversed && <p className="text-xs text-gray-400">逆位</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {messages.map((msg) => (
+              <motion.div
+                key={msg.id}
+                className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <div
+                  className={`max-w-xs px-4 py-2 ${
+                    msg.sender === 'user'
+                      ? 'bg-black text-white'
+                      : 'bg-gray-100 text-black'
+                  }`}
+                >
+                  <p className="font-serif text-sm">{msg.text}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {isWaitingForReply && messages.length === 0 && (
+            <div className="text-center text-gray-400 py-8">
+              <p className="font-serif">等待饼饼回复...</p>
+            </div>
+          )}
+        </main>
+
+        <footer className="p-4 border-t border-gray-200">
+          <p className="text-gray-400 text-xs mb-2 text-center">
+            Welcome bingbing's tarot
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              placeholder="输入消息..."
+              className="flex-1 px-4 py-2 border-2 border-black bg-white text-black placeholder-gray-400 font-serif focus:outline-none"
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            />
+            <button
+              onClick={handleSendMessage}
+              className="px-4 py-2 bg-black text-white"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // ========== 消息列表页面 ==========
+  if (currentPage === 'messages') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="flex justify-between items-center p-4 border-b border-gray-200">
+          <button onClick={() => setCurrentPage('home')} className="p-2">
+            <ArrowLeft className="w-6 h-6 text-black" />
+          </button>
+          <h1 className="font-serif text-lg text-black">我的消息</h1>
+          <div className="w-10" />
+        </header>
+
+        <main className="flex-1 p-4">
+          {unreadCount === 0 ? (
+            <div className="text-center text-gray-400 py-8">
+              <p className="font-serif">暂无新消息</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-center text-gray-600 font-serif">
+                你有 {unreadCount} 条未读消息
+              </p>
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export default App;
