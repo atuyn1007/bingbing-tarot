@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node node_modules/vite/bin/vite.js build",
+   "scripts": {
+  "dev": "vite",
+  "build": "node node_modules/vite/bin/vite.js build",
+  "preview": "vite preview"
+  },
     "preview": "vite preview",
     "server": "node server/server.js"
   },
