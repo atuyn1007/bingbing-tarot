@@ -1830,13 +1830,27 @@ button:disabled {
     font-size: 1.1rem;
   }
 
+  .question-title {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+  }
+
+  .question-note,
+  .reading-result-text,
+  .chat-question,
+  .history-question,
+  .feature-copy,
+  .daily-result-note {
+    font-size: 0.98rem;
+  }
+
   .reading-cards-row {
     gap: 14px;
   }
 
   .reading-spread {
     width: 100%;
-    gap: 16px;
+    gap: 14px 12px;
+    justify-items: center;
   }
 
   .reading-spread-three {
@@ -1862,6 +1876,51 @@ button:disabled {
 
   .reading-spread-slot {
     min-width: 0;
+    gap: 8px;
+  }
+
+  .reading-spread .tarot-card-frame-normal {
+    width: 5.6rem;
+    height: 8.4rem;
+  }
+
+  .reading-spread .tarot-card-frame-small {
+    width: 4.9rem;
+    height: 7.2rem;
+  }
+
+  .reading-spread .tarot-card-name span {
+    font-size: 0.92rem;
+    line-height: 1.18;
+  }
+
+  .reading-spread .tarot-card-name small {
+    font-size: 0.66rem;
+    line-height: 1.15;
+  }
+
+  .reading-spread .reading-spread-label {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .reading-spread .reading-spread-subtitle {
+    font-size: 0.7rem;
+    line-height: 1.25;
+  }
+
+  .reading-spread-choice .tarot-card-name span {
+    font-size: 0.84rem;
+  }
+
+  .reading-spread-choice .tarot-card-name small {
+    font-size: 0.58rem;
+  }
+
+  .reading-spread .text-\[10px\] {
+    font-size: 8px;
+    margin-bottom: 0.45rem;
+    letter-spacing: 0.22em;
   }
 
   .reading-result-lead {
@@ -1925,22 +1984,34 @@ button:disabled {
 
   .calendar-weekdays,
   .calendar-grid {
-    gap: 6px;
+    gap: 4px;
   }
 
   .calendar-day {
-    min-height: 72px;
-    padding: 8px 6px;
+    min-height: auto;
+    aspect-ratio: 1 / 1;
+    padding: 6px 4px;
+    border-radius: 12px;
+    gap: 4px;
   }
 
   .calendar-day-card,
   .calendar-day-empty {
-    font-size: 0.62rem;
-    line-height: 1.25;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     display: block;
+    font-size: 0.55rem;
+    line-height: 1.1;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-align: left;
+  }
+
+  .calendar-day-number {
+    font-size: 0.74rem;
+  }
+
+  .calendar-weekdays span {
+    font-size: 0.72rem;
   }
 
   .reading-spread-label {
