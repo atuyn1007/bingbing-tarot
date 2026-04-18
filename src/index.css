@@ -1199,6 +1199,9 @@ button:disabled {
   color: var(--app-muted);
   font-size: 0.74rem;
   line-height: 1.45;
+  writing-mode: horizontal-tb;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .fortune-modal-title {
@@ -1837,18 +1840,28 @@ button:disabled {
   }
 
   .reading-spread-three {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .reading-spread-triangle,
+  .reading-spread-triangle {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "left right"
+      "bottom bottom";
+    max-width: 100%;
+  }
+
   .reading-spread-choice {
-    grid-template-columns: 1fr;
-    grid-template-areas: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "result-a result-b"
+      "state-a state-b"
+      "self self";
     max-width: 100%;
   }
 
   .reading-spread-slot {
-    grid-area: auto !important;
+    min-width: 0;
   }
 
   .reading-result-lead {
@@ -1913,6 +1926,31 @@ button:disabled {
   .calendar-weekdays,
   .calendar-grid {
     gap: 6px;
+  }
+
+  .calendar-day {
+    min-height: 72px;
+    padding: 8px 6px;
+  }
+
+  .calendar-day-card,
+  .calendar-day-empty {
+    font-size: 0.62rem;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .reading-spread-label {
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .reading-spread-subtitle {
+    font-size: 0.76rem;
+    line-height: 1.4;
   }
 
   .calendar-weekdays span {

@@ -20,6 +20,7 @@ import {
   updateCoinBalance,
   updateDailyProfile,
 } from './supabaseApp';
+import { supabase } from './supabaseClient';
 import { saveTarotHistory } from './supabaseTarot';
 
 const OFFICIAL_READER = {
@@ -473,6 +474,18 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        await fetchUserProfile(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const stored = localStorage.getItem(getRecentReadingsKey(activeNickname));
 
     if (!stored) {
@@ -498,11 +511,26 @@ function App() {
     }
 
     try {
-      await registerWithEmail(email.trim(), nickname.trim(), password);
-      alert('注册成功，请登录');
+      const result = await registerWithEmail(email.trim(), nickname.trim(), password);
+      if (result.needsEmailVerification) {
+        alert('注册成功，请去邮箱验证登录。验证完成后回到这里，用邮箱和密码登录。');
+      } else {
+        alert('注册成功，请登录');
+      }
+
       setIsLogin(true);
       setPassword('');
     } catch (error) {
+      if (error.message?.includes('email rate limit exceeded')) {
+        alert('验证邮件发送太频繁了，请稍等几分钟后再试，或者先去邮箱查收刚刚的验证邮件。');
+        return;
+      }
+
+      if (error.message?.includes('row-level security')) {
+        alert('邮箱验证已经发出。完成验证后回到这里登录；如果刚刚已验证，请刷新页面后再试。');
+        return;
+      }
+
       alert(error.message || '注册失败');
     }
   };
@@ -987,7 +1015,6 @@ function App() {
         <motion.div className="auth-card" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="auth-toggles">
             {renderThemeToggle('auth-theme-toggle')}
-            {renderCardStyleToggle('auth-card-style-toggle')}
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">{isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}</p>
@@ -1055,7 +1082,6 @@ function App() {
           </div>
           <div className="topbar-actions">
             {renderThemeToggle('topbar-theme-toggle')}
-            {renderCardStyleToggle('topbar-card-style-toggle')}
             <button type="button" onClick={() => setCurrentPage('messages')} className="icon-button">
               <Bell className="w-5 h-5" />
               {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
@@ -1328,7 +1354,6 @@ function App() {
           </button>
           <h1 className="page-title">{isHumanMode ? '真人解读' : '免费抽牌'}</h1>
           <div className="page-header-controls">
-            {renderCardStyleToggle()}
             {renderThemeToggle()}
           </div>
         </header>
@@ -1435,7 +1460,6 @@ function App() {
           </button>
           <h1 className="page-title">与饼饼对话</h1>
           <div className="page-header-controls">
-            {renderCardStyleToggle()}
             {renderThemeToggle()}
           </div>
         </header>
@@ -1491,7 +1515,6 @@ function App() {
           </button>
           <h1 className="page-title">我的消息</h1>
           <div className="page-header-controls">
-            {renderCardStyleToggle()}
             {renderThemeToggle()}
           </div>
         </header>

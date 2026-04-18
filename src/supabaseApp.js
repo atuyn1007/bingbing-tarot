@@ -54,19 +54,24 @@ export async function registerWithEmail(email, nickname, password) {
     throw new Error('注册成功，但暂时没有拿到用户信息。');
   }
 
-  const { error: profileError } = await supabase.from('profiles').upsert(
-    {
-      id: authUser.id,
-      nickname: normalizedNickname,
-    },
-    {
-      onConflict: 'id',
-    },
-  );
+  if (data.session) {
+    const { error: profileError } = await supabase.from('profiles').upsert(
+      {
+        id: authUser.id,
+        nickname: normalizedNickname,
+      },
+      {
+        onConflict: 'id',
+      },
+    );
 
-  if (profileError) throw profileError;
+    if (profileError) throw profileError;
+  }
 
-  return data;
+  return {
+    ...data,
+    needsEmailVerification: !data.session,
+  };
 }
 
 export async function loginWithEmail(email, password) {
