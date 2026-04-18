@@ -3,9 +3,30 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Bell, Coins, Lock, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
 import TarotCard from './TarotCard';
 import { allTarotCards, drawThreeCards, generateReading, getCardData, getCardDisplayNames, getCardReading } from './data';
+import {
+  appendRequestMessage,
+  createRequest,
+  ensureProfile,
+  getAuthSession,
+  getDisplaySignInDate,
+  getLocalDateKey,
+  getProfileById,
+  getRequestById,
+  listRequestsByUser,
+  loginWithNickname,
+  logoutFromSupabase,
+  OFFICIAL_READER_NICKNAME,
+  registerWithNickname,
+  updateCoinBalance,
+  updateDailyProfile,
+} from './supabaseApp';
 import { saveTarotHistory } from './supabaseTarot';
 
-const API_URL = 'http://localhost:3001';
+const OFFICIAL_READER = {
+  nickname: OFFICIAL_READER_NICKNAME,
+  englishLabel: 'ask bb！',
+  intro: '立刻马上联系饼饼为你解读！消耗10饼币。',
+};
 
 const DAILY_LINES = [
   { text: '且将新火试新茶，诗酒趁年华。', source: '苏轼《望江南》' },
@@ -101,6 +122,164 @@ function buildCalendarDays(date = new Date()) {
   return days;
 }
 
+function normalizeRecentReadingEntry(entry) {
+  if (!entry || typeof entry !== 'object') return null;
+
+  const spreadKey = entry.spreadKey || 'three';
+  const spread = getSpreadConfig(spreadKey);
+  const rawCards = Array.isArray(entry.cardsData)
+    ? entry.cardsData
+    : Array.isArray(entry.cards)
+      ? entry.cards.map((card) => {
+          if (typeof card === 'string') {
+            const matched = card.match(/^(.*?)(（逆位）)?$/);
+            const name = matched?.[1] || card;
+            const isReversed = Boolean(matched?.[2]);
+            const data = allTarotCards.find((item) => item.name === name);
+            return {
+              ...(data || {}),
+              id: data?.id,
+              name,
+              englishName: data?.englishName,
+              isReversed,
+            };
+          }
+
+          return card;
+        })
+      : [];
+
+  const cardsData = rawCards
+    .map((card) => {
+      const resolved = resolveCardData(card);
+      return {
+        id: resolved.id,
+        name: resolved.name,
+        englishName: resolved.englishName,
+        isReversed: Boolean(card?.isReversed),
+      };
+    })
+    .filter((card) => card.name);
+
+  return {
+    id: entry.id || `${Date.now()}`,
+    question: entry.question || '',
+    spreadKey,
+    spreadName: entry.spreadName || spread.name,
+    cardsData,
+    cardSummary: cardsData.map((card) => formatPlainCardName(card)),
+    createdAt: entry.createdAt || new Date().toISOString(),
+  };
+}
+
+const SPREAD_OPTIONS = [
+  {
+    key: 'three',
+    name: '三张牌阵',
+    shortName: '三张牌阵',
+    description: '没有固定位置限制，适合快速梳理当前问题的整体线索。',
+    cardCount: 3,
+    preview: ['1', '2', '3'],
+    positions: [
+      { title: '第一张', subtitle: '线索一' },
+      { title: '第二张', subtitle: '线索二' },
+      { title: '第三张', subtitle: '线索三' },
+    ],
+    summary: '这组三张牌会把问题的主要线索摊开，帮助你先看见核心，再决定下一步。',
+  },
+  {
+    key: 'triangle',
+    name: '圣三角牌阵',
+    shortName: '圣三角',
+    description: '适合看见自己以为的状况、真实的状况，以及当下最需要的建议。',
+    cardCount: 3,
+    preview: ['1', '2', '3'],
+    positions: [
+      { title: '我以为的状况', subtitle: '表层认知' },
+      { title: '真实的状况', subtitle: '现实落点' },
+      { title: '建议', subtitle: '下一步提醒' },
+    ],
+    summary: '圣三角会把表层判断、真实状态和建议拆开来看，适合处理“我到底有没有看清局面”这类问题。',
+  },
+  {
+    key: 'choice',
+    name: '二选一牌阵',
+    shortName: '二选一',
+    description: '适合面对两个方向、两个选项或两种可能性时，比较它们的状态与结果。',
+    cardCount: 5,
+    preview: ['A', 'B', 'A+', 'B+', '你'],
+    positions: [
+      { title: '选项 A 的状态', subtitle: '现在的样子' },
+      { title: '选项 B 的状态', subtitle: '现在的样子' },
+      { title: '选项 A 的可能结果', subtitle: '往后会怎样' },
+      { title: '选项 B 的可能结果', subtitle: '往后会怎样' },
+      { title: '当事人的状态', subtitle: '你真正的位置' },
+    ],
+    summary: '二选一牌阵会把两个选项并排展开，再把你的真实位置放进来，适合做方向判断。',
+  },
+];
+
+function getSpreadConfig(spreadKey) {
+  return SPREAD_OPTIONS.find((spread) => spread.key === spreadKey) || SPREAD_OPTIONS[0];
+}
+
+function drawCardsForSpread(cardCount) {
+  const cards = [];
+  const usedIndices = new Set();
+
+  while (cards.length < cardCount) {
+    const randomIndex = Math.floor(Math.random() * allTarotCards.length);
+    if (usedIndices.has(randomIndex)) continue;
+
+    usedIndices.add(randomIndex);
+    const card = allTarotCards[randomIndex];
+    const isReversed = Math.random() < 0.5;
+
+    cards.push({
+      ...card,
+      isReversed,
+      displayName: isReversed ? `${card.name}（逆位）` : card.name,
+    });
+  }
+
+  return cards;
+}
+
+function formatSpreadCardName(card) {
+  return card.isReversed ? `${card.name}（逆位）` : card.name;
+}
+
+function formatPlainCardName(card) {
+  return card?.name || '';
+}
+
+function shouldAppendFortuneReading(text, keywords) {
+  const normalizedText = String(text || '').trim();
+  if (!normalizedText) return false;
+
+  const overlapCount = keywords.filter((keyword) => normalizedText.includes(keyword)).length;
+  return overlapCount < 2;
+}
+
+function buildSpreadReading(cards, question, spread) {
+  const lead = `本次使用：${spread.name}`;
+  const cardNames = cards.map(formatSpreadCardName).join('、');
+  const positionLines = cards.map((card, index) => {
+    const position = spread.positions[index];
+    const label = position?.title || `第 ${index + 1} 张牌`;
+    return `${label}｜${formatSpreadCardName(card)}：${getCardReading(card)}`;
+  });
+
+  const closing =
+    spread.key === 'triangle'
+      ? `围绕“${question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议去推进，会更容易看见清楚的出口。`
+      : spread.key === 'choice'
+        ? `围绕“${question}”来看，这组牌会把两个选项的走向和你的真实状态并排摊开。别急着选一个最响亮的答案，先看哪个方向更贴近你真正能长期承受的节奏。`
+        : `围绕“${question}”来看，这组三张牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。`;
+
+  return [lead, `你抽到的牌是：${cardNames}。`, ...positionLines, closing].join('\n\n');
+}
+
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
   const [user, setUser] = useState(null);
@@ -131,7 +310,14 @@ function App() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [dailyHistory, setDailyHistory] = useState({});
   const [showCalendarModal, setShowCalendarModal] = useState(false);
+  const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
+  const [selectedSpreadKey, setSelectedSpreadKey] = useState('three');
+  const [cardStyle, setCardStyle] = useState(() => localStorage.getItem('tarot_card_style') || 'minimal');
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
+  const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
+  const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
 
   const typingRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
@@ -139,10 +325,15 @@ function App() {
   const activeDailyCard = savedDailyTarot || dailyCard;
   const calendarDate = new Date();
   const calendarDays = buildCalendarDays(calendarDate);
+  const activeSpread = getSpreadConfig(selectedSpreadKey);
 
   useEffect(() => {
     localStorage.setItem('tarot_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem('tarot_card_style', cardStyle);
+  }, [cardStyle]);
 
   const clearSession = () => {
     localStorage.removeItem('tarot_user');
@@ -170,7 +361,13 @@ function App() {
     setIsSignedIn(false);
     setDailyHistory({});
     setShowCalendarModal(false);
+    setShowSpreadModal(false);
     setRecentReadings([]);
+    setSelectedSpreadKey('three');
+    setShowHistoryModal(false);
+    setSelectedHistoryReading(null);
+    setShowHumanRequestModal(false);
+    setSelectedHumanReadingId(null);
   };
 
   const resetReadingState = () => {
@@ -182,38 +379,49 @@ function App() {
     setUserQuestion('');
   };
 
-  const fetchUserProfile = async (nick) => {
+  const fetchUserProfile = async (authUser) => {
     try {
-      const response = await fetch(`${API_URL}/api/user/${encodeURIComponent(nick)}/daily`);
-      if (!response.ok) {
-        if (response.status === 404) {
-          clearSession();
-          alert('登录信息已失效，请重新登录。');
-        }
-        return;
-      }
+      const profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || nickname);
+      const today = getDisplaySignInDate();
+      const isSignedInToday = profile.last_sign_in_date === today;
+      const nextUser = { id: authUser.id, nickname: profile.nickname };
 
-      const data = await response.json();
-      setCoinBalance(data.coinBalance || 0);
-      setLastSignInDate(data.lastSignInDate || null);
-      setIsSignedIn(Boolean(data.isSignedInToday));
-      setSavedDailyTarot(data.isSignedInToday ? data.todayCard || null : null);
-      setDailyHistory(data.dailyHistory || {});
+      setUser(nextUser);
+      setNickname(profile.nickname);
+      setCoinBalance(profile.coin_balance || 0);
+      setLastSignInDate(profile.last_sign_in_date || null);
+      setIsSignedIn(isSignedInToday);
+      setSavedDailyTarot(isSignedInToday ? profile.today_card || null : null);
+      setDailyHistory(profile.daily_history || {});
+      localStorage.setItem('tarot_user', JSON.stringify(nextUser));
     } catch (error) {
       console.error(error);
     }
   };
 
-  const saveRecentReading = (question, cards) => {
-    const entry = {
+  const persistRecentReadings = (items) => {
+    localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(items));
+  };
+
+  const saveRecentReading = (question, cards, spreadKey) => {
+    const spread = getSpreadConfig(spreadKey);
+    const entry = normalizeRecentReadingEntry({
       id: `${Date.now()}`,
       question,
-      cards: cards.map((card) => card.name + (card.isReversed ? '（逆位）' : '')),
-    };
+      spreadKey: spread.key,
+      spreadName: spread.name,
+      cardsData: cards.map((card) => ({
+        id: card.id,
+        name: card.name,
+        englishName: card.englishName,
+        isReversed: Boolean(card.isReversed),
+      })),
+      createdAt: new Date().toISOString(),
+    });
 
     setRecentReadings((current) => {
       const next = [entry, ...current].slice(0, 3);
-      localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(next));
+      persistRecentReadings(next);
       return next;
     });
   };
@@ -221,23 +429,45 @@ function App() {
   const deleteRecentReading = (entryId) => {
     setRecentReadings((current) => {
       const next = current.filter((entry) => entry.id !== entryId);
-      localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(next));
+      persistRecentReadings(next);
       return next;
     });
   };
 
-  useEffect(() => {
-    const savedUser = localStorage.getItem('tarot_user');
-    if (!savedUser) return;
+  const openHistoryModal = (entry) => {
+    setSelectedHistoryReading(entry);
+    setShowHistoryModal(true);
+  };
 
-    try {
-      const userData = JSON.parse(savedUser);
-      setUser(userData);
-      setNickname(userData.nickname);
-      fetchUserProfile(userData.nickname);
-    } catch (error) {
-      clearSession();
+  const openHumanRequestModal = () => {
+    if (recentReadings.length === 0) {
+      alert('先完成一次抽牌，再把最近的牌阵发给饼饼吧。');
+      return;
     }
+
+    setSelectedHumanReadingId(recentReadings[0]?.id || null);
+    setShowHumanRequestModal(true);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+
+    const bootstrapSession = async () => {
+      try {
+        const session = await getAuthSession();
+        if (session?.user && mounted) {
+          await fetchUserProfile(session.user);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    bootstrapSession();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -250,7 +480,10 @@ function App() {
 
     try {
       const parsed = JSON.parse(stored);
-      setRecentReadings(Array.isArray(parsed) ? parsed.slice(0, 3) : []);
+      const normalized = Array.isArray(parsed)
+        ? parsed.map(normalizeRecentReadingEntry).filter(Boolean).slice(0, 3)
+        : [];
+      setRecentReadings(normalized);
     } catch {
       setRecentReadings([]);
     }
@@ -263,23 +496,12 @@ function App() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname.trim(), password }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.error || '注册失败');
-        return;
-      }
-
+      await registerWithNickname(nickname.trim(), password);
       alert('注册成功，请登录');
       setIsLogin(true);
       setPassword('');
     } catch (error) {
-      alert('网络错误，请稍后重试');
+      alert(error.message || '注册失败');
     }
   };
 
@@ -290,84 +512,94 @@ function App() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nickname: nickname.trim(), password }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.error || '登录失败');
-        return;
-      }
-
-      const nextUser = { nickname: data.nickname };
-      setUser(nextUser);
-      setNickname(data.nickname);
-      setCoinBalance(data.coinBalance || 0);
-      setLastSignInDate(data.lastSignInDate || null);
-      localStorage.setItem('tarot_user', JSON.stringify(nextUser));
+      const data = await loginWithNickname(nickname.trim(), password);
       setPassword('');
-      await fetchUserProfile(data.nickname);
+      if (data.user) {
+        await fetchUserProfile(data.user);
+      }
     } catch (error) {
-      alert('网络错误，请稍后重试');
+      alert(error.message || '登录失败');
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await logoutFromSupabase();
+    } catch (error) {
+      console.error(error);
+    }
+
     clearSession();
   };
 
   const handleDailySignIn = async () => {
-    if (!activeNickname) {
+    if (!user?.id) {
       alert('登录状态异常，请重新登录后再试。');
       clearSession();
       return;
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/user/${encodeURIComponent(activeNickname)}/signin`, {
-        method: 'PATCH',
-      });
+      const profile = await getProfileById(user.id);
+      if (!profile) {
+        clearSession();
+        alert('当前账号资料不存在，请重新登录。');
+        return;
+      }
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+      const today = getDisplaySignInDate();
+      const todayKey = getLocalDateKey();
+      const currentHistory = profile.daily_history || {};
 
-        if (response.status === 404) {
-          clearSession();
-          alert('当前账号在后端不存在，请重新登录。');
-          return;
+      if (profile.last_sign_in_date === today) {
+        setIsSignedIn(true);
+        setCoinBalance(profile.coin_balance || 0);
+        setLastSignInDate(profile.last_sign_in_date || today);
+        setDailyHistory(currentHistory);
+        if (profile.today_card) {
+          setSavedDailyTarot(profile.today_card);
+          setDailyCard(profile.today_card);
+          setShowDailyResult(true);
         }
 
-        alert(errorData.error || '今日运势获取失败，请稍后再试');
         return;
       }
 
-      const data = await response.json();
-      if (!data.success) {
-        alert(data.error || '今日运势获取失败，请稍后再试');
-        return;
-      }
+      const todayCard = {
+        name: allTarotCards[Math.floor(Math.random() * allTarotCards.length)].name,
+        isReversed: Math.random() < 0.5,
+      };
+
+      const nextHistory = {
+        ...currentHistory,
+        [todayKey]: todayCard,
+      };
+
+      const updatedProfile = await updateDailyProfile(user.id, {
+        last_sign_in_date: today,
+        today_card: todayCard,
+        daily_history: nextHistory,
+        coin_balance: (profile.coin_balance || 0) + 1,
+      });
 
       setIsSignedIn(true);
-      setCoinBalance(data.coinBalance || coinBalance);
-      setLastSignInDate(data.lastSignInDate || new Date().toDateString());
-      setDailyHistory(data.dailyHistory || {});
-      if (data.todayCard) {
+      setCoinBalance(updatedProfile.coin_balance || coinBalance);
+      setLastSignInDate(updatedProfile.last_sign_in_date || today);
+      setDailyHistory(updatedProfile.daily_history || nextHistory);
+      if (updatedProfile.today_card) {
         try {
-          await saveTarotHistory(data.todayCard.name, !data.todayCard.isReversed);
+          await saveTarotHistory(updatedProfile.today_card.name, !updatedProfile.today_card.isReversed);
         } catch (syncError) {
           console.warn('Failed to sync daily tarot to Supabase:', syncError);
         }
 
-        setSavedDailyTarot(data.todayCard);
-        setDailyCard(data.todayCard);
+        setSavedDailyTarot(updatedProfile.today_card);
+        setDailyCard(updatedProfile.today_card);
         setShowDailyResult(true);
       }
     } catch (error) {
       console.error(error);
-      alert('未能连接到占卜服务，请确认后端已启动。');
+      alert(error.message || '今日运势获取失败，请稍后再试');
     }
   };
 
@@ -391,10 +623,10 @@ function App() {
     const data = resolveCardData(card);
     const reading = getCardReading({ ...card, id: data.id });
     const conciseReading = stripLeadSentence(reading);
+    const shouldAppend = shouldAppendFortuneReading(conciseReading, keywords);
+    const lead = card.isReversed ? '今天更适合放慢一点。' : '今天可以顺着感觉往前一步。';
 
-    return card.isReversed
-      ? `濠电偛顕慨鎾晝閵堝桅濠㈣埖鍔曢崡鎶芥煙缂併垹鏋撻柛瀣崌瀹曟帒顫濋鐐╁亾閵堝鐓涢柍褜鍓熼幃娆擃敆閳ь剙顕ｉ灏栨闁圭虎鍨版禍楣冩⒑缂佹ê濮夋繛鍛灮濡叉劕鈹戠€ｎ偄浠煎┑鐐叉閸旀洘绔?{keywords.join(' / ')}闂佸搫顦弲婊堟偡閵堝洩濮抽柣鎴烆焽閳瑰秹鏌嶉妷銉ユ毐濠电偛娲弻?{conciseReading}`
-      : `濠电偛顕慨鎾晝閵堝桅濠㈣埖鍔曢惌妤併亜閺嶃劎鎳佺紒銊︽緲椤啴濡堕崼鐕佷哗濠?{keywords.join(' / ')}闂備礁鎲￠…鍫ヮ敋瑜旈幆鍫濐吋閸滀礁娈ㄩ梺閫炲苯澧伴柟顔藉娴狅箓鎸婃竟顓燁殜閺?{conciseReading}`;
+    return shouldAppend ? `${lead}${conciseReading}` : lead;
   };
 
   const dailyFortuneKeywords = activeDailyCard ? getDailyFortuneKeywords(activeDailyCard) : [];
@@ -406,6 +638,12 @@ function App() {
   const handleStartFreeReading = () => {
     setIsHumanMode(false);
     resetReadingState();
+    setShowSpreadModal(true);
+  };
+
+  const handleSelectSpread = (spreadKey) => {
+    setSelectedSpreadKey(spreadKey);
+    setShowSpreadModal(false);
     setCurrentPage('drawing-input');
   };
 
@@ -416,6 +654,7 @@ function App() {
     }
 
     setIsHumanMode(true);
+    setSelectedSpreadKey('three');
     resetReadingState();
     setCurrentPage('drawing-input');
   };
@@ -428,16 +667,17 @@ function App() {
     setCurrentPage('drawing');
 
     setTimeout(() => {
-      const cards = drawThreeCards();
+      const spread = getSpreadConfig(selectedSpreadKey);
+      const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
       setDrawnCards(cards);
-      saveRecentReading(trimmedQuestion, cards);
+      saveRecentReading(trimmedQuestion, cards, spread.key);
 
       setTimeout(() => {
         setIsRevealing(true);
 
         setTimeout(() => {
           setReadingComplete(true);
-          setAiReading(generateReading(cards, trimmedQuestion));
+          setAiReading(isHumanMode ? generateReading(cards, trimmedQuestion) : buildSpreadReading(cards, trimmedQuestion, spread));
         }, 1100);
       }, 260);
     }, 420);
@@ -446,10 +686,8 @@ function App() {
   const startPollingReply = (chatId) => {
     const pollInterval = setInterval(async () => {
       try {
-        const response = await fetch(`${API_URL}/api/request/${chatId}`);
-        if (!response.ok) return;
-
-        const data = await response.json();
+        const data = await getRequestById(chatId);
+        if (!data) return;
         setMessages(data.messages || []);
         if ((data.messages || []).some((message) => message.sender === 'teacher')) {
           setIsWaitingForReply(false);
@@ -465,39 +703,43 @@ function App() {
     return () => clearInterval(pollInterval);
   };
 
-  const handleSubmitHumanRequest = async () => {
-    if (!activeNickname || !userQuestion.trim() || drawnCards.length === 0) return;
+  const submitHumanReadingRequest = async (readingEntry) => {
+    if (!user?.id || !activeNickname || !readingEntry?.question || !Array.isArray(readingEntry.cardsData) || readingEntry.cardsData.length === 0) return;
 
     const nextBalance = coinBalance - 10;
     setCoinBalance(nextBalance);
 
     try {
-      await fetch(`${API_URL}/api/user/${encodeURIComponent(activeNickname)}/coins`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ coinBalance: nextBalance }),
-      });
+      await updateCoinBalance(user.id, nextBalance);
 
-      const response = await fetch(`${API_URL}/api/request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: activeNickname,
-          userNickname: activeNickname,
-          question: userQuestion,
-          cards: drawnCards,
-        }),
+      const data = await createRequest({
+        user_id: user.id,
+        user_nickname: activeNickname,
+        teacher_nickname: OFFICIAL_READER.nickname,
+        spread_key: readingEntry.spreadKey,
+        spread_name: readingEntry.spreadName,
+        question: readingEntry.question,
+        cards: readingEntry.cardsData,
+        status: 'pending',
+        messages: [],
       });
-
-      const data = await response.json();
       setCurrentChatId(data.id);
+      setUserQuestion(readingEntry.question);
+      setDrawnCards(readingEntry.cardsData);
       setMessages([]);
       setIsWaitingForReply(true);
+      setShowHumanRequestModal(false);
       setCurrentPage('chat');
       startPollingReply(data.id);
     } catch (error) {
       alert('网络错误，请稍后重试');
     }
+  };
+
+  const handleSubmitHumanRequest = async () => {
+    const readingEntry = recentReadings.find((entry) => entry.id === selectedHumanReadingId) || recentReadings[0];
+    if (!readingEntry) return;
+    await submitHumanReadingRequest(readingEntry);
   };
 
   const handleSendMessage = async () => {
@@ -514,11 +756,7 @@ function App() {
     setMessageText('');
 
     try {
-      await fetch(`${API_URL}/api/request/${currentChatId}/message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMessage),
-      });
+      await appendRequestMessage(currentChatId, newMessage);
     } catch (error) {
       console.error(error);
     }
@@ -544,14 +782,11 @@ function App() {
   }, [aiReading, readingComplete]);
 
   useEffect(() => {
-    if (!user?.nickname) return undefined;
+    if (!user?.id) return undefined;
 
     const fetchPendingRequests = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/requests/user/${encodeURIComponent(user.nickname)}`);
-        if (!response.ok) return;
-
-        const data = await response.json();
+        const data = await listRequestsByUser(user.id);
         const pending = data.filter((request) =>
           request.status === 'pending' && request.messages?.some((message) => message.sender === 'teacher'),
         );
@@ -582,6 +817,31 @@ function App() {
     setDisplayedText('');
   };
 
+  const renderSpreadCards = (cards = drawnCards, spreadKey = isHumanMode ? 'three' : activeSpread.key, options = {}) => {
+    const spread = getSpreadConfig(spreadKey);
+    const cardSize = spread.key === 'choice' ? 'small' : 'normal';
+    const isRevealedView = options.isRevealed ?? isRevealing;
+    const showOrientation = options.showOrientation ?? false;
+
+    return (
+      <section className={`reading-spread reading-spread-${spread.key} ${options.className || ''}`.trim()}>
+        {cards.map((card, index) => {
+          const position = spread.positions[index];
+
+          return (
+            <div key={`${spread.key}-${card.id}-${index}`} className={`reading-spread-slot reading-spread-slot-${spread.key}-${index + 1}`}>
+              <TarotCard card={card} isRevealed={isRevealedView} size={cardSize} showOrientation={showOrientation} variant={cardStyle} />
+              <div className="reading-spread-meta">
+                <p className="reading-spread-label">{position?.title || `第 ${index + 1} 张牌`}</p>
+                {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
+              </div>
+            </div>
+          );
+        })}
+      </section>
+    );
+  };
+
   const renderThemeToggle = (extraClassName = '') => (
     <div className={`theme-toggle ${extraClassName}`.trim()}>
       <button
@@ -605,13 +865,128 @@ function App() {
     </div>
   );
 
+  const renderCardStyleToggle = (extraClassName = '') => (
+    <div className={`card-style-toggle ${extraClassName}`.trim()}>
+      <button
+        type="button"
+        onClick={() => setCardStyle('minimal')}
+        className={`card-style-button ${cardStyle === 'minimal' ? 'card-style-button-active' : ''}`}
+      >
+        极简版
+      </button>
+      <button
+        type="button"
+        onClick={() => setCardStyle('artwork')}
+        className={`card-style-button ${cardStyle === 'artwork' ? 'card-style-button-active' : ''}`}
+      >
+        原画版
+      </button>
+    </div>
+  );
+
+  const renderHistoryModal = () => {
+    if (!showHistoryModal || !selectedHistoryReading) return null;
+
+    return (
+      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowHistoryModal(false)}>
+        <motion.div
+          className="calendar-modal history-preview-modal"
+          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 12, scale: 0.96 }}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="calendar-modal-head">
+            <div>
+              <p className="eyebrow">Recent Spread</p>
+              <h3 className="fortune-modal-title">历史抽牌</h3>
+            </div>
+            <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="history-preview-copy">
+            <p className="history-preview-question">问题：{selectedHistoryReading.question}</p>
+            <p className="history-preview-spread">牌阵：{selectedHistoryReading.spreadName}</p>
+          </div>
+
+          {renderSpreadCards(selectedHistoryReading.cardsData, selectedHistoryReading.spreadKey, {
+            isRevealed: true,
+            className: 'history-preview-spread',
+          })}
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  const renderHumanRequestModal = () => {
+    if (!showHumanRequestModal) return null;
+
+    return (
+      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowHumanRequestModal(false)}>
+        <motion.div
+          className="calendar-modal human-request-modal"
+          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 12, scale: 0.96 }}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="calendar-modal-head">
+            <div>
+              <p className="eyebrow">{OFFICIAL_READER.englishLabel}</p>
+              <h3 className="fortune-modal-title">发送给饼饼大人</h3>
+            </div>
+            <button type="button" onClick={() => setShowHumanRequestModal(false)} className="icon-button">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <p className="human-request-copy">选择一条最近的抽牌记录发给官方账号，饼饼会根据这次牌阵继续为你解读。</p>
+
+          <div className="human-request-list">
+            {recentReadings.map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() => setSelectedHumanReadingId(entry.id)}
+                className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
+              >
+                <p className="human-request-question">“{entry.question}”</p>
+                <p className="human-request-meta">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
+              </button>
+            ))}
+          </div>
+
+          <div className="human-request-actions">
+            <button type="button" onClick={() => setShowHumanRequestModal(false)} className="secondary-button">
+              再想想
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmitHumanRequest}
+              disabled={!selectedHumanReadingId || coinBalance < 10}
+              className="primary-button"
+            >
+              <MessageCircle className="w-5 h-5" />
+              {coinBalance < 10 ? '饼币不足' : '发送给饼饼（10 饼币）'}
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
   if (!user) {
     return (
       <div className={`screen-shell auth-screen theme-${theme}`}>
         <div className="orb orb-left" />
         <div className="orb orb-right" />
         <motion.div className="auth-card" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          {renderThemeToggle('auth-theme-toggle')}
+          <div className="auth-toggles">
+            {renderThemeToggle('auth-theme-toggle')}
+            {renderCardStyleToggle('auth-card-style-toggle')}
+          </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">{isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}</p>
 
@@ -669,6 +1044,7 @@ function App() {
           </div>
           <div className="topbar-actions">
             {renderThemeToggle('topbar-theme-toggle')}
+            {renderCardStyleToggle('topbar-card-style-toggle')}
             <button type="button" onClick={() => setCurrentPage('messages')} className="icon-button">
               <Bell className="w-5 h-5" />
               {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
@@ -712,14 +1088,34 @@ function App() {
               {recentReadings.length > 0 ? (
                 <div className="history-list">
                   {recentReadings.map((entry) => (
-                    <article key={entry.id} className="history-item">
+                    <article
+                      key={entry.id}
+                      className="history-item"
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openHistoryModal(entry)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          openHistoryModal(entry);
+                        }
+                      }}
+                    >
                       <div className="history-item-head">
                         <p className="history-question">“{entry.question}”</p>
-                        <button type="button" onClick={() => deleteRecentReading(entry.id)} className="history-delete-button" aria-label="删除这条抽牌记录">
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            deleteRecentReading(entry.id);
+                          }}
+                          className="history-delete-button"
+                          aria-label="删除这条抽牌记录"
+                        >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="history-cards">{entry.cards.join(' · ')}</p>
+                      <p className="history-cards">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
                     </article>
                   ))}
                 </div>
@@ -767,19 +1163,67 @@ function App() {
             <div className="action-grid">
               <button type="button" onClick={handleStartFreeReading} className="feature-card feature-card-light">
                 <span className="feature-eyebrow">Free Reading</span>
-                <strong className="feature-title">免费抽牌</strong>
-                <p className="feature-copy">抽取三张牌，立即获得本地生成的塔罗解读。</p>
+                <strong className="feature-title">选择牌阵</strong>
+                <p className="feature-copy">先选牌阵，再进入提问和抽牌流程。</p>
               </button>
 
-              <button type="button" onClick={handleStartHumanReading} className="feature-card feature-card-dark">
-                <span className="feature-eyebrow">Human Reading</span>
-                <strong className="feature-title">真人解读</strong>
-                <p className="feature-copy">消耗 10 饼币，把问题发送给真人老师继续追问。</p>
+              <button type="button" onClick={openHumanRequestModal} className="feature-card feature-card-dark">
+                <span className="feature-eyebrow">{OFFICIAL_READER.englishLabel}</span>
+                <strong className="feature-title">立刻马上联系饼饼为你解读！</strong>
+                <p className="feature-copy">消耗10饼币。</p>
               </button>
             </div>
 
           </motion.section>
         </main>
+
+        <AnimatePresence>
+          {showHistoryModal && renderHistoryModal()}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showHumanRequestModal && renderHumanRequestModal()}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showSpreadModal && (
+            <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSpreadModal(false)}>
+              <motion.div
+                className="spread-modal"
+                initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="calendar-modal-head">
+                  <div>
+                    <p className="eyebrow">Choose a Spread</p>
+                    <h3 className="fortune-modal-title">选择牌阵</h3>
+                  </div>
+                  <button type="button" onClick={() => setShowSpreadModal(false)} className="icon-button">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="spread-option-grid">
+                  {SPREAD_OPTIONS.map((spread) => (
+                    <button key={spread.key} type="button" className="spread-option-card" onClick={() => handleSelectSpread(spread.key)}>
+                      <div className={`spread-option-preview spread-option-preview-${spread.key}`}>
+                        {spread.preview.map((label, index) => (
+                          <span key={`${spread.key}-${index}`} className={`spread-option-chip spread-option-chip-${spread.key}-${index + 1}`}>
+                            {label}
+                          </span>
+                        ))}
+                      </div>
+                      <strong className="spread-option-title">{spread.name}</strong>
+                      <p className="spread-option-copy">{spread.description}</p>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {showDailyResult && activeDailyCard && (
@@ -872,14 +1316,17 @@ function App() {
             <X className="w-5 h-5" />
           </button>
           <h1 className="page-title">{isHumanMode ? '真人解读' : '免费抽牌'}</h1>
-          {renderThemeToggle()}
+          <div className="page-header-controls">
+            {renderCardStyleToggle()}
+            {renderThemeToggle()}
+          </div>
         </header>
 
         <main className="page-content">
           <div className="question-panel">
-            <p className="eyebrow">{isHumanMode ? 'Human Reading' : 'Three Card Reading'}</p>
-            <h2 className="question-title">把问题说得更具体，牌面会更清晰。</h2>
-            <p className="question-note">{isHumanMode ? '提交后会带着你的三张牌进入真人对话。' : '系统会为你抽取三张牌，并生成一段综合解读。'}</p>
+            <p className="eyebrow">{isHumanMode ? 'Human Reading' : activeSpread.name}</p>
+            <h2 className="question-title">{isHumanMode ? '把问题说得更具体，牌面会更清晰。' : `你选择了${activeSpread.name}`}</h2>
+            <p className="question-note">{isHumanMode ? '提交后会带着你的三张牌进入真人对话。' : activeSpread.summary}</p>
             <textarea
               value={userQuestion}
               onChange={(event) => setUserQuestion(event.target.value)}
@@ -905,21 +1352,20 @@ function App() {
             <X className="w-5 h-5" />
           </button>
           <h1 className="page-title">抽牌结果</h1>
-          {renderThemeToggle()}
+          <div className="page-header-controls">
+            {renderCardStyleToggle()}
+            {renderThemeToggle()}
+          </div>
         </header>
 
         <main className="page-content reading-page-content">
           <div className="reading-layout">
           <section className="reading-question-card">
-            <p className="eyebrow">Your Question</p>
+            <p className="eyebrow">{isHumanMode ? 'Human Reading' : activeSpread.name}</p>
             <p className="reading-question-text">“{userQuestion}”</p>
           </section>
 
-          <section className="reading-cards-row">
-            {drawnCards.map((card, index) => (
-              <TarotCard key={`${card.id}-${index}`} card={card} isRevealed={isRevealing} />
-            ))}
-          </section>
+          {renderSpreadCards()}
 
           {readingComplete && (
             <motion.section className="reading-result-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -931,39 +1377,18 @@ function App() {
 
               <div className="reading-actions">
                 {isHumanMode ? (
-                  <button type="button" onClick={handleSubmitHumanRequest} className="primary-button">
+                  <button type="button" onClick={openHumanRequestModal} className="primary-button">
                     <MessageCircle className="w-5 h-5" />
-                    发送给真人解读
+                    发给饼饼解读
                   </button>
                 ) : (
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (coinBalance < 10) {
-                        alert('饼币不足，先签到拿饼币吧。');
-                        return;
-                      }
-
-                      const nextBalance = coinBalance - 10;
-                      setCoinBalance(nextBalance);
-
-                      try {
-                        await fetch(`${API_URL}/api/user/${encodeURIComponent(activeNickname)}/coins`, {
-                          method: 'PATCH',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ coinBalance: nextBalance }),
-                        });
-                      } catch (error) {
-                        console.error(error);
-                      }
-
-                      setIsHumanMode(true);
-                      handleSubmitHumanRequest();
-                    }}
+                    onClick={openHumanRequestModal}
                     className="primary-button"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    联系真人解读（10 饼币）
+                    发给饼饼解读（10 饼币）
                   </button>
                 )}
                 <button type="button" onClick={goHome} className="secondary-button">
@@ -974,6 +1399,10 @@ function App() {
           )}
           </div>
         </main>
+
+        <AnimatePresence>
+          {showHumanRequestModal && renderHumanRequestModal()}
+        </AnimatePresence>
       </div>
     );
   }
@@ -994,7 +1423,10 @@ function App() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="page-title">与饼饼对话</h1>
-          {renderThemeToggle()}
+          <div className="page-header-controls">
+            {renderCardStyleToggle()}
+            {renderThemeToggle()}
+          </div>
         </header>
 
         <main className="chat-layout">
@@ -1047,7 +1479,10 @@ function App() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="page-title">我的消息</h1>
-          {renderThemeToggle()}
+          <div className="page-header-controls">
+            {renderCardStyleToggle()}
+            {renderThemeToggle()}
+          </div>
         </header>
 
         <main className="page-content">

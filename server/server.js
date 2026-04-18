@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
@@ -248,12 +248,15 @@ app.get('/api/user/:nickname/daily', (req, res) => {
 });
 
 app.post('/api/request', (req, res) => {
-  const { userId, userNickname, question, cards } = req.body;
+  const { userId, userNickname, question, cards, teacherNickname, spreadKey, spreadName } = req.body;
 
   const newRequest = {
     id: data.nextRequestId++,
     userId,
     userNickname,
+    teacherNickname: teacherNickname || '饼饼大人',
+    spreadKey: spreadKey || 'three',
+    spreadName: spreadName || '三张牌阵',
     question,
     cards,
     timestamp: new Date().toISOString(),
@@ -335,6 +338,6 @@ app.post('/api/teacher/login', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`饼饼塔罗后端服务运行在 http://localhost:${PORT}`);
+  console.log(`饼饼塔罗后端服务已启动，端口：${PORT}`);
   console.log(`数据文件位置：${dataFile}`);
 });

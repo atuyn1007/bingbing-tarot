@@ -4,22 +4,44 @@
       "id": 1,
       "nickname": "饼饼大人",
       "password": "1007",
-      "coinBalance": 3,
-      "lastSignInDate": "Fri Apr 17 2026",
+      "coinBalance": 4,
+      "lastSignInDate": "Sat Apr 18 2026",
       "createdAt": "2026-04-15T12:32:21.271Z",
       "todayCard": {
-        "name": "宝剑五",
+        "name": "恶魔",
         "isReversed": true
       },
       "dailyHistory": {
         "2026-04-17": {
           "name": "宝剑五",
           "isReversed": true
+        },
+        "2026-04-18": {
+          "name": "恶魔",
+          "isReversed": true
         }
+      }
+    },
+    {
+      "id": 5,
+      "nickname": "77 测试号",
+      "password": "1111",
+      "coinBalance": 1,
+      "lastSignInDate": "Fri Apr 17 2026",
+      "createdAt": "2026-04-17T14:53:57.656Z",
+      "dailyHistory": {
+        "2026-04-17": {
+          "name": "正义",
+          "isReversed": false
+        }
+      },
+      "todayCard": {
+        "name": "正义",
+        "isReversed": false
       }
     }
   ],
   "requests": [],
-  "nextUserId": 5,
+  "nextUserId": 6,
   "nextRequestId": 1
 }

@@ -4,7 +4,12 @@ import { supabase } from './supabaseClient';
 export const TAROT_CARD_NAMES = allTarotCards.map((card) => card.name);
 
 export async function saveTarotHistory(cardName, isUpright) {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { error } = await supabase.from('tarot_history').insert({
+    user_id: user?.id || null,
     card_name: cardName,
     is_upright: isUpright,
   });

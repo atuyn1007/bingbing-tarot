@@ -165,6 +165,13 @@ button:disabled {
   gap: 12px;
 }
 
+.page-header-controls,
+.auth-toggles {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .icon-button,
 .text-button,
 .primary-button,
@@ -506,10 +513,20 @@ button:disabled {
 }
 
 .history-item {
+  appearance: none;
+  width: 100%;
   padding: 14px 16px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.72);
   border: 1px solid var(--app-border);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.history-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px rgba(58, 37, 16, 0.08);
 }
 
 .history-item-head {
@@ -707,6 +724,39 @@ button:disabled {
   backdrop-filter: blur(12px);
 }
 
+.card-style-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.card-style-button {
+  border: none;
+  background: transparent;
+  color: var(--app-muted);
+  min-width: 66px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.card-style-button:hover {
+  transform: translateY(-1px);
+}
+
+.card-style-button-active {
+  background: #221712;
+  color: #fff4e8;
+  box-shadow: 0 10px 24px rgba(34, 23, 18, 0.16);
+}
+
 .theme-toggle-button {
   display: inline-flex;
   align-items: center;
@@ -753,7 +803,15 @@ button:disabled {
   margin: 0 auto 18px;
 }
 
+.auth-card-style-toggle {
+  margin: 0 auto 18px;
+}
+
 .topbar-theme-toggle {
+  margin-right: 2px;
+}
+
+.topbar-card-style-toggle {
   margin-right: 2px;
 }
 
@@ -824,6 +882,101 @@ button:disabled {
   flex-wrap: wrap;
   width: 100%;
   margin: 4px auto 0;
+}
+
+.reading-spread {
+  width: min(100%, 940px);
+  margin: 4px auto 0;
+  display: grid;
+  justify-content: center;
+  gap: 20px 28px;
+}
+
+.reading-spread-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reading-spread-triangle {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "left right"
+    "bottom bottom";
+  max-width: 640px;
+}
+
+.reading-spread-choice {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-areas:
+    ". result-a result-b ."
+    ". state-a state-b ."
+    ". self self .";
+  max-width: 920px;
+}
+
+.reading-spread-choice .tarot-card-name span {
+  font-size: 1.06rem;
+  line-height: 1.28;
+}
+
+.reading-spread-choice .tarot-card-name small {
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.reading-spread-slot {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.reading-spread-slot-triangle-1 {
+  grid-area: left;
+}
+
+.reading-spread-slot-triangle-2 {
+  grid-area: right;
+}
+
+.reading-spread-slot-triangle-3 {
+  grid-area: bottom;
+}
+
+.reading-spread-slot-choice-1 {
+  grid-area: state-a;
+}
+
+.reading-spread-slot-choice-2 {
+  grid-area: state-b;
+}
+
+.reading-spread-slot-choice-3 {
+  grid-area: result-a;
+}
+
+.reading-spread-slot-choice-4 {
+  grid-area: result-b;
+}
+
+.reading-spread-slot-choice-5 {
+  grid-area: self;
+}
+
+.reading-spread-meta {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.reading-spread-label {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--app-text);
+}
+
+.reading-spread-subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--app-muted);
 }
 
 .reading-result-card {
@@ -966,6 +1119,15 @@ button:disabled {
   text-align: center;
 }
 
+.spread-modal {
+  width: min(100%, 860px);
+  padding: 24px;
+  border: 1px solid var(--app-border);
+  border-radius: 32px;
+  background: var(--app-panel);
+  box-shadow: var(--app-shadow);
+}
+
 .calendar-modal {
   width: min(100%, 620px);
   border: 1px solid var(--app-border);
@@ -1058,6 +1220,21 @@ button:disabled {
   gap: 6px;
 }
 
+.tarot-card-artwork-wrap {
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+  margin: -12px;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.tarot-card-artwork {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .fortune-modal-keywords {
   margin: 0 0 14px;
   color: var(--app-muted);
@@ -1069,6 +1246,218 @@ button:disabled {
 .fortune-modal-note {
   margin-bottom: 22px;
   line-height: 1.8;
+}
+
+.history-preview-modal,
+.human-request-modal {
+  width: min(100%, 760px);
+}
+
+.history-preview-copy {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.history-preview-question,
+.history-preview-spread,
+.human-request-copy,
+.human-request-question,
+.human-request-meta {
+  margin: 0;
+}
+
+.history-preview-question,
+.history-preview-spread {
+  color: var(--app-text);
+  line-height: 1.75;
+}
+
+.history-preview-spread,
+.human-request-copy,
+.human-request-meta {
+  color: var(--app-muted);
+}
+
+.history-preview-spread {
+  font-size: 0.92rem;
+}
+
+.history-preview-spread.reading-spread {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.history-preview-spread .reading-spread-meta {
+  display: none;
+}
+
+.human-request-copy {
+  margin-bottom: 16px;
+  line-height: 1.75;
+}
+
+.human-request-list {
+  display: grid;
+  gap: 12px;
+}
+
+.human-request-item {
+  appearance: none;
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--app-border);
+  background: rgba(255, 255, 255, 0.72);
+  text-align: left;
+  display: grid;
+  gap: 8px;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.human-request-item:hover,
+.human-request-item-active {
+  transform: translateY(-1px);
+  border-color: rgba(106, 77, 47, 0.34);
+  box-shadow: 0 18px 34px rgba(60, 42, 23, 0.1);
+}
+
+.human-request-question {
+  color: var(--app-text);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.human-request-meta {
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.human-request-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.tarot-card-frame-small .tarot-card-name span {
+  font-size: 1.04rem;
+  line-height: 1.24;
+}
+
+.tarot-card-frame-small .tarot-card-name small {
+  font-size: 0.76rem;
+  line-height: 1.3;
+}
+
+.spread-option-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.spread-option-card {
+  width: 100%;
+  padding: 20px 18px;
+  border: 1px solid var(--app-border);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.82);
+  text-align: left;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.spread-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(74, 53, 32, 0.1);
+}
+
+.spread-option-preview {
+  min-height: 92px;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.spread-option-preview-three {
+  grid-template-columns: repeat(3, 52px);
+  gap: 10px;
+}
+
+.spread-option-preview-triangle {
+  grid-template-columns: repeat(2, 52px);
+  grid-template-areas:
+    "one two"
+    "three three";
+  gap: 10px 14px;
+}
+
+.spread-option-preview-choice {
+  grid-template-columns: repeat(4, 46px);
+  grid-template-areas:
+    ". three four ."
+    ". one two ."
+    ". five five .";
+  gap: 8px 12px;
+}
+
+.spread-option-chip {
+  width: 46px;
+  height: 68px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #4d5962;
+  color: #fffdf9;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.spread-option-chip-triangle-1 {
+  grid-area: one;
+}
+
+.spread-option-chip-triangle-2 {
+  grid-area: two;
+}
+
+.spread-option-chip-triangle-3 {
+  grid-area: three;
+}
+
+.spread-option-chip-choice-1 {
+  grid-area: one;
+}
+
+.spread-option-chip-choice-2 {
+  grid-area: two;
+}
+
+.spread-option-chip-choice-3 {
+  grid-area: three;
+}
+
+.spread-option-chip-choice-4 {
+  grid-area: four;
+}
+
+.spread-option-chip-choice-5 {
+  grid-area: five;
+}
+
+.spread-option-title {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--app-text);
+  font-size: 1.15rem;
+}
+
+.spread-option-copy {
+  margin: 0;
+  color: var(--app-muted);
+  line-height: 1.7;
 }
 
 .theme-noir {
@@ -1126,6 +1515,7 @@ button:disabled {
 .theme-noir .coin-pill,
 .theme-noir .icon-button,
 .theme-noir .theme-toggle,
+.theme-noir .card-style-toggle,
 .theme-noir .chat-card-pill,
 .theme-noir .message-bubble {
   background: var(--app-panel);
@@ -1180,6 +1570,11 @@ button:disabled {
   border-color: rgba(17, 17, 17, 0.14);
 }
 
+.theme-noir .human-request-item {
+  background: rgba(248, 248, 246, 0.98);
+  border-color: rgba(17, 17, 17, 0.14);
+}
+
 .theme-noir .history-delete-button {
   background: #ffffff;
   border-color: rgba(17, 17, 17, 0.14);
@@ -1208,6 +1603,7 @@ button:disabled {
 .theme-noir .primary-button,
 .theme-noir .dark-icon-button,
 .theme-noir .theme-toggle-button-active,
+.theme-noir .card-style-button-active,
 .theme-noir .message-bubble-user {
   background: #111111;
   color: #ffffff;
@@ -1249,6 +1645,14 @@ button:disabled {
 
 .theme-noir .fortune-modal-keywords {
   color: #5a5a5a;
+}
+
+.theme-noir .spread-option-card {
+  background: rgba(246, 246, 243, 0.98);
+}
+
+.theme-noir .spread-option-chip {
+  background: #464f55;
 }
 
 .theme-noir .history-cards,
@@ -1382,6 +1786,12 @@ button:disabled {
     gap: 10px;
   }
 
+  .page-header-controls,
+  .auth-toggles {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   .stats-row {
     grid-template-columns: 1fr;
   }
@@ -1421,6 +1831,26 @@ button:disabled {
     gap: 14px;
   }
 
+  .reading-spread {
+    width: 100%;
+    gap: 16px;
+  }
+
+  .reading-spread-three {
+    grid-template-columns: 1fr;
+  }
+
+  .reading-spread-triangle,
+  .reading-spread-choice {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+    max-width: 100%;
+  }
+
+  .reading-spread-slot {
+    grid-area: auto !important;
+  }
+
   .reading-result-lead {
     margin-bottom: 20px;
     font-size: 1rem;
@@ -1444,6 +1874,20 @@ button:disabled {
     width: min(100%, 360px);
   }
 
+  .spread-modal {
+    width: min(100%, 380px);
+    padding: 20px;
+  }
+
+  .history-preview-modal,
+  .human-request-modal {
+    width: min(100%, 390px);
+  }
+
+  .spread-option-grid {
+    grid-template-columns: 1fr;
+  }
+
   .fortune-modal-title {
     font-size: 1.5rem;
   }
@@ -1451,6 +1895,10 @@ button:disabled {
   .calendar-modal {
     width: min(100%, 390px);
     padding: 18px;
+  }
+
+  .human-request-actions {
+    flex-direction: column;
   }
 
   .calendar-modal-head {
