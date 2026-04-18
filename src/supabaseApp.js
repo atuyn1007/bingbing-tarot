@@ -12,7 +12,7 @@ export function nicknameToEmail(nickname) {
     .map((char) => char.codePointAt(0).toString(16))
     .join('-');
 
-  return `user-${encoded}@bingbing.local`;
+  return `user-${encoded}@bingbing.example.com`;
 }
 
 export function getLocalDateKey(date = new Date()) {
