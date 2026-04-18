@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, Bell, Coins, Lock, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
+import { ArrowLeft, Bell, Coins, Lock, Mail, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
 import TarotCard from './TarotCard';
 import { allTarotCards, drawThreeCards, generateReading, getCardData, getCardDisplayNames, getCardReading } from './data';
 import {
@@ -13,10 +13,10 @@ import {
   getProfileById,
   getRequestById,
   listRequestsByUser,
-  loginWithNickname,
+  loginWithEmail,
   logoutFromSupabase,
   OFFICIAL_READER_NICKNAME,
-  registerWithNickname,
+  registerWithEmail,
   updateCoinBalance,
   updateDailyProfile,
 } from './supabaseApp';
@@ -284,6 +284,7 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [coinBalance, setCoinBalance] = useState(0);
@@ -338,6 +339,7 @@ function App() {
   const clearSession = () => {
     localStorage.removeItem('tarot_user');
     setUser(null);
+    setEmail('');
     setNickname('');
     setPassword('');
     setCoinBalance(0);
@@ -490,13 +492,13 @@ function App() {
   }, [activeNickname]);
 
   const handleRegister = async () => {
-    if (!nickname.trim() || !password.trim()) {
-      alert('请输入昵称和密码');
+    if (!email.trim() || !nickname.trim() || !password.trim()) {
+      alert('请输入邮箱、昵称和密码');
       return;
     }
 
     try {
-      await registerWithNickname(nickname.trim(), password);
+      await registerWithEmail(email.trim(), nickname.trim(), password);
       alert('注册成功，请登录');
       setIsLogin(true);
       setPassword('');
@@ -506,13 +508,13 @@ function App() {
   };
 
   const handleLogin = async () => {
-    if (!nickname.trim() || !password.trim()) {
-      alert('请输入昵称和密码');
+    if (!email.trim() || !password.trim()) {
+      alert('请输入邮箱和密码');
       return;
     }
 
     try {
-      const data = await loginWithNickname(nickname.trim(), password);
+      const data = await loginWithEmail(email.trim(), password);
       setPassword('');
       if (data.user) {
         await fetchUserProfile(data.user);
@@ -993,9 +995,16 @@ function App() {
 
           <div className="auth-form">
             <label className="field-shell">
-              <User className="field-icon" />
-              <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder="昵称" className="field-input" />
+              <Mail className="field-icon" />
+              <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="邮箱" className="field-input" />
             </label>
+
+            {!isLogin ? (
+              <label className="field-shell">
+                <User className="field-icon" />
+                <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder="昵称" className="field-input" />
+              </label>
+            ) : null}
 
             <label className="field-shell">
               <Lock className="field-icon" />
@@ -1018,6 +1027,8 @@ function App() {
               <span
                 onClick={() => {
                   setIsLogin((current) => !current);
+                  setEmail('');
+                  setNickname('');
                   setPassword('');
                 }}
                 className="switch-link"

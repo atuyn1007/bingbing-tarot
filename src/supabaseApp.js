@@ -6,15 +6,6 @@ function normalizeNickname(nickname) {
   return String(nickname || '').trim();
 }
 
-export function nicknameToEmail(nickname) {
-  const normalized = normalizeNickname(nickname);
-  const encoded = Array.from(normalized)
-    .map((char) => char.codePointAt(0).toString(16))
-    .join('-');
-
-  return `user-${encoded}@bingbing.example.com`;
-}
-
 export function getLocalDateKey(date = new Date()) {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
@@ -36,9 +27,9 @@ export async function getAuthSession() {
   return session;
 }
 
-export async function registerWithNickname(nickname, password) {
+export async function registerWithEmail(email, nickname, password) {
   const normalizedNickname = normalizeNickname(nickname);
-  const email = nicknameToEmail(normalizedNickname);
+  const normalizedEmail = String(email || '').trim().toLowerCase();
 
   const existingProfile = await getProfileByNickname(normalizedNickname);
   if (existingProfile) {
@@ -46,7 +37,7 @@ export async function registerWithNickname(nickname, password) {
   }
 
   const { data, error } = await supabase.auth.signUp({
-    email,
+    email: normalizedEmail,
     password,
     options: {
       data: {
@@ -78,12 +69,9 @@ export async function registerWithNickname(nickname, password) {
   return data;
 }
 
-export async function loginWithNickname(nickname, password) {
-  const normalizedNickname = normalizeNickname(nickname);
-  const email = nicknameToEmail(normalizedNickname);
-
+export async function loginWithEmail(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({
-    email,
+    email: String(email || '').trim().toLowerCase(),
     password,
   });
 
