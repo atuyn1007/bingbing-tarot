@@ -288,7 +288,15 @@ function buildSpreadReading(cards, question, spread) {
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('tarot_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
@@ -393,6 +401,7 @@ function App() {
     setSelectedHistoryReading(null);
     setShowHumanRequestModal(false);
     setSelectedHumanReadingId(null);
+    setIsAuthReady(true);
   };
 
   const resetReadingState = () => {
@@ -419,8 +428,10 @@ function App() {
       setSavedDailyTarot(isSignedInToday ? profile.today_card || null : null);
       setDailyHistory(profile.daily_history || {});
       localStorage.setItem('tarot_user', JSON.stringify(nextUser));
+      setIsAuthReady(true);
     } catch (error) {
       console.error(error);
+      setIsAuthReady(true);
     }
   };
 
@@ -484,6 +495,7 @@ function App() {
           if (isSessionExpired()) {
             await logoutFromSupabase();
             clearSession();
+            setIsAuthReady(true);
             return;
           }
 
@@ -491,9 +503,14 @@ function App() {
             markSessionStarted();
           }
           await fetchUserProfile(session.user);
+        } else if (mounted) {
+          setIsAuthReady(true);
         }
       } catch (error) {
         console.error(error);
+        if (mounted) {
+          setIsAuthReady(true);
+        }
       }
     };
 
@@ -508,20 +525,38 @@ function App() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') {
+        if (session?.user) {
+          if (isSessionExpired()) {
+            await logoutFromSupabase();
+            clearSession();
+            setIsAuthReady(true);
+            return;
+          }
+
+          await fetchUserProfile(session.user);
+        } else {
+          setIsAuthReady(true);
+        }
+        return;
+      }
+
       if (event === 'PASSWORD_RECOVERY') {
         setIsRecoveryMode(true);
         setIsLogin(true);
         setShowForgotPasswordModal(false);
         setCurrentPage('home');
+        setIsAuthReady(true);
         return;
       }
 
       if (event === 'SIGNED_OUT') {
         clearSession();
+        setIsAuthReady(true);
         return;
       }
 
-      if (event === 'SIGNED_IN' && session?.user) {
+      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
         markSessionStarted();
         await fetchUserProfile(session.user);
       }
@@ -1135,6 +1170,22 @@ function App() {
       </motion.div>
     );
   };
+
+  if (!isAuthReady) {
+    return (
+      <div className={`screen-shell auth-screen theme-${theme}`}>
+        <div className="orb orb-left" />
+        <div className="orb orb-right" />
+        <div className="auth-card auth-loading-card">
+          <div className="auth-toggles">
+            {renderThemeToggle('auth-theme-toggle')}
+          </div>
+          <h1 className="hero-title">bingbing&apos;s tarot</h1>
+          <p className="hero-subtitle">正在找回你的登录状态…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) {
     return (
