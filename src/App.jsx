@@ -338,6 +338,7 @@ function App() {
   const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
 
   const typingRef = useRef(null);
+  const authReadyTimeoutRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
   const dailyLine = getDailyLine();
   const activeDailyCard = savedDailyTarot || dailyCard;
@@ -489,6 +490,12 @@ function App() {
     let mounted = true;
 
     const bootstrapSession = async () => {
+      authReadyTimeoutRef.current = setTimeout(() => {
+        if (mounted) {
+          setIsAuthReady(true);
+        }
+      }, 4000);
+
       try {
         const session = await getAuthSession();
         if (session?.user && mounted) {
@@ -518,6 +525,9 @@ function App() {
 
     return () => {
       mounted = false;
+      if (authReadyTimeoutRef.current) {
+        clearTimeout(authReadyTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -1171,7 +1181,7 @@ function App() {
     );
   };
 
-  if (!isAuthReady) {
+  if (!isAuthReady && !user) {
     return (
       <div className={`screen-shell auth-screen theme-${theme}`}>
         <div className="orb orb-left" />
