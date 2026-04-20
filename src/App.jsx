@@ -16,7 +16,9 @@ import {
   loginWithEmail,
   logoutFromSupabase,
   OFFICIAL_READER_NICKNAME,
+  requestPasswordReset,
   registerWithEmail,
+  updatePassword,
   updateCoinBalance,
   updateDailyProfile,
 } from './supabaseApp';
@@ -220,6 +222,9 @@ const SPREAD_OPTIONS = [
   },
 ];
 
+const SESSION_STARTED_AT_KEY = 'tarot_session_started_at';
+const SESSION_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+
 function getSpreadConfig(spreadKey) {
   return SPREAD_OPTIONS.find((spread) => spread.key === spreadKey) || SPREAD_OPTIONS[0];
 }
@@ -288,6 +293,9 @@ function App() {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [resetPasswordValue, setResetPasswordValue] = useState('');
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [coinBalance, setCoinBalance] = useState(0);
   const [lastSignInDate, setLastSignInDate] = useState(null);
 
@@ -337,12 +345,26 @@ function App() {
     localStorage.setItem('tarot_card_style', cardStyle);
   }, [cardStyle]);
 
+  const markSessionStarted = () => {
+    localStorage.setItem(SESSION_STARTED_AT_KEY, `${Date.now()}`);
+  };
+
+  const isSessionExpired = () => {
+    const startedAt = Number(localStorage.getItem(SESSION_STARTED_AT_KEY) || 0);
+    if (!startedAt) return false;
+    return Date.now() - startedAt > SESSION_MAX_AGE;
+  };
+
   const clearSession = () => {
     localStorage.removeItem('tarot_user');
+    localStorage.removeItem(SESSION_STARTED_AT_KEY);
     setUser(null);
     setEmail('');
     setNickname('');
     setPassword('');
+    setResetPasswordValue('');
+    setShowForgotPasswordModal(false);
+    setIsRecoveryMode(false);
     setCoinBalance(0);
     setLastSignInDate(null);
     setCurrentPage('home');
@@ -459,6 +481,15 @@ function App() {
       try {
         const session = await getAuthSession();
         if (session?.user && mounted) {
+          if (isSessionExpired()) {
+            await logoutFromSupabase();
+            clearSession();
+            return;
+          }
+
+          if (!localStorage.getItem(SESSION_STARTED_AT_KEY)) {
+            markSessionStarted();
+          }
           await fetchUserProfile(session.user);
         }
       } catch (error) {
@@ -477,7 +508,21 @@ function App() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsRecoveryMode(true);
+        setIsLogin(true);
+        setShowForgotPasswordModal(false);
+        setCurrentPage('home');
+        return;
+      }
+
+      if (event === 'SIGNED_OUT') {
+        clearSession();
+        return;
+      }
+
       if (event === 'SIGNED_IN' && session?.user) {
+        markSessionStarted();
         await fetchUserProfile(session.user);
       }
     });
@@ -543,12 +588,49 @@ function App() {
 
     try {
       const data = await loginWithEmail(email.trim(), password);
+      markSessionStarted();
       setPassword('');
       if (data.user) {
         await fetchUserProfile(data.user);
       }
     } catch (error) {
       alert(error.message || '登录失败');
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email.trim()) {
+      alert('请输入注册时使用的邮箱');
+      return;
+    }
+
+    try {
+      await requestPasswordReset(email.trim(), window.location.origin);
+      setShowForgotPasswordModal(false);
+      alert('重置密码邮件已经发送，请去邮箱查看。');
+    } catch (error) {
+      alert(error.message || '密码重置邮件发送失败，请稍后再试');
+    }
+  };
+
+  const handleCompletePasswordReset = async () => {
+    if (!resetPasswordValue.trim()) {
+      alert('请输入新的密码');
+      return;
+    }
+
+    if (resetPasswordValue.trim().length < 6) {
+      alert('新密码至少需要 6 位');
+      return;
+    }
+
+    try {
+      await updatePassword(resetPasswordValue.trim());
+      setResetPasswordValue('');
+      setIsRecoveryMode(false);
+      alert('密码已经更新，请直接用邮箱和新密码登录。');
+    } catch (error) {
+      alert(error.message || '密码更新失败，请重新打开邮件里的链接再试。');
     }
   };
 
@@ -1007,6 +1089,53 @@ function App() {
     );
   };
 
+  const renderForgotPasswordModal = () => {
+    if (!showForgotPasswordModal) return null;
+
+    return (
+      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowForgotPasswordModal(false)}>
+        <motion.div
+          className="calendar-modal forgot-password-modal"
+          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 12, scale: 0.96 }}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="calendar-modal-head">
+            <div>
+              <p className="eyebrow">Password Reset</p>
+              <h3 className="fortune-modal-title">找回密码</h3>
+            </div>
+            <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="icon-button">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <p className="human-request-copy">输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。</p>
+          <label className="field-shell">
+            <Mail className="field-icon" />
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="邮箱"
+              className="field-input"
+            />
+          </label>
+
+          <div className="human-request-actions">
+            <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="secondary-button">
+              取消
+            </button>
+            <button type="button" onClick={handleForgotPassword} className="primary-button">
+              发送重置邮件
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
   if (!user) {
     return (
       <div className={`screen-shell auth-screen theme-${theme}`}>
@@ -1017,7 +1146,9 @@ function App() {
             {renderThemeToggle('auth-theme-toggle')}
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
-          <p className="hero-subtitle">{isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}</p>
+          <p className="hero-subtitle">
+            {isRecoveryMode ? '设置一个新的密码，然后回到登录页继续。' : isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}
+          </p>
 
 
           <div className="auth-form">
@@ -1026,7 +1157,7 @@ function App() {
               <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="邮箱" className="field-input" />
             </label>
 
-            {!isLogin ? (
+            {!isLogin && !isRecoveryMode ? (
               <label className="field-shell">
                 <User className="field-icon" />
                 <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder="昵称" className="field-input" />
@@ -1037,34 +1168,69 @@ function App() {
               <Lock className="field-icon" />
               <input
                 type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="密码"
+                value={isRecoveryMode ? resetPasswordValue : password}
+                onChange={(event) => (isRecoveryMode ? setResetPasswordValue(event.target.value) : setPassword(event.target.value))}
+                placeholder={isRecoveryMode ? '新的密码' : '密码'}
                 className="field-input"
-                onKeyDown={(event) => event.key === 'Enter' && (isLogin ? handleLogin() : handleRegister())}
+                onKeyDown={(event) =>
+                  event.key === 'Enter' &&
+                  (isRecoveryMode ? handleCompletePasswordReset() : isLogin ? handleLogin() : handleRegister())
+                }
               />
             </label>
 
-            <button type="button" onClick={isLogin ? handleLogin : handleRegister} className="primary-button">
-              {isLogin ? '与宇宙链接' : '创建账号'}
+            <button
+              type="button"
+              onClick={isRecoveryMode ? handleCompletePasswordReset : isLogin ? handleLogin : handleRegister}
+              className="primary-button"
+            >
+              {isRecoveryMode ? '更新密码' : isLogin ? '与宇宙链接' : '创建账号'}
             </button>
 
-            <p className="switch-text">
-              {isLogin ? '还没有账号？' : '已经有账号？'}
-              <span
-                onClick={() => {
-                  setIsLogin((current) => !current);
-                  setEmail('');
-                  setNickname('');
-                  setPassword('');
-                }}
-                className="switch-link"
-              >
-                {isLogin ? '去注册' : '去登录'}
-              </span>
-            </p>
+            {isLogin && !isRecoveryMode ? (
+              <button type="button" onClick={() => setShowForgotPasswordModal(true)} className="text-button forgot-password-link">
+                忘记密码？
+              </button>
+            ) : null}
+
+            {isRecoveryMode ? (
+              <p className="switch-text">
+                改好密码后，
+                <span
+                  onClick={() => {
+                    setIsRecoveryMode(false);
+                    setResetPasswordValue('');
+                    setPassword('');
+                  }}
+                  className="switch-link"
+                >
+                  返回登录
+                </span>
+              </p>
+            ) : (
+              <p className="switch-text">
+                {isLogin ? '还没有账号？' : '已经有账号？'}
+                <span
+                  onClick={() => {
+                    setIsLogin((current) => !current);
+                    setEmail('');
+                    setNickname('');
+                    setPassword('');
+                    setResetPasswordValue('');
+                    setShowForgotPasswordModal(false);
+                  }}
+                  className="switch-link"
+                >
+                  {isLogin ? '去注册' : '去登录'}
+                </span>
+              </p>
+            )}
           </div>
         </motion.div>
+
+        <AnimatePresence>
+          {showForgotPasswordModal && renderForgotPasswordModal()}
+        </AnimatePresence>
       </div>
     );
   }

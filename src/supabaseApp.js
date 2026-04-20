@@ -84,6 +84,24 @@ export async function loginWithEmail(email, password) {
   return data;
 }
 
+export async function requestPasswordReset(email, redirectTo) {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(String(email || '').trim().toLowerCase(), {
+    redirectTo,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updatePassword(nextPassword) {
+  const { data, error } = await supabase.auth.updateUser({
+    password: nextPassword,
+  });
+
+  if (error) throw error;
+  return data;
+}
+
 export async function logoutFromSupabase() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
