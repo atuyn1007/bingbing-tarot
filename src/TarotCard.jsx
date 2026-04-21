@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getCardDisplayNames } from './data';
 import { getCardArtwork } from './cardArtwork';
 
-const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, variant = 'minimal' }) => {
+const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, variant = 'minimal', rotateReversed = true }) => {
   const sizeClasses = size === 'small' ? 'w-24 h-36' : 'w-24 h-36 sm:w-32 sm:h-48 lg:w-36 lg:h-56';
   const { chineseName, englishName } = getCardDisplayNames(card);
   const artworkSrc = getCardArtwork(card);
@@ -14,7 +14,7 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
   }, [artworkSrc, variant, card?.id, card?.name]);
 
   return (
-    <div className={`${sizeClasses} relative tarot-card-frame tarot-card-frame-${size}`}>
+    <div className={`${sizeClasses} relative tarot-card-frame tarot-card-frame-${size} tarot-card-surface`}>
       {!isRevealed && (
         <div className="absolute inset-0 rounded-[1.6rem] border border-black/10 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.92),_rgba(224,214,198,0.72)_45%,_rgba(111,86,53,0.88)_100%)] shadow-[0_22px_45px_rgba(60,42,23,0.18)]">
           <div className="absolute inset-3 rounded-[1.2rem] border border-white/45" />
@@ -32,7 +32,7 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
           <div className="absolute inset-3 rounded-[1.2rem] border border-stone-800/10" />
           <div
             className="relative flex h-full flex-col items-center justify-center rounded-[1.15rem] bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.95),_rgba(245,237,226,0.86)_52%,_rgba(229,213,191,0.92)_100%)] px-3 text-center"
-            style={{ transform: card.isReversed ? 'rotate(180deg)' : 'none', transformOrigin: 'center center' }}
+            style={{ transform: rotateReversed && card.isReversed ? 'rotate(180deg)' : 'none', transformOrigin: 'center center' }}
           >
             {shouldShowArtwork ? (
               <div className="tarot-card-artwork-wrap">

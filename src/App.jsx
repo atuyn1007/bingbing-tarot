@@ -16,6 +16,7 @@ import {
   loginWithEmail,
   logoutFromSupabase,
   OFFICIAL_READER_NICKNAME,
+  refreshAuthSession,
   requestPasswordReset,
   registerWithEmail,
   updatePassword,
@@ -24,6 +25,7 @@ import {
 } from './supabaseApp';
 import { supabase } from './supabaseClient';
 import { saveTarotHistory } from './supabaseTarot';
+import { isSessionExpiredAt } from './sessionUtils';
 
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
@@ -223,7 +225,16 @@ const SPREAD_OPTIONS = [
 ];
 
 const SESSION_STARTED_AT_KEY = 'tarot_session_started_at';
-const SESSION_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+const PROFILE_SNAPSHOT_KEY = 'tarot_profile_snapshot';
+
+function readStoredJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 function getSpreadConfig(spreadKey) {
   return SPREAD_OPTIONS.find((spread) => spread.key === spreadKey) || SPREAD_OPTIONS[0];
@@ -287,16 +298,12 @@ function buildSpreadReading(cards, question, spread) {
 }
 
 function App() {
+  const storedUser = readStoredJson('tarot_user', null);
+  const storedProfile = readStoredJson(PROFILE_SNAPSHOT_KEY, {});
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem('tarot_user');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  });
-  const [isAuthReady, setIsAuthReady] = useState(false);
+  const [user, setUser] = useState(storedUser);
+  const [isAuthReady, setIsAuthReady] = useState(true);
+  const [isSessionSyncing, setIsSessionSyncing] = useState(Boolean(storedUser));
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
@@ -304,8 +311,8 @@ function App() {
   const [resetPasswordValue, setResetPasswordValue] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
-  const [coinBalance, setCoinBalance] = useState(0);
-  const [lastSignInDate, setLastSignInDate] = useState(null);
+  const [coinBalance, setCoinBalance] = useState(storedProfile.coinBalance || 0);
+  const [lastSignInDate, setLastSignInDate] = useState(storedProfile.lastSignInDate || null);
 
   const [currentPage, setCurrentPage] = useState('home');
   const [isHumanMode, setIsHumanMode] = useState(false);
@@ -324,9 +331,9 @@ function App() {
 
   const [dailyCard, setDailyCard] = useState(null);
   const [showDailyResult, setShowDailyResult] = useState(false);
-  const [savedDailyTarot, setSavedDailyTarot] = useState(null);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [dailyHistory, setDailyHistory] = useState({});
+  const [savedDailyTarot, setSavedDailyTarot] = useState(storedProfile.savedDailyTarot || null);
+  const [isSignedIn, setIsSignedIn] = useState(Boolean(storedProfile.isSignedIn));
+  const [dailyHistory, setDailyHistory] = useState(storedProfile.dailyHistory || {});
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
@@ -358,15 +365,19 @@ function App() {
     localStorage.setItem(SESSION_STARTED_AT_KEY, `${Date.now()}`);
   };
 
+  const persistProfileSnapshot = (snapshot) => {
+    localStorage.setItem(PROFILE_SNAPSHOT_KEY, JSON.stringify(snapshot));
+  };
+
   const isSessionExpired = () => {
     const startedAt = Number(localStorage.getItem(SESSION_STARTED_AT_KEY) || 0);
-    if (!startedAt) return false;
-    return Date.now() - startedAt > SESSION_MAX_AGE;
+    return isSessionExpiredAt(startedAt);
   };
 
   const clearSession = () => {
     localStorage.removeItem('tarot_user');
     localStorage.removeItem(SESSION_STARTED_AT_KEY);
+    localStorage.removeItem(PROFILE_SNAPSHOT_KEY);
     setUser(null);
     setEmail('');
     setNickname('');
@@ -403,6 +414,7 @@ function App() {
     setShowHumanRequestModal(false);
     setSelectedHumanReadingId(null);
     setIsAuthReady(true);
+    setIsSessionSyncing(false);
   };
 
   const resetReadingState = () => {
@@ -429,10 +441,48 @@ function App() {
       setSavedDailyTarot(isSignedInToday ? profile.today_card || null : null);
       setDailyHistory(profile.daily_history || {});
       localStorage.setItem('tarot_user', JSON.stringify(nextUser));
+      persistProfileSnapshot({
+        coinBalance: profile.coin_balance || 0,
+        lastSignInDate: profile.last_sign_in_date || null,
+        isSignedIn: isSignedInToday,
+        savedDailyTarot: isSignedInToday ? profile.today_card || null : null,
+        dailyHistory: profile.daily_history || {},
+      });
       setIsAuthReady(true);
     } catch (error) {
       console.error(error);
       setIsAuthReady(true);
+    } finally {
+      setIsSessionSyncing(false);
+    }
+  };
+
+  const getLiveSessionUser = async () => {
+    try {
+      let session = await getAuthSession();
+      if (!session && user?.id) {
+        session = await refreshAuthSession();
+      }
+
+      if (!session?.user) {
+        clearSession();
+        alert('登录状态已失效，请重新登录后再试。');
+        return null;
+      }
+
+      if (isSessionExpired()) {
+        await logoutFromSupabase();
+        clearSession();
+        alert('登录状态已过期，请重新登录。');
+        return null;
+      }
+
+      return session.user;
+    } catch (error) {
+      console.error(error);
+      clearSession();
+      alert('登录状态异常，请重新登录后再试。');
+      return null;
     }
   };
 
@@ -490,14 +540,20 @@ function App() {
     let mounted = true;
 
     const bootstrapSession = async () => {
+      setIsSessionSyncing(Boolean(storedUser));
       authReadyTimeoutRef.current = setTimeout(() => {
         if (mounted) {
           setIsAuthReady(true);
+          setIsSessionSyncing(false);
         }
       }, 4000);
 
       try {
-        const session = await getAuthSession();
+        let session = await getAuthSession();
+        if (!session && storedUser) {
+          session = await refreshAuthSession();
+        }
+
         if (session?.user && mounted) {
           if (isSessionExpired()) {
             await logoutFromSupabase();
@@ -511,12 +567,18 @@ function App() {
           }
           await fetchUserProfile(session.user);
         } else if (mounted) {
-          setIsAuthReady(true);
+          if (storedUser) {
+            clearSession();
+          } else {
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+          }
         }
       } catch (error) {
         console.error(error);
         if (mounted) {
           setIsAuthReady(true);
+          setIsSessionSyncing(false);
         }
       }
     };
@@ -546,7 +608,12 @@ function App() {
 
           await fetchUserProfile(session.user);
         } else {
-          setIsAuthReady(true);
+          if (storedUser) {
+            clearSession();
+          } else {
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+          }
         }
         return;
       }
@@ -557,6 +624,7 @@ function App() {
         setShowForgotPasswordModal(false);
         setCurrentPage('home');
         setIsAuthReady(true);
+        setIsSessionSyncing(false);
         return;
       }
 
@@ -568,6 +636,7 @@ function App() {
 
       if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
         markSessionStarted();
+        setIsSessionSyncing(true);
         await fetchUserProfile(session.user);
       }
     });
@@ -690,14 +759,13 @@ function App() {
   };
 
   const handleDailySignIn = async () => {
-    if (!user?.id) {
-      alert('登录状态异常，请重新登录后再试。');
-      clearSession();
+    const liveUser = await getLiveSessionUser();
+    if (!liveUser?.id) {
       return;
     }
 
     try {
-      const profile = await getProfileById(user.id);
+      const profile = await getProfileById(liveUser.id);
       if (!profile) {
         clearSession();
         alert('当前账号资料不存在，请重新登录。');
@@ -719,6 +787,14 @@ function App() {
           setShowDailyResult(true);
         }
 
+        persistProfileSnapshot({
+          coinBalance: profile.coin_balance || 0,
+          lastSignInDate: profile.last_sign_in_date || today,
+          isSignedIn: true,
+          savedDailyTarot: profile.today_card || null,
+          dailyHistory: currentHistory,
+        });
+
         return;
       }
 
@@ -732,7 +808,7 @@ function App() {
         [todayKey]: todayCard,
       };
 
-      const updatedProfile = await updateDailyProfile(user.id, {
+      const updatedProfile = await updateDailyProfile(liveUser.id, {
         last_sign_in_date: today,
         today_card: todayCard,
         daily_history: nextHistory,
@@ -754,6 +830,14 @@ function App() {
         setDailyCard(updatedProfile.today_card);
         setShowDailyResult(true);
       }
+
+      persistProfileSnapshot({
+        coinBalance: updatedProfile.coin_balance || coinBalance,
+        lastSignInDate: updatedProfile.last_sign_in_date || today,
+        isSignedIn: true,
+        savedDailyTarot: updatedProfile.today_card || null,
+        dailyHistory: updatedProfile.daily_history || nextHistory,
+      });
     } catch (error) {
       console.error(error);
       alert(error.message || '今日运势获取失败，请稍后再试');
@@ -861,16 +945,24 @@ function App() {
   };
 
   const submitHumanReadingRequest = async (readingEntry) => {
-    if (!user?.id || !activeNickname || !readingEntry?.question || !Array.isArray(readingEntry.cardsData) || readingEntry.cardsData.length === 0) return;
+    const liveUser = await getLiveSessionUser();
+    if (!liveUser?.id || !activeNickname || !readingEntry?.question || !Array.isArray(readingEntry.cardsData) || readingEntry.cardsData.length === 0) return;
 
     const nextBalance = coinBalance - 10;
     setCoinBalance(nextBalance);
+    persistProfileSnapshot({
+      coinBalance: nextBalance,
+      lastSignInDate,
+      isSignedIn,
+      savedDailyTarot,
+      dailyHistory,
+    });
 
     try {
-      await updateCoinBalance(user.id, nextBalance);
+      await updateCoinBalance(liveUser.id, nextBalance);
 
       const data = await createRequest({
-        user_id: user.id,
+        user_id: liveUser.id,
         user_nickname: activeNickname,
         teacher_nickname: OFFICIAL_READER.nickname,
         spread_key: readingEntry.spreadKey,
@@ -987,7 +1079,14 @@ function App() {
 
           return (
             <div key={`${spread.key}-${card.id}-${index}`} className={`reading-spread-slot reading-spread-slot-${spread.key}-${index + 1}`}>
-              <TarotCard card={card} isRevealed={isRevealedView} size={cardSize} showOrientation={showOrientation} variant={cardStyle} />
+              <TarotCard
+                card={card}
+                isRevealed={isRevealedView}
+                size={cardSize}
+                showOrientation={showOrientation}
+                variant={cardStyle}
+                rotateReversed={options.rotateReversed ?? false}
+              />
               <div className="reading-spread-meta">
                 <p className="reading-spread-label">{position?.title || `第 ${index + 1} 张牌`}</p>
                 {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
@@ -1181,22 +1280,6 @@ function App() {
     );
   };
 
-  if (!isAuthReady && !user) {
-    return (
-      <div className={`screen-shell auth-screen theme-${theme}`}>
-        <div className="orb orb-left" />
-        <div className="orb orb-right" />
-        <div className="auth-card auth-loading-card">
-          <div className="auth-toggles">
-            {renderThemeToggle('auth-theme-toggle')}
-          </div>
-          <h1 className="hero-title">bingbing&apos;s tarot</h1>
-          <p className="hero-subtitle">正在找回你的登录状态…</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!user) {
     return (
       <div className={`screen-shell auth-screen theme-${theme}`}>
@@ -1208,7 +1291,7 @@ function App() {
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">
-            {isRecoveryMode ? '设置一个新的密码，然后回到登录页继续。' : isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}
+            {isRecoveryMode ? '设置一个新的密码，然后回到登录页继续。' : isSessionSyncing ? '正在找回你的登录状态…' : isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}
           </p>
 
 

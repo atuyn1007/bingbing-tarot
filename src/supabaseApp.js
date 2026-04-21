@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
 
 export const OFFICIAL_READER_NICKNAME = '饼饼大人';
 
@@ -6,22 +7,23 @@ function normalizeNickname(nickname) {
   return String(nickname || '').trim();
 }
 
-export function getLocalDateKey(date = new Date()) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-export function getDisplaySignInDate(date = new Date()) {
-  return date.toDateString();
-}
+export { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
 
 export async function getAuthSession() {
   const {
     data: { session },
     error,
   } = await supabase.auth.getSession();
+
+  if (error) throw error;
+  return session;
+}
+
+export async function refreshAuthSession() {
+  const {
+    data: { session },
+    error,
+  } = await supabase.auth.refreshSession();
 
   if (error) throw error;
   return session;
