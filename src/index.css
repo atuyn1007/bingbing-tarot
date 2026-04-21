@@ -985,6 +985,14 @@ button:disabled {
   text-align: center;
 }
 
+.reading-spread-card-name {
+  margin: 10px 0 0;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: var(--app-text);
+  text-align: center;
+}
+
 .reading-spread-label {
   margin: 0;
   font-size: 1rem;
@@ -1957,6 +1965,12 @@ button:disabled {
   .reading-spread .reading-spread-label {
     font-size: 0.88rem;
     line-height: 1.35;
+  }
+
+  .reading-spread-card-name {
+    margin-top: 8px;
+    font-size: 0.92rem;
+    line-height: 1.3;
   }
 
   .reading-spread .reading-spread-subtitle {

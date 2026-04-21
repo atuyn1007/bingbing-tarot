@@ -103,6 +103,13 @@ function getDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+function sanitizeHistoryText(value) {
+  return String(value || '')
+    .replace(/^[·•\-—–\s路]+/u, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildCalendarDays(date = new Date()) {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -169,9 +176,9 @@ function normalizeRecentReadingEntry(entry) {
 
   return {
     id: entry.id || `${Date.now()}`,
-    question: entry.question || '',
+    question: sanitizeHistoryText(entry.question || ''),
     spreadKey,
-    spreadName: spread.name,
+    spreadName: sanitizeHistoryText(spread.name),
     cardsData,
     cardSummary: cardsData.map((card) => formatPlainCardName(card)),
     createdAt: entry.createdAt || new Date().toISOString(),
@@ -268,7 +275,16 @@ function formatSpreadCardName(card) {
 }
 
 function formatPlainCardName(card) {
-  return card?.name || '';
+  return sanitizeHistoryText(card?.name || '');
+}
+
+function formatHistorySummary(entry) {
+  const spreadName = sanitizeHistoryText(entry?.spreadName || getSpreadConfig(entry?.spreadKey || 'three').name);
+  const cardSummary = Array.isArray(entry?.cardSummary)
+    ? entry.cardSummary.map((item) => sanitizeHistoryText(item)).filter(Boolean)
+    : [];
+
+  return [spreadName, ...cardSummary].filter(Boolean).join(' · ');
 }
 
 function shouldAppendFortuneReading(text, keywords) {
@@ -760,13 +776,13 @@ function App() {
   };
 
   const handleLogout = async () => {
+    clearSession();
+
     try {
       await logoutFromSupabase();
     } catch (error) {
       console.error(error);
     }
-
-    clearSession();
   };
 
   const handleDailySignIn = async () => {
@@ -1098,6 +1114,9 @@ function App() {
                 variant={cardStyle}
                 rotateReversed={options.rotateReversed ?? true}
               />
+              {cardStyle === 'artwork' && isRevealedView ? (
+                <p className="reading-spread-card-name">{card.name}</p>
+              ) : null}
               <div className="reading-spread-meta">
                 <p className="reading-spread-label">{position?.title || `第 ${index + 1} 张牌`}</p>
                 {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
@@ -1197,7 +1216,7 @@ function App() {
         >
           <div className="calendar-modal-head">
             <div>
-              <p className="eyebrow">Recent Spread</p>
+              <p className="eyebrow">历史抽牌</p>
               <h3 className="fortune-modal-title">历史抽牌</h3>
             </div>
             <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
@@ -1252,7 +1271,7 @@ function App() {
                 className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
               >
                 <p className="human-request-question">“{entry.question}”</p>
-                <p className="human-request-meta">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
+                <p className="human-request-meta">{formatHistorySummary(entry)}</p>
               </button>
             ))}
           </div>
@@ -1509,7 +1528,7 @@ function App() {
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="history-cards">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
+                      <p className="history-cards">{formatHistorySummary(entry)}</p>
                     </article>
                   ))}
                 </div>
