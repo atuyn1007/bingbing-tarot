@@ -19,20 +19,19 @@ const numberVariants = [
   ['10', '十'],
 ];
 
-function registerSuit(suit, filePrefix) {
+function registerSuit(suit) {
   numberVariants.forEach((variants) => {
-    const canonical = variants[0];
-    const fileSuffix = canonical === '1' ? 'ACE' : canonical;
+    const fileSuffix = variants[0] === '1' ? 'ACE' : variants[0];
     registerArtwork(
       variants.map((variant) => `${suit}${variant}`),
-      `/cards/waite-cn/${filePrefix}${fileSuffix}.jpg`,
+      `/cards/waite-cn/${suit}${fileSuffix}.jpg`,
     );
   });
 
-  registerArtwork([`${suit}侍从`, `${suit}侍卫`], `/cards/waite-cn/${filePrefix}侍卫.jpg`);
-  registerArtwork([`${suit}骑士`], `/cards/waite-cn/${filePrefix}骑士.jpg`);
-  registerArtwork([`${suit}皇后`, `${suit}王后`], `/cards/waite-cn/${filePrefix}王后.jpg`);
-  registerArtwork([`${suit}国王`], `/cards/waite-cn/${filePrefix}国王.jpg`);
+  registerArtwork([`${suit}侍从`, `${suit}侍者`, `${suit}侍卫`], `/cards/waite-cn/${suit}侍卫.jpg`);
+  registerArtwork([`${suit}骑士`], `/cards/waite-cn/${suit}骑士.jpg`);
+  registerArtwork([`${suit}皇后`, `${suit}王后`], `/cards/waite-cn/${suit}王后.jpg`);
+  registerArtwork([`${suit}国王`], `/cards/waite-cn/${suit}国王.jpg`);
 }
 
 registerArtwork(['愚者'], '/cards/waite-cn/00愚者.jpg');
@@ -58,10 +57,10 @@ registerArtwork(['太阳'], '/cards/waite-cn/19太阳.jpg');
 registerArtwork(['审判'], '/cards/waite-cn/20审判.jpg');
 registerArtwork(['世界'], '/cards/waite-cn/21世界.jpg');
 
-registerSuit('权杖', '权杖');
-registerSuit('圣杯', '圣杯');
-registerSuit('宝剑', '宝剑');
-registerSuit('星币', '星币');
+registerSuit('权杖');
+registerSuit('圣杯');
+registerSuit('宝剑');
+registerSuit('星币');
 
 export function getCardArtwork(card) {
   if (!card?.name) return null;
