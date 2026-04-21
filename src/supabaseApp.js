@@ -29,6 +29,16 @@ export async function refreshAuthSession() {
   return session;
 }
 
+export async function getAuthenticatedUser() {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error) throw error;
+  return user;
+}
+
 export async function registerWithEmail(email, nickname, password) {
   const normalizedNickname = normalizeNickname(nickname);
   const normalizedEmail = String(email || '').trim().toLowerCase();
@@ -87,8 +97,12 @@ export async function loginWithEmail(email, password) {
 }
 
 export async function requestPasswordReset(email, redirectTo) {
+  const normalizedRedirect = redirectTo
+    ? `${String(redirectTo).replace(/\/$/, '')}/?recovery=1`
+    : undefined;
+
   const { data, error } = await supabase.auth.resetPasswordForEmail(String(email || '').trim().toLowerCase(), {
-    redirectTo,
+    redirectTo: normalizedRedirect,
   });
 
   if (error) throw error;

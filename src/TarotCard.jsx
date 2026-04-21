@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { getCardDisplayNames } from './data';
 import { getCardArtwork } from './cardArtwork';
 
@@ -21,8 +21,7 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
           <div className="absolute inset-6 rounded-full border border-white/25" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/40 bg-white/10 text-white backdrop-blur-sm">
-              ✦
-            </div>
+              鉁?            </div>
           </div>
         </div>
       )}
@@ -45,7 +44,7 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
                   <span>{chineseName}</span>
                   <small>{englishName}</small>
                 </div>
-                {showOrientation ? <p className="mt-4 text-xs tracking-[0.28em] text-stone-500">{card.isReversed ? '逆位' : '正位'}</p> : null}
+                {showOrientation ? <p className="mt-4 text-xs tracking-[0.28em] text-stone-500">{card.isReversed ? '??' : '??'}</p> : null}
               </>
             )}
           </div>
@@ -56,3 +55,4 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
 };
 
 export default TarotCard;
+

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Bell, Coins, Lock, Mail, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
 import TarotCard from './TarotCard';
@@ -7,6 +7,7 @@ import {
   appendRequestMessage,
   createRequest,
   ensureProfile,
+  getAuthenticatedUser,
   getAuthSession,
   getDisplaySignInDate,
   getLocalDateKey,
@@ -29,14 +30,14 @@ import { isSessionExpiredAt } from './sessionUtils';
 
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
-  englishLabel: 'ask bb！',
+  englishLabel: 'ask bb!',
   intro: '立刻马上联系饼饼为你解读！消耗10饼币。',
 };
 
 const DAILY_LINES = [
   { text: '且将新火试新茶，诗酒趁年华。', source: '苏轼《望江南》' },
   { text: '人闲桂花落，夜静春山空。', source: '王维《鸟鸣涧》' },
-  { text: '吹灭读书灯，一身都是月。', source: '孙玉石《吹灭读书灯》' },
+  { text: '吹灭读书灯，一身都是月。', source: '孙玉石《吹灯读书灯》' },
   { text: 'The readiness is all.', source: 'William Shakespeare' },
   { text: 'Hope is the thing with feathers.', source: 'Emily Dickinson' },
   { text: '凡是过往，皆为序章。', source: '《暴风雨》常见译句' },
@@ -196,7 +197,7 @@ const SPREAD_OPTIONS = [
     key: 'triangle',
     name: '圣三角牌阵',
     shortName: '圣三角',
-    description: '适合看见自己以为的状况、真实的状况，以及当下最需要的建议。',
+    description: '适合看见自己以为的状况、真实的情况，以及当下最需要的建议。',
     cardCount: 3,
     preview: ['1', '2', '3'],
     positions: [
@@ -284,15 +285,15 @@ function buildSpreadReading(cards, question, spread) {
   const positionLines = cards.map((card, index) => {
     const position = spread.positions[index];
     const label = position?.title || `第 ${index + 1} 张牌`;
-    return `${label}｜${formatSpreadCardName(card)}：${getCardReading(card)}`;
+    return `${label}：${formatSpreadCardName(card)}：${getCardReading(card)}`;
   });
 
   const closing =
     spread.key === 'triangle'
-      ? `围绕“${question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议去推进，会更容易看见清楚的出口。`
+      ? `围绕“${question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议推进，会更容易看见清晰的出口。`
       : spread.key === 'choice'
         ? `围绕“${question}”来看，这组牌会把两个选项的走向和你的真实状态并排摊开。别急着选一个最响亮的答案，先看哪个方向更贴近你真正能长期承受的节奏。`
-        : `围绕“${question}”来看，这组三张牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。`;
+        : `围绕“${question}”来看，这组牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。`;
 
   return [lead, `你抽到的牌是：${cardNames}。`, ...positionLines, closing].join('\n\n');
 }
@@ -464,7 +465,12 @@ function App() {
         session = await refreshAuthSession();
       }
 
-      if (!session?.user) {
+      let authUser = session?.user || null;
+      if (!authUser) {
+        authUser = await getAuthenticatedUser();
+      }
+
+      if (!authUser) {
         clearSession();
         alert('登录状态已失效，请重新登录后再试。');
         return null;
@@ -477,7 +483,7 @@ function App() {
         return null;
       }
 
-      return session.user;
+      return authUser;
     } catch (error) {
       console.error(error);
       clearSession();
@@ -554,7 +560,12 @@ function App() {
           session = await refreshAuthSession();
         }
 
-        if (session?.user && mounted) {
+        let authUser = session?.user || null;
+        if (!authUser && storedUser) {
+          authUser = await getAuthenticatedUser();
+        }
+
+        if (authUser && mounted) {
           if (isSessionExpired()) {
             await logoutFromSupabase();
             clearSession();
@@ -565,7 +576,7 @@ function App() {
           if (!localStorage.getItem(SESSION_STARTED_AT_KEY)) {
             markSessionStarted();
           }
-          await fetchUserProfile(session.user);
+          await fetchUserProfile(authUser);
         } else if (mounted) {
           if (storedUser) {
             clearSession();
@@ -674,7 +685,7 @@ function App() {
       if (result.needsEmailVerification) {
         alert('注册成功，请去邮箱验证登录。验证完成后回到这里，用邮箱和密码登录。');
       } else {
-        alert('注册成功，请登录');
+        alert('注册成功，请登录。');
       }
 
       setIsLogin(true);
@@ -686,7 +697,7 @@ function App() {
       }
 
       if (error.message?.includes('row-level security')) {
-        alert('邮箱验证已经发出。完成验证后回到这里登录；如果刚刚已验证，请刷新页面后再试。');
+        alert('邮箱验证已经发出。完成验证后回到这里登录；如果刚刚已经验证，请刷新页面后再试。');
         return;
       }
 
@@ -708,7 +719,7 @@ function App() {
         await fetchUserProfile(data.user);
       }
     } catch (error) {
-      alert(error.message || '登录失败');
+      alert(error.message || '鐧诲綍澶辫触');
     }
   };
 
@@ -721,9 +732,9 @@ function App() {
     try {
       await requestPasswordReset(email.trim(), window.location.origin);
       setShowForgotPasswordModal(false);
-      alert('重置密码邮件已经发送，请去邮箱查看。');
+      alert('重置密码邮件已经发送。请打开邮箱里的重置邮件，点击其中的链接后会回到本站设置新密码；如果没看到，请检查垃圾邮件。');
     } catch (error) {
-      alert(error.message || '密码重置邮件发送失败，请稍后再试');
+      alert(error.message || '密码重置邮件发送失败，请稍后再试。');
     }
   };
 
@@ -840,7 +851,7 @@ function App() {
       });
     } catch (error) {
       console.error(error);
-      alert(error.message || '今日运势获取失败，请稍后再试');
+      alert(error.message || '今日运势获取失败，请稍后再试。');
     }
   };
 
@@ -981,7 +992,7 @@ function App() {
       setCurrentPage('chat');
       startPollingReply(data.id);
     } catch (error) {
-      alert('网络错误，请稍后重试');
+      alert('缃戠粶閿欒锛岃绋嶅悗閲嶈瘯');
     }
   };
 
@@ -1085,7 +1096,7 @@ function App() {
                 size={cardSize}
                 showOrientation={showOrientation}
                 variant={cardStyle}
-                rotateReversed={options.rotateReversed ?? false}
+                rotateReversed={options.rotateReversed ?? true}
               />
               <div className="reading-spread-meta">
                 <p className="reading-spread-label">{position?.title || `第 ${index + 1} 张牌`}</p>
@@ -1140,6 +1151,38 @@ function App() {
     </div>
   );
 
+  const renderDailyCard = (extraClassName = '') => (
+    <div className={`daily-card ${extraClassName}`.trim()}>
+      <div className="daily-card-head">
+        <p className="eyebrow">Daily Fortune</p>
+      </div>
+
+      {isSignedIn && savedDailyTarot ? (
+        <div className="daily-result">
+          <p className="daily-result-label">Today&apos;s Fortune</p>
+          <div className="daily-result-name">
+            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? ' · Reversed' : ' · Upright'}</span>
+            <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
+          </div>
+          <p className="daily-result-note">Today&apos;s card is already open and 1 coin has been added.</p>
+        </div>
+      ) : (
+        <div className="daily-result">
+          <p className="daily-result-label">Daily Check-in</p>
+          <p className="daily-result-note">Open today&apos;s tarot hint card and receive 1 coin plus a daily fortune.</p>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
+        className="primary-button daily-button"
+      >
+        <Sparkles className="w-5 h-5" />
+        <span>{isSignedIn ? 'Open Today&apos;s Fortune' : 'Get Today&apos;s Fortune'}</span>
+      </button>
+    </div>
+  );
   const renderHistoryModal = () => {
     if (!showHistoryModal || !selectedHistoryReading) return null;
 
@@ -1155,7 +1198,7 @@ function App() {
           <div className="calendar-modal-head">
             <div>
               <p className="eyebrow">Recent Spread</p>
-              <h3 className="fortune-modal-title">历史抽牌</h3>
+              <h3 className="fortune-modal-title">鍘嗗彶鎶界墝</h3>
             </div>
             <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
               <X className="w-4 h-4" />
@@ -1198,7 +1241,7 @@ function App() {
             </button>
           </div>
 
-          <p className="human-request-copy">选择一条最近的抽牌记录发给官方账号，饼饼会根据这次牌阵继续为你解读。</p>
+          <p className="human-request-copy">选择一条最近的抽牌记录发送给官方账号，饼饼会根据这次牌阵继续为你解读。</p>
 
           <div className="human-request-list">
             {recentReadings.map((entry) => (
@@ -1209,15 +1252,14 @@ function App() {
                 className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
               >
                 <p className="human-request-question">“{entry.question}”</p>
-                <p className="human-request-meta">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
+                <p className="human-request-meta">{entry.spreadName} 路 {entry.cardSummary.join(' 路 ')}</p>
               </button>
             ))}
           </div>
 
           <div className="human-request-actions">
             <button type="button" onClick={() => setShowHumanRequestModal(false)} className="secondary-button">
-              再想想
-            </button>
+              鍐嶆兂鎯?            </button>
             <button
               type="button"
               onClick={handleSubmitHumanRequest}
@@ -1255,7 +1297,7 @@ function App() {
             </button>
           </div>
 
-          <p className="human-request-copy">输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。</p>
+          <p className="human-request-copy">输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。收到邮件后点击链接，会回到本站直接设置新密码。</p>
           <label className="field-shell">
             <Mail className="field-icon" />
             <input
@@ -1291,7 +1333,13 @@ function App() {
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">
-            {isRecoveryMode ? '设置一个新的密码，然后回到登录页继续。' : isSessionSyncing ? '正在找回你的登录状态…' : isLogin ? '对发生的一切保持思考' : '先领一张属于你的塔罗邀请函。'}
+            {isRecoveryMode
+              ? '设置一个新的密码，然后回到登录页继续。'
+              : isSessionSyncing
+                ? '正在找回你的登录状态...'
+                : isLogin
+                  ? '对发生的一切保持思考'
+                  : '先领一张属于你的塔罗邀请函。'}
           </p>
 
 
@@ -1431,6 +1479,8 @@ function App() {
               </button>
             </div>
 
+            {renderDailyCard('mobile-daily-card')}
+
             <div className="history-card">
               {recentReadings.length > 0 ? (
                 <div className="history-list">
@@ -1462,7 +1512,7 @@ function App() {
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="history-cards">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
+                      <p className="history-cards">{entry.spreadName} 路 {entry.cardSummary.join(' 路 ')}</p>
                     </article>
                   ))}
                 </div>
@@ -1476,7 +1526,7 @@ function App() {
           </motion.section>
 
           <motion.section className="action-panel" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.06 }}>
-            <div className="daily-card">
+            <div className="daily-card desktop-daily-card">
               <div className="daily-card-head">
                 <p className="eyebrow">Daily Fortune</p>
               </div>
@@ -1517,7 +1567,7 @@ function App() {
               <button type="button" onClick={openHumanRequestModal} className="feature-card feature-card-dark">
                 <span className="feature-eyebrow">{OFFICIAL_READER.englishLabel}</span>
                 <strong className="feature-title">立刻马上联系饼饼为你解读！</strong>
-                <p className="feature-copy">消耗10饼币。</p>
+                <p className="feature-copy">消耗 10 饼币。</p>
               </button>
             </div>
 
@@ -1671,8 +1721,8 @@ function App() {
         <main className="page-content">
           <div className="question-panel">
             <p className="eyebrow">{isHumanMode ? 'Human Reading' : activeSpread.name}</p>
-            <h2 className="question-title">{isHumanMode ? '把问题说得更具体，牌面会更清晰。' : `你选择了${activeSpread.name}`}</h2>
-            <p className="question-note">{isHumanMode ? '提交后会带着你的三张牌进入真人对话。' : activeSpread.summary}</p>
+            <h2 className="question-title">{isHumanMode ? '把问题说得更具体，牌面会更清晰。' : `你选择了 ${activeSpread.name}`}</h2>
+            <p className="question-note">{isHumanMode ? '提交后会带着你的牌阵进入和饼饼的对话。' : activeSpread.summary}</p>
             <textarea
               value={userQuestion}
               onChange={(event) => setUserQuestion(event.target.value)}
@@ -1835,7 +1885,7 @@ function App() {
             {unreadCount === 0 ? (
               <>
                 <h2 className="question-title">今天很安静。</h2>
-                <p className="question-note">暂时没有新的回复，晚点再回来看看也可以。</p>
+                <p className="question-note">暂时没有新的回复，晚点再回来看也可以。</p>
               </>
             ) : (
               <>
@@ -1853,3 +1903,4 @@ function App() {
 }
 
 export default App;
+
