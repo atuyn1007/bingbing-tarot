@@ -1,114 +1,69 @@
-const artworkMap = {
-  愚者: '/cards/waite-cn/00愚者.jpg',
-  魔术师: '/cards/waite-cn/01魔术师.jpg',
-  女祭司: '/cards/waite-cn/02女祭祀.jpg',
-  女皇: '/cards/waite-cn/03皇后.jpg',
-  皇帝: '/cards/waite-cn/04皇帝.jpg',
-  教皇: '/cards/waite-cn/05教皇.jpg',
-  恋人: '/cards/waite-cn/06恋人.jpg',
-  战车: '/cards/waite-cn/07战车.jpg',
-  力量: '/cards/waite-cn/08力量.jpg',
-  隐者: '/cards/waite-cn/09隐士.jpg',
-  命运之轮: '/cards/waite-cn/10命运之轮.jpg',
-  正义: '/cards/waite-cn/11正义.jpg',
-  倒吊人: '/cards/waite-cn/12倒吊人.jpg',
-  死亡: '/cards/waite-cn/13死神.jpg',
-  节制: '/cards/waite-cn/14节制.jpg',
-  恶魔: '/cards/waite-cn/15恶魔.jpg',
-  塔: '/cards/waite-cn/16高塔.jpg',
-  星星: '/cards/waite-cn/17星星.jpg',
-  月亮: '/cards/waite-cn/18月亮.jpg',
-  太阳: '/cards/waite-cn/19太阳.jpg',
-  审判: '/cards/waite-cn/20审判.jpg',
-  世界: '/cards/waite-cn/21世界.jpg',
+const artworkMap = {};
 
-  权杖1: '/cards/waite-cn/权杖ACE.jpg',
-  权杖2: '/cards/waite-cn/权杖2.jpg',
-  权杖3: '/cards/waite-cn/权杖3.jpg',
-  权杖4: '/cards/waite-cn/权杖4.jpg',
-  权杖5: '/cards/waite-cn/权杖5.jpg',
-  权杖6: '/cards/waite-cn/权杖6.jpg',
-  权杖7: '/cards/waite-cn/权杖7.jpg',
-  权杖8: '/cards/waite-cn/权杖8.jpg',
-  权杖9: '/cards/waite-cn/权杖9.jpg',
-  权杖10: '/cards/waite-cn/权杖10.jpg',
-  权杖侍从: '/cards/waite-cn/权杖侍卫.jpg',
-  权杖骑士: '/cards/waite-cn/权杖骑士.jpg',
-  权杖皇后: '/cards/waite-cn/权杖王后.jpg',
-  权杖国王: '/cards/waite-cn/权杖国王.jpg',
-
-  圣杯1: '/cards/waite-cn/圣杯ACE.jpg',
-  圣杯2: '/cards/waite-cn/圣杯2.jpg',
-  圣杯3: '/cards/waite-cn/圣杯3.jpg',
-  圣杯4: '/cards/waite-cn/圣杯4.jpg',
-  圣杯5: '/cards/waite-cn/圣杯5.jpg',
-  圣杯6: '/cards/waite-cn/圣杯6.jpg',
-  圣杯7: '/cards/waite-cn/圣杯7.jpg',
-  圣杯8: '/cards/waite-cn/圣杯8.jpg',
-  圣杯9: '/cards/waite-cn/圣杯9.jpg',
-  圣杯10: '/cards/waite-cn/圣杯10.jpg',
-  圣杯侍从: '/cards/waite-cn/圣杯侍卫.jpg',
-  圣杯骑士: '/cards/waite-cn/圣杯骑士.jpg',
-  圣杯皇后: '/cards/waite-cn/圣杯王后.jpg',
-  圣杯国王: '/cards/waite-cn/圣杯国王.jpg',
-
-  宝剑1: '/cards/waite-cn/宝剑ACE.jpg',
-  宝剑2: '/cards/waite-cn/宝剑2.jpg',
-  宝剑3: '/cards/waite-cn/宝剑3.jpg',
-  宝剑4: '/cards/waite-cn/宝剑4.jpg',
-  宝剑5: '/cards/waite-cn/宝剑5.jpg',
-  宝剑6: '/cards/waite-cn/宝剑6.jpg',
-  宝剑7: '/cards/waite-cn/宝剑7.jpg',
-  宝剑8: '/cards/waite-cn/宝剑8.jpg',
-  宝剑9: '/cards/waite-cn/宝剑9.jpg',
-  宝剑10: '/cards/waite-cn/宝剑10.jpg',
-  宝剑侍从: '/cards/waite-cn/宝剑侍卫.jpg',
-  宝剑骑士: '/cards/waite-cn/宝剑骑士.jpg',
-  宝剑皇后: '/cards/waite-cn/宝剑王后.jpg',
-  宝剑国王: '/cards/waite-cn/宝剑国王.jpg',
-
-  星币1: '/cards/waite-cn/星币ACE.jpg',
-  星币2: '/cards/waite-cn/星币2.jpg',
-  星币3: '/cards/waite-cn/星币3.jpg',
-  星币4: '/cards/waite-cn/星币4.jpg',
-  星币5: '/cards/waite-cn/星币5.jpg',
-  星币6: '/cards/waite-cn/星币6.jpg',
-  星币7: '/cards/waite-cn/星币7.jpg',
-  星币8: '/cards/waite-cn/星币8.jpg',
-  星币9: '/cards/waite-cn/星币9.jpg',
-  星币10: '/cards/waite-cn/星币10.jpg',
-  星币侍从: '/cards/waite-cn/星币侍卫.jpg',
-  星币骑士: '/cards/waite-cn/星币骑士.jpg',
-  星币皇后: '/cards/waite-cn/星币王后.jpg',
-  星币国王: '/cards/waite-cn/星币国王.jpg',
-};
-
-const artworkAliases = {
-  女祭祀: '女祭司',
-  皇后: '女皇',
-  隐士: '隐者',
-  死神: '死亡',
-  高塔: '塔',
-  权杖ACE: '权杖1',
-  权杖侍卫: '权杖侍从',
-  权杖王后: '权杖皇后',
-  圣杯ACE: '圣杯1',
-  圣杯侍卫: '圣杯侍从',
-  圣杯王后: '圣杯皇后',
-  宝剑ACE: '宝剑1',
-  宝剑侍卫: '宝剑侍从',
-  宝剑王后: '宝剑皇后',
-  星币ACE: '星币1',
-  星币侍卫: '星币侍从',
-  星币王后: '星币皇后',
-};
-
-function normalizeCardName(name) {
-  return artworkAliases[name] || name;
+function registerArtwork(names, path) {
+  names.forEach((name) => {
+    artworkMap[name] = path;
+  });
 }
+
+const numberVariants = [
+  ['1', '一', 'ACE'],
+  ['2', '二'],
+  ['3', '三'],
+  ['4', '四'],
+  ['5', '五'],
+  ['6', '六'],
+  ['7', '七'],
+  ['8', '八'],
+  ['9', '九'],
+  ['10', '十'],
+];
+
+function registerSuit(suit, filePrefix) {
+  numberVariants.forEach((variants) => {
+    const canonical = variants[0];
+    const fileSuffix = canonical === '1' ? 'ACE' : canonical;
+    registerArtwork(
+      variants.map((variant) => `${suit}${variant}`),
+      `/cards/waite-cn/${filePrefix}${fileSuffix}.jpg`,
+    );
+  });
+
+  registerArtwork([`${suit}侍从`, `${suit}侍卫`], `/cards/waite-cn/${filePrefix}侍卫.jpg`);
+  registerArtwork([`${suit}骑士`], `/cards/waite-cn/${filePrefix}骑士.jpg`);
+  registerArtwork([`${suit}皇后`, `${suit}王后`], `/cards/waite-cn/${filePrefix}王后.jpg`);
+  registerArtwork([`${suit}国王`], `/cards/waite-cn/${filePrefix}国王.jpg`);
+}
+
+registerArtwork(['愚者'], '/cards/waite-cn/00愚者.jpg');
+registerArtwork(['魔术师'], '/cards/waite-cn/01魔术师.jpg');
+registerArtwork(['女祭司', '女祭祀'], '/cards/waite-cn/02女祭祀.jpg');
+registerArtwork(['女皇', '皇后'], '/cards/waite-cn/03皇后.jpg');
+registerArtwork(['皇帝'], '/cards/waite-cn/04皇帝.jpg');
+registerArtwork(['教皇'], '/cards/waite-cn/05教皇.jpg');
+registerArtwork(['恋人'], '/cards/waite-cn/06恋人.jpg');
+registerArtwork(['战车'], '/cards/waite-cn/07战车.jpg');
+registerArtwork(['力量'], '/cards/waite-cn/08力量.jpg');
+registerArtwork(['隐者', '隐士'], '/cards/waite-cn/09隐士.jpg');
+registerArtwork(['命运之轮'], '/cards/waite-cn/10命运之轮.jpg');
+registerArtwork(['正义'], '/cards/waite-cn/11正义.jpg');
+registerArtwork(['倒吊人'], '/cards/waite-cn/12倒吊人.jpg');
+registerArtwork(['死亡', '死神'], '/cards/waite-cn/13死神.jpg');
+registerArtwork(['节制'], '/cards/waite-cn/14节制.jpg');
+registerArtwork(['恶魔'], '/cards/waite-cn/15恶魔.jpg');
+registerArtwork(['塔', '高塔'], '/cards/waite-cn/16高塔.jpg');
+registerArtwork(['星星'], '/cards/waite-cn/17星星.jpg');
+registerArtwork(['月亮'], '/cards/waite-cn/18月亮.jpg');
+registerArtwork(['太阳'], '/cards/waite-cn/19太阳.jpg');
+registerArtwork(['审判'], '/cards/waite-cn/20审判.jpg');
+registerArtwork(['世界'], '/cards/waite-cn/21世界.jpg');
+
+registerSuit('权杖', '权杖');
+registerSuit('圣杯', '圣杯');
+registerSuit('宝剑', '宝剑');
+registerSuit('星币', '星币');
 
 export function getCardArtwork(card) {
   if (!card?.name) return null;
-  const normalizedName = normalizeCardName(card.name);
-  return artworkMap[normalizedName] || null;
+  return artworkMap[card.name] || null;
 }

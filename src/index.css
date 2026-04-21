@@ -1250,6 +1250,12 @@ button:disabled {
   gap: 6px;
 }
 
+.fortune-modal-tarot {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 10px;
+}
+
 .tarot-card-name {
   display: flex;
   flex-direction: column;

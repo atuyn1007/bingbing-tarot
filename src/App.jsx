@@ -887,14 +887,8 @@ function App() {
   const getDailyFortuneSummary = (card) => {
     if (!card) return '';
 
-    const keywords = getDailyFortuneKeywords(card).slice(0, 3);
     const data = resolveCardData(card);
-    const reading = getCardReading({ ...card, id: data.id });
-    const conciseReading = stripLeadSentence(reading);
-    const shouldAppend = shouldAppendFortuneReading(conciseReading, keywords);
-    const lead = card.isReversed ? '今天更适合放慢一点。' : '今天可以顺着感觉往前一步。';
-
-    return shouldAppend ? `${lead}${conciseReading}` : lead;
+    return getCardReading({ ...card, id: data.id });
   };
 
   const dailyFortuneKeywords = activeDailyCard ? getDailyFortuneKeywords(activeDailyCard) : [];
@@ -1649,6 +1643,16 @@ function App() {
                 onClick={(event) => event.stopPropagation()}
               >
                 <p className="eyebrow">{formatDailyFortuneDate()}日运</p>
+                <div className="fortune-modal-tarot">
+                  <TarotCard
+                    card={activeDailyCard}
+                    isRevealed
+                    size="normal"
+                    showOrientation={false}
+                    variant="artwork"
+                    rotateReversed
+                  />
+                </div>
                 <div className="fortune-modal-card">
                   <span>{activeDailyCard.name}{activeDailyCard.isReversed ? ' · 逆位' : ' · 正位'}</span>
                   <small>{getCardDisplayNames(activeDailyCard).englishName}</small>
