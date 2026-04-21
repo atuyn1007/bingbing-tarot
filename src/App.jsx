@@ -171,7 +171,7 @@ function normalizeRecentReadingEntry(entry) {
     id: entry.id || `${Date.now()}`,
     question: entry.question || '',
     spreadKey,
-    spreadName: entry.spreadName || spread.name,
+    spreadName: spread.name,
     cardsData,
     cardSummary: cardsData.map((card) => formatPlainCardName(card)),
     createdAt: entry.createdAt || new Date().toISOString(),
@@ -1139,14 +1139,14 @@ function App() {
         onClick={() => setCardStyle('minimal')}
         className={`card-style-button ${cardStyle === 'minimal' ? 'card-style-button-active' : ''}`}
       >
-        极简版
+        极简
       </button>
       <button
         type="button"
         onClick={() => setCardStyle('artwork')}
         className={`card-style-button ${cardStyle === 'artwork' ? 'card-style-button-active' : ''}`}
       >
-        原画版
+        原画
       </button>
     </div>
   );
@@ -1198,7 +1198,7 @@ function App() {
           <div className="calendar-modal-head">
             <div>
               <p className="eyebrow">Recent Spread</p>
-              <h3 className="fortune-modal-title">鍘嗗彶鎶界墝</h3>
+              <h3 className="fortune-modal-title">历史抽牌</h3>
             </div>
             <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
               <X className="w-4 h-4" />
@@ -1252,7 +1252,7 @@ function App() {
                 className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
               >
                 <p className="human-request-question">“{entry.question}”</p>
-                <p className="human-request-meta">{entry.spreadName} 路 {entry.cardSummary.join(' 路 ')}</p>
+                <p className="human-request-meta">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
               </button>
             ))}
           </div>
@@ -1478,9 +1478,6 @@ function App() {
                 <strong className="stat-value">查看本月日运</strong>
               </button>
             </div>
-
-            {renderDailyCard('mobile-daily-card')}
-
             <div className="history-card">
               {recentReadings.length > 0 ? (
                 <div className="history-list">
@@ -1512,7 +1509,7 @@ function App() {
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="history-cards">{entry.spreadName} 路 {entry.cardSummary.join(' 路 ')}</p>
+                      <p className="history-cards">{entry.spreadName} · {entry.cardSummary.join(' · ')}</p>
                     </article>
                   ))}
                 </div>

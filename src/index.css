@@ -412,6 +412,10 @@ button:disabled {
   box-shadow: var(--app-card-shadow);
 }
 
+.mobile-daily-card {
+  display: none;
+}
+
 .daily-card-head,
 .fortune-chip {
   display: flex;
@@ -751,11 +755,13 @@ button:disabled {
   border: none;
   background: transparent;
   color: var(--app-muted);
-  min-width: 66px;
+  min-width: 58px;
   height: 40px;
   padding: 0 14px;
   border-radius: 999px;
   font-size: 0.82rem;
+  line-height: 1;
+  white-space: nowrap;
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
@@ -1815,6 +1821,12 @@ button:disabled {
     margin-bottom: 18px;
   }
 
+  .page-title {
+    font-size: 1rem;
+    white-space: nowrap;
+    writing-mode: horizontal-tb;
+  }
+
   .topbar-actions {
     width: 100%;
     flex-wrap: wrap;
@@ -1829,6 +1841,10 @@ button:disabled {
 
   .stats-row {
     grid-template-columns: 1fr;
+  }
+
+  .desktop-daily-card {
+    display: block;
   }
 
   .hero-panel,
@@ -1856,6 +1872,10 @@ button:disabled {
   .reading-layout {
     gap: 20px;
     padding: 0 0 36px;
+  }
+
+  .page-header-controls {
+    justify-content: flex-end;
   }
 
   .reading-question-text {
@@ -1966,6 +1986,10 @@ button:disabled {
   .reading-result-text {
     font-size: 0.98rem;
     line-height: 1.85;
+  }
+
+  .reading-result-card {
+    overflow: hidden;
   }
 
   .reading-actions {
