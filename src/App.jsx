@@ -31,7 +31,7 @@ import { isSessionExpiredAt } from './sessionUtils';
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
   englishLabel: 'ask bb!',
-  intro: '立刻马上联系饼饼为你解读！消耗10饼币。',
+  intro: '链接饼饼为你解读，消耗10饼币。',
 };
 
 const DAILY_LINES = [
@@ -101,6 +101,13 @@ function getDateKey(date) {
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
   const day = `${date.getDate()}`.padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function hasRecoveryParams() {
+  if (typeof window === 'undefined') return false;
+  const search = new URLSearchParams(window.location.search);
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  return search.get('mode') === 'recovery' || search.get('type') === 'recovery' || hash.get('type') === 'recovery';
 }
 
 function sanitizeHistoryText(value) {
@@ -360,6 +367,7 @@ function App() {
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
   const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
   const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
+  const hasRecoveryLink = hasRecoveryParams();
 
   const typingRef = useRef(null);
   const authReadyTimeoutRef = useRef(null);
@@ -571,6 +579,14 @@ function App() {
       }, 4000);
 
       try {
+        if (hasRecoveryLink && mounted) {
+          setIsRecoveryMode(true);
+          setIsLogin(true);
+          setShowForgotPasswordModal(false);
+          setIsAuthReady(true);
+          setIsSessionSyncing(false);
+        }
+
         let session = await getAuthSession();
         if (!session && storedUser) {
           session = await refreshAuthSession();
@@ -594,6 +610,13 @@ function App() {
           }
           await fetchUserProfile(authUser);
         } else if (mounted) {
+          if (hasRecoveryLink) {
+            setIsRecoveryMode(true);
+            setIsLogin(true);
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+            return;
+          }
           if (storedUser) {
             clearSession();
           } else {
@@ -735,7 +758,7 @@ function App() {
         await fetchUserProfile(data.user);
       }
     } catch (error) {
-      alert(error.message || '鐧诲綍澶辫触');
+      alert(error.message || '登录失败');
     }
   };
 
@@ -769,6 +792,9 @@ function App() {
       await updatePassword(resetPasswordValue.trim());
       setResetPasswordValue('');
       setIsRecoveryMode(false);
+      if (typeof window !== 'undefined') {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
       alert('密码已经更新，请直接用邮箱和新密码登录。');
     } catch (error) {
       alert(error.message || '密码更新失败，请重新打开邮件里的链接再试。');
@@ -1272,7 +1298,8 @@ function App() {
 
           <div className="human-request-actions">
             <button type="button" onClick={() => setShowHumanRequestModal(false)} className="secondary-button">
-              鍐嶆兂鎯?            </button>
+              再想想
+            </button>
             <button
               type="button"
               onClick={handleSubmitHumanRequest}
@@ -1280,7 +1307,7 @@ function App() {
               className="primary-button"
             >
               <MessageCircle className="w-5 h-5" />
-              {coinBalance < 10 ? '饼币不足' : '发送给饼饼（10 饼币）'}
+              {coinBalance < 10 ? '饼币不足' : '发送给饼饼大人（10 饼币）'}
             </button>
           </div>
         </motion.div>
@@ -1576,7 +1603,7 @@ function App() {
 
               <button type="button" onClick={openHumanRequestModal} className="feature-card feature-card-dark">
                 <span className="feature-eyebrow">{OFFICIAL_READER.englishLabel}</span>
-                <strong className="feature-title">立刻马上联系饼饼为你解读！</strong>
+                <strong className="feature-title">链接饼饼为你解读</strong>
                 <p className="feature-copy">消耗 10 饼币。</p>
               </button>
             </div>

@@ -98,7 +98,7 @@ export async function loginWithEmail(email, password) {
 
 export async function requestPasswordReset(email, redirectTo) {
   const normalizedRedirect = redirectTo
-    ? `${String(redirectTo).replace(/\/$/, '')}/?recovery=1`
+    ? `${String(redirectTo).replace(/\/$/, '')}/?mode=recovery`
     : undefined;
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(String(email || '').trim().toLowerCase(), {
@@ -119,7 +119,7 @@ export async function updatePassword(nextPassword) {
 }
 
 export async function logoutFromSupabase() {
-  const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
   if (error) throw error;
 }
 
@@ -183,7 +183,6 @@ export async function updateCoinBalance(userId, coinBalance) {
 
 export async function signInDaily(profile) {
   const today = getDisplaySignInDate();
-  const todayKey = getLocalDateKey();
   const currentHistory = profile.daily_history || {};
 
   if (profile.last_sign_in_date === today) {
