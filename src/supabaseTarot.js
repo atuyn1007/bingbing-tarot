@@ -40,6 +40,11 @@ export async function saveTarotHistory(cardName, isUpright) {
 
 export async function saveSpreadHistoryRecord(question, spreadName, cards) {
   const userId = await getCurrentUserId();
+
+  if (!userId) {
+    throw new Error('请先登录后再同步抽牌记录。');
+  }
+
   const cardSummary = (cards || [])
     .map((card) => `${card?.name || '未知牌面'}${card?.isReversed ? '（逆位）' : ''}`)
     .join('、');

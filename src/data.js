@@ -166,11 +166,7 @@ XXI.世界(The World)，逆位。未完成，无果，缺失感，空虚。
 星币皇后，逆位。生活和工作的不平衡，强横，徒劳无功。
 星币国王，正位。富饶，有效率，责任心，稳定，安全。
 星币国王，逆位。贪婪，物质享受，感官诱惑。
-`
-  .trim()
-  .split('\n')
-  .map((line) => line.trim())
-  .filter(Boolean);
+`;
 
 const minorSuitMap = {
   权杖: 'Wands',
@@ -249,28 +245,33 @@ function parseMeaningLine(line) {
 
 const cardMap = new Map();
 
-rawMeaningLines.forEach((line) => {
-  const parsed = parseMeaningLine(line);
-  const existing =
-    cardMap.get(parsed.name) || {
-      name: parsed.name,
-      englishName: parsed.englishName,
-      uprightKeywords: [],
-      reversedKeywords: [],
-      upright: '',
-      reversed: '',
-    };
+rawMeaningLines
+  .trim()
+  .split('\n')
+  .map((line) => line.trim())
+  .filter(Boolean)
+  .forEach((line) => {
+    const parsed = parseMeaningLine(line);
+    const existing =
+      cardMap.get(parsed.name) || {
+        name: parsed.name,
+        englishName: parsed.englishName,
+        uprightKeywords: [],
+        reversedKeywords: [],
+        upright: '',
+        reversed: '',
+      };
 
-  if (parsed.orientation === '正位') {
-    existing.uprightKeywords = parsed.keywords;
-    existing.upright = parsed.meaning;
-  } else {
-    existing.reversedKeywords = parsed.keywords;
-    existing.reversed = parsed.meaning;
-  }
+    if (parsed.orientation === '正位') {
+      existing.uprightKeywords = parsed.keywords;
+      existing.upright = parsed.meaning;
+    } else {
+      existing.reversedKeywords = parsed.keywords;
+      existing.reversed = parsed.meaning;
+    }
 
-  cardMap.set(parsed.name, existing);
-});
+    cardMap.set(parsed.name, existing);
+  });
 
 const cardCatalog = Array.from(cardMap.values()).map((card, index) =>
   createCard(
