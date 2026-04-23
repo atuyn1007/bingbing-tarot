@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 import { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
+export const OFFICIAL_READER_ID = '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8';
 
 export const OFFICIAL_READER_NICKNAME = '饼饼大人';
 
@@ -248,4 +249,262 @@ export async function listRequestsByUser(userId) {
 
   if (error) throw error;
   return data || [];
+}
+
+export async function createPendingMailboxMessage({
+  senderId,
+  recordId,
+  initialQuestion,
+  receiverId = OFFICIAL_READER_ID,
+  coinCost = 10,
+}) {
+  const normalizedQuestion = String(initialQuestion || '').trim();
+  const normalizedRecordId = Number(recordId);
+
+  if (!senderId) {
+    throw new Error('请先登录后再联系饼饼。');
+  }
+
+  if (!Number.isFinite(normalizedRecordId) || normalizedRecordId <= 0) {
+    throw new Error('请先从最近抽牌记录里选择一条有效牌阵。');
+  }
+
+  if (!normalizedQuestion) {
+    throw new Error('请先确认你要发送给饼饼的问题。');
+  }
+
+  const profile = await getProfileById(senderId);
+  if (!profile) {
+    throw new Error('未找到当前用户资料。');
+  }
+
+  const currentCoins = profile.coin_balance || 0;
+  if (currentCoins < coinCost) {
+    throw new Error('饼币不足，先签到拿饼币吧。');
+  }
+
+  const nextCoins = currentCoins - coinCost;
+
+  const { data: updatedProfile, error: deductError } = await supabase
+    .from('profiles')
+    .update({ coin_balance: nextCoins })
+    .eq('id', senderId)
+    .eq('coin_balance', currentCoins)
+    .select('coin_balance')
+    .single();
+
+  if (deductError) {
+    throw deductError;
+  }
+
+  const { data: message, error: insertError } = await supabase
+    .from('messages')
+    .insert({
+      sender_id: senderId,
+      receiver_id: receiverId,
+      record_id: normalizedRecordId,
+      status: 'pending',
+      initial_question: normalizedQuestion,
+    })
+    .select()
+    .single();
+
+  if (insertError) {
+    await updateCoinBalance(senderId, currentCoins);
+    throw insertError;
+  }
+
+  return {
+    message,
+    coinBalance: updatedProfile?.coin_balance ?? nextCoins,
+  };
+}
+
+export async function listMailboxMessagesForUser(userId) {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('sender_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function listMailboxMessagesForAdmin(receiverId = OFFICIAL_READER_ID) {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('receiver_id', receiverId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function markMailboxMessageRead(messageId, receiverId = OFFICIAL_READER_ID) {
+  const { data, error } = await supabase
+    .from('messages')
+    .update({ status: 'read' })
+    .eq('id', messageId)
+    .eq('receiver_id', receiverId)
+    .eq('status', 'pending')
+    .select()
+    .maybeSingle();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function rejectMailboxMessage(messageId, rejectReason, receiverId = OFFICIAL_READER_ID) {
+  const normalizedReason = String(rejectReason || '').trim();
+  if (!normalizedReason) {
+    throw new Error('请先填写驳回原因。');
+  }
+
+  const { data: message, error: messageError } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('id', messageId)
+    .eq('receiver_id', receiverId)
+    .single();
+
+  if (messageError) throw messageError;
+  if (!message) throw new Error('未找到这条信箱消息。');
+
+  const { data: senderProfile, error: profileError } = await supabase
+    .from('profiles')
+    .select('coin_balance')
+    .eq('id', message.sender_id)
+    .single();
+
+  if (profileError) throw profileError;
+
+  const refundCoins = (senderProfile?.coin_balance || 0) + 10;
+
+  const { data: updatedMessage, error: updateError } = await supabase
+    .from('messages')
+    .update({
+      status: 'rejected',
+      reject_reason: normalizedReason,
+    })
+    .eq('id', messageId)
+    .eq('receiver_id', receiverId)
+    .select()
+    .single();
+
+  if (updateError) throw updateError;
+
+  const { error: refundError } = await supabase
+    .from('profiles')
+    .update({ coin_balance: refundCoins })
+    .eq('id', message.sender_id);
+
+  if (refundError) throw refundError;
+
+  return {
+    message: updatedMessage,
+    refundedCoins: refundCoins,
+  };
+}
+
+export async function replyMailboxMessage(messageId, initialReply, receiverId = OFFICIAL_READER_ID) {
+  const normalizedReply = String(initialReply || '').trim();
+
+  if (!normalizedReply) {
+    throw new Error('请先填写回复内容。');
+  }
+
+  if (normalizedReply.length > 1000) {
+    throw new Error('初次回复最多 1000 字。');
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .update({
+      initial_reply: normalizedReply,
+      status: 'replied',
+    })
+    .eq('id', messageId)
+    .eq('receiver_id', receiverId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function submitMailboxFollowUp(messageId, followUpAsk, senderId) {
+  const normalizedAsk = String(followUpAsk || '').trim();
+
+  if (!normalizedAsk) {
+    throw new Error('请先写下你的追加提问。');
+  }
+
+  if (normalizedAsk.length > 100) {
+    throw new Error('追加提问最多 100 字。');
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .update({
+      follow_up_ask: normalizedAsk,
+      status: 'follow_up',
+    })
+    .eq('id', messageId)
+    .eq('sender_id', senderId)
+    .eq('status', 'replied')
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function completeMailboxFeedback(messageId, feedback, senderId) {
+  if (!['Heart', 'Spade'].includes(feedback)) {
+    throw new Error('请选择有效评价。');
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .update({
+      feedback,
+      status: 'completed',
+    })
+    .eq('id', messageId)
+    .eq('sender_id', senderId)
+    .eq('status', 'replied')
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function completeMailboxFollowUpReply(messageId, followUpReply, receiverId = OFFICIAL_READER_ID) {
+  const normalizedReply = String(followUpReply || '').trim();
+
+  if (!normalizedReply) {
+    throw new Error('请先填写二次回复内容。');
+  }
+
+  if (normalizedReply.length > 1000) {
+    throw new Error('二次回复最多 1000 字。');
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .update({
+      follow_up_reply: normalizedReply,
+      status: 'completed',
+    })
+    .eq('id', messageId)
+    .eq('receiver_id', receiverId)
+    .eq('status', 'follow_up')
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }

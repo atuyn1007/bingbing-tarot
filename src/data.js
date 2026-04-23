@@ -9,204 +9,280 @@ const createCard = (id, name, englishName, uprightKeywords, reversedKeywords, up
   reversed,
 });
 
-const majorArcanaData = [
-  createCard(0, '愚者', 'The Fool', ['启程', '信任', '轻装', '可能性'], ['草率', '分心', '逃避', '失序'], '愚者正位代表新的开始。现在适合带着好奇和勇气出发，但也别忘了让热情和判断同行。', '愚者逆位提醒你别把自由变成逃避。先看清风险，再决定要不要继续往前走。'),
-  createCard(1, '魔术师', 'The Magician', ['资源', '主动', '表达', '掌控'], ['失焦', '操弄', '空转', '犹疑'], '魔术师正位说明你已经具备行动所需的工具和资源。把想法说清楚，事情就能真正开始。', '魔术师逆位提醒你留意分心或虚张声势。少一点包装，多一点实做，局面会更稳。'),
-  createCard(2, '女祭司', 'The High Priestess', ['直觉', '沉静', '洞察', '内在知识'], ['压抑', '迟疑', '封闭', '回避'], '女祭司正位强调安静下来后才会出现的答案。先听听自己的感受，再做判断。', '女祭司逆位表示你可能忽略了已经出现的直觉信号。别急着解释一切，先回到内心。'),
-  createCard(3, '女皇', 'The Empress', ['丰盛', '滋养', '创造', '生长'], ['透支', '依赖', '停滞', '失衡'], '女皇正位象征丰饶、照料与持续生长。现在适合让关系、创意或计划慢慢开花。', '女皇逆位提醒你别只顾着付出。先把自己照顾好，丰盛才会真正回来。'),
-  createCard(4, '皇帝', 'The Emperor', ['结构', '边界', '秩序', '担当'], ['僵硬', '控制', '压迫', '不安'], '皇帝正位强调规则、边界和稳健推进。建立秩序之后，事情才更容易落地。', '皇帝逆位提示你可能太想掌控一切。真正可靠的力量，不需要时时证明。'),
-  createCard(5, '教皇', 'The Hierophant', ['传统', '学习', '指引', '价值观'], ['教条', '盲从', '抗拒', '卡住'], '教皇正位代表成熟经验和可被传承的方法。向可靠的知识和经验靠近，会更有帮助。', '教皇逆位提醒你辨认哪些规则真的适合现在的你。别为了反抗而反抗。'),
-  createCard(6, '恋人', 'The Lovers', ['契合', '选择', '真心', '一致'], ['失配', '摇摆', '诱惑', '错位'], '恋人正位不只关乎关系，也关乎价值是否一致。现在的关键是真心做出一致的选择。', '恋人逆位表示关系或决定里存在摇摆和错位。先厘清自己真正重视的是什么。'),
-  createCard(7, '战车', 'The Chariot', ['推进', '定力', '方向', '胜出'], ['失控', '冲过头', '散乱', '勉强'], '战车正位象征坚定的意志和推进力。只要方向清楚，你就能把分散的力量重新收束。', '战车逆位提醒你别把冲劲误当成掌控。若方向不清，再快也只会偏离。'),
-  createCard(8, '力量', 'Strength', ['勇气', '温柔', '自持', '安抚'], ['怀疑', '压抑', '失衡', '疲惫'], '力量正位代表温柔而稳定的控制力。真正的强大，是把情绪和本能安顿好。', '力量逆位提示你正在怀疑自己的承受力。允许自己慢一点，不代表软弱。'),
-  createCard(9, '隐者', 'The Hermit', ['独处', '内省', '寻灯', '沉淀'], ['封闭', '疏离', '钻牛角尖', '拒绝求助'], '隐者正位鼓励你暂时离开喧闹，回到真正重要的问题里。答案会在安静中靠近。', '隐者逆位提醒你别让独处变成封闭。需要时向外求助，并不会削弱你的清醒。'),
-  createCard(10, '命运之轮', 'Wheel of Fortune', ['转机', '循环', '变化', '时机'], ['反复', '错位', '拖延', '抗拒变化'], '命运之轮正位表示局势进入新的循环。顺势而为，往往比抓着旧局更有效。', '命运之轮逆位意味着你可能正在和变化拔河。先接受节奏正在变，新的转机会更容易出现。'),
-  createCard(11, '正义', 'Justice', ['公平', '真相', '平衡', '后果'], ['偏见', '失衡', '逃避', '失准'], '正义正位强调诚实、衡量与承担后果。回到事实，判断才会更清楚。', '正义逆位提醒你留意偏见和失衡。只有真正面对后果，事情才会重新回稳。'),
-  createCard(12, '倒吊人', 'The Hanged Man', ['暂停', '换位', '放手', '理解'], ['僵住', '拖延', '徒劳', '执念'], '倒吊人正位并非停滞，而是主动暂停。换个角度看事，答案才会慢慢清晰。', '倒吊人逆位意味着你被卡在不愿放手的位置上。真正要放下的，也许是执念。'),
-  createCard(13, '死神', 'Death', ['结束', '更新', '脱壳', '转化'], ['恋旧', '拖延告别', '受阻', '停在旧循环'], '死神正位象征一个阶段的结束与新的开启。结束虽然不轻松，却常常是真正更新的起点。', '死神逆位提醒你留意对旧局的眷恋。若一直不肯放手，消耗的会是正在到来的未来。'),
-  createCard(14, '节制', 'Temperance', ['调和', '节奏', '流动', '分寸'], ['过量', '失衡', '急躁', '失调'], '节制正位强调把不同部分慢慢调到合适的位置。此刻最重要的是节奏和分寸。', '节制逆位表示某个面向已经过量或过急。把节奏收回来，事情才会重新顺起来。'),
-  createCard(15, '恶魔', 'The Devil', ['欲望', '束缚', '沉迷', '困住'], ['松绑', '看见执念', '戒断', '挣脱'], '恶魔正位让你看见那些看似满足、实则消耗的连接。很多束缚来自已经习惯的模式。', '恶魔逆位意味着你开始看见问题所在，并有机会慢慢把自己松开。'),
-  createCard(16, '高塔', 'The Tower', ['崩解', '揭露', '突变', '重建前夜'], ['暗裂', '拖着不改', '余震', '勉强维持'], '高塔正位象征旧结构突然崩塌。虽然刺痛，但它也会逼出真正的重建。', '高塔逆位提示某些裂缝其实早已存在。越拖着不处理，后面越容易被动承受。'),
-  createCard(17, '星星', 'The Star', ['希望', '疗愈', '信任未来', '清澈'], ['泄气', '失望', '断联', '怀疑希望'], '星星正位带来修复后的安定感与对未来的温柔信任。慢慢恢复就好，不必急着证明自己。', '星星逆位提醒你留意低落和失望。先照顾眼前这一步，光会一点点回来。'),
-  createCard(18, '月亮', 'The Moon', ['迷雾', '潜意识', '直觉波动', '未明之事'], ['看清', '雾散', '揭开假象', '回稳'], '月亮正位意味着一切还不够清楚。此刻更适合观察，而不是仓促定论。', '月亮逆位表示迷雾正在散去。虽然真相未必轻松，但你终于能看见轮廓。'),
-  createCard(19, '太阳', 'The Sun', ['明朗', '活力', '喜悦', '照见'], ['疲惫', '延迟满足', '光被遮住', '热度下降'], '太阳正位象征清晰、喜悦与生命力。很多答案正在变得简单而直接。', '太阳逆位提示你并非没有好事，只是暂时缺少感受它的余裕。先休息，光会重新照回来。'),
-  createCard(20, '审判', 'Judgement', ['召唤', '醒来', '回应内心', '回看过往'], ['迟疑', '否认', '旧账未清', '拖着不翻页'], '审判正位意味着你听见了更真实的召唤。现在适合回看过往，并做出新的回应。', '审判逆位提醒你别继续假装没听见内心的声音。拖延回应，只会让同样的课题再回来。'),
-  createCard(21, '世界', 'The World', ['完成', '整合', '圆满', '抵达'], ['未收尾', '未闭环', '临门一脚', '待整合'], '世界正位代表一个周期真正完成。此刻适合整合经验，也适合庆祝抵达。', '世界逆位意味着事情并非失败，只是还有最后一点没有收束好。把结尾做好，新的旅程才会轻松开始。'),
-];
+const rawMeaningLines = `
+0.愚者(The Fool)，正位。新的开始，自由，冒险，理想主义，天真无邪，未来的无限可能。
+0.愚者(The Fool)，逆位。天真，愚蠢，鲁莽，被利用，考虑不周，注意力分散。
+I.魔术师(The Magician)，正位。意志力，强大的能力，技巧，资源充沛，精神集中，无限可能。
+I.魔术师(The Magician)，逆位。欺骗，狡诈，诡计，浪费的天赋，幻象。
+II.女祭司(The High Priestess)，正位。无意识，直觉，灵性，高层次的力量，遵循内心的声音。
+II.女祭司(The High Priestess)，逆位。被压抑的直觉，隐藏的动机，肤浅，迷惑，认知失调。
+III.女皇(The Empress)，正位。神圣的女性，官能，丰饶，呵护，抚育，创造力，美丽，自然，富足。
+III.女皇(The Empress)，逆位。不安，忽视，强势，令人窒息的关心，缺少成长，缺少进步，沉闷。
+IV.皇帝(The Emperor)，正位。稳定，有结构，保护，权威，统治，掌控，实践，精神集中，纪律。
+IV.皇帝(The Emperor)，逆位。暴君，专横，死板，固执，缺少纪律，鲁莽，不稳定的权力关系，缺乏控制力，官僚主义。
+V.教皇(The Hierophant)，正位。传统，社会团体，保守主义，从众，教育，知识，信仰。
+V.教皇(The Hierophant)，逆位。叛逆，反抗，反传统，独树一帜，忽视，失控，新的方案。
+VI.恋人(The Lovers)，正位。爱，联合，伙伴，情感关系，选择，浪漫，平衡，协同，和谐。
+VI.恋人(The Lovers)，逆位。不和谐，失衡，冲突，分离，冷淡，不好的选择，犹豫不定，缺乏或无效沟通，逃避责任。
+VII.战车(The Chariot)，正位。成功，野心，决心，意志力，控制力，自律，精神集中，克服困难。
+VII.战车(The Chariot)，逆位。强行，漫无方向，失控，无力，侵略性，障碍，意志不坚，执迷不悟，缺乏动机。
+VIII.力量(Strength)，正位。勇气，自信，同情心，决心，坚韧，冷静，自控。
+VIII.力量(Strength)，逆位。自我怀疑，弱点，低自信，不足，懦弱，愤怒，恐惧，抑郁，嫉妒，不安。
+IX.隐者(The Hermit)，正位。自省，沉思，独处，远离尘世，探寻自我，导师。
+IX.隐者(The Hermit)，逆位。寂寞，孤立，离群索居，社交恐惧，冷淡，回归社会。
+X.命运之轮(The Wheel of Fortune)，正位。变化，轮回，命运，重要时刻，好运，意外事件，机遇。
+X.命运之轮(The Wheel of Fortune)，逆位。厄运，失控，不好的变化，延迟，不适应。
+XI.正义(Justice)，正位。正义，报应，后果，责任，法律，真相，诚实，正直，因果。
+XI.正义(Justice)，逆位。不正义，惩罚，谎言，腐败，不公，逃避责任。
+XII.倒吊人(The Hanged Man)，正位。牺牲，等待，悬而未定，缺少方向，转换视角，沉思，智慧。
+XII.倒吊人(The Hanged Man)，逆位。拖延，不感兴趣，停滞，拒绝牺牲，僵局，冷漠，无谓的牺牲。
+XIII.死亡(Death)，正位。终局，改变，放手，断舍离，轮回，新生。
+XIII.死亡(Death)，逆位。惧怕改变，重蹈覆辙，抗拒改变，停滞，腐败。
+XIV.节制(Temperance)，正位。平衡，耐心，中庸，冷静，和谐，安宁，克己。
+XIV.节制(Temperance)，逆位。失衡，冗余，极端，不和谐，鲁莽，匆忙，焦虑。
+XV.恶魔(The Devil)，正位。对立，成瘾，偏执，依赖，过度，无力，困境，空虚，纵欲，享乐主义，失控，自毁。
+XV.恶魔(The Devil)，逆位。独立，自由，启示，释放，重寻力量，重获控制，克服困难。
+XVI.塔(The Tower)，正位。灾难，毁灭，倾覆，创伤，巨变，混沌。
+XVI.塔(The Tower)，逆位。避免灾难，苟延残喘，抗拒改变，近在眼前的灾难，生还。
+XVII.星星(The Stars)，正位。希望，灵感，乐观，信念，重生，治愈，精神焕发。
+XVII.星星(The Stars)，逆位。绝望，失落，悲观，缺乏信念，沮丧，不自信，缺乏动力，缺乏热情。
+XVIII.月亮(The Moon)，正位。幻象，直觉，不确定，迷惑，复杂，秘密，潜意识，神秘，隐藏的真相。
+XVIII.月亮(The Moon)，逆位。恐惧，欺骗，焦虑，误会，曲解，恐惧，识破幻觉，清晰。
+XIX.太阳(The Sun)，正位。幸福，成功，乐观，生命力，快乐，自信，真相，富饶，光明，热情。
+XIX.太阳(The Sun)，逆位。被阻碍的幸福，过度热情，悲观，不切实际，自负，过度乐观，无趣。
+XX.审判(Judgement)，正位。自省，觉醒，新生，目的，思索，承认。
+XX.审判(Judgement)，逆位。自我怀疑，对自我认知不明，不长进，自我厌恶。
+XXI.世界(The World)，正位。完整，完美，归属感，和谐，成就，满足，涅槃。
+XXI.世界(The World)，逆位。未完成，无果，缺失感，空虚。
+权杖1，正位。灵感，创造力，新的动力，热情，能量。
+权杖1，逆位。拖延，瓶颈，缺乏热情，缺乏能量，迟疑，灵感枯竭。
+权杖2，正位。计划，做决定，脱离舒适圈，冒险，进步，探索，发现。
+权杖2，逆位。恶劣的计划，过度思考，不采取行动，保守，避免风险。
+权杖3，正位。动力，自信，扩张，成长，远见，前程，机会。
+权杖3，逆位。限制，缺少进步，障碍，滞后，烦闷，挑战。
+权杖4，正位。家庭，团聚，社区，关系良好，休憩。
+权杖4，逆位。缺乏沟通，不稳定，亲友间的冲突。
+权杖5，正位。竞争，冲突，敌对，示威。
+权杖5，逆位。避免冲突，求同存异。
+权杖6，正位。胜利，受尊重，认可，公开赞誉，成就。
+权杖6，逆位。自我怀疑，缺少认可，惩罚。
+权杖7，正位。坚持立场，防御，维持控制。
+权杖7，逆位。放弃，自信破碎，精疲力竭。
+权杖8，正位。迅速的行动，进展，速战速决，快速决策，一往无前。
+权杖8，逆位。障碍，等候，减缓。
+权杖9，正位。坚韧，最后一搏，竭尽全力。
+权杖9，逆位。枯竭，疲惫，油尽灯枯。
+权杖10，正位。成就，责任，负担。
+权杖10，逆位。缺乏优先度，无谓的负担，无法把责任分配给他人。
+权杖侍从，正位。探索，激动，自由，灵感。
+权杖侍从，逆位。缺少方向，负能量，受限制，无计划。
+权杖骑士，正位。行动，冒险，无畏，将灵感化为现实，不切实际。
+权杖骑士，逆位。愤怒，冲动，鲁莽，不顾后果。
+权杖皇后，正位。勇气，魅力，领导力，坚定，内在的力量。
+权杖皇后，逆位。自私，嫉妒，专横，愤怒，仇恨。
+权杖国王，正位。大局观，领导，克服困难，远见。
+权杖国王，逆位。冲动，激进的目标，暴戾，强横，鲁莽，不切实际。
+圣杯1，正位。情感充沛，创造力，新鲜的情感。
+圣杯1，逆位。浪费的情感，被阻碍的创造力，空虚。
+圣杯2，正位。联合，伙伴，合二为一，平衡的情感，能量，激情，性爱。
+圣杯2，逆位。不平衡，沟通破裂，紧张的关系。
+圣杯3，正位。友谊，社交，快乐。
+圣杯3，逆位。盲从，从众，独处。
+圣杯4，正位。冷漠，自省，解离。
+圣杯4，逆位。无聊，理所当然，冷漠无情。
+圣杯5，正位。失去，悲恸，失望，失落，残存的希望。
+圣杯5，逆位。接受，继续生活，找到内心的宁静，疗愈。
+圣杯6，正位。怀念，重逢，美好的回忆，过去与现在的交会。
+圣杯6，逆位。抗拒改变，执着于过去，不切实际。
+圣杯7，正位。众多的选择，幻想，幻象，潜藏的危机。
+圣杯7，逆位。诱惑，多样性，迷惑，无法理性思考。
+圣杯8，正位。远离，幻灭，不满足，失落，抛弃，止损。
+圣杯8，逆位。迷惑，畏惧未知，畏惧失去，犹豫不决。
+圣杯9，正位。舒适，情绪稳定，奢侈，自满，洋洋得意。
+圣杯9，逆位。贪婪，骄傲自大，不满足。
+圣杯10，正位。平静，满足，归属感，幸福。
+圣杯10，逆位。破碎的梦，家庭不谐，恶劣的关系，冲突。
+圣杯侍从，正位。惊喜，内在孩童，想象，潜意识。
+圣杯侍从，逆位。不成熟，逃避现实，缺乏创造力。
+圣杯骑士，正位。调解，化情绪为行动，浪漫，魅力，追寻完美和善的梦想。
+圣杯骑士，逆位。虚荣，回避冲突，阿谀奉承，迷失，情绪失控。
+圣杯皇后，正位。友善，冷静，平和，同情心。
+圣杯皇后，逆位。冷漠，不安，依赖，情绪不稳定。
+圣杯国王，正位。同情心，自控力，智慧，慷慨。
+圣杯国王，逆位。操控人心，喜怒无常，欺骗，失控。
+宝剑1，正位。突破，力量，思维敏锐。
+宝剑1，逆位。迷惑，残忍，混乱。
+宝剑2，正位。艰难的决定，犹豫不决，僵局。
+宝剑2，逆位。双输，更小的损失，没有正确答案，困惑。
+宝剑3，正位。心碎，折磨，绝望，背叛，孤独，牺牲。
+宝剑3，逆位。康复，原谅，继续前行。
+宝剑4，正位。休息，疗愈，康复。
+宝剑4，逆位。不安，疲倦，压力。
+宝剑5，正位。肆无忌惮的野心，不计代价的胜利，狡诈，对手的仇恨。
+宝剑5，逆位。长存的仇恨，希望和解，希望原谅。
+宝剑6，正位。过渡，抛下过往，继续前行。
+宝剑6，逆位。情感包袱，未解决的问题，抗拒改变。
+宝剑7，正位。欺瞒，狡诈，视而不见。
+宝剑7，逆位。改过自新，希望改变，浪子回头。
+宝剑8，正位。囚禁，无力，自我放逐，自认是受害者。
+宝剑8，逆位。悦纳自我，新的视角，自由，自省。
+宝剑9，正位。焦虑，绝望，梦魇。
+宝剑9，逆位。恐惧，缺乏客观视角，绝望。
+宝剑10，正位。遭受背叛，失败。
+宝剑10，逆位。复苏，重拾活力，不可避免的终局。
+宝剑侍从，正位。好奇心，不息，精神力，热情。
+宝剑侍从，逆位。匆忙，放空话。
+宝剑骑士，正位。目标，速度，野心，决心。
+宝剑骑士，逆位。漫无目的，不顾后果，不可预测。
+宝剑皇后，正位。独特视角，冷静，独立，敏锐，有条理，城府。
+宝剑皇后，逆位。冷血，残忍，辛辣。
+宝剑国王，正位。智慧，权力，荣誉，真相，冷静。
+宝剑国王，逆位。操控人心，残酷，批评家，冷酷无情，自私，利用他人。
+星币1，正位。机会，繁荣，创业。
+星币1，逆位。失去的机会。
+星币2，正位。平衡，计划，适应改变。
+星币2，逆位。失衡，杂乱无章，不知所措。
+星币3，正位。团队合作，建设，卓有成效。
+星币3，逆位。缺少合作，杂乱无章，人际矛盾，竞争。
+星币4，正位。保守，安全，节俭。
+星币4，逆位。贪婪，吝啬，占有欲。
+星币5，正位。需求，贫困，不安，艰难的时节，潜在的帮助。
+星币5，逆位。恢复，重新繁荣，孤立。
+星币6，正位。慈善，慷慨，分享，理解，同情。
+星币6，逆位。自私，吝啬，负债，拒绝分享。
+星币7，正位。认真负责，毅力，勤勉，专注。
+星币7，逆位。徒劳无功，注意力分散，浪费的努力，烦闷。
+星币8，正位。教育，学徒，成就，努力。
+星币8，逆位。注意力分散，没有目标，没有动力。
+星币9，正位。劳动果实，独立，努力后的收获，富庶。
+星币9，逆位。失误，工作狂，挫折，徒劳无功。
+星币10，正位。遗产，传承，巅峰，成就感，满足。
+星币10，逆位。失败，不稳定，缺乏资源，一无所获。
+星币侍从，正位。梦想，热情，新的机会，创业。
+星币侍从，逆位。白日梦，不切实际，懒惰。
+星币骑士，正位。努力，奉献，日复一日的劳作，效率，勤劳。
+星币骑士，逆位。懒惰，偏执，徒劳无功，短视。
+星币皇后，正位。实干，物质享受，经济稳定，家庭平和。
+星币皇后，逆位。生活和工作的不平衡，强横，徒劳无功。
+星币国王，正位。富饶，有效率，责任心，稳定，安全。
+星币国王，逆位。贪婪，物质享受，感官诱惑。
+`
+  .trim()
+  .split('\n')
+  .map((line) => line.trim())
+  .filter(Boolean);
 
-const rankLabels = ['王牌', '二', '三', '四', '五', '六', '七', '八', '九', '十', '侍者', '骑士', '皇后', '国王'];
-const rankEnglishLabels = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
+const minorSuitMap = {
+  权杖: 'Wands',
+  圣杯: 'Cups',
+  宝剑: 'Swords',
+  星币: 'Pentacles',
+};
 
-const suitConfigs = [
-  {
-    key: 'wands',
-    suitName: '权杖',
-    englishSuit: 'Wands',
-    domain: '行动、热情与创造力',
-    positive: ['热情', '行动', '点燃', '推进'],
-    negative: ['冲动', '消耗', '拖延', '急躁'],
-  },
-  {
-    key: 'cups',
-    suitName: '圣杯',
-    englishSuit: 'Cups',
-    domain: '情绪、关系与感受',
-    positive: ['感受', '连接', '温柔', '流动'],
-    negative: ['敏感', '失落', '逃避', '摇摆'],
-  },
-  {
-    key: 'swords',
-    suitName: '宝剑',
-    englishSuit: 'Swords',
-    domain: '思考、判断与沟通',
-    positive: ['判断', '清晰', '辨认', '表达'],
-    negative: ['焦虑', '拉扯', '误解', '过载'],
-  },
-  {
-    key: 'pentacles',
-    suitName: '星币',
-    englishSuit: 'Pentacles',
-    domain: '现实、资源与落地',
-    positive: ['落地', '资源', '积累', '稳定'],
-    negative: ['停滞', '匮乏', '失衡', '顾虑'],
-  },
-];
+const minorRankMap = {
+  1: 'Ace',
+  2: 'Two',
+  3: 'Three',
+  4: 'Four',
+  5: 'Five',
+  6: 'Six',
+  7: 'Seven',
+  8: 'Eight',
+  9: 'Nine',
+  10: 'Ten',
+  侍从: 'Page',
+  骑士: 'Knight',
+  皇后: 'Queen',
+  国王: 'King',
+};
 
-const rankMeanings = [
-  {
-    uprightKeywords: ['开端', '机会', '种子', '第一步'],
-    reversedKeywords: ['迟滞', '错失', '犹疑', '未成形'],
-    uprightSummary: '代表新的起点与刚刚出现的机会',
-    reversedSummary: '提醒你留意迟疑、拖延或尚未成形的状态',
-    advice: '先把最小的一步真正做出来',
-    reverseAdvice: '别只是想象，先确认自己是否真的准备好了',
-  },
-  {
-    uprightKeywords: ['平衡', '选择', '调度', '拿捏'],
-    reversedKeywords: ['失衡', '摇摆', '顾此失彼', '忙乱'],
-    uprightSummary: '强调两股力量之间的平衡与协调',
-    reversedSummary: '提示你已经有些顾此失彼',
-    advice: '先决定什么最重要，再调整顺序',
-    reverseAdvice: '少做一点，也比把一切都勉强抓住更稳',
-  },
-  {
-    uprightKeywords: ['拓展', '回应', '延伸', '生长'],
-    reversedKeywords: ['延迟', '卡住', '分散', '受阻'],
-    uprightSummary: '表示事情开始向外延展，回应慢慢出现',
-    reversedSummary: '意味着推进节奏被拖慢，结果尚未如期显现',
-    advice: '把目光放远一点，给事情一点展开空间',
-    reverseAdvice: '先回头检查细节，再决定怎么继续',
-  },
-  {
-    uprightKeywords: ['稳定', '落地', '安顿', '基础'],
-    reversedKeywords: ['不稳', '表面热闹', '悬着', '难落定'],
-    uprightSummary: '强调稳定、落地与阶段性的安顿',
-    reversedSummary: '提醒你表面平稳不代表基础扎实',
-    advice: '先把基础打稳，再谈下一步',
-    reverseAdvice: '别急着庆祝，先把现实安排理顺',
-  },
-  {
-    uprightKeywords: ['摩擦', '竞争', '碰撞', '辨出优先级'],
-    reversedKeywords: ['缓和', '退让', '暗流', '未说开'],
-    uprightSummary: '代表摩擦、碰撞与局势中的拉扯',
-    reversedSummary: '说明表面缓和了，但真正的问题未必说开',
-    advice: '看清冲突背后真正要争的是什么',
-    reverseAdvice: '如果想求和，就别假装问题不存在',
-  },
-  {
-    uprightKeywords: ['流动', '回应', '回响', '分享'],
-    reversedKeywords: ['失衡', '压力升高', '不对等', '怕失去'],
-    uprightSummary: '象征资源或情绪开始流动，努力获得回应',
-    reversedSummary: '提醒你留意交换中的不对等与压力',
-    advice: '接住回应，也别忘记自己的边界',
-    reverseAdvice: '先厘清谁在付出、谁在消耗',
-  },
-  {
-    uprightKeywords: ['坚持', '立场', '防守', '守住'],
-    reversedKeywords: ['疲惫', '松动', '招架不住', '想退'],
-    uprightSummary: '说明你需要守住自己的位置与立场',
-    reversedSummary: '表示你已经有些疲于招架',
-    advice: '守住真正重要的东西就够了',
-    reverseAdvice: '适度后退，不代表失败',
-  },
-  {
-    uprightKeywords: ['速度', '推进', '消息', '加快'],
-    reversedKeywords: ['失序', '打结', '拖慢', '慌乱'],
-    uprightSummary: '代表消息、行动与节奏明显加快',
-    reversedSummary: '表示快并不等于顺，局面可能有些失序',
-    advice: '抓住节奏，趁势推进',
-    reverseAdvice: '先排优先级，再处理涌来的事情',
-  },
-  {
-    uprightKeywords: ['韧性', '警觉', '尾声坚持', '守线'],
-    reversedKeywords: ['心累', '防线松动', '快撑不住', '疲于防备'],
-    uprightSummary: '象征历经消耗后的坚持与警觉',
-    reversedSummary: '提醒你已经接近疲惫边缘',
-    advice: '把最后一点耐心留给自己',
-    reverseAdvice: '承认累了，反而能走得更远',
-  },
-  {
-    uprightKeywords: ['负担', '责任', '收尾', '重量'],
-    reversedKeywords: ['卸载', '分摊', '放下', '松绑'],
-    uprightSummary: '表示你背着很多责任继续前进',
-    reversedSummary: '提醒你没有必要把一切都独自扛着',
-    advice: '重新分配重量，才能继续推进',
-    reverseAdvice: '学会求助和放下，会更接近真正完成',
-  },
-  {
-    uprightKeywords: ['学习', '好奇', '新消息', '尝试'],
-    reversedKeywords: ['稚嫩', '三分钟热度', '不稳定', '想太多'],
-    uprightSummary: '带来新的信息、学习欲和探索冲动',
-    reversedSummary: '表示热情来得快也去得快，或信息还不稳定',
-    advice: '先从最感兴趣的部分开始摸索',
-    reverseAdvice: '别急着下结论，先继续观察',
-  },
-  {
-    uprightKeywords: ['出发', '推进', '果断', '行动力'],
-    reversedKeywords: ['鲁莽', '急躁', '偏离', '冲过头'],
-    uprightSummary: '象征很强的推进力与执行欲',
-    reversedSummary: '提醒你速度可能已经超过判断',
-    advice: '带着方向感往前冲，效果最好',
-    reverseAdvice: '慢一点，不会削弱你的力量',
-  },
-  {
-    uprightKeywords: ['温柔', '自信', '滋养', '感染力'],
-    reversedKeywords: ['敏感过头', '失衡', '控制欲', '自我怀疑'],
-    uprightSummary: '代表温柔、自信与持续照料的能力',
-    reversedSummary: '表示情绪起伏、过度操心或自我怀疑',
-    advice: '稳稳发光，不必用力证明',
-    reverseAdvice: '先照顾自己，再去照顾别人',
-  },
-  {
-    uprightKeywords: ['成熟', '掌舵', '格局', '可靠'],
-    reversedKeywords: ['专断', '僵硬', '过度控制', '固执'],
-    uprightSummary: '强调成熟的掌控力与更高层次的判断',
-    reversedSummary: '提醒你别让力量变成压迫',
-    advice: '看清全局后再做决定，会更稳',
-    reverseAdvice: '真正的掌控，不靠硬压实现',
-  },
-];
+function parseName(rawName) {
+  const englishMatch = rawName.match(/\(([^)]+)\)/);
+  const englishName = englishMatch?.[1]?.trim() || '';
 
-const createMinorArcana = (baseId, suitConfig) =>
-  rankLabels.map((rankLabel, index) => {
-    const rank = rankMeanings[index];
-    const name = `${suitConfig.suitName}${rankLabel}`;
-    const englishName = `${rankEnglishLabels[index]} of ${suitConfig.englishSuit}`;
-    const uprightKeywords = [...rank.uprightKeywords.slice(0, 2), ...suitConfig.positive.slice(0, 2)];
-    const reversedKeywords = [...rank.reversedKeywords.slice(0, 2), ...suitConfig.negative.slice(0, 2)];
-    const upright = `${name}正位${rank.uprightSummary}，并把${suitConfig.domain}带回更清楚的位置。现在适合${rank.advice}。`;
-    const reversed = `${name}逆位${rank.reversedSummary}，尤其会影响${suitConfig.domain}。此刻更适合${rank.reverseAdvice}。`;
+  let name = rawName.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  name = name.replace(/^(?:0|[IVX]+)\./, '').trim();
 
-    return createCard(baseId + index, name, englishName, uprightKeywords, reversedKeywords, upright, reversed);
-  });
+  if (englishName) {
+    return { name, englishName };
+  }
 
-const cardCatalog = [
-  ...majorArcanaData,
-  ...createMinorArcana(22, suitConfigs[0]),
-  ...createMinorArcana(36, suitConfigs[1]),
-  ...createMinorArcana(50, suitConfigs[2]),
-  ...createMinorArcana(64, suitConfigs[3]),
-];
+  const suit = Object.keys(minorSuitMap).find((prefix) => name.startsWith(prefix));
+  if (!suit) {
+    return { name, englishName: 'Unknown Card' };
+  }
+
+  const rank = name.slice(suit.length);
+  const englishSuit = minorSuitMap[suit];
+  const englishRank = minorRankMap[rank] || rank;
+
+  return { name, englishName: `${englishRank} of ${englishSuit}` };
+}
+
+function parseMeaningLine(line) {
+  const match = line.match(/^(.*?)，(正位|逆位)\。(.*)$/);
+  if (!match) {
+    throw new Error(`Unrecognized tarot meaning line: ${line}`);
+  }
+
+  const [, rawName, orientation, content] = match;
+  const { name, englishName } = parseName(rawName);
+  const parts = content
+    .split('。')
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const keywordPart = parts.shift() || '';
+  const keywords = keywordPart
+    .split('，')
+    .map((keyword) => keyword.trim())
+    .filter(Boolean);
+  const meaning = parts.join('。').trim() || `${name}${orientation}提示你留意这张牌当前呈现的主题。`;
+
+  return {
+    name,
+    englishName,
+    orientation,
+    keywords,
+    meaning,
+  };
+}
+
+const cardMap = new Map();
+
+rawMeaningLines.forEach((line) => {
+  const parsed = parseMeaningLine(line);
+  const existing =
+    cardMap.get(parsed.name) || {
+      name: parsed.name,
+      englishName: parsed.englishName,
+      uprightKeywords: [],
+      reversedKeywords: [],
+      upright: '',
+      reversed: '',
+    };
+
+  if (parsed.orientation === '正位') {
+    existing.uprightKeywords = parsed.keywords;
+    existing.upright = parsed.meaning;
+  } else {
+    existing.reversedKeywords = parsed.keywords;
+    existing.reversed = parsed.meaning;
+  }
+
+  cardMap.set(parsed.name, existing);
+});
+
+const cardCatalog = Array.from(cardMap.values()).map((card, index) =>
+  createCard(
+    index,
+    card.name,
+    card.englishName,
+    card.uprightKeywords,
+    card.reversedKeywords,
+    card.upright || `${card.name}正位牌义暂未记录。`,
+    card.reversed || `${card.name}逆位牌义暂未记录。`,
+  ),
+);
 
 const allCardData = Object.fromEntries(cardCatalog.map((card) => [card.id, card]));
 
@@ -237,7 +313,8 @@ export const getCardData = (id) =>
 export const getCardTitle = (card) => {
   if (!card) return '未知牌面 / Unknown Card';
 
-  const matched = typeof card.id === 'number' ? getCardData(card.id) : allTarotCards.find((item) => item.name === card.name);
+  const matched =
+    typeof card.id === 'number' ? getCardData(card.id) : allTarotCards.find((item) => item.name === card.name);
   const chineseName = card.name || matched?.name || '未知牌面';
   const englishName = matched?.englishName || 'Unknown Card';
 
@@ -249,7 +326,9 @@ export const getCardDisplayNames = (card) => {
     return { chineseName: '未知牌面', englishName: 'Unknown Card' };
   }
 
-  const matched = typeof card.id === 'number' ? getCardData(card.id) : allTarotCards.find((item) => item.name === card.name);
+  const matched =
+    typeof card.id === 'number' ? getCardData(card.id) : allTarotCards.find((item) => item.name === card.name);
+
   return {
     chineseName: card.name || matched?.name || '未知牌面',
     englishName: matched?.englishName || 'Unknown Card',

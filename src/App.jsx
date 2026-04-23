@@ -5,21 +5,31 @@ import TarotCard from './TarotCard';
 import { allTarotCards, drawThreeCards, generateReading, getCardData, getCardDisplayNames, getCardReading } from './data';
 import {
   appendRequestMessage,
+  createPendingMailboxMessage,
   createRequest,
   ensureProfile,
   getAuthenticatedUser,
   getAuthSession,
   getDisplaySignInDate,
   getLocalDateKey,
+  completeMailboxFeedback,
+  completeMailboxFollowUpReply,
+  listMailboxMessagesForAdmin,
+  listMailboxMessagesForUser,
   getProfileById,
   getRequestById,
   listRequestsByUser,
   loginWithEmail,
   logoutFromSupabase,
+  OFFICIAL_READER_ID,
   OFFICIAL_READER_NICKNAME,
+  markMailboxMessageRead,
   refreshAuthSession,
+  rejectMailboxMessage,
+  replyMailboxMessage,
   requestPasswordReset,
   registerWithEmail,
+  submitMailboxFollowUp,
   updatePassword,
   updateCoinBalance,
   updateDailyProfile,
@@ -294,6 +304,38 @@ function formatHistorySummary(entry) {
   return [spreadName, ...cardSummary].filter(Boolean).join(' · ');
 }
 
+function getMailboxStatusLabel(status) {
+  const labels = {
+    pending: '等待处理',
+    read: '已读',
+    rejected: '已驳回',
+    replied: '已回复',
+    follow_up: '待二次回复',
+    completed: '已完成',
+  };
+
+  return labels[status] || status || '未知状态';
+}
+
+function getMailboxStatusHint(status) {
+  switch (status) {
+    case 'pending':
+      return '已发送，等待饼饼解读。';
+    case 'read':
+      return '饼饼已经收到你的请求并试图为你解惑。';
+    case 'rejected':
+      return '本次请求已被驳回，10 饼币会原路退回。';
+    case 'replied':
+      return '饼饼已经完成初次回复。';
+    case 'follow_up':
+      return '你已经发起追加提问，正在等待饼饼二次回复。';
+    case 'completed':
+      return '这封信已经完成。';
+    default:
+      return '信箱状态已更新。';
+  }
+}
+
 function shouldAppendFortuneReading(text, keywords) {
   const normalizedText = String(text || '').trim();
   if (!normalizedText) return false;
@@ -352,6 +394,12 @@ function App() {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [messageText, setMessageText] = useState('');
   const [isWaitingForReply, setIsWaitingForReply] = useState(false);
+  const [mailboxItems, setMailboxItems] = useState([]);
+  const [selectedMailboxItem, setSelectedMailboxItem] = useState(null);
+  const [adminRejectReason, setAdminRejectReason] = useState('');
+  const [adminInitialReply, setAdminInitialReply] = useState('');
+  const [adminFollowUpReply, setAdminFollowUpReply] = useState('');
+  const [userFollowUpAsk, setUserFollowUpAsk] = useState('');
 
   const [dailyCard, setDailyCard] = useState(null);
   const [showDailyResult, setShowDailyResult] = useState(false);
@@ -425,6 +473,12 @@ function App() {
     setCurrentChatId(null);
     setMessageText('');
     setIsWaitingForReply(false);
+    setMailboxItems([]);
+    setSelectedMailboxItem(null);
+    setAdminRejectReason('');
+    setAdminInitialReply('');
+    setAdminFollowUpReply('');
+    setUserFollowUpAsk('');
     setDailyCard(null);
     setShowDailyResult(false);
     setSavedDailyTarot(null);
@@ -995,40 +1049,41 @@ function App() {
     const liveUser = await getLiveSessionUser();
     if (!liveUser?.id || !activeNickname || !readingEntry?.question || !Array.isArray(readingEntry.cardsData) || readingEntry.cardsData.length === 0) return;
 
-    const nextBalance = coinBalance - 10;
-    setCoinBalance(nextBalance);
-    persistProfileSnapshot({
-      coinBalance: nextBalance,
-      lastSignInDate,
-      isSignedIn,
-      savedDailyTarot,
-      dailyHistory,
-    });
+    const selectedRecordId = readingEntry.recordId ?? readingEntry.record_id ?? null;
+
+    if (!selectedRecordId) {
+      alert('这条抽牌记录还没有同步到可发送的信箱记录，请先选择一条已经绑定 record_id 的抽牌历史。');
+      return;
+    }
+
+    const confirmed = window.confirm('确认要把这条抽牌记录发送给饼饼大人吗？发送后会扣除 10 饼币。');
+    if (!confirmed) return;
 
     try {
-      await updateCoinBalance(liveUser.id, nextBalance);
-
-      const data = await createRequest({
-        user_id: liveUser.id,
-        user_nickname: activeNickname,
-        teacher_nickname: OFFICIAL_READER.nickname,
-        spread_key: readingEntry.spreadKey,
-        spread_name: readingEntry.spreadName,
-        question: readingEntry.question,
-        cards: readingEntry.cardsData,
-        status: 'pending',
-        messages: [],
+      const { message, coinBalance: nextBalance } = await createPendingMailboxMessage({
+        senderId: liveUser.id,
+        recordId: selectedRecordId,
+        initialQuestion: readingEntry.question,
       });
-      setCurrentChatId(data.id);
+
+      setCoinBalance(nextBalance);
+      persistProfileSnapshot({
+        coinBalance: nextBalance,
+        lastSignInDate,
+        isSignedIn,
+        savedDailyTarot,
+        dailyHistory,
+      });
+
+      setCurrentChatId(message.id);
       setUserQuestion(readingEntry.question);
       setDrawnCards(readingEntry.cardsData);
       setMessages([]);
       setIsWaitingForReply(true);
       setShowHumanRequestModal(false);
-      setCurrentPage('chat');
-      startPollingReply(data.id);
+      alert('已发送，等待饼饼解读。');
     } catch (error) {
-      alert('缃戠粶閿欒锛岃绋嶅悗閲嶈瘯');
+      alert(error.message || '发送失败，请稍后再试。');
     }
   };
 
@@ -1058,6 +1113,107 @@ function App() {
     }
   };
 
+  const refreshMailbox = async () => {
+    if (!user?.id) return;
+
+    if (user.id === OFFICIAL_READER_ID) {
+      const adminMessages = await listMailboxMessagesForAdmin();
+      setMailboxItems(adminMessages);
+      setUnreadCount(adminMessages.filter((item) => item.status === 'pending' || item.status === 'follow_up').length);
+      return;
+    }
+
+    const userMessages = await listMailboxMessagesForUser(user.id);
+    setMailboxItems(userMessages);
+    setUnreadCount(userMessages.filter((item) => item.status === 'replied').length);
+  };
+
+  const handleOpenMailboxItem = async (item) => {
+    if (!item) return;
+
+    let nextItem = item;
+    if (user?.id === OFFICIAL_READER_ID && item.status === 'pending') {
+      try {
+        const updated = await markMailboxMessageRead(item.id);
+        nextItem = updated || { ...item, status: 'read' };
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    setSelectedMailboxItem(nextItem);
+    setAdminRejectReason(nextItem.reject_reason || '');
+    setAdminInitialReply(nextItem.initial_reply || '');
+    setAdminFollowUpReply(nextItem.follow_up_reply || '');
+    setUserFollowUpAsk(nextItem.follow_up_ask || '');
+    await refreshMailbox();
+  };
+
+  const handleAdminReject = async () => {
+    if (!selectedMailboxItem) return;
+
+    try {
+      const result = await rejectMailboxMessage(selectedMailboxItem.id, adminRejectReason);
+      setSelectedMailboxItem(result.message);
+      alert('已驳回，并已退回 10 饼币。');
+      await refreshMailbox();
+    } catch (error) {
+      alert(error.message || '驳回失败，请稍后再试。');
+    }
+  };
+
+  const handleAdminReply = async () => {
+    if (!selectedMailboxItem) return;
+
+    try {
+      const updated = await replyMailboxMessage(selectedMailboxItem.id, adminInitialReply);
+      setSelectedMailboxItem(updated);
+      alert('已发送回复。');
+      await refreshMailbox();
+    } catch (error) {
+      alert(error.message || '回复失败，请稍后再试。');
+    }
+  };
+
+  const handleAdminFollowUpReply = async () => {
+    if (!selectedMailboxItem) return;
+
+    try {
+      const updated = await completeMailboxFollowUpReply(selectedMailboxItem.id, adminFollowUpReply);
+      setSelectedMailboxItem(updated);
+      alert('已完成二次回复，这封信已结案。');
+      await refreshMailbox();
+    } catch (error) {
+      alert(error.message || '二次回复失败，请稍后再试。');
+    }
+  };
+
+  const handleUserFollowUp = async () => {
+    if (!selectedMailboxItem || !user?.id) return;
+
+    try {
+      const updated = await submitMailboxFollowUp(selectedMailboxItem.id, userFollowUpAsk, user.id);
+      setSelectedMailboxItem(updated);
+      alert('追加提问已发送，等待饼饼继续回复。');
+      await refreshMailbox();
+    } catch (error) {
+      alert(error.message || '追加提问发送失败，请稍后再试。');
+    }
+  };
+
+  const handleUserFeedback = async (feedback) => {
+    if (!selectedMailboxItem || !user?.id) return;
+
+    try {
+      const updated = await completeMailboxFeedback(selectedMailboxItem.id, feedback, user.id);
+      setSelectedMailboxItem(updated);
+      alert('感谢你的评价，这封信已完成。');
+      await refreshMailbox();
+    } catch (error) {
+      alert(error.message || '评价提交失败，请稍后再试。');
+    }
+  };
+
   useEffect(() => {
     if (!aiReading || !readingComplete) return undefined;
 
@@ -1080,25 +1236,16 @@ function App() {
   useEffect(() => {
     if (!user?.id) return undefined;
 
-    const fetchPendingRequests = async () => {
+    const fetchMailbox = async () => {
       try {
-        const data = await listRequestsByUser(user.id);
-        const pending = data.filter((request) =>
-          request.status === 'pending' && request.messages?.some((message) => message.sender === 'teacher'),
-        );
-        setUnreadCount(
-          pending.reduce(
-            (count, request) => count + (request.messages?.filter((message) => message.sender === 'teacher').length || 0),
-            0,
-          ),
-        );
+        await refreshMailbox();
       } catch (error) {
         // ignore
       }
     };
 
-    fetchPendingRequests();
-    const interval = setInterval(fetchPendingRequests, 5000);
+    fetchMailbox();
+    const interval = setInterval(fetchMailbox, 5000);
     return () => clearInterval(interval);
   }, [user]);
 
@@ -1193,22 +1340,22 @@ function App() {
   const renderDailyCard = (extraClassName = '') => (
     <div className={`daily-card ${extraClassName}`.trim()}>
       <div className="daily-card-head">
-        <p className="eyebrow">Daily Fortune</p>
+        <p className="eyebrow">今日日运</p>
       </div>
 
       {isSignedIn && savedDailyTarot ? (
         <div className="daily-result">
-          <p className="daily-result-label">Today&apos;s Fortune</p>
+          <p className="daily-result-label">今日运势</p>
           <div className="daily-result-name">
-            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? ' · Reversed' : ' · Upright'}</span>
+            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? ' · 逆位' : ' · 正位'}</span>
             <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
           </div>
-          <p className="daily-result-note">Today&apos;s card is already open and 1 coin has been added.</p>
+          <p className="daily-result-note">今天的日运已经开启，点开后可以继续查看牌面与牌义。</p>
         </div>
       ) : (
         <div className="daily-result">
-          <p className="daily-result-label">Daily Check-in</p>
-          <p className="daily-result-note">Open today&apos;s tarot hint card and receive 1 coin plus a daily fortune.</p>
+          <p className="daily-result-label">每日签到</p>
+          <p className="daily-result-note">抽取今天的塔罗提示卡，领取 1 饼币并解锁一张今日日运。</p>
         </div>
       )}
 
@@ -1218,7 +1365,7 @@ function App() {
         className="primary-button daily-button"
       >
         <Sparkles className="w-5 h-5" />
-        <span>{isSignedIn ? 'Open Today&apos;s Fortune' : 'Get Today&apos;s Fortune'}</span>
+        <span>{isSignedIn ? '今日已开启' : '获取今日运势'}</span>
       </button>
     </div>
   );
@@ -1565,7 +1712,7 @@ function App() {
           <motion.section className="action-panel" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.06 }}>
             <div className="daily-card desktop-daily-card">
               <div className="daily-card-head">
-                <p className="eyebrow">Daily Fortune</p>
+                <p className="eyebrow">今日日运</p>
               </div>
 
               {isSignedIn && savedDailyTarot ? (
@@ -1927,19 +2074,196 @@ function App() {
         </header>
 
         <main className="page-content">
-          <div className="question-panel centered-panel">
-            <p className="eyebrow">Inbox</p>
-            {unreadCount === 0 ? (
-              <>
-                <h2 className="question-title">今天很安静。</h2>
-                <p className="question-note">暂时没有新的回复，晚点再回来看也可以。</p>
-              </>
-            ) : (
-              <>
-                <h2 className="question-title">你有 {unreadCount} 条未读消息。</h2>
-                <p className="question-note">返回首页或继续进入对话页，查看老师的新回复。</p>
-              </>
-            )}
+          <div className="mailbox-layout">
+            <section className="question-panel mailbox-list-panel">
+              <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? 'Admin Inbox' : 'Inbox'}</p>
+              <h2 className="question-title">{user?.id === OFFICIAL_READER_ID ? '饼饼信箱后台' : '我的塔罗信箱'}</h2>
+              <p className="question-note">
+                {user?.id === OFFICIAL_READER_ID
+                  ? '点开 pending 信件会自动标记为已读。你可以选择驳回退币，或直接写下初次回复。'
+                  : unreadCount > 0
+                    ? `你有 ${unreadCount} 条需要查看的来信更新。`
+                    : '这里会按状态展示你寄给饼饼的每一封信。'}
+              </p>
+
+              <div className="mailbox-item-list">
+                {mailboxItems.length > 0 ? (
+                  mailboxItems.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={`mailbox-item-card ${selectedMailboxItem?.id === item.id ? 'mailbox-item-card-active' : ''}`}
+                      onClick={() => handleOpenMailboxItem(item)}
+                    >
+                      <div className="mailbox-item-head">
+                        <strong>{getMailboxStatusLabel(item.status)}</strong>
+                        <span>{new Date(item.created_at).toLocaleString('zh-CN')}</span>
+                      </div>
+                      <p className="mailbox-item-question">{item.initial_question || '这封信还没有写下问题。'}</p>
+                      <p className="mailbox-item-hint">{getMailboxStatusHint(item.status)}</p>
+                    </button>
+                  ))
+                ) : (
+                  <div className="mailbox-empty">
+                    <p className="mailbox-empty-title">信箱暂时还是空的。</p>
+                    <p className="mailbox-empty-copy">
+                      {user?.id === OFFICIAL_READER_ID ? '等用户把牌阵寄给你之后，这里就会出现待处理工单。' : '当你把问题寄给饼饼之后，这里会显示处理进度。'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="question-panel mailbox-detail-panel">
+              {selectedMailboxItem ? (
+                <>
+                  <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? 'Message Review' : 'Message Detail'}</p>
+                  <h2 className="question-title">{getMailboxStatusLabel(selectedMailboxItem.status)}</h2>
+                  <p className="question-note">{getMailboxStatusHint(selectedMailboxItem.status)}</p>
+
+                  <div className="mailbox-detail-block">
+                    <span className="mailbox-detail-label">原始问题</span>
+                    <p className="mailbox-detail-text">{selectedMailboxItem.initial_question || '暂无内容'}</p>
+                  </div>
+
+                  {selectedMailboxItem.reject_reason ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">驳回原因</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.reject_reason}</p>
+                    </div>
+                  ) : null}
+
+                  {selectedMailboxItem.initial_reply ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">初次回复</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.initial_reply}</p>
+                    </div>
+                  ) : null}
+
+                  {selectedMailboxItem.follow_up_ask ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">追加提问</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_ask}</p>
+                    </div>
+                  ) : null}
+
+                  {selectedMailboxItem.follow_up_reply ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">二次回复</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_reply}</p>
+                    </div>
+                  ) : null}
+
+                  {selectedMailboxItem.feedback ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">你的评价</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.feedback === 'Heart' ? '♥ Heart' : '♠ Spade'}</p>
+                    </div>
+                  ) : null}
+
+                  {user?.id === OFFICIAL_READER_ID ? (
+                    <div className="mailbox-admin-actions">
+                      {(selectedMailboxItem.status === 'pending' || selectedMailboxItem.status === 'read') ? (
+                        <>
+                          <label className="mailbox-field">
+                            <span className="mailbox-detail-label">驳回原因</span>
+                            <textarea
+                              value={adminRejectReason}
+                              onChange={(event) => setAdminRejectReason(event.target.value)}
+                              placeholder="如果要驳回，请写下原因。"
+                              className="chat-input mailbox-textarea"
+                              rows={4}
+                            />
+                          </label>
+
+                          <label className="mailbox-field">
+                            <div className="mailbox-field-head">
+                              <span className="mailbox-detail-label">初次回复</span>
+                              <span className="mailbox-char-count">{adminInitialReply.length}/1000</span>
+                            </div>
+                            <textarea
+                              value={adminInitialReply}
+                              onChange={(event) => setAdminInitialReply(event.target.value.slice(0, 1000))}
+                              placeholder="写下要回复给用户的内容。"
+                              className="chat-input mailbox-textarea"
+                              rows={8}
+                            />
+                          </label>
+
+                          <div className="mailbox-action-row">
+                            <button type="button" onClick={handleAdminReject} className="secondary-button">
+                              驳回并退回 10 饼币
+                            </button>
+                            <button type="button" onClick={handleAdminReply} className="primary-button">
+                              发送初次回复
+                            </button>
+                          </div>
+                        </>
+                      ) : null}
+
+                      {selectedMailboxItem.status === 'follow_up' ? (
+                        <>
+                          <label className="mailbox-field">
+                            <div className="mailbox-field-head">
+                              <span className="mailbox-detail-label">二次回复</span>
+                              <span className="mailbox-char-count">{adminFollowUpReply.length}/1000</span>
+                            </div>
+                            <textarea
+                              value={adminFollowUpReply}
+                              onChange={(event) => setAdminFollowUpReply(event.target.value.slice(0, 1000))}
+                              placeholder="针对用户的追加提问完成最后一次回复。"
+                              className="chat-input mailbox-textarea"
+                              rows={8}
+                            />
+                          </label>
+
+                          <div className="mailbox-action-row">
+                            <button type="button" onClick={handleAdminFollowUpReply} className="primary-button">
+                              发送二次回复并结案
+                            </button>
+                          </div>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : selectedMailboxItem.status === 'replied' ? (
+                    <div className="mailbox-user-actions">
+                      <label className="mailbox-field">
+                        <div className="mailbox-field-head">
+                          <span className="mailbox-detail-label">追加提问</span>
+                          <span className="mailbox-char-count">{userFollowUpAsk.length}/100</span>
+                        </div>
+                        <textarea
+                          value={userFollowUpAsk}
+                          onChange={(event) => setUserFollowUpAsk(event.target.value.slice(0, 100))}
+                          placeholder="如果还想追问一次，可以在这里补充。"
+                          className="chat-input mailbox-textarea mailbox-textarea-short"
+                          rows={4}
+                        />
+                      </label>
+
+                      <div className="mailbox-action-row">
+                        <button type="button" onClick={() => handleUserFeedback('Heart')} className="secondary-button">
+                          ♥ Heart
+                        </button>
+                        <button type="button" onClick={() => handleUserFeedback('Spade')} className="secondary-button">
+                          ♠ Spade
+                        </button>
+                        <button type="button" onClick={handleUserFollowUp} className="primary-button">
+                          发送追加提问
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </>
+              ) : (
+                <div className="mailbox-empty mailbox-empty-detail">
+                  <p className="mailbox-empty-title">先点开一封信。</p>
+                  <p className="mailbox-empty-copy">
+                    {user?.id === OFFICIAL_READER_ID ? '进入 pending 信件时会自动标记为已读。' : '这里会展示饼饼给你的处理进度和回复内容。'}
+                  </p>
+                </div>
+              )}
+            </section>
           </div>
         </main>
       </div>

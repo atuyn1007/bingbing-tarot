@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 
 import { isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
+import { getCardArtwork } from '../src/cardArtwork.js';
 
 const tests = [
   {
@@ -40,6 +41,23 @@ const tests = [
     run() {
       const date = new Date(2026, 3, 21);
       assert.equal(getDisplaySignInDate(date), date.toDateString());
+    },
+  },
+  {
+    name: 'card artwork resolves chinese numeral aliases',
+    run() {
+      assert.equal(getCardArtwork({ name: '圣杯四' }), '/cards/waite-cn/圣杯4.jpg');
+      assert.equal(getCardArtwork({ name: '权杖十' }), '/cards/waite-cn/权杖10.jpg');
+      assert.equal(getCardArtwork({ name: '宝剑一' }), '/cards/waite-cn/宝剑ACE.jpg');
+    },
+  },
+  {
+    name: 'card artwork resolves court-card aliases',
+    run() {
+      assert.equal(getCardArtwork({ name: '圣杯侍者' }), '/cards/waite-cn/圣杯侍卫.jpg');
+      assert.equal(getCardArtwork({ name: '圣杯侍从' }), '/cards/waite-cn/圣杯侍卫.jpg');
+      assert.equal(getCardArtwork({ name: '圣杯侍卫' }), '/cards/waite-cn/圣杯侍卫.jpg');
+      assert.equal(getCardArtwork({ name: '圣杯皇后' }), '/cards/waite-cn/圣杯王后.jpg');
     },
   },
 ];
