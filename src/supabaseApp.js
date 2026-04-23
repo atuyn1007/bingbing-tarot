@@ -342,6 +342,86 @@ export async function listMailboxMessagesForAdmin(receiverId = OFFICIAL_READER_I
   return data || [];
 }
 
+export async function listSystemNotificationsForUser(userId) {
+  const { data, error } = await supabase
+    .from('system_notifications')
+    .select('*')
+    .eq('receiver_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function claimSystemNotification(notificationId, userId) {
+  const { data: notification, error: notificationError } = await supabase
+    .from('system_notifications')
+    .select('*')
+    .eq('id', notificationId)
+    .eq('receiver_id', userId)
+    .single();
+
+  if (notificationError) throw notificationError;
+  if (!notification) {
+    throw new Error('未找到这条系统消息。');
+  }
+
+  if (notification.status === 'claimed') {
+    const profile = await getProfileById(userId);
+    return {
+      notification,
+      coinBalance: profile?.coin_balance ?? null,
+      alreadyClaimed: true,
+    };
+  }
+
+  const profile = await getProfileById(userId);
+  if (!profile) {
+    throw new Error('未找到当前用户资料。');
+  }
+
+  const rewardCoins = Number(notification.reward_coins || 0);
+  const nextCoins = (profile.coin_balance || 0) + rewardCoins;
+
+  const { data: updatedNotification, error: updateNotificationError } = await supabase
+    .from('system_notifications')
+    .update({
+      status: 'claimed',
+      claimed_at: new Date().toISOString(),
+    })
+    .eq('id', notificationId)
+    .eq('receiver_id', userId)
+    .eq('status', 'pending')
+    .select()
+    .maybeSingle();
+
+  if (updateNotificationError) throw updateNotificationError;
+
+  if (!updatedNotification) {
+    const currentProfile = await getProfileById(userId);
+    const currentNotification = await supabase
+      .from('system_notifications')
+      .select('*')
+      .eq('id', notificationId)
+      .eq('receiver_id', userId)
+      .single();
+
+    return {
+      notification: currentNotification.data,
+      coinBalance: currentProfile?.coin_balance ?? null,
+      alreadyClaimed: true,
+    };
+  }
+
+  const updatedProfile = await updateCoinBalance(userId, nextCoins);
+
+  return {
+    notification: updatedNotification,
+    coinBalance: updatedProfile.coin_balance ?? nextCoins,
+    alreadyClaimed: false,
+  };
+}
+
 export async function markMailboxMessageRead(messageId, receiverId = OFFICIAL_READER_ID) {
   const { data, error } = await supabase
     .from('messages')

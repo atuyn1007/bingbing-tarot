@@ -14,8 +14,10 @@ import {
   getLocalDateKey,
   completeMailboxFeedback,
   completeMailboxFollowUpReply,
+  claimSystemNotification,
   listMailboxMessagesForAdmin,
   listMailboxMessagesForUser,
+  listSystemNotificationsForUser,
   getProfileById,
   getRequestById,
   listRequestsByUser,
@@ -336,6 +338,10 @@ function getMailboxStatusHint(status) {
   }
 }
 
+function getSystemNotificationStatusLabel(status) {
+  return status === 'claimed' ? '已领取' : '待领取';
+}
+
 function shouldAppendFortuneReading(text, keywords) {
   const normalizedText = String(text || '').trim();
   if (!normalizedText) return false;
@@ -395,6 +401,7 @@ function App() {
   const [messageText, setMessageText] = useState('');
   const [isWaitingForReply, setIsWaitingForReply] = useState(false);
   const [mailboxItems, setMailboxItems] = useState([]);
+  const [systemNotifications, setSystemNotifications] = useState([]);
   const [selectedMailboxItem, setSelectedMailboxItem] = useState(null);
   const [adminRejectReason, setAdminRejectReason] = useState('');
   const [adminInitialReply, setAdminInitialReply] = useState('');
@@ -474,6 +481,7 @@ function App() {
     setMessageText('');
     setIsWaitingForReply(false);
     setMailboxItems([]);
+    setSystemNotifications([]);
     setSelectedMailboxItem(null);
     setAdminRejectReason('');
     setAdminInitialReply('');
@@ -1119,13 +1127,22 @@ function App() {
     if (user.id === OFFICIAL_READER_ID) {
       const adminMessages = await listMailboxMessagesForAdmin();
       setMailboxItems(adminMessages);
+      setSystemNotifications([]);
       setUnreadCount(adminMessages.filter((item) => item.status === 'pending' || item.status === 'follow_up').length);
       return;
     }
 
-    const userMessages = await listMailboxMessagesForUser(user.id);
+    const [userMessages, userNotifications] = await Promise.all([
+      listMailboxMessagesForUser(user.id),
+      listSystemNotificationsForUser(user.id),
+    ]);
+
     setMailboxItems(userMessages);
-    setUnreadCount(userMessages.filter((item) => item.status === 'replied').length);
+    setSystemNotifications(userNotifications);
+    setUnreadCount(
+      userMessages.filter((item) => item.status === 'replied').length
+      + userNotifications.filter((item) => item.status !== 'claimed').length,
+    );
   };
 
   const handleOpenMailboxItem = async (item) => {
@@ -1211,6 +1228,29 @@ function App() {
       await refreshMailbox();
     } catch (error) {
       alert(error.message || '评价提交失败，请稍后再试。');
+    }
+  };
+
+  const handleClaimSystemNotification = async (notification) => {
+    if (!notification?.id || !user?.id) return;
+
+    try {
+      const result = await claimSystemNotification(notification.id, user.id);
+      setCoinBalance(result.coinBalance ?? coinBalance);
+      setSystemNotifications((current) =>
+        current.map((item) =>
+          item.id === notification.id
+            ? {
+                ...item,
+                ...(result.notification || {}),
+              }
+            : item,
+        ),
+      );
+      await refreshMailbox();
+      alert(result.alreadyClaimed ? '这份测试补贴已经领取过了。' : '99 饼币已经到账，请查收。');
+    } catch (error) {
+      alert(error.message || '领取失败，请稍后再试。');
     }
   };
 
@@ -2085,6 +2125,34 @@ function App() {
                     ? `你有 ${unreadCount} 条需要查看的来信更新。`
                     : '这里会按状态展示你寄给饼饼的每一封信。'}
               </p>
+
+              {user?.id !== OFFICIAL_READER_ID && systemNotifications.length > 0 ? (
+                <div className="system-notification-list">
+                  {systemNotifications.map((notification) => (
+                    <article key={notification.id} className="system-notification-card">
+                      <div className="mailbox-item-head">
+                        <strong>{notification.title || '系统消息'}</strong>
+                        <span>{getSystemNotificationStatusLabel(notification.status)}</span>
+                      </div>
+                      <p className="mailbox-item-question">{notification.body}</p>
+                      <div className="mailbox-action-row">
+                        <span className="mailbox-item-hint">
+                          {notification.status === 'claimed'
+                            ? `已领取 ${notification.reward_coins || 99} 饼币`
+                            : `点击领取 ${notification.reward_coins || 99} 饼币`}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleClaimSystemNotification(notification)}
+                          className={notification.status === 'claimed' ? 'secondary-button' : 'primary-button'}
+                        >
+                          {notification.status === 'claimed' ? '已领取' : '领取补贴'}
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
 
               <div className="mailbox-item-list">
                 {mailboxItems.length > 0 ? (
