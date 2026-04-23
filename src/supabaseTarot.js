@@ -3,26 +3,62 @@ import { supabase } from './supabaseClient';
 
 export const TAROT_CARD_NAMES = allTarotCards.map((card) => card.name);
 
-export async function saveTarotHistory(cardName, isUpright) {
+async function getCurrentUserId() {
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
 
-  const { error } = await supabase.from('tarot_history').insert({
-    user_id: user?.id || null,
-    card_name: cardName,
-    is_upright: isUpright,
-  });
+  if (error) throw error;
+  return user?.id || null;
+}
+
+export async function saveTarotHistory(cardName, isUpright) {
+  const userId = await getCurrentUserId();
+
+  const { data, error } = await supabase
+    .from('tarot_history')
+    .insert({
+      user_id: userId,
+      card_name: cardName,
+      is_upright: isUpright,
+    })
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
   }
 
   return {
-    card_name: cardName,
-    is_upright: isUpright,
-    position_label: isUpright ? '正位' : '逆位',
+    id: data.id,
+    card_name: data.card_name,
+    is_upright: data.is_upright,
+    position_label: data.is_upright ? '正位' : '逆位',
   };
+}
+
+export async function saveSpreadHistoryRecord(question, spreadName, cards) {
+  const userId = await getCurrentUserId();
+  const cardSummary = (cards || [])
+    .map((card) => `${card?.name || '未知牌面'}${card?.isReversed ? '（逆位）' : ''}`)
+    .join('、');
+
+  const { data, error } = await supabase
+    .from('tarot_history')
+    .insert({
+      user_id: userId,
+      card_name: `${spreadName}｜${question}｜${cardSummary}`,
+      is_upright: true,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 }
 
 export async function drawCardAndSave() {

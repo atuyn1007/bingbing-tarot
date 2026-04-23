@@ -220,7 +220,7 @@ function parseName(rawName) {
 }
 
 function parseMeaningLine(line) {
-  const match = line.match(/^(.*?)，(正位|逆位)\。(.*)$/);
+  const match = line.match(/^(.*?)，(正位|逆位)。(.*)$/);
   if (!match) {
     throw new Error(`Unrecognized tarot meaning line: ${line}`);
   }
@@ -336,8 +336,10 @@ export const getCardDisplayNames = (card) => {
 };
 
 export const getCardReading = (card) => {
-  const data = getCardData(card.id);
-  return card.isReversed ? data.reversed : data.upright;
+  const matched =
+    typeof card?.id === 'number' ? getCardData(card.id) : allTarotCards.find((item) => item.name === card?.name);
+  const data = matched?.id !== undefined ? getCardData(matched.id) : getCardData(undefined);
+  return card?.isReversed ? data.reversed : data.upright;
 };
 
 export const drawRandomCard = () => {

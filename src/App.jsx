@@ -37,7 +37,7 @@ import {
   updateDailyProfile,
 } from './supabaseApp';
 import { supabase } from './supabaseClient';
-import { saveTarotHistory } from './supabaseTarot';
+import { saveSpreadHistoryRecord, saveTarotHistory } from './supabaseTarot';
 import { isSessionExpiredAt } from './sessionUtils';
 
 const OFFICIAL_READER = {
@@ -195,6 +195,7 @@ function normalizeRecentReadingEntry(entry) {
 
   return {
     id: entry.id || `${Date.now()}`,
+    recordId: entry.recordId ?? entry.record_id ?? null,
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey,
     spreadName: sanitizeHistoryText(spread.name),
@@ -582,10 +583,20 @@ function App() {
     localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(items));
   };
 
-  const saveRecentReading = (question, cards, spreadKey) => {
+  const saveRecentReading = async (question, cards, spreadKey) => {
     const spread = getSpreadConfig(spreadKey);
+    let syncedRecordId = null;
+
+    try {
+      const synced = await saveSpreadHistoryRecord(question, spread.name, cards);
+      syncedRecordId = synced?.id ?? null;
+    } catch (error) {
+      console.warn('Failed to sync spread history to Supabase:', error);
+    }
+
     const entry = normalizeRecentReadingEntry({
       id: `${Date.now()}`,
+      recordId: syncedRecordId,
       question,
       spreadKey: spread.key,
       spreadName: spread.name,
@@ -603,6 +614,35 @@ function App() {
       persistRecentReadings(next);
       return next;
     });
+
+    return entry;
+  };
+
+  const syncRecentReadingRecord = async (entry) => {
+    if (!entry || entry.recordId || entry.record_id) return entry;
+
+    try {
+      const synced = await saveSpreadHistoryRecord(entry.question, entry.spreadName, entry.cardsData || []);
+      const nextEntry = normalizeRecentReadingEntry({
+        ...entry,
+        recordId: synced?.id ?? null,
+      });
+
+      setRecentReadings((current) => {
+        const next = current.map((item) => (item.id === entry.id ? nextEntry : item));
+        persistRecentReadings(next);
+        return next;
+      });
+
+      if (selectedHistoryReading?.id === entry.id) {
+        setSelectedHistoryReading(nextEntry);
+      }
+
+      return nextEntry;
+    } catch (error) {
+      console.warn('Failed to backfill record_id for recent reading:', error);
+      return entry;
+    }
   };
 
   const deleteRecentReading = (entryId) => {
@@ -1016,11 +1056,11 @@ function App() {
 
     setCurrentPage('drawing');
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const spread = getSpreadConfig(selectedSpreadKey);
       const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
       setDrawnCards(cards);
-      saveRecentReading(trimmedQuestion, cards, spread.key);
+      await saveRecentReading(trimmedQuestion, cards, spread.key);
 
       setTimeout(() => {
         setIsRevealing(true);
@@ -1057,10 +1097,11 @@ function App() {
     const liveUser = await getLiveSessionUser();
     if (!liveUser?.id || !activeNickname || !readingEntry?.question || !Array.isArray(readingEntry.cardsData) || readingEntry.cardsData.length === 0) return;
 
-    const selectedRecordId = readingEntry.recordId ?? readingEntry.record_id ?? null;
+    const syncedEntry = await syncRecentReadingRecord(readingEntry);
+    const selectedRecordId = syncedEntry?.recordId ?? syncedEntry?.record_id ?? null;
 
     if (!selectedRecordId) {
-      alert('这条抽牌记录还没有同步到可发送的信箱记录，请先选择一条已经绑定 record_id 的抽牌历史。');
+      alert('这条抽牌记录暂时还没同步成功，请稍后再试一次。');
       return;
     }
 
@@ -1071,7 +1112,7 @@ function App() {
       const { message, coinBalance: nextBalance } = await createPendingMailboxMessage({
         senderId: liveUser.id,
         recordId: selectedRecordId,
-        initialQuestion: readingEntry.question,
+        initialQuestion: syncedEntry.question,
       });
 
       setCoinBalance(nextBalance);
