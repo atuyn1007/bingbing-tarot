@@ -1,5 +1,8 @@
 import { supabase } from './supabaseClient';
 import { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
+export const SYSTEM_REWARD_NOTIFICATION_TITLE = '测试补贴';
+export const SYSTEM_REWARD_NOTIFICATION_BODY = '感谢您的注册与使用！因为你对饼饼的大力支持所以才有这个网站的今天~请查收随邮件附上的99饼币~ by爱你的饼饼';
+export const SYSTEM_REWARD_CUTOFF = '2026-04-24T00:00:00+08:00';
 export const OFFICIAL_READER_ID = '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8';
 
 export const OFFICIAL_READER_NICKNAME = '饼饼大人';
@@ -255,6 +258,7 @@ export async function createPendingMailboxMessage({
   senderId,
   recordId,
   initialQuestion,
+  recordSnapshot = null,
   receiverId = OFFICIAL_READER_ID,
   coinCost = 10,
 }) {
@@ -297,17 +301,39 @@ export async function createPendingMailboxMessage({
     throw deductError;
   }
 
-  const { data: message, error: insertError } = await supabase
+  const baseMessagePayload = {
+    sender_id: senderId,
+    receiver_id: receiverId,
+    record_id: normalizedRecordId,
+    status: 'pending',
+    initial_question: normalizedQuestion,
+  };
+
+  let message = null;
+  let insertError = null;
+
+  const firstInsertResult = await supabase
     .from('messages')
     .insert({
-      sender_id: senderId,
-      receiver_id: receiverId,
-      record_id: normalizedRecordId,
-      status: 'pending',
-      initial_question: normalizedQuestion,
+      ...baseMessagePayload,
+      record_snapshot: recordSnapshot,
     })
     .select()
     .single();
+
+  message = firstInsertResult.data;
+  insertError = firstInsertResult.error;
+
+  if (insertError && /record_snapshot/i.test(insertError.message || '')) {
+    const fallbackInsertResult = await supabase
+      .from('messages')
+      .insert(baseMessagePayload)
+      .select()
+      .single();
+
+    message = fallbackInsertResult.data;
+    insertError = fallbackInsertResult.error;
+  }
 
   if (insertError) {
     await updateCoinBalance(senderId, currentCoins);
@@ -317,6 +343,52 @@ export async function createPendingMailboxMessage({
   return {
     message,
     coinBalance: updatedProfile?.coin_balance ?? nextCoins,
+  };
+}
+
+async function ensureSystemRewardNotification(userId) {
+  if (!userId || userId === OFFICIAL_READER_ID) return;
+
+  const profile = await getProfileById(userId);
+  if (!profile?.created_at) return;
+
+  const createdAt = new Date(profile.created_at).getTime();
+  const cutoff = new Date(SYSTEM_REWARD_CUTOFF).getTime();
+  if (!Number.isFinite(createdAt) || createdAt >= cutoff) return;
+
+  const { data: existing, error: existingError } = await supabase
+    .from('system_notifications')
+    .select('id')
+    .eq('receiver_id', userId)
+    .eq('reward_coins', 99)
+    .limit(1);
+
+  if (existingError) throw existingError;
+  if (existing?.length) return;
+
+  const { error: insertError } = await supabase.from('system_notifications').insert({
+    receiver_id: userId,
+    title: SYSTEM_REWARD_NOTIFICATION_TITLE,
+    body: SYSTEM_REWARD_NOTIFICATION_BODY,
+    reward_coins: 99,
+  });
+
+  if (insertError) throw insertError;
+}
+
+function looksLikeMojibake(value) {
+  const text = String(value || '').trim();
+  if (!text) return true;
+  return /[锛銆€娴鎰楗鐖鐢浠璇]/.test(text);
+}
+
+function normalizeSystemNotification(notification) {
+  if (!notification) return notification;
+
+  return {
+    ...notification,
+    title: looksLikeMojibake(notification.title) ? SYSTEM_REWARD_NOTIFICATION_TITLE : notification.title,
+    body: looksLikeMojibake(notification.body) ? SYSTEM_REWARD_NOTIFICATION_BODY : notification.body,
   };
 }
 
@@ -343,6 +415,8 @@ export async function listMailboxMessagesForAdmin(receiverId = OFFICIAL_READER_I
 }
 
 export async function listSystemNotificationsForUser(userId) {
+  await ensureSystemRewardNotification(userId);
+
   const { data, error } = await supabase
     .from('system_notifications')
     .select('*')
@@ -350,7 +424,7 @@ export async function listSystemNotificationsForUser(userId) {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+  return (data || []).map(normalizeSystemNotification);
 }
 
 export async function claimSystemNotification(notificationId, userId) {
@@ -369,7 +443,7 @@ export async function claimSystemNotification(notificationId, userId) {
   if (notification.status === 'claimed') {
     const profile = await getProfileById(userId);
     return {
-      notification,
+      notification: normalizeSystemNotification(notification),
       coinBalance: profile?.coin_balance ?? null,
       alreadyClaimed: true,
     };
@@ -407,7 +481,7 @@ export async function claimSystemNotification(notificationId, userId) {
       .single();
 
     return {
-      notification: currentNotification.data,
+      notification: normalizeSystemNotification(currentNotification.data),
       coinBalance: currentProfile?.coin_balance ?? null,
       alreadyClaimed: true,
     };
@@ -416,7 +490,7 @@ export async function claimSystemNotification(notificationId, userId) {
   const updatedProfile = await updateCoinBalance(userId, nextCoins);
 
   return {
-    notification: updatedNotification,
+    notification: normalizeSystemNotification(updatedNotification),
     coinBalance: updatedProfile.coin_balance ?? nextCoins,
     alreadyClaimed: false,
   };

@@ -232,7 +232,8 @@ function parseMeaningLine(line) {
     .split('，')
     .map((keyword) => keyword.trim())
     .filter(Boolean);
-  const meaning = parts.join('。').trim() || `${name}${orientation}提示你留意这张牌当前呈现的主题。`;
+  const meaningText = parts.join('。').trim();
+  const meaning = meaningText || keywordPart || `${name}${orientation}提示你留意这张牌当前呈现的主题。`;
 
   return {
     name,

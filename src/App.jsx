@@ -307,6 +307,24 @@ function formatHistorySummary(entry) {
   return [spreadName, ...cardSummary].filter(Boolean).join(' · ');
 }
 
+function buildRecordSnapshot(entry) {
+  if (!entry) return null;
+
+  return {
+    question: sanitizeHistoryText(entry.question || ''),
+    spreadKey: entry.spreadKey || 'three',
+    spreadName: sanitizeHistoryText(entry.spreadName || getSpreadConfig(entry.spreadKey || 'three').name),
+    cardsData: Array.isArray(entry.cardsData)
+      ? entry.cardsData.map((card) => ({
+          id: typeof card?.id === 'number' ? card.id : resolveCardData(card).id,
+          name: sanitizeHistoryText(card?.name || resolveCardData(card).name),
+          englishName: card?.englishName || resolveCardData(card).englishName,
+          isReversed: Boolean(card?.isReversed),
+        }))
+      : [],
+  };
+}
+
 function getMailboxStatusLabel(status) {
   const labels = {
     pending: '等待处理',
@@ -719,11 +737,11 @@ function App() {
             setIsSessionSyncing(false);
             return;
           }
-          if (storedUser) {
-            clearSession();
-          } else {
+          if (storedUser && !isSessionExpired()) {
             setIsAuthReady(true);
             setIsSessionSyncing(false);
+          } else {
+            clearSession();
           }
         }
       } catch (error) {
@@ -760,11 +778,11 @@ function App() {
 
           await fetchUserProfile(session.user);
         } else {
-          if (storedUser) {
-            clearSession();
-          } else {
+          if (storedUser && !isSessionExpired()) {
             setIsAuthReady(true);
             setIsSessionSyncing(false);
+          } else {
+            clearSession();
           }
         }
         return;
@@ -1113,6 +1131,7 @@ function App() {
         senderId: liveUser.id,
         recordId: selectedRecordId,
         initialQuestion: syncedEntry.question,
+        recordSnapshot: buildRecordSnapshot(syncedEntry),
       });
 
       setCoinBalance(nextBalance);
@@ -2234,6 +2253,23 @@ function App() {
                     <span className="mailbox-detail-label">原始问题</span>
                     <p className="mailbox-detail-text">{selectedMailboxItem.initial_question || '暂无内容'}</p>
                   </div>
+
+                  {selectedMailboxItem.record_snapshot?.cardsData?.length ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">关联牌阵</span>
+                      <p className="mailbox-detail-text">
+                        {selectedMailboxItem.record_snapshot.spreadName || getSpreadConfig(selectedMailboxItem.record_snapshot.spreadKey || 'three').name}
+                      </p>
+                      {renderSpreadCards(
+                        selectedMailboxItem.record_snapshot.cardsData,
+                        selectedMailboxItem.record_snapshot.spreadKey || 'three',
+                        {
+                          isRevealed: true,
+                          className: 'history-preview-spread mailbox-detail-spread',
+                        },
+                      )}
+                    </div>
+                  ) : null}
 
                   {selectedMailboxItem.reject_reason ? (
                     <div className="mailbox-detail-block">

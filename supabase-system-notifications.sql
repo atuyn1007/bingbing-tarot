@@ -50,6 +50,13 @@ to authenticated
 using (auth.uid() = '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8')
 with check (auth.uid() = '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8');
 
+update public.system_notifications
+set
+  title = '测试补贴',
+  body = '感谢您的注册与使用！因为你对饼饼的大力支持所以才有这个网站的今天~请查收随邮件附上的99饼币~ by爱你的饼饼'
+where reward_coins = 99
+  and receiver_id <> '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8';
+
 insert into public.system_notifications (receiver_id, title, body, reward_coins)
 select
   id,
@@ -63,5 +70,5 @@ where created_at < timestamptz '2026-04-24 00:00:00+08'
     select 1
     from public.system_notifications existing
     where existing.receiver_id = public.profiles.id
-      and existing.title = '测试补贴'
+      and existing.reward_coins = 99
   );
