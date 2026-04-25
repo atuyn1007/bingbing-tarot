@@ -444,6 +444,9 @@ function App() {
 
   const typingRef = useRef(null);
   const authReadyTimeoutRef = useRef(null);
+  const autofillSyncTimeoutRef = useRef(null);
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
   const dailyLine = getDailyLine();
   const activeDailyCard = savedDailyTarot || dailyCard;
@@ -529,6 +532,23 @@ function App() {
     setAiReading('');
     setDisplayedText('');
     setUserQuestion('');
+  };
+
+  const syncAuthInputValues = () => {
+    const nextEmail = emailInputRef.current?.value || '';
+    const nextPassword = passwordInputRef.current?.value || '';
+
+    if (nextEmail && nextEmail !== email) {
+      setEmail(nextEmail);
+    }
+
+    if (isRecoveryMode) {
+      if (nextPassword && nextPassword !== resetPasswordValue) {
+        setResetPasswordValue(nextPassword);
+      }
+    } else if (nextPassword && nextPassword !== password) {
+      setPassword(nextPassword);
+    }
   };
 
   const fetchUserProfile = async (authUser) => {
@@ -761,6 +781,23 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (user) return undefined;
+
+    const timers = [0, 300, 1000].map((delay) =>
+      setTimeout(() => {
+        syncAuthInputValues();
+      }, delay),
+    );
+
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+      if (autofillSyncTimeoutRef.current) {
+        clearTimeout(autofillSyncTimeoutRef.current);
+      }
+    };
+  }, [user, isRecoveryMode]);
+
+  useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -859,14 +896,21 @@ function App() {
   };
 
   const handleLogin = async () => {
-    if (!email.trim() || !password.trim()) {
+    syncAuthInputValues();
+
+    const submittedEmail = (emailInputRef.current?.value || email || '').trim();
+    const submittedPassword = passwordInputRef.current?.value || password || '';
+
+    if (!submittedEmail || !submittedPassword.trim()) {
       alert('请输入邮箱和密码');
       return;
     }
 
     try {
       setIsSessionSyncing(true);
-      const data = await loginWithEmail(email.trim(), password);
+      setEmail(submittedEmail);
+      setPassword(submittedPassword);
+      const data = await loginWithEmail(submittedEmail, submittedPassword);
       markSessionStarted();
       setPassword('');
       const authUser = data.user || data.session?.user || (await getAuthenticatedUser());
@@ -1619,7 +1663,7 @@ function App() {
           <p className="hero-subtitle">
             {isRecoveryMode
               ? '设置一个新的密码，然后回到登录页继续。'
-              : isSessionSyncing
+              : isSessionSyncing && !email && !(isRecoveryMode ? resetPasswordValue : password)
                 ? '正在找回你的登录状态...'
                 : isLogin
                   ? '对发生的一切保持思考'
@@ -1630,7 +1674,21 @@ function App() {
           <div className="auth-form">
             <label className="field-shell">
               <Mail className="field-icon" />
-              <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="邮箱" className="field-input" />
+              <input
+                ref={emailInputRef}
+                type="email"
+                value={email}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  if (isSessionSyncing) setIsSessionSyncing(false);
+                }}
+                onInput={() => {
+                  if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
+                  autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
+                }}
+                placeholder="邮箱"
+                className="field-input"
+              />
             </label>
 
             {!isLogin && !isRecoveryMode ? (
@@ -1643,9 +1701,21 @@ function App() {
             <label className="field-shell">
               <Lock className="field-icon" />
               <input
+                ref={passwordInputRef}
                 type="password"
                 value={isRecoveryMode ? resetPasswordValue : password}
-                onChange={(event) => (isRecoveryMode ? setResetPasswordValue(event.target.value) : setPassword(event.target.value))}
+                onChange={(event) => {
+                  if (isRecoveryMode) {
+                    setResetPasswordValue(event.target.value);
+                  } else {
+                    setPassword(event.target.value);
+                  }
+                  if (isSessionSyncing) setIsSessionSyncing(false);
+                }}
+                onInput={() => {
+                  if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
+                  autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
+                }}
                 placeholder={isRecoveryMode ? '新的密码' : '密码'}
                 className="field-input"
                 onKeyDown={(event) =>
