@@ -393,7 +393,7 @@ function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
   const [user, setUser] = useState(storedUser);
   const [isAuthReady, setIsAuthReady] = useState(true);
-  const [isSessionSyncing, setIsSessionSyncing] = useState(Boolean(storedUser));
+  const [isSessionSyncing, setIsSessionSyncing] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
@@ -689,7 +689,7 @@ function App() {
     let mounted = true;
 
     const bootstrapSession = async () => {
-      setIsSessionSyncing(Boolean(storedUser));
+      setIsSessionSyncing(Boolean(storedUser) && !hasRecoveryLink);
       authReadyTimeoutRef.current = setTimeout(() => {
         if (mounted) {
           setIsAuthReady(true);
@@ -736,16 +736,14 @@ function App() {
             setIsSessionSyncing(false);
             return;
           }
-          if (storedUser && !isSessionExpired()) {
-            setIsAuthReady(true);
-            setIsSessionSyncing(false);
-          } else {
-            clearSession();
-          }
+          clearSession();
+          setIsAuthReady(true);
+          setIsSessionSyncing(false);
         }
       } catch (error) {
         console.error(error);
         if (mounted) {
+          clearSession();
           setIsAuthReady(true);
           setIsSessionSyncing(false);
         }
@@ -777,12 +775,9 @@ function App() {
 
           await fetchUserProfile(session.user);
         } else {
-          if (storedUser && !isSessionExpired()) {
-            setIsAuthReady(true);
-            setIsSessionSyncing(false);
-          } else {
-            clearSession();
-          }
+          clearSession();
+          setIsAuthReady(true);
+          setIsSessionSyncing(false);
         }
         return;
       }
@@ -870,13 +865,17 @@ function App() {
     }
 
     try {
+      setIsSessionSyncing(true);
       const data = await loginWithEmail(email.trim(), password);
       markSessionStarted();
       setPassword('');
-      if (data.user) {
-        await fetchUserProfile(data.user);
+      const authUser = data.user || data.session?.user || (await getAuthenticatedUser());
+      if (!authUser) {
+        throw new Error('登录成功，但暂时没有拿到用户信息。');
       }
+      await fetchUserProfile(authUser);
     } catch (error) {
+      setIsSessionSyncing(false);
       alert(error.message || '登录失败');
     }
   };
@@ -2385,6 +2384,9 @@ function App() {
                           <span className="mailbox-detail-label">追加提问</span>
                           <span className="mailbox-char-count">{userFollowUpAsk.length}/100</span>
                         </div>
+                        <p className="mailbox-detail-text">
+                          最多有一次追加提问的机会哦，追加提问不额外花费饼币。
+                        </p>
                         <textarea
                           value={userFollowUpAsk}
                           onChange={(event) => setUserFollowUpAsk(event.target.value.slice(0, 100))}
@@ -2394,12 +2396,16 @@ function App() {
                         />
                       </label>
 
+                      <div className="mailbox-detail-block">
+                        <span className="mailbox-detail-label">如果没有追加提问，请对本次解读打分：</span>
+                      </div>
+
                       <div className="mailbox-action-row">
                         <button type="button" onClick={() => handleUserFeedback('Heart')} className="secondary-button">
-                          ♥ Heart
+                          ♥ 满意
                         </button>
                         <button type="button" onClick={() => handleUserFeedback('Spade')} className="secondary-button">
-                          ♠ Spade
+                          ♠ 不满意
                         </button>
                         <button type="button" onClick={handleUserFollowUp} className="primary-button">
                           发送追加提问
