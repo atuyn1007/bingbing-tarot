@@ -6,5 +6,5 @@ export function getLocalDateKey(date = new Date()) {
 }
 
 export function getDisplaySignInDate(date = new Date()) {
-  return date.toDateString();
+  return getLocalDateKey(date);
 }

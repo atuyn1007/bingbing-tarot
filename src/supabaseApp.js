@@ -185,8 +185,19 @@ export async function updateCoinBalance(userId, coinBalance) {
   return data;
 }
 
+async function changeCoinBalance(userId, delta) {
+  if (!userId || !delta) return null;
+
+  const profile = await getProfileById(userId);
+  if (!profile) {
+    throw new Error('未找到对应的用户资料。');
+  }
+
+  return updateCoinBalance(userId, (profile.coin_balance || 0) + delta);
+}
+
 export async function signInDaily(profile) {
-  const today = getDisplaySignInDate();
+  const today = getLocalDateKey();
   const currentHistory = profile.daily_history || {};
 
   if (profile.last_sign_in_date === today) {
@@ -301,6 +312,13 @@ export async function createPendingMailboxMessage({
     throw deductError;
   }
 
+  try {
+    await changeCoinBalance(receiverId, coinCost);
+  } catch (creditError) {
+    await updateCoinBalance(senderId, currentCoins);
+    throw creditError;
+  }
+
   const baseMessagePayload = {
     sender_id: senderId,
     receiver_id: receiverId,
@@ -337,6 +355,7 @@ export async function createPendingMailboxMessage({
 
   if (insertError) {
     await updateCoinBalance(senderId, currentCoins);
+    await changeCoinBalance(receiverId, -coinCost);
     throw insertError;
   }
 
@@ -392,6 +411,27 @@ function normalizeSystemNotification(notification) {
   };
 }
 
+async function attachMailboxNicknames(items = []) {
+  const senderIds = Array.from(new Set(items.map((item) => item.sender_id).filter(Boolean)));
+
+  if (!senderIds.length) {
+    return items;
+  }
+
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('id, nickname')
+    .in('id', senderIds);
+
+  if (error) throw error;
+
+  const nicknameMap = new Map((profiles || []).map((profile) => [profile.id, profile.nickname]));
+  return items.map((item) => ({
+    ...item,
+    sender_nickname: nicknameMap.get(item.sender_id) || '未知用户',
+  }));
+}
+
 export async function listMailboxMessagesForUser(userId) {
   const { data, error } = await supabase
     .from('messages')
@@ -400,7 +440,7 @@ export async function listMailboxMessagesForUser(userId) {
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+  return attachMailboxNicknames(data || []);
 }
 
 export async function listMailboxMessagesForAdmin(receiverId = OFFICIAL_READER_ID) {
@@ -411,7 +451,7 @@ export async function listMailboxMessagesForAdmin(receiverId = OFFICIAL_READER_I
     .order('created_at', { ascending: false });
 
   if (error) throw error;
-  return data || [];
+  return attachMailboxNicknames(data || []);
 }
 
 export async function listSystemNotificationsForUser(userId) {
@@ -516,49 +556,29 @@ export async function rejectMailboxMessage(messageId, rejectReason, receiverId =
     throw new Error('请先填写驳回原因。');
   }
 
-  const { data: message, error: messageError } = await supabase
-    .from('messages')
-    .select('*')
-    .eq('id', messageId)
-    .eq('receiver_id', receiverId)
-    .single();
+  const { data, error } = await supabase.rpc('reject_message_and_refund', {
+    p_message_id: messageId,
+    p_reject_reason: normalizedReason,
+    p_admin_id: receiverId,
+  });
 
-  if (messageError) throw messageError;
-  if (!message) throw new Error('未找到这条信箱消息。');
+  if (error) throw error;
 
-  const { data: senderProfile, error: profileError } = await supabase
-    .from('profiles')
-    .select('coin_balance')
-    .eq('id', message.sender_id)
-    .single();
+  const updatedMessage = Array.isArray(data) ? data[0] : data;
+  if (!updatedMessage) {
+    throw new Error('驳回请求未返回结果，请稍后再试。');
+  }
 
-  if (profileError) throw profileError;
+  try {
+    await changeCoinBalance(receiverId, -10);
+  } catch (coinError) {
+    console.warn('Failed to adjust official reader balance after rejection:', coinError);
+  }
 
-  const refundCoins = (senderProfile?.coin_balance || 0) + 10;
-
-  const { data: updatedMessage, error: updateError } = await supabase
-    .from('messages')
-    .update({
-      status: 'rejected',
-      reject_reason: normalizedReason,
-    })
-    .eq('id', messageId)
-    .eq('receiver_id', receiverId)
-    .select()
-    .single();
-
-  if (updateError) throw updateError;
-
-  const { error: refundError } = await supabase
-    .from('profiles')
-    .update({ coin_balance: refundCoins })
-    .eq('id', message.sender_id);
-
-  if (refundError) throw refundError;
+  const [enrichedMessage] = await attachMailboxNicknames([updatedMessage]);
 
   return {
-    message: updatedMessage,
-    refundedCoins: refundCoins,
+    message: enrichedMessage,
   };
 }
 

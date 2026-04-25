@@ -37,10 +37,10 @@ const tests = [
     },
   },
   {
-    name: 'getDisplaySignInDate matches native toDateString',
+    name: 'getDisplaySignInDate matches local date key',
     run() {
       const date = new Date(2026, 3, 21);
-      assert.equal(getDisplaySignInDate(date), date.toDateString());
+      assert.equal(getDisplaySignInDate(date), '2026-04-21');
     },
   },
   {

@@ -10,7 +10,6 @@ import {
   ensureProfile,
   getAuthenticatedUser,
   getAuthSession,
-  getDisplaySignInDate,
   getLocalDateKey,
   completeMailboxFeedback,
   completeMailboxFollowUpReply,
@@ -535,8 +534,8 @@ function App() {
   const fetchUserProfile = async (authUser) => {
     try {
       const profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || nickname);
-      const today = getDisplaySignInDate();
-      const isSignedInToday = profile.last_sign_in_date === today;
+      const todayKey = getLocalDateKey();
+      const isSignedInToday = profile.last_sign_in_date === todayKey;
       const nextUser = { id: authUser.id, nickname: profile.nickname };
 
       setUser(nextUser);
@@ -945,14 +944,13 @@ function App() {
         return;
       }
 
-      const today = getDisplaySignInDate();
       const todayKey = getLocalDateKey();
       const currentHistory = profile.daily_history || {};
 
-      if (profile.last_sign_in_date === today) {
+      if (profile.last_sign_in_date === todayKey) {
         setIsSignedIn(true);
         setCoinBalance(profile.coin_balance || 0);
-        setLastSignInDate(profile.last_sign_in_date || today);
+        setLastSignInDate(profile.last_sign_in_date || todayKey);
         setDailyHistory(currentHistory);
         if (profile.today_card) {
           setSavedDailyTarot(profile.today_card);
@@ -962,7 +960,7 @@ function App() {
 
         persistProfileSnapshot({
           coinBalance: profile.coin_balance || 0,
-          lastSignInDate: profile.last_sign_in_date || today,
+          lastSignInDate: profile.last_sign_in_date || todayKey,
           isSignedIn: true,
           savedDailyTarot: profile.today_card || null,
           dailyHistory: currentHistory,
@@ -982,7 +980,7 @@ function App() {
       };
 
       const updatedProfile = await updateDailyProfile(liveUser.id, {
-        last_sign_in_date: today,
+        last_sign_in_date: todayKey,
         today_card: todayCard,
         daily_history: nextHistory,
         coin_balance: (profile.coin_balance || 0) + 1,
@@ -990,7 +988,7 @@ function App() {
 
       setIsSignedIn(true);
       setCoinBalance(updatedProfile.coin_balance || coinBalance);
-      setLastSignInDate(updatedProfile.last_sign_in_date || today);
+      setLastSignInDate(updatedProfile.last_sign_in_date || todayKey);
       setDailyHistory(updatedProfile.daily_history || nextHistory);
       if (updatedProfile.today_card) {
         try {
@@ -1006,7 +1004,7 @@ function App() {
 
       persistProfileSnapshot({
         coinBalance: updatedProfile.coin_balance || coinBalance,
-        lastSignInDate: updatedProfile.last_sign_in_date || today,
+        lastSignInDate: updatedProfile.last_sign_in_date || todayKey,
         isSignedIn: true,
         savedDailyTarot: updatedProfile.today_card || null,
         dailyHistory: updatedProfile.daily_history || nextHistory,
@@ -2227,6 +2225,9 @@ function App() {
                         <strong>{getMailboxStatusLabel(item.status)}</strong>
                         <span>{new Date(item.created_at).toLocaleString('zh-CN')}</span>
                       </div>
+                      {user?.id === OFFICIAL_READER_ID ? (
+                        <p className="mailbox-item-hint">来自：{item.sender_nickname || '未知用户'}</p>
+                      ) : null}
                       <p className="mailbox-item-question">{item.initial_question || '这封信还没有写下问题。'}</p>
                       <p className="mailbox-item-hint">{getMailboxStatusHint(item.status)}</p>
                     </button>
@@ -2248,6 +2249,13 @@ function App() {
                   <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? 'Message Review' : 'Message Detail'}</p>
                   <h2 className="question-title">{getMailboxStatusLabel(selectedMailboxItem.status)}</h2>
                   <p className="question-note">{getMailboxStatusHint(selectedMailboxItem.status)}</p>
+
+                  {user?.id === OFFICIAL_READER_ID ? (
+                    <div className="mailbox-detail-block">
+                      <span className="mailbox-detail-label">发件人</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.sender_nickname || '未知用户'}</p>
+                    </div>
+                  ) : null}
 
                   <div className="mailbox-detail-block">
                     <span className="mailbox-detail-label">原始问题</span>
