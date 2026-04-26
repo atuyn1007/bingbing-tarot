@@ -53,7 +53,7 @@ export async function saveSpreadHistoryRecord(question, spreadName, cards) {
     .from('tarot_history')
     .insert({
       user_id: userId,
-      card_name: `${spreadName}｜${question}｜${cardSummary}`,
+      card_name: `${spreadName}｜${String(question || '').trim()}｜${cardSummary}`,
       is_upright: true,
     })
     .select()

@@ -591,6 +591,10 @@ function App() {
       console.error(error);
       setIsAuthReady(true);
     } finally {
+      if (authReadyTimeoutRef.current) {
+        clearTimeout(authReadyTimeoutRef.current);
+        authReadyTimeoutRef.current = null;
+      }
       setIsSessionSyncing(false);
     }
   };
@@ -722,7 +726,7 @@ function App() {
     let mounted = true;
 
     const bootstrapSession = async () => {
-      setIsSessionSyncing(Boolean(storedUser) && !hasRecoveryLink);
+      setIsSessionSyncing(Boolean(storedUser) && !hasRecoveryLink && !hasPendingAuthInput() && !authInteractionRef.current);
       authReadyTimeoutRef.current = setTimeout(() => {
         if (mounted) {
           setIsAuthReady(true);
@@ -803,14 +807,19 @@ function App() {
   useEffect(() => {
     if (user) return undefined;
 
-    const timers = [0, 300, 1000].map((delay) =>
+    const timers = [0, 300, 1000, 2500, 4000].map((delay) =>
       setTimeout(() => {
         syncAuthInputValues();
       }, delay),
     );
 
+    const interval = setInterval(() => {
+      syncAuthInputValues();
+    }, 1200);
+
     return () => {
       timers.forEach((timer) => clearTimeout(timer));
+      clearInterval(interval);
       if (autofillSyncTimeoutRef.current) {
         clearTimeout(autofillSyncTimeoutRef.current);
       }
@@ -935,6 +944,10 @@ function App() {
     }
 
     try {
+      if (authReadyTimeoutRef.current) {
+        clearTimeout(authReadyTimeoutRef.current);
+        authReadyTimeoutRef.current = null;
+      }
       setIsSessionSyncing(true);
       setEmail(submittedEmail);
       setPassword(submittedPassword);
@@ -1143,11 +1156,13 @@ function App() {
 
     setCurrentPage('drawing');
 
-    setTimeout(async () => {
+    setTimeout(() => {
       const spread = getSpreadConfig(selectedSpreadKey);
       const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
       setDrawnCards(cards);
-      await saveRecentReading(trimmedQuestion, cards, spread.key);
+      void saveRecentReading(trimmedQuestion, cards, spread.key).catch((error) => {
+        console.warn('Failed to persist recent reading:', error);
+      });
 
       setTimeout(() => {
         setIsRevealing(true);

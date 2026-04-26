@@ -288,7 +288,14 @@ export async function createPendingMailboxMessage({
     throw new Error('请先确认你要发送给饼饼的问题。');
   }
 
-  const profile = await getProfileById(senderId);
+  let profile = await getProfileById(senderId);
+  if (!profile) {
+    const authUser = await getAuthenticatedUser();
+    if (authUser?.id === senderId) {
+      profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || '');
+    }
+  }
+
   if (!profile) {
     throw new Error('未找到当前用户资料。');
   }
@@ -299,6 +306,7 @@ export async function createPendingMailboxMessage({
   }
 
   const nextCoins = currentCoins - coinCost;
+  let officialReaderCredited = false;
 
   const { data: updatedProfile, error: deductError } = await supabase
     .from('profiles')
@@ -313,10 +321,15 @@ export async function createPendingMailboxMessage({
   }
 
   try {
-    await changeCoinBalance(receiverId, coinCost);
+    const creditResult = await changeCoinBalance(receiverId, coinCost);
+    officialReaderCredited = Boolean(creditResult);
   } catch (creditError) {
-    await updateCoinBalance(senderId, currentCoins);
-    throw creditError;
+    if (receiverId === OFFICIAL_READER_ID) {
+      console.warn('Failed to credit official reader balance, continuing mailbox send:', creditError);
+    } else {
+      await updateCoinBalance(senderId, currentCoins);
+      throw creditError;
+    }
   }
 
   const baseMessagePayload = {
@@ -355,7 +368,9 @@ export async function createPendingMailboxMessage({
 
   if (insertError) {
     await updateCoinBalance(senderId, currentCoins);
-    await changeCoinBalance(receiverId, -coinCost);
+    if (officialReaderCredited) {
+      await changeCoinBalance(receiverId, -coinCost);
+    }
     throw insertError;
   }
 
