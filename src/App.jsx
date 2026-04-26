@@ -445,6 +445,7 @@ function App() {
   const typingRef = useRef(null);
   const authReadyTimeoutRef = useRef(null);
   const autofillSyncTimeoutRef = useRef(null);
+  const authInteractionRef = useRef(false);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
@@ -453,6 +454,9 @@ function App() {
   const calendarDate = new Date();
   const calendarDays = buildCalendarDays(calendarDate);
   const activeSpread = getSpreadConfig(selectedSpreadKey);
+  const hasAuthDraft =
+    Boolean((emailInputRef.current?.value || email || '').trim()) ||
+    Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
 
   useEffect(() => {
     localStorage.setItem('tarot_theme', theme);
@@ -476,6 +480,7 @@ function App() {
   };
 
   const clearSession = () => {
+    authInteractionRef.current = false;
     localStorage.removeItem('tarot_user');
     localStorage.removeItem(SESSION_STARTED_AT_KEY);
     localStorage.removeItem(PROFILE_SNAPSHOT_KEY);
@@ -538,6 +543,10 @@ function App() {
     const nextEmail = emailInputRef.current?.value || '';
     const nextPassword = passwordInputRef.current?.value || '';
 
+    if (nextEmail || nextPassword) {
+      authInteractionRef.current = true;
+    }
+
     if (nextEmail && nextEmail !== email) {
       setEmail(nextEmail);
     }
@@ -550,6 +559,10 @@ function App() {
       setPassword(nextPassword);
     }
   };
+
+  const hasPendingAuthInput = () =>
+    Boolean((emailInputRef.current?.value || email || '').trim()) ||
+    Boolean((passwordInputRef.current?.value || password || resetPasswordValue || '').trim());
 
   const fetchUserProfile = async (authUser) => {
     try {
@@ -756,6 +769,13 @@ function App() {
             setIsSessionSyncing(false);
             return;
           }
+          if (hasPendingAuthInput() || authInteractionRef.current) {
+            localStorage.removeItem('tarot_user');
+            setUser(null);
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+            return;
+          }
           clearSession();
           setIsAuthReady(true);
           setIsSessionSyncing(false);
@@ -812,9 +832,16 @@ function App() {
 
           await fetchUserProfile(session.user);
         } else {
-          clearSession();
-          setIsAuthReady(true);
-          setIsSessionSyncing(false);
+          if (hasPendingAuthInput() || authInteractionRef.current) {
+            localStorage.removeItem('tarot_user');
+            setUser(null);
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+          } else {
+            clearSession();
+            setIsAuthReady(true);
+            setIsSessionSyncing(false);
+          }
         }
         return;
       }
@@ -897,6 +924,7 @@ function App() {
 
   const handleLogin = async () => {
     syncAuthInputValues();
+    authInteractionRef.current = true;
 
     const submittedEmail = (emailInputRef.current?.value || email || '').trim();
     const submittedPassword = passwordInputRef.current?.value || password || '';
@@ -1663,7 +1691,7 @@ function App() {
           <p className="hero-subtitle">
             {isRecoveryMode
               ? '设置一个新的密码，然后回到登录页继续。'
-              : isSessionSyncing && !email && !(isRecoveryMode ? resetPasswordValue : password)
+              : isSessionSyncing && !hasAuthDraft
                 ? '正在找回你的登录状态...'
                 : isLogin
                   ? '对发生的一切保持思考'
@@ -1679,12 +1707,18 @@ function App() {
                 type="email"
                 value={email}
                 onChange={(event) => {
+                  authInteractionRef.current = true;
                   setEmail(event.target.value);
                   if (isSessionSyncing) setIsSessionSyncing(false);
                 }}
                 onInput={() => {
                   if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
+                  if (isSessionSyncing) setIsSessionSyncing(false);
                   autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
+                }}
+                onFocus={() => {
+                  authInteractionRef.current = true;
+                  if (isSessionSyncing) setIsSessionSyncing(false);
                 }}
                 placeholder="邮箱"
                 className="field-input"
@@ -1705,6 +1739,7 @@ function App() {
                 type="password"
                 value={isRecoveryMode ? resetPasswordValue : password}
                 onChange={(event) => {
+                  authInteractionRef.current = true;
                   if (isRecoveryMode) {
                     setResetPasswordValue(event.target.value);
                   } else {
@@ -1714,7 +1749,12 @@ function App() {
                 }}
                 onInput={() => {
                   if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
+                  if (isSessionSyncing) setIsSessionSyncing(false);
                   autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
+                }}
+                onFocus={() => {
+                  authInteractionRef.current = true;
+                  if (isSessionSyncing) setIsSessionSyncing(false);
                 }}
                 placeholder={isRecoveryMode ? '新的密码' : '密码'}
                 className="field-input"
