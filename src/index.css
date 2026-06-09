@@ -740,6 +740,17 @@ button:disabled {
   backdrop-filter: blur(12px);
 }
 
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--app-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(12px);
+}
+
 .card-style-toggle {
   display: inline-flex;
   align-items: center;
@@ -751,6 +762,7 @@ button:disabled {
   backdrop-filter: blur(12px);
 }
 
+.language-switcher-button,
 .card-style-button {
   border: none;
   background: transparent;
@@ -765,10 +777,17 @@ button:disabled {
   transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
+.language-switcher-button {
+  min-width: 52px;
+  text-transform: uppercase;
+}
+
+.language-switcher-button:hover,
 .card-style-button:hover {
   transform: translateY(-1px);
 }
 
+.language-switcher-button-active,
 .card-style-button-active {
   background: #221712;
   color: #fff4e8;
@@ -826,6 +845,10 @@ button:disabled {
 }
 
 .topbar-theme-toggle {
+  margin-right: 2px;
+}
+
+.topbar-language-switcher {
   margin-right: 2px;
 }
 

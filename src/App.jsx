@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Bell, Coins, Lock, Mail, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
 import TarotCard from './TarotCard';
-import { allTarotCards, drawThreeCards, generateReading, getCardData, getCardDisplayNames, getCardReading } from './data';
+import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
+import LanguageSwitcher from './components/LanguageSwitcher';
+import { getIntlLocale, useI18n } from './i18n';
 import {
   appendRequestMessage,
   createPendingMailboxMessage,
@@ -42,37 +44,25 @@ import { isSessionExpiredAt } from './sessionUtils';
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
   englishLabel: 'ask bb!',
-  intro: '链接饼饼为你解读，消耗10饼币。',
 };
-
-const DAILY_LINES = [
-  { text: '且将新火试新茶，诗酒趁年华。', source: '苏轼《望江南》' },
-  { text: '人闲桂花落，夜静春山空。', source: '王维《鸟鸣涧》' },
-  { text: '吹灭读书灯，一身都是月。', source: '孙玉石《吹灯读书灯》' },
-  { text: 'The readiness is all.', source: 'William Shakespeare' },
-  { text: 'Hope is the thing with feathers.', source: 'Emily Dickinson' },
-  { text: '凡是过往，皆为序章。', source: '《暴风雨》常见译句' },
-  { text: '已识乾坤大，犹怜草木青。', source: '马一浮《旷怡亭口占》' },
-  { text: '海内存知己，天涯若比邻。', source: '王勃《送杜少府之任蜀州》' },
-  { text: 'The woods are lovely, dark and deep.', source: 'Robert Frost' },
-  { text: '有情芍药含春泪，无力蔷薇卧晓枝。', source: '秦观《春日》' },
-  { text: 'To thine own self be true.', source: 'William Shakespeare' },
-  { text: '山中何事？松花酿酒，春水煎茶。', source: '张可久《人月圆》' },
-];
-
-function getDailyLine() {
-  const today = new Date();
-  const dayKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-  const hash = Array.from(dayKey).reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  return DAILY_LINES[hash % DAILY_LINES.length];
-}
 
 function getRecentReadingsKey(nickname) {
   return `tarot_recent_readings_${nickname || 'guest'}`;
 }
 
-function formatDailyFortuneDate() {
-  return new Intl.DateTimeFormat('zh-CN', {
+function getDailyLine(lines = []) {
+  if (!Array.isArray(lines) || lines.length === 0) {
+    return { text: '', source: '' };
+  }
+
+  const today = new Date();
+  const dayKey = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  const hash = Array.from(dayKey).reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return lines[hash % lines.length];
+}
+
+function formatDailyFortuneDate(locale) {
+  return new Intl.DateTimeFormat(locale, {
     month: 'numeric',
     day: 'numeric',
   }).format(new Date());
@@ -91,7 +81,7 @@ function resolveCardData(card) {
 
 function stripLeadSentence(text) {
   const normalized = String(text || '').trim();
-  const firstStop = normalized.indexOf('。');
+  const firstStop = normalized.indexOf('?');
 
   if (firstStop === -1) {
     return normalized;
@@ -100,8 +90,8 @@ function stripLeadSentence(text) {
   return normalized.slice(firstStop + 1).trim();
 }
 
-function getMonthLabel(date = new Date()) {
-  return new Intl.DateTimeFormat('zh-CN', {
+function getMonthLabel(locale, date = new Date()) {
+  return new Intl.DateTimeFormat(locale, {
     year: 'numeric',
     month: 'long',
   }).format(date);
@@ -123,7 +113,7 @@ function hasRecoveryParams() {
 
 function sanitizeHistoryText(value) {
   return String(value || '')
-    .replace(/^[·•\-—–\s路]+/u, '')
+    .replace(/^[·•\-—–\s]+/u, '')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -153,17 +143,74 @@ function buildCalendarDays(date = new Date()) {
   return days;
 }
 
-function normalizeRecentReadingEntry(entry) {
+const SPREAD_OPTIONS = [
+  {
+    key: 'three',
+    localeKey: 'spreads.three',
+    canonicalName: 'three-card spread',
+    cardCount: 3,
+    preview: ['1', '2', '3'],
+  },
+  {
+    key: 'triangle',
+    localeKey: 'spreads.triangle',
+    canonicalName: 'triangle spread',
+    cardCount: 3,
+    preview: ['1', '2', '3'],
+  },
+  {
+    key: 'choice',
+    localeKey: 'spreads.choice',
+    canonicalName: 'choice spread',
+    cardCount: 5,
+    preview: ['A', 'B', 'A+', 'B+', 'You'],
+  },
+];
+
+function getSpreadConfig(spreadKey, t) {
+  const spread = SPREAD_OPTIONS.find((item) => item.key === spreadKey) || SPREAD_OPTIONS[0];
+  const translation = t ? t(spread.localeKey) : null;
+
+  if (!translation || typeof translation !== 'object') {
+    return {
+      ...spread,
+      name: spread.canonicalName,
+      shortName: spread.canonicalName,
+      description: '',
+      summary: '',
+      positions: [],
+    };
+  }
+
+  return {
+    ...spread,
+    ...translation,
+  };
+}
+
+const SESSION_STARTED_AT_KEY = 'tarot_session_started_at';
+const PROFILE_SNAPSHOT_KEY = 'tarot_profile_snapshot';
+
+function readStoredJson(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function normalizeRecentReadingEntry(entry, t) {
   if (!entry || typeof entry !== 'object') return null;
 
   const spreadKey = entry.spreadKey || 'three';
-  const spread = getSpreadConfig(spreadKey);
+  const spread = getSpreadConfig(spreadKey, t);
   const rawCards = Array.isArray(entry.cardsData)
     ? entry.cardsData
     : Array.isArray(entry.cards)
       ? entry.cards.map((card) => {
           if (typeof card === 'string') {
-            const matched = card.match(/^(.*?)(（逆位）)?$/);
+            const matched = card.match(/^(.*?)(\uFF08\u9006\u4F4D\uFF09)?$/);
             const name = matched?.[1] || card;
             const isReversed = Boolean(matched?.[2]);
             const data = allTarotCards.find((item) => item.name === name);
@@ -197,74 +244,11 @@ function normalizeRecentReadingEntry(entry) {
     recordId: entry.recordId ?? entry.record_id ?? null,
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey,
-    spreadName: sanitizeHistoryText(spread.name),
+    spreadName: sanitizeHistoryText(entry.spreadName || spread.name),
     cardsData,
     cardSummary: cardsData.map((card) => formatPlainCardName(card)),
     createdAt: entry.createdAt || new Date().toISOString(),
   };
-}
-
-const SPREAD_OPTIONS = [
-  {
-    key: 'three',
-    name: '三张牌阵',
-    shortName: '三张牌阵',
-    description: '没有固定位置限制，适合快速梳理当前问题的整体线索。',
-    cardCount: 3,
-    preview: ['1', '2', '3'],
-    positions: [
-      { title: '第一张', subtitle: '线索一' },
-      { title: '第二张', subtitle: '线索二' },
-      { title: '第三张', subtitle: '线索三' },
-    ],
-    summary: '这组三张牌会把问题的主要线索摊开，帮助你先看见核心，再决定下一步。',
-  },
-  {
-    key: 'triangle',
-    name: '圣三角牌阵',
-    shortName: '圣三角',
-    description: '适合看见自己以为的状况、真实的情况，以及当下最需要的建议。',
-    cardCount: 3,
-    preview: ['1', '2', '3'],
-    positions: [
-      { title: '我以为的状况', subtitle: '表层认知' },
-      { title: '真实的状况', subtitle: '现实落点' },
-      { title: '建议', subtitle: '下一步提醒' },
-    ],
-    summary: '圣三角会把表层判断、真实状态和建议拆开来看，适合处理“我到底有没有看清局面”这类问题。',
-  },
-  {
-    key: 'choice',
-    name: '二选一牌阵',
-    shortName: '二选一',
-    description: '适合面对两个方向、两个选项或两种可能性时，比较它们的状态与结果。',
-    cardCount: 5,
-    preview: ['A', 'B', 'A+', 'B+', '你'],
-    positions: [
-      { title: '选项 A 的状态', subtitle: '现在的样子' },
-      { title: '选项 B 的状态', subtitle: '现在的样子' },
-      { title: '选项 A 的可能结果', subtitle: '往后会怎样' },
-      { title: '选项 B 的可能结果', subtitle: '往后会怎样' },
-      { title: '当事人的状态', subtitle: '你真正的位置' },
-    ],
-    summary: '二选一牌阵会把两个选项并排展开，再把你的真实位置放进来，适合做方向判断。',
-  },
-];
-
-const SESSION_STARTED_AT_KEY = 'tarot_session_started_at';
-const PROFILE_SNAPSHOT_KEY = 'tarot_profile_snapshot';
-
-function readStoredJson(key, fallback) {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function getSpreadConfig(spreadKey) {
-  return SPREAD_OPTIONS.find((spread) => spread.key === spreadKey) || SPREAD_OPTIONS[0];
 }
 
 function drawCardsForSpread(cardCount) {
@@ -282,37 +266,42 @@ function drawCardsForSpread(cardCount) {
     cards.push({
       ...card,
       isReversed,
-      displayName: isReversed ? `${card.name}（逆位）` : card.name,
+      displayName: isReversed ? `${card.name}\uFF08\u9006\u4F4D\uFF09` : card.name,
     });
   }
 
   return cards;
 }
 
-function formatSpreadCardName(card) {
-  return card.isReversed ? `${card.name}（逆位）` : card.name;
+function formatSpreadCardName(card, t) {
+  if (!card) return '';
+  return card.isReversed
+    ? `${card.name}\uFF08${t ? t('common.orientationReversed') : '\u9006\u4F4D'}\uFF09`
+    : card.name;
 }
 
 function formatPlainCardName(card) {
   return sanitizeHistoryText(card?.name || '');
 }
 
-function formatHistorySummary(entry) {
-  const spreadName = sanitizeHistoryText(entry?.spreadName || getSpreadConfig(entry?.spreadKey || 'three').name);
-  const cardSummary = Array.isArray(entry?.cardSummary)
-    ? entry.cardSummary.map((item) => sanitizeHistoryText(item)).filter(Boolean)
-    : [];
+function formatHistorySummary(entry, t) {
+  const spreadName = sanitizeHistoryText(entry?.spreadName || getSpreadConfig(entry?.spreadKey || 'three', t).name);
+  const cards = Array.isArray(entry?.cardsData)
+    ? entry.cardsData.map((card) => formatSpreadCardName(card, t)).filter(Boolean)
+    : Array.isArray(entry?.cardSummary)
+      ? entry.cardSummary.map((item) => sanitizeHistoryText(item)).filter(Boolean)
+      : [];
 
-  return [spreadName, ...cardSummary].filter(Boolean).join(' · ');
+  return [spreadName, ...cards].filter(Boolean).join(t ? t('common.historySeparator') : ' · ');
 }
 
-function buildRecordSnapshot(entry) {
+function buildRecordSnapshot(entry, t) {
   if (!entry) return null;
 
   return {
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey: entry.spreadKey || 'three',
-    spreadName: sanitizeHistoryText(entry.spreadName || getSpreadConfig(entry.spreadKey || 'three').name),
+    spreadName: sanitizeHistoryText(entry.spreadName || getSpreadConfig(entry.spreadKey || 'three', t).name),
     cardsData: Array.isArray(entry.cardsData)
       ? entry.cardsData.map((card) => ({
           id: typeof card?.id === 'number' ? card.id : resolveCardData(card).id,
@@ -324,45 +313,23 @@ function buildRecordSnapshot(entry) {
   };
 }
 
-function getMailboxStatusLabel(status) {
-  const labels = {
-    pending: '等待处理',
-    read: '已读',
-    rejected: '已驳回',
-    replied: '已回复',
-    follow_up: '待二次回复',
-    completed: '已完成',
-  };
-
-  return labels[status] || status || '未知状态';
+function getMailboxStatusLabel(status, t) {
+  if (!status) return t('mailbox.status.unknown');
+  return t(`mailbox.status.${status}`) || status;
 }
 
-function getMailboxStatusHint(status) {
-  switch (status) {
-    case 'pending':
-      return '已发送，等待饼饼解读。';
-    case 'read':
-      return '饼饼已经收到你的请求并试图为你解惑。';
-    case 'rejected':
-      return '本次请求已被驳回，10 饼币会原路退回。';
-    case 'replied':
-      return '饼饼已经完成初次回复。';
-    case 'follow_up':
-      return '你已经发起追加提问，正在等待饼饼二次回复。';
-    case 'completed':
-      return '这封信已经完成。';
-    default:
-      return '信箱状态已更新。';
-  }
+function getMailboxStatusHint(status, t) {
+  if (!status) return t('mailbox.hints.default');
+  return t(`mailbox.hints.${status}`) || t('mailbox.hints.default');
 }
 
-function getMailboxSenderLabel(item) {
-  if (!item) return '未知用户';
-  return item.sender_nickname || item.record_snapshot?.senderNickname || '未知用户';
+function getMailboxSenderLabel(item, t) {
+  if (!item) return t('common.unknownUser');
+  return item.sender_nickname || item.record_snapshot?.senderNickname || t('common.unknownUser');
 }
 
-function getSystemNotificationStatusLabel(status) {
-  return status === 'claimed' ? '已领取' : '待领取';
+function getSystemNotificationStatusLabel(status, t) {
+  return status === 'claimed' ? t('mailbox.systemStatus.claimed') : t('mailbox.systemStatus.pending');
 }
 
 function shouldAppendFortuneReading(text, keywords) {
@@ -373,26 +340,45 @@ function shouldAppendFortuneReading(text, keywords) {
   return overlapCount < 2;
 }
 
-function buildSpreadReading(cards, question, spread) {
-  const lead = `本次使用：${spread.name}`;
-  const cardNames = cards.map(formatSpreadCardName).join('、');
+function buildSpreadReading(cards, question, spread, t) {
+  const lead = t('drawing.readingLead', { spread: spread.name });
+  const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
   const positionLines = cards.map((card, index) => {
     const position = spread.positions[index];
-    const label = position?.title || `第 ${index + 1} 张牌`;
-    return `${label}：${formatSpreadCardName(card)}：${getCardReading(card)}`;
+    const label = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
+    return t('drawing.positionLine', {
+      label,
+      card: formatSpreadCardName(card, t),
+      reading: getCardReading(card),
+    });
   });
 
   const closing =
     spread.key === 'triangle'
-      ? `围绕“${question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议推进，会更容易看见清晰的出口。`
+      ? t('drawing.triangleClosing', { question })
       : spread.key === 'choice'
-        ? `围绕“${question}”来看，这组牌会把两个选项的走向和你的真实状态并排摊开。别急着选一个最响亮的答案，先看哪个方向更贴近你真正能长期承受的节奏。`
-        : `围绕“${question}”来看，这组牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。`;
+        ? t('drawing.choiceClosing', { question })
+        : t('drawing.generalClosing', { question });
 
-  return [lead, `你抽到的牌是：${cardNames}。`, ...positionLines, closing].join('\n\n');
+  return [lead, t('drawing.cardsAre', { cards: cardNames }), ...positionLines, closing].join('\n\n');
+}
+
+function buildHumanReading(cards, question, t) {
+  const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
+  const lines = cards.map((card, index) =>
+    t('drawing.humanCardLine', {
+      index: index + 1,
+      card: formatSpreadCardName(card, t),
+      reading: getCardReading(card),
+    }),
+  );
+
+  return [t('drawing.humanFirst', { cards: cardNames }), ...lines, t('drawing.humanClosing', { question })].join('\n\n');
 }
 
 function App() {
+  const { language, t } = useI18n();
+  const intlLocale = getIntlLocale(language);
   const storedUser = readStoredJson('tarot_user', null);
   const storedProfile = readStoredJson(PROFILE_SNAPSHOT_KEY, {});
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
@@ -454,11 +440,12 @@ function App() {
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
-  const dailyLine = getDailyLine();
+  const dailyLine = getDailyLine(t('quotes'));
   const activeDailyCard = savedDailyTarot || dailyCard;
   const calendarDate = new Date();
   const calendarDays = buildCalendarDays(calendarDate);
-  const activeSpread = getSpreadConfig(selectedSpreadKey);
+  const activeSpread = getSpreadConfig(selectedSpreadKey, t);
+  const spreadOptions = SPREAD_OPTIONS.map((spread) => getSpreadConfig(spread.key, t));
   const hasAuthDraft =
     Boolean((emailInputRef.current?.value || email || '').trim()) ||
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
@@ -618,14 +605,14 @@ function App() {
 
       if (!authUser) {
         clearSession();
-        alert('登录状态已失效，请重新登录后再试。');
+        alert(t('alerts.sessionInvalid'));
         return null;
       }
 
       if (isSessionExpired()) {
         await logoutFromSupabase();
         clearSession();
-        alert('登录状态已过期，请重新登录。');
+        alert(t('alerts.sessionExpired'));
         return null;
       }
 
@@ -633,7 +620,7 @@ function App() {
     } catch (error) {
       console.error(error);
       clearSession();
-      alert('登录状态异常，请重新登录后再试。');
+      alert(t('alerts.sessionError'));
       return null;
     }
   };
@@ -643,7 +630,7 @@ function App() {
   };
 
   const saveRecentReading = async (question, cards, spreadKey) => {
-    const spread = getSpreadConfig(spreadKey);
+    const spread = getSpreadConfig(spreadKey, t);
     let syncedRecordId = null;
 
     try {
@@ -666,7 +653,7 @@ function App() {
         isReversed: Boolean(card.isReversed),
       })),
       createdAt: new Date().toISOString(),
-    });
+    }, t);
 
     setRecentReadings((current) => {
       const next = [entry, ...current].slice(0, 3);
@@ -685,7 +672,7 @@ function App() {
       const nextEntry = normalizeRecentReadingEntry({
         ...entry,
         recordId: synced?.id ?? null,
-      });
+      }, t);
 
       setRecentReadings((current) => {
         const next = current.map((item) => (item.id === entry.id ? nextEntry : item));
@@ -719,7 +706,7 @@ function App() {
 
   const openHumanRequestModal = () => {
     if (recentReadings.length === 0) {
-      alert('先完成一次抽牌，再把最近的牌阵发给饼饼吧。');
+      alert(t('alerts.historyNeedsReading'));
       return;
     }
 
@@ -897,42 +884,42 @@ function App() {
     try {
       const parsed = JSON.parse(stored);
       const normalized = Array.isArray(parsed)
-        ? parsed.map(normalizeRecentReadingEntry).filter(Boolean).slice(0, 3)
+        ? parsed.map((entry) => normalizeRecentReadingEntry(entry, t)).filter(Boolean).slice(0, 3)
         : [];
       setRecentReadings(normalized);
     } catch {
       setRecentReadings([]);
     }
-  }, [activeNickname]);
+  }, [activeNickname, t]);
 
   const handleRegister = async () => {
     if (!email.trim() || !nickname.trim() || !password.trim()) {
-      alert('请输入邮箱、昵称和密码');
+      alert(t('alerts.registerMissing'));
       return;
     }
 
     try {
       const result = await registerWithEmail(email.trim(), nickname.trim(), password);
       if (result.needsEmailVerification) {
-        alert('注册成功，请去邮箱验证登录。验证完成后回到这里，用邮箱和密码登录。');
+        alert(t('alerts.registerVerifyMailSent'));
       } else {
-        alert('注册成功，请登录。');
+        alert(t('alerts.registerSuccess'));
       }
 
       setIsLogin(true);
       setPassword('');
     } catch (error) {
       if (error.message?.includes('email rate limit exceeded')) {
-        alert('验证邮件发送太频繁了，请稍等几分钟后再试，或者先去邮箱查收刚刚的验证邮件。');
+        alert(t('alerts.registerRateLimited'));
         return;
       }
 
       if (error.message?.includes('row-level security')) {
-        alert('邮箱验证已经发出。完成验证后回到这里登录；如果刚刚已经验证，请刷新页面后再试。');
+        alert(t('alerts.registerAlreadySent'));
         return;
       }
 
-      alert(error.message || '注册失败');
+      alert(error.message || t('alerts.registerFailed'));
     }
   };
 
@@ -944,7 +931,7 @@ function App() {
     const submittedPassword = passwordInputRef.current?.value || password || '';
 
     if (!submittedEmail || !submittedPassword.trim()) {
-      alert('请输入邮箱和密码');
+      alert(t('alerts.loginMissing'));
       return;
     }
 
@@ -961,38 +948,38 @@ function App() {
       setPassword('');
       const authUser = data.user || data.session?.user || (await getAuthenticatedUser());
       if (!authUser) {
-        throw new Error('登录成功，但暂时没有拿到用户信息。');
+        throw new Error(t('alerts.loginUserMissing'));
       }
       await fetchUserProfile(authUser);
     } catch (error) {
       setIsSessionSyncing(false);
-      alert(error.message || '登录失败');
+      alert(error.message || t('alerts.loginFailed'));
     }
   };
 
   const handleForgotPassword = async () => {
     if (!email.trim()) {
-      alert('请输入注册时使用的邮箱');
+      alert(t('alerts.forgotMissingEmail'));
       return;
     }
 
     try {
       await requestPasswordReset(email.trim(), window.location.origin);
       setShowForgotPasswordModal(false);
-      alert('重置密码邮件已经发送。请打开邮箱里的重置邮件，点击其中的链接后会回到本站设置新密码；如果没看到，请检查垃圾邮件。');
+      alert(t('alerts.forgotSent'));
     } catch (error) {
-      alert(error.message || '密码重置邮件发送失败，请稍后再试。');
+      alert(error.message || t('alerts.forgotFailed'));
     }
   };
 
   const handleCompletePasswordReset = async () => {
     if (!resetPasswordValue.trim()) {
-      alert('请输入新的密码');
+      alert(t('alerts.resetMissingPassword'));
       return;
     }
 
     if (resetPasswordValue.trim().length < 6) {
-      alert('新密码至少需要 6 位');
+      alert(t('alerts.resetPasswordShort'));
       return;
     }
 
@@ -1003,9 +990,9 @@ function App() {
       if (typeof window !== 'undefined') {
         window.history.replaceState({}, document.title, window.location.pathname);
       }
-      alert('密码已经更新，请直接用邮箱和新密码登录。');
+      alert(t('alerts.resetSuccess'));
     } catch (error) {
-      alert(error.message || '密码更新失败，请重新打开邮件里的链接再试。');
+      alert(error.message || t('alerts.resetFailed'));
     }
   };
 
@@ -1029,7 +1016,7 @@ function App() {
       const profile = await getProfileById(liveUser.id);
       if (!profile) {
         clearSession();
-        alert('当前账号资料不存在，请重新登录。');
+        alert(t('alerts.profileMissing'));
         return;
       }
 
@@ -1100,7 +1087,7 @@ function App() {
       });
     } catch (error) {
       console.error(error);
-      alert(error.message || '今日运势获取失败，请稍后再试。');
+      alert(error.message || t('alerts.dailyFailed'));
     }
   };
 
@@ -1144,7 +1131,7 @@ function App() {
 
   const handleStartHumanReading = () => {
     if (coinBalance < 10) {
-      alert('饼币不足，先签到拿饼币吧。');
+      alert(t('alerts.coinsNotEnough'));
       return;
     }
 
@@ -1162,7 +1149,7 @@ function App() {
     setCurrentPage('drawing');
 
     setTimeout(() => {
-      const spread = getSpreadConfig(selectedSpreadKey);
+      const spread = getSpreadConfig(selectedSpreadKey, t);
       const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
       setDrawnCards(cards);
       void saveRecentReading(trimmedQuestion, cards, spread.key).catch((error) => {
@@ -1174,7 +1161,7 @@ function App() {
 
         setTimeout(() => {
           setReadingComplete(true);
-          setAiReading(isHumanMode ? generateReading(cards, trimmedQuestion) : buildSpreadReading(cards, trimmedQuestion, spread));
+          setAiReading(isHumanMode ? buildHumanReading(cards, trimmedQuestion, t) : buildSpreadReading(cards, trimmedQuestion, spread, t));
         }, 1100);
       }, 260);
     }, 420);
@@ -1208,11 +1195,11 @@ function App() {
     const selectedRecordId = syncedEntry?.recordId ?? syncedEntry?.record_id ?? null;
 
     if (!selectedRecordId) {
-      alert('这条抽牌记录暂时还没同步成功，请稍后再试一次。');
+      alert(t('alerts.syncRecordFailed'));
       return;
     }
 
-    const confirmed = window.confirm('确认要把这条抽牌记录发送给饼饼大人吗？发送后会扣除 10 饼币。');
+    const confirmed = window.confirm(t('alerts.confirmSendRequest'));
     if (!confirmed) return;
 
     try {
@@ -1220,7 +1207,7 @@ function App() {
         senderId: liveUser.id,
         recordId: selectedRecordId,
         initialQuestion: syncedEntry.question,
-        recordSnapshot: buildRecordSnapshot(syncedEntry),
+        recordSnapshot: buildRecordSnapshot(syncedEntry, t),
       });
 
       setCoinBalance(nextBalance);
@@ -1238,9 +1225,9 @@ function App() {
       setMessages([]);
       setIsWaitingForReply(true);
       setShowHumanRequestModal(false);
-      alert('已发送，等待饼饼解读。');
+      alert(t('alerts.requestSent'));
     } catch (error) {
-      alert(error.message || '发送失败，请稍后再试。');
+      alert(error.message || t('alerts.requestSendFailed'));
     }
   };
 
@@ -1321,10 +1308,10 @@ function App() {
     try {
       const result = await rejectMailboxMessage(selectedMailboxItem.id, adminRejectReason);
       setSelectedMailboxItem(result.message);
-      alert('已驳回，并已退回 10 饼币。');
+      alert(t('alerts.adminRejected'));
       await refreshMailbox();
     } catch (error) {
-      alert(error.message || '驳回失败，请稍后再试。');
+      alert(error.message || t('alerts.adminRejectFailed'));
     }
   };
 
@@ -1334,10 +1321,10 @@ function App() {
     try {
       const updated = await replyMailboxMessage(selectedMailboxItem.id, adminInitialReply);
       setSelectedMailboxItem(updated);
-      alert('已发送回复。');
+      alert(t('alerts.adminReplySent'));
       await refreshMailbox();
     } catch (error) {
-      alert(error.message || '回复失败，请稍后再试。');
+      alert(error.message || t('alerts.adminReplyFailed'));
     }
   };
 
@@ -1347,10 +1334,10 @@ function App() {
     try {
       const updated = await completeMailboxFollowUpReply(selectedMailboxItem.id, adminFollowUpReply);
       setSelectedMailboxItem(updated);
-      alert('已完成二次回复，这封信已结案。');
+      alert(t('alerts.adminFollowUpSent'));
       await refreshMailbox();
     } catch (error) {
-      alert(error.message || '二次回复失败，请稍后再试。');
+      alert(error.message || t('alerts.adminFollowUpFailed'));
     }
   };
 
@@ -1360,10 +1347,10 @@ function App() {
     try {
       const updated = await submitMailboxFollowUp(selectedMailboxItem.id, userFollowUpAsk, user.id);
       setSelectedMailboxItem(updated);
-      alert('追加提问已发送，等待饼饼继续回复。');
+      alert(t('alerts.followUpSent'));
       await refreshMailbox();
     } catch (error) {
-      alert(error.message || '追加提问发送失败，请稍后再试。');
+      alert(error.message || t('alerts.followUpFailed'));
     }
   };
 
@@ -1373,10 +1360,10 @@ function App() {
     try {
       const updated = await completeMailboxFeedback(selectedMailboxItem.id, feedback, user.id);
       setSelectedMailboxItem(updated);
-      alert('感谢你的评价，这封信已完成。');
+      alert(t('alerts.feedbackSent'));
       await refreshMailbox();
     } catch (error) {
-      alert(error.message || '评价提交失败，请稍后再试。');
+      alert(error.message || t('alerts.feedbackFailed'));
     }
   };
 
@@ -1397,9 +1384,9 @@ function App() {
         ),
       );
       await refreshMailbox();
-      alert(result.alreadyClaimed ? '这份测试补贴已经领取过了。' : '99 饼币已经到账，请查收。');
+      alert(result.alreadyClaimed ? t('alerts.subsidyClaimed') : t('alerts.subsidyReceived'));
     } catch (error) {
-      alert(error.message || '领取失败，请稍后再试。');
+      alert(error.message || t('alerts.subsidyFailed'));
     }
   };
 
@@ -1450,7 +1437,7 @@ function App() {
   };
 
   const renderSpreadCards = (cards = drawnCards, spreadKey = isHumanMode ? 'three' : activeSpread.key, options = {}) => {
-    const spread = getSpreadConfig(spreadKey);
+    const spread = getSpreadConfig(spreadKey, t);
     const cardSize = spread.key === 'choice' ? 'small' : 'normal';
     const isRevealedView = options.isRevealed ?? isRevealing;
     const showOrientation = options.showOrientation ?? false;
@@ -1474,7 +1461,7 @@ function App() {
                 <p className="reading-spread-card-name">{card.name}</p>
               ) : null}
               <div className="reading-spread-meta">
-                <p className="reading-spread-label">{position?.title || `第 ${index + 1} 张牌`}</p>
+                <p className="reading-spread-label">{position?.title || t('drawing.spreadLabelFallback', { index: index + 1 })}</p>
                 {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
               </div>
             </div>
@@ -1490,8 +1477,8 @@ function App() {
         type="button"
         onClick={() => setTheme('aurora')}
         className={`theme-toggle-button ${theme === 'aurora' ? 'theme-toggle-button-active' : ''}`}
-        aria-label="切换到暖调主题"
-        title="暖调主题"
+        aria-label={t('theme.auroraAria')}
+        title={t('theme.auroraTitle')}
       >
         <span className="theme-toggle-swatch theme-toggle-swatch-aurora" aria-hidden="true" />
       </button>
@@ -1499,8 +1486,8 @@ function App() {
         type="button"
         onClick={() => setTheme('noir')}
         className={`theme-toggle-button ${theme === 'noir' ? 'theme-toggle-button-active' : ''}`}
-        aria-label="切换到黑白极简主题"
-        title="黑白极简主题"
+        aria-label={t('theme.noirAria')}
+        title={t('theme.noirTitle')}
       >
         <span className="theme-toggle-swatch theme-toggle-swatch-noir" aria-hidden="true" />
       </button>
@@ -1514,14 +1501,14 @@ function App() {
         onClick={() => setCardStyle('minimal')}
         className={`card-style-button ${cardStyle === 'minimal' ? 'card-style-button-active' : ''}`}
       >
-        极简
+        {t('cardStyle.minimal')}
       </button>
       <button
         type="button"
         onClick={() => setCardStyle('artwork')}
         className={`card-style-button ${cardStyle === 'artwork' ? 'card-style-button-active' : ''}`}
       >
-        原画
+        {t('cardStyle.artwork')}
       </button>
     </div>
   );
@@ -1529,22 +1516,22 @@ function App() {
   const renderDailyCard = (extraClassName = '') => (
     <div className={`daily-card ${extraClassName}`.trim()}>
       <div className="daily-card-head">
-        <p className="eyebrow">今日日运</p>
+        <p className="eyebrow">{t('daily.eyebrow')}</p>
       </div>
 
       {isSignedIn && savedDailyTarot ? (
         <div className="daily-result">
-          <p className="daily-result-label">今日运势</p>
+          <p className="daily-result-label">{t('daily.resultLabel')}</p>
           <div className="daily-result-name">
-            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? ' · 逆位' : ' · 正位'}</span>
+            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
             <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
           </div>
-          <p className="daily-result-note">今天的日运已经开启，点开后可以继续查看牌面与牌义。</p>
+          <p className="daily-result-note">{t('daily.signedNote')}</p>
         </div>
       ) : (
         <div className="daily-result">
-          <p className="daily-result-label">每日签到</p>
-          <p className="daily-result-note">抽取今天的塔罗提示卡，领取 1 饼币并解锁一张今日日运。</p>
+          <p className="daily-result-label">{t('daily.checkInLabel')}</p>
+          <p className="daily-result-note">{t('daily.unsignedNote')}</p>
         </div>
       )}
 
@@ -1554,7 +1541,7 @@ function App() {
         className="primary-button daily-button"
       >
         <Sparkles className="w-5 h-5" />
-        <span>{isSignedIn ? '今日已开启' : '获取今日运势'}</span>
+        <span>{isSignedIn ? t('daily.openToday') : t('daily.getToday')}</span>
       </button>
     </div>
   );
@@ -1572,8 +1559,8 @@ function App() {
         >
           <div className="calendar-modal-head">
             <div>
-              <p className="eyebrow">历史抽牌</p>
-              <h3 className="fortune-modal-title">历史抽牌</h3>
+              <p className="eyebrow">{t('history.eyebrow')}</p>
+              <h3 className="fortune-modal-title">{t('history.title')}</h3>
             </div>
             <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
               <X className="w-4 h-4" />
@@ -1581,8 +1568,8 @@ function App() {
           </div>
 
           <div className="history-preview-copy">
-            <p className="history-preview-question">问题：{selectedHistoryReading.question}</p>
-            <p className="history-preview-spread">牌阵：{selectedHistoryReading.spreadName}</p>
+            <p className="history-preview-question">{t('history.questionLabel', { question: selectedHistoryReading.question })}</p>
+            <p className="history-preview-spread">{t('history.spreadLabel', { spread: selectedHistoryReading.spreadName })}</p>
           </div>
 
           {renderSpreadCards(selectedHistoryReading.cardsData, selectedHistoryReading.spreadKey, {
@@ -1609,14 +1596,14 @@ function App() {
           <div className="calendar-modal-head">
             <div>
               <p className="eyebrow">{OFFICIAL_READER.englishLabel}</p>
-              <h3 className="fortune-modal-title">发送给饼饼大人</h3>
+              <h3 className="fortune-modal-title">{t('humanRequest.title')}</h3>
             </div>
             <button type="button" onClick={() => setShowHumanRequestModal(false)} className="icon-button">
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className="human-request-copy">选择一条最近的抽牌记录发送给官方账号，饼饼会根据这次牌阵继续为你解读。</p>
+          <p className="human-request-copy">{t('humanRequest.copy')}</p>
 
           <div className="human-request-list">
             {recentReadings.map((entry) => (
@@ -1626,15 +1613,15 @@ function App() {
                 onClick={() => setSelectedHumanReadingId(entry.id)}
                 className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
               >
-                <p className="human-request-question">“{entry.question}”</p>
-                <p className="human-request-meta">{formatHistorySummary(entry)}</p>
+                <p className="human-request-question">{`"${entry.question}"`}</p>
+                <p className="human-request-meta">{formatHistorySummary(entry, t)}</p>
               </button>
             ))}
           </div>
 
           <div className="human-request-actions">
             <button type="button" onClick={() => setShowHumanRequestModal(false)} className="secondary-button">
-              再想想
+              {t('humanRequest.thinkAgain')}
             </button>
             <button
               type="button"
@@ -1643,7 +1630,7 @@ function App() {
               className="primary-button"
             >
               <MessageCircle className="w-5 h-5" />
-              {coinBalance < 10 ? '饼币不足' : '发送给饼饼大人（10 饼币）'}
+              {coinBalance < 10 ? t('humanRequest.notEnoughCoins') : t('humanRequest.sendButton')}
             </button>
           </div>
         </motion.div>
@@ -1665,32 +1652,32 @@ function App() {
         >
           <div className="calendar-modal-head">
             <div>
-              <p className="eyebrow">Password Reset</p>
-              <h3 className="fortune-modal-title">找回密码</h3>
+              <p className="eyebrow">{t('auth.forgotPasswordEyebrow')}</p>
+              <h3 className="fortune-modal-title">{t('auth.forgotPasswordTitle')}</h3>
             </div>
             <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="icon-button">
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className="human-request-copy">输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。收到邮件后点击链接，会回到本站直接设置新密码。</p>
+          <p className="human-request-copy">{t('auth.forgotPasswordCopy')}</p>
           <label className="field-shell">
             <Mail className="field-icon" />
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="邮箱"
+              placeholder={t('auth.emailPlaceholder')}
               className="field-input"
             />
           </label>
 
           <div className="human-request-actions">
             <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="secondary-button">
-              取消
+              {t('common.cancel')}
             </button>
             <button type="button" onClick={handleForgotPassword} className="primary-button">
-              发送重置邮件
+              {t('auth.sendResetEmail')}
             </button>
           </div>
         </motion.div>
@@ -1705,17 +1692,18 @@ function App() {
         <div className="orb orb-right" />
         <motion.div className="auth-card" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="auth-toggles">
+            <LanguageSwitcher />
             {renderThemeToggle('auth-theme-toggle')}
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">
             {isRecoveryMode
-              ? '设置一个新的密码，然后回到登录页继续。'
+              ? t('auth.recoverySubtitle')
               : isSessionSyncing && !hasAuthDraft
-                ? '正在找回你的登录状态...'
+                ? t('auth.syncingSubtitle')
                 : isLogin
-                  ? '对发生的一切保持思考'
-                  : '先领一张属于你的塔罗邀请函。'}
+                  ? t('auth.loginSubtitle')
+                  : t('auth.registerSubtitle')}
           </p>
 
 
@@ -1740,7 +1728,7 @@ function App() {
                   authInteractionRef.current = true;
                   if (isSessionSyncing) setIsSessionSyncing(false);
                 }}
-                placeholder="邮箱"
+                placeholder={t('auth.emailPlaceholder')}
                 className="field-input"
               />
             </label>
@@ -1748,7 +1736,7 @@ function App() {
             {!isLogin && !isRecoveryMode ? (
               <label className="field-shell">
                 <User className="field-icon" />
-                <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder="昵称" className="field-input" />
+                <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder={t('auth.nicknamePlaceholder')} className="field-input" />
               </label>
             ) : null}
 
@@ -1776,7 +1764,7 @@ function App() {
                   authInteractionRef.current = true;
                   if (isSessionSyncing) setIsSessionSyncing(false);
                 }}
-                placeholder={isRecoveryMode ? '新的密码' : '密码'}
+                placeholder={isRecoveryMode ? t('auth.newPasswordPlaceholder') : t('auth.passwordPlaceholder')}
                 className="field-input"
                 onKeyDown={(event) =>
                   event.key === 'Enter' &&
@@ -1790,18 +1778,18 @@ function App() {
               onClick={isRecoveryMode ? handleCompletePasswordReset : isLogin ? handleLogin : handleRegister}
               className="primary-button"
             >
-              {isRecoveryMode ? '更新密码' : isLogin ? '与宇宙链接' : '创建账号'}
+              {isRecoveryMode ? t('auth.updatePasswordButton') : isLogin ? t('auth.loginButton') : t('auth.registerButton')}
             </button>
 
             {isLogin && !isRecoveryMode ? (
               <button type="button" onClick={() => setShowForgotPasswordModal(true)} className="text-button forgot-password-link">
-                忘记密码？
+                {t('auth.forgotPasswordLink')}
               </button>
             ) : null}
 
             {isRecoveryMode ? (
               <p className="switch-text">
-                改好密码后，
+                {t('auth.recoverySubtitle')}
                 <span
                   onClick={() => {
                     setIsRecoveryMode(false);
@@ -1810,12 +1798,12 @@ function App() {
                   }}
                   className="switch-link"
                 >
-                  返回登录
+                  {t('auth.backToLogin')}
                 </span>
               </p>
             ) : (
               <p className="switch-text">
-                {isLogin ? '还没有账号？' : '已经有账号？'}
+                {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}
                 <span
                   onClick={() => {
                     setIsLogin((current) => !current);
@@ -1827,7 +1815,7 @@ function App() {
                   }}
                   className="switch-link"
                 >
-                  {isLogin ? '去注册' : '去登录'}
+                  {isLogin ? t('auth.goRegister') : t('auth.goLogin')}
                 </span>
               </p>
             )}
@@ -1849,10 +1837,11 @@ function App() {
 
         <header className="topbar">
           <div>
-            <p className="eyebrow">Bingbing Tarot</p>
-            <h1 className="topbar-title">bingbing tarot</h1>
+            <p className="eyebrow">{t('home.eyebrow')}</p>
+            <h1 className="topbar-title">{t('common.appName')}</h1>
           </div>
           <div className="topbar-actions">
+            <LanguageSwitcher />
             {renderThemeToggle('topbar-theme-toggle')}
             <button type="button" onClick={() => setCurrentPage('messages')} className="icon-button">
               <Bell className="w-5 h-5" />
@@ -1860,10 +1849,10 @@ function App() {
             </button>
             <div className="coin-pill">
               <Coins className="w-4 h-4" />
-              <span>{coinBalance} 饼币</span>
+              <span>{coinBalance} {t('common.coins')}</span>
             </div>
             <button type="button" onClick={handleLogout} className="text-button">
-              退出
+              {t('home.logout')}
             </button>
           </div>
         </header>
@@ -1871,25 +1860,25 @@ function App() {
         <main className="home-layout">
           <motion.section className="hero-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
             <div className="hero-copy">
-              <p className="hero-kicker">Welcome!</p>
+              <p className="hero-kicker">{t('home.heroKicker')}</p>
               <div className="hero-identity">
                 <h2 className="hero-panel-title hero-panel-title-compact">{activeNickname}</h2>
               </div>
                 <p className="hero-panel-text">
                   {dailyLine.text}
-                  <span className="hero-panel-source">——{dailyLine.source}</span>
+                  <span className="hero-panel-source">{` - ${dailyLine.source}`}</span>
                 </p>
             </div>
 
             <div className="stats-row">
               <div className="stat-card">
-                <span className="stat-label">上次签到</span>
-                <strong className="stat-value">{lastSignInDate || '还没有记录'}</strong>
+                <span className="stat-label">{t('home.lastSignIn')}</span>
+                <strong className="stat-value">{lastSignInDate || t('home.noLastSignIn')}</strong>
               </div>
 
               <button type="button" onClick={() => setShowCalendarModal(true)} className="stat-card calendar-stat-card">
-                <span className="stat-label">日运日历</span>
-                <strong className="stat-value">查看本月日运</strong>
+                <span className="stat-label">{t('home.calendarLabel')}</span>
+                <strong className="stat-value">{t('home.calendarAction')}</strong>
               </button>
             </div>
             <div className="history-card">
@@ -1910,7 +1899,7 @@ function App() {
                       }}
                     >
                       <div className="history-item-head">
-                        <p className="history-question">“{entry.question}”</p>
+                        <p className="history-question">{`"${entry.question}"`}</p>
                         <button
                           type="button"
                           onClick={(event) => {
@@ -1918,19 +1907,19 @@ function App() {
                             deleteRecentReading(entry.id);
                           }}
                           className="history-delete-button"
-                          aria-label="删除这条抽牌记录"
+                          aria-label={t('home.deleteHistoryAria')}
                         >
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="history-cards">{formatHistorySummary(entry)}</p>
+                      <p className="history-cards">{formatHistorySummary(entry, t)}</p>
                     </article>
                   ))}
                 </div>
               ) : (
                 <div className="history-empty">
-                  <p className="history-empty-title">暂无历史记录</p>
-                  <p className="history-empty-copy">试试和宇宙交流吧⭐</p>
+                  <p className="history-empty-title">{t('home.historyEmptyTitle')}</p>
+                  <p className="history-empty-copy">{t('home.historyEmptyCopy')}</p>
                 </div>
               )}
             </div>
@@ -1939,22 +1928,22 @@ function App() {
           <motion.section className="action-panel" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.06 }}>
             <div className="daily-card desktop-daily-card">
               <div className="daily-card-head">
-                <p className="eyebrow">今日日运</p>
+                <p className="eyebrow">{t('daily.eyebrow')}</p>
               </div>
 
               {isSignedIn && savedDailyTarot ? (
                 <div className="daily-result">
-                  <p className="daily-result-label">今日运势</p>
+                  <p className="daily-result-label">{t('daily.resultLabel')}</p>
                   <div className="daily-result-name">
-                    <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? ' · 逆位' : ' · 正位'}</span>
+                    <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
                     <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
                   </div>
-                  <p className="daily-result-note">好运已收入囊中，今天已经获得 1 饼币。</p>
+                  <p className="daily-result-note">{t('daily.signedPanelNote')}</p>
                 </div>
               ) : (
                 <div className="daily-result">
-                  <p className="daily-result-label">每日签到</p>
-                  <p className="daily-result-note">点亮今天的塔罗提示卡，领取 1 饼币和一张今日运势。</p>
+                  <p className="daily-result-label">{t('daily.checkInLabel')}</p>
+                  <p className="daily-result-note">{t('daily.unsignedPanelNote')}</p>
                 </div>
               )}
 
@@ -1964,21 +1953,21 @@ function App() {
                 className="primary-button daily-button"
               >
                 <Sparkles className="w-5 h-5" />
-                <span>{isSignedIn ? '今日已开启' : '获取今日运势'}</span>
+                <span>{isSignedIn ? t('daily.openToday') : t('daily.getToday')}</span>
               </button>
             </div>
 
             <div className="action-grid">
               <button type="button" onClick={handleStartFreeReading} className="feature-card feature-card-light">
-                <span className="feature-eyebrow">Free Reading</span>
-                <strong className="feature-title">选择牌阵</strong>
-                <p className="feature-copy">先选牌阵，再进入提问和抽牌流程。</p>
+                <span className="feature-eyebrow">{t('home.freeReadingEyebrow')}</span>
+                <strong className="feature-title">{t('home.freeReadingTitle')}</strong>
+                <p className="feature-copy">{t('home.freeReadingCopy')}</p>
               </button>
 
               <button type="button" onClick={openHumanRequestModal} className="feature-card feature-card-dark">
                 <span className="feature-eyebrow">{OFFICIAL_READER.englishLabel}</span>
-                <strong className="feature-title">链接饼饼为你解读</strong>
-                <p className="feature-copy">消耗 10 饼币。</p>
+                <strong className="feature-title">{t('home.humanReadingTitle')}</strong>
+                <p className="feature-copy">{t('home.humanReadingCopy')}</p>
               </button>
             </div>
 
@@ -2005,8 +1994,8 @@ function App() {
               >
                 <div className="calendar-modal-head">
                   <div>
-                    <p className="eyebrow">Choose a Spread</p>
-                    <h3 className="fortune-modal-title">选择牌阵</h3>
+                    <p className="eyebrow">{t('spreads.chooseEyebrow')}</p>
+                    <h3 className="fortune-modal-title">{t('spreads.chooseTitle')}</h3>
                   </div>
                   <button type="button" onClick={() => setShowSpreadModal(false)} className="icon-button">
                     <X className="w-4 h-4" />
@@ -2014,7 +2003,7 @@ function App() {
                 </div>
 
                 <div className="spread-option-grid">
-                  {SPREAD_OPTIONS.map((spread) => (
+                  {spreadOptions.map((spread) => (
                     <button key={spread.key} type="button" className="spread-option-card" onClick={() => handleSelectSpread(spread.key)}>
                       <div className={`spread-option-preview spread-option-preview-${spread.key}`}>
                         {spread.preview.map((label, index) => (
@@ -2043,7 +2032,7 @@ function App() {
                 exit={{ opacity: 0, y: 12, scale: 0.96 }}
                 onClick={(event) => event.stopPropagation()}
               >
-                <p className="eyebrow">{formatDailyFortuneDate()}日运</p>
+                <p className="eyebrow">{formatDailyFortuneDate(intlLocale)} {t('daily.modalSuffix')}</p>
                 <div className="fortune-modal-tarot">
                   <TarotCard
                     card={activeDailyCard}
@@ -2055,13 +2044,13 @@ function App() {
                   />
                 </div>
                 <div className="fortune-modal-card">
-                  <span>{activeDailyCard.name}{activeDailyCard.isReversed ? ' · 逆位' : ' · 正位'}</span>
+                  <span>{activeDailyCard.name}{activeDailyCard.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
                   <small>{getCardDisplayNames(activeDailyCard).englishName}</small>
                 </div>
-                <p className="fortune-modal-keywords">关键词：{dailyFortuneKeywords.join(' / ')}</p>
+                <p className="fortune-modal-keywords">{t('daily.keywords', { keywords: dailyFortuneKeywords.join(' / ') })}</p>
                 <p className="fortune-modal-note">{getDailyFortuneSummary(activeDailyCard)}</p>
                 <button type="button" onClick={() => setShowDailyResult(false)} className="primary-button">
-                  知道了
+                  {t('daily.acknowledge')}
                 </button>
               </motion.div>
             </motion.div>
@@ -2080,17 +2069,17 @@ function App() {
               >
                 <div className="calendar-modal-head">
                   <div>
-                    <p className="eyebrow">Fortune Calendar</p>
-                    <h3 className="fortune-modal-title">日运日历</h3>
+                    <p className="eyebrow">{t('calendar.eyebrow')}</p>
+                    <h3 className="fortune-modal-title">{t('calendar.title')}</h3>
                   </div>
                   <button type="button" onClick={() => setShowCalendarModal(false)} className="icon-button">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
 
-                <p className="calendar-month-label">{getMonthLabel(calendarDate)}</p>
+                <p className="calendar-month-label">{getMonthLabel(intlLocale, calendarDate)}</p>
                 <div className="calendar-weekdays">
-                  {['一', '二', '三', '四', '五', '六', '日'].map((label) => (
+                  {t('calendar.weekdays').map((label) => (
                     <span key={label}>{label}</span>
                   ))}
                 </div>
@@ -2109,10 +2098,10 @@ function App() {
                         {card ? (
                           <span className="calendar-day-card">
                             {card.name}
-                            {card.isReversed ? ' · 逆位' : ''}
+                            {card.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : ''}
                           </span>
                         ) : (
-                          <span className="calendar-day-empty">未签到</span>
+                          <span className="calendar-day-empty">{t('calendar.unsigned')}</span>
                         )}
                       </div>
                     );
@@ -2133,27 +2122,28 @@ function App() {
           <button type="button" onClick={goHome} className="icon-button">
             <X className="w-5 h-5" />
           </button>
-          <h1 className="page-title">{isHumanMode ? '真人解读' : '免费抽牌'}</h1>
+          <h1 className="page-title">{isHumanMode ? t('drawing.humanTitle') : t('drawing.freeTitle')}</h1>
           <div className="page-header-controls">
+            <LanguageSwitcher />
             {renderThemeToggle()}
           </div>
         </header>
 
         <main className="page-content">
           <div className="question-panel">
-            <p className="eyebrow">{isHumanMode ? 'Human Reading' : activeSpread.name}</p>
-            <h2 className="question-title">{isHumanMode ? '把问题说得更具体，牌面会更清晰。' : `你选择了 ${activeSpread.name}`}</h2>
-            <p className="question-note">{isHumanMode ? '提交后会带着你的牌阵进入和饼饼的对话。' : activeSpread.summary}</p>
+            <p className="eyebrow">{isHumanMode ? t('drawing.humanTitle') : activeSpread.name}</p>
+            <h2 className="question-title">{isHumanMode ? t('drawing.humanQuestionTitle') : t('drawing.chooseSpreadTitle', { spread: activeSpread.name })}</h2>
+            <p className="question-note">{isHumanMode ? t('drawing.humanQuestionNote') : activeSpread.summary}</p>
             <textarea
               value={userQuestion}
               onChange={(event) => setUserQuestion(event.target.value)}
-              placeholder="例如：我最近的工作方向是否应该调整？"
+              placeholder={t('drawing.questionPlaceholder')}
               className="question-input"
               rows={5}
               autoFocus
             />
             <button type="button" onClick={handleConfirmQuestion} disabled={!userQuestion.trim()} className="primary-button">
-              确定并抽牌
+              {t('drawing.confirmAndDraw')}
             </button>
           </div>
         </main>
@@ -2168,8 +2158,9 @@ function App() {
           <button type="button" onClick={goHome} className="icon-button">
             <X className="w-5 h-5" />
           </button>
-          <h1 className="page-title">抽牌结果</h1>
+          <h1 className="page-title">{t('drawing.resultTitle')}</h1>
           <div className="page-header-controls">
+            <LanguageSwitcher />
             {renderCardStyleToggle()}
             {renderThemeToggle()}
           </div>
@@ -2178,8 +2169,8 @@ function App() {
         <main className="page-content reading-page-content">
           <div className="reading-layout">
           <section className="reading-question-card">
-            <p className="eyebrow">{isHumanMode ? 'Human Reading' : activeSpread.name}</p>
-            <p className="reading-question-text">“{userQuestion}”</p>
+            <p className="eyebrow">{isHumanMode ? t('drawing.humanTitle') : activeSpread.name}</p>
+            <p className="reading-question-text">{`"${userQuestion}"`}</p>
           </section>
 
           {renderSpreadCards()}
@@ -2196,7 +2187,7 @@ function App() {
                 {isHumanMode ? (
                   <button type="button" onClick={openHumanRequestModal} className="primary-button">
                     <MessageCircle className="w-5 h-5" />
-                    发给饼饼解读
+                    {t('humanRequest.sendReadingButton')}
                   </button>
                 ) : (
                   <button
@@ -2205,11 +2196,11 @@ function App() {
                     className="primary-button"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    发给饼饼解读（10 饼币）
+                    {t('drawing.sendToReader')}
                   </button>
                 )}
                 <button type="button" onClick={goHome} className="secondary-button">
-                  返回首页
+                  {t('drawing.backHome')}
                 </button>
               </div>
             </motion.section>
@@ -2239,21 +2230,22 @@ function App() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="page-title">与饼饼对话</h1>
+          <h1 className="page-title">{t('chat.title')}</h1>
           <div className="page-header-controls">
+            <LanguageSwitcher />
             {renderThemeToggle()}
           </div>
         </header>
 
         <main className="chat-layout">
           <section className="chat-summary">
-            <p className="eyebrow">Question</p>
-            <p className="chat-question">“{userQuestion}”</p>
+            <p className="eyebrow">{t('drawing.questionEyebrow')}</p>
+            <p className="chat-question">{`"${userQuestion}"`}</p>
                 <div className="chat-cards">
                   {drawnCards.map((card, index) => (
                     <div key={index} className="chat-card-pill">
                       <span>{card.name}</span>
-                      {card.isReversed && <small>逆位</small>}
+                      {card.isReversed && <small>{t('common.orientationReversed')}</small>}
                     </div>
                   ))}
                 </div>
@@ -2266,7 +2258,7 @@ function App() {
               </motion.div>
             ))}
 
-            {isWaitingForReply && messages.length === 0 && <p className="chat-waiting">正在等待老师回复...</p>}
+            {isWaitingForReply && messages.length === 0 && <p className="chat-waiting">{t('chat.waiting')}</p>}
           </section>
         </main>
 
@@ -2275,7 +2267,7 @@ function App() {
             type="text"
             value={messageText}
             onChange={(event) => setMessageText(event.target.value)}
-            placeholder="输入你的追问..."
+            placeholder={t('chat.placeholder')}
             className="chat-input"
             onKeyDown={(event) => event.key === 'Enter' && handleSendMessage()}
           />
@@ -2294,8 +2286,9 @@ function App() {
           <button type="button" onClick={() => setCurrentPage('home')} className="icon-button">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="page-title">我的消息</h1>
+          <h1 className="page-title">{t('mailbox.pageTitle')}</h1>
           <div className="page-header-controls">
+            <LanguageSwitcher />
             {renderThemeToggle()}
           </div>
         </header>
@@ -2303,14 +2296,14 @@ function App() {
         <main className="page-content">
           <div className="mailbox-layout">
             <section className="question-panel mailbox-list-panel">
-              <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? 'Admin Inbox' : 'Inbox'}</p>
-              <h2 className="question-title">{user?.id === OFFICIAL_READER_ID ? '饼饼信箱后台' : '我的塔罗信箱'}</h2>
+              <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? t('mailbox.adminEyebrow') : t('mailbox.userEyebrow')}</p>
+              <h2 className="question-title">{user?.id === OFFICIAL_READER_ID ? t('mailbox.adminTitle') : t('mailbox.userTitle')}</h2>
               <p className="question-note">
                 {user?.id === OFFICIAL_READER_ID
-                  ? '点开 pending 信件会自动标记为已读。你可以选择驳回退币，或直接写下初次回复。'
+                  ? t('mailbox.adminNote')
                   : unreadCount > 0
-                    ? `你有 ${unreadCount} 条需要查看的来信更新。`
-                    : '这里会按状态展示你寄给饼饼的每一封信。'}
+                    ? t('mailbox.userUnreadNote', { count: unreadCount })
+                    : t('mailbox.userEmptyNote')}
               </p>
 
               {user?.id !== OFFICIAL_READER_ID && systemNotifications.length > 0 ? (
@@ -2318,22 +2311,22 @@ function App() {
                   {systemNotifications.map((notification) => (
                     <article key={notification.id} className="system-notification-card">
                       <div className="mailbox-item-head">
-                        <strong>{notification.title || '系统消息'}</strong>
-                        <span>{getSystemNotificationStatusLabel(notification.status)}</span>
+                        <strong>{notification.title || t('common.systemMessage')}</strong>
+                        <span>{getSystemNotificationStatusLabel(notification.status, t)}</span>
                       </div>
                       <p className="mailbox-item-question">{notification.body}</p>
                       <div className="mailbox-action-row">
                         <span className="mailbox-item-hint">
                           {notification.status === 'claimed'
-                            ? `已领取 ${notification.reward_coins || 99} 饼币`
-                            : `点击领取 ${notification.reward_coins || 99} 饼币`}
+                            ? t('mailbox.systemClaimedHint', { coins: notification.reward_coins || 99 })
+                            : t('mailbox.systemPendingHint', { coins: notification.reward_coins || 99 })}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleClaimSystemNotification(notification)}
                           className={notification.status === 'claimed' ? 'secondary-button' : 'primary-button'}
                         >
-                          {notification.status === 'claimed' ? '已领取' : '领取补贴'}
+                          {notification.status === 'claimed' ? t('mailbox.claimedSubsidy') : t('mailbox.claimSubsidy')}
                         </button>
                       </div>
                     </article>
@@ -2351,21 +2344,21 @@ function App() {
                       onClick={() => handleOpenMailboxItem(item)}
                     >
                       <div className="mailbox-item-head">
-                        <strong>{getMailboxStatusLabel(item.status)}</strong>
-                        <span>{new Date(item.created_at).toLocaleString('zh-CN')}</span>
+                        <strong>{getMailboxStatusLabel(item.status, t)}</strong>
+                        <span>{new Date(item.created_at).toLocaleString(intlLocale)}</span>
                       </div>
                       {user?.id === OFFICIAL_READER_ID ? (
-                        <p className="mailbox-item-hint">来自：{item.sender_nickname || '未知用户'}</p>
+                        <p className="mailbox-item-hint">{t('mailbox.fromLabel', { name: item.sender_nickname || t('common.unknownUser') })}</p>
                       ) : null}
-                      <p className="mailbox-item-question">{item.initial_question || '这封信还没有写下问题。'}</p>
-                      <p className="mailbox-item-hint">{getMailboxStatusHint(item.status)}</p>
+                      <p className="mailbox-item-question">{item.initial_question || t('mailbox.noQuestion')}</p>
+                      <p className="mailbox-item-hint">{getMailboxStatusHint(item.status, t)}</p>
                     </button>
                   ))
                 ) : (
                   <div className="mailbox-empty">
-                    <p className="mailbox-empty-title">信箱暂时还是空的。</p>
+                    <p className="mailbox-empty-title">{t('mailbox.emptyTitle')}</p>
                     <p className="mailbox-empty-copy">
-                      {user?.id === OFFICIAL_READER_ID ? '等用户把牌阵寄给你之后，这里就会出现待处理工单。' : '当你把问题寄给饼饼之后，这里会显示处理进度。'}
+                      {user?.id === OFFICIAL_READER_ID ? t('mailbox.adminEmptyCopy') : t('mailbox.userEmptyCopy')}
                     </p>
                   </div>
                 )}
@@ -2375,27 +2368,27 @@ function App() {
             <section className="question-panel mailbox-detail-panel">
               {selectedMailboxItem ? (
                 <>
-                  <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? 'Message Review' : 'Message Detail'}</p>
-                  <h2 className="question-title">{getMailboxStatusLabel(selectedMailboxItem.status)}</h2>
-                  <p className="question-note">{getMailboxStatusHint(selectedMailboxItem.status)}</p>
+                  <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? t('mailbox.detailEyebrowAdmin') : t('mailbox.detailEyebrowUser')}</p>
+                  <h2 className="question-title">{getMailboxStatusLabel(selectedMailboxItem.status, t)}</h2>
+                  <p className="question-note">{getMailboxStatusHint(selectedMailboxItem.status, t)}</p>
 
                   {user?.id === OFFICIAL_READER_ID ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">发件人</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.sender_nickname || '未知用户'}</p>
+                      <span className="mailbox-detail-label">{t('mailbox.senderLabel')}</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.sender_nickname || t('common.unknownUser')}</p>
                     </div>
                   ) : null}
 
                   <div className="mailbox-detail-block">
-                    <span className="mailbox-detail-label">原始问题</span>
-                    <p className="mailbox-detail-text">{selectedMailboxItem.initial_question || '暂无内容'}</p>
+                    <span className="mailbox-detail-label">{t('mailbox.initialQuestionLabel')}</span>
+                    <p className="mailbox-detail-text">{selectedMailboxItem.initial_question || t('common.emptyContent')}</p>
                   </div>
 
                   {selectedMailboxItem.record_snapshot?.cardsData?.length ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">关联牌阵</span>
+                      <span className="mailbox-detail-label">{t('mailbox.spreadLabel')}</span>
                       <p className="mailbox-detail-text">
-                        {selectedMailboxItem.record_snapshot.spreadName || getSpreadConfig(selectedMailboxItem.record_snapshot.spreadKey || 'three').name}
+                        {selectedMailboxItem.record_snapshot.spreadName || getSpreadConfig(selectedMailboxItem.record_snapshot.spreadKey || 'three', t).name}
                       </p>
                       {renderSpreadCards(
                         selectedMailboxItem.record_snapshot.cardsData,
@@ -2410,36 +2403,36 @@ function App() {
 
                   {selectedMailboxItem.reject_reason ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">驳回原因</span>
+                      <span className="mailbox-detail-label">{t('mailbox.rejectReasonLabel')}</span>
                       <p className="mailbox-detail-text">{selectedMailboxItem.reject_reason}</p>
                     </div>
                   ) : null}
 
                   {selectedMailboxItem.initial_reply ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">初次回复</span>
+                      <span className="mailbox-detail-label">{t('mailbox.initialReplyLabel')}</span>
                       <p className="mailbox-detail-text">{selectedMailboxItem.initial_reply}</p>
                     </div>
                   ) : null}
 
                   {selectedMailboxItem.follow_up_ask ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">追加提问</span>
+                      <span className="mailbox-detail-label">{t('mailbox.followUpAskLabel')}</span>
                       <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_ask}</p>
                     </div>
                   ) : null}
 
                   {selectedMailboxItem.follow_up_reply ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">二次回复</span>
+                      <span className="mailbox-detail-label">{t('mailbox.followUpReplyLabel')}</span>
                       <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_reply}</p>
                     </div>
                   ) : null}
 
                   {selectedMailboxItem.feedback ? (
                     <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">你的评价</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.feedback === 'Heart' ? '♥ Heart' : '♠ Spade'}</p>
+                      <span className="mailbox-detail-label">{t('mailbox.feedbackLabel')}</span>
+                      <p className="mailbox-detail-text">{selectedMailboxItem.feedback === 'Heart' ? t('mailbox.heartLabel') : t('mailbox.spadeLabel')}</p>
                     </div>
                   ) : null}
 
@@ -2448,11 +2441,11 @@ function App() {
                       {(selectedMailboxItem.status === 'pending' || selectedMailboxItem.status === 'read') ? (
                         <>
                           <label className="mailbox-field">
-                            <span className="mailbox-detail-label">驳回原因</span>
+                            <span className="mailbox-detail-label">{t('mailbox.rejectReasonLabel')}</span>
                             <textarea
                               value={adminRejectReason}
                               onChange={(event) => setAdminRejectReason(event.target.value)}
-                              placeholder="如果要驳回，请写下原因。"
+                              placeholder={t('mailbox.rejectReasonPlaceholder')}
                               className="chat-input mailbox-textarea"
                               rows={4}
                             />
@@ -2460,13 +2453,13 @@ function App() {
 
                           <label className="mailbox-field">
                             <div className="mailbox-field-head">
-                              <span className="mailbox-detail-label">初次回复</span>
+                              <span className="mailbox-detail-label">{t('mailbox.initialReplyLabel')}</span>
                               <span className="mailbox-char-count">{adminInitialReply.length}/1000</span>
                             </div>
                             <textarea
                               value={adminInitialReply}
                               onChange={(event) => setAdminInitialReply(event.target.value.slice(0, 1000))}
-                              placeholder="写下要回复给用户的内容。"
+                              placeholder={t('mailbox.initialReplyPlaceholder')}
                               className="chat-input mailbox-textarea"
                               rows={8}
                             />
@@ -2474,10 +2467,10 @@ function App() {
 
                           <div className="mailbox-action-row">
                             <button type="button" onClick={handleAdminReject} className="secondary-button">
-                              驳回并退回 10 饼币
+                              {t('mailbox.rejectAndRefund')}
                             </button>
                             <button type="button" onClick={handleAdminReply} className="primary-button">
-                              发送初次回复
+                              {t('mailbox.sendInitialReply')}
                             </button>
                           </div>
                         </>
@@ -2487,13 +2480,13 @@ function App() {
                         <>
                           <label className="mailbox-field">
                             <div className="mailbox-field-head">
-                              <span className="mailbox-detail-label">二次回复</span>
+                              <span className="mailbox-detail-label">{t('mailbox.followUpReplyLabel')}</span>
                               <span className="mailbox-char-count">{adminFollowUpReply.length}/1000</span>
                             </div>
                             <textarea
                               value={adminFollowUpReply}
                               onChange={(event) => setAdminFollowUpReply(event.target.value.slice(0, 1000))}
-                              placeholder="针对用户的追加提问完成最后一次回复。"
+                              placeholder={t('mailbox.followUpReplyPlaceholder')}
                               className="chat-input mailbox-textarea"
                               rows={8}
                             />
@@ -2501,7 +2494,7 @@ function App() {
 
                           <div className="mailbox-action-row">
                             <button type="button" onClick={handleAdminFollowUpReply} className="primary-button">
-                              发送二次回复并结案
+                              {t('mailbox.sendFollowUpReply')}
                             </button>
                           </div>
                         </>
@@ -2511,34 +2504,34 @@ function App() {
                     <div className="mailbox-user-actions">
                       <label className="mailbox-field">
                         <div className="mailbox-field-head">
-                          <span className="mailbox-detail-label">追加提问</span>
+                          <span className="mailbox-detail-label">{t('mailbox.followUpAskLabel')}</span>
                           <span className="mailbox-char-count">{userFollowUpAsk.length}/100</span>
                         </div>
                         <p className="mailbox-detail-text">
-                          最多有一次追加提问的机会哦，追加提问不额外花费饼币。
+                          {t('mailbox.followUpAskHint')}
                         </p>
                         <textarea
                           value={userFollowUpAsk}
                           onChange={(event) => setUserFollowUpAsk(event.target.value.slice(0, 100))}
-                          placeholder="如果还想追问一次，可以在这里补充。"
+                          placeholder={t('mailbox.followUpAskPlaceholder')}
                           className="chat-input mailbox-textarea mailbox-textarea-short"
                           rows={4}
                         />
                       </label>
 
                       <div className="mailbox-detail-block">
-                        <span className="mailbox-detail-label">如果没有追加提问，请对本次解读打分：</span>
+                        <span className="mailbox-detail-label">{t('mailbox.feedbackPrompt')}</span>
                       </div>
 
                       <div className="mailbox-action-row">
                         <button type="button" onClick={() => handleUserFeedback('Heart')} className="secondary-button">
-                          ♥ 满意
+                          {t('mailbox.satisfied')}
                         </button>
                         <button type="button" onClick={() => handleUserFeedback('Spade')} className="secondary-button">
-                          ♠ 不满意
+                          {t('mailbox.dissatisfied')}
                         </button>
                         <button type="button" onClick={handleUserFollowUp} className="primary-button">
-                          发送追加提问
+                          {t('mailbox.sendFollowUp')}
                         </button>
                       </div>
                     </div>
@@ -2546,9 +2539,9 @@ function App() {
                 </>
               ) : (
                 <div className="mailbox-empty mailbox-empty-detail">
-                  <p className="mailbox-empty-title">先点开一封信。</p>
+                  <p className="mailbox-empty-title">{t('mailbox.openFirstTitle')}</p>
                   <p className="mailbox-empty-copy">
-                    {user?.id === OFFICIAL_READER_ID ? '进入 pending 信件时会自动标记为已读。' : '这里会展示饼饼给你的处理进度和回复内容。'}
+                    {user?.id === OFFICIAL_READER_ID ? t('mailbox.pendingOpenHintAdmin') : t('mailbox.pendingOpenHintUser')}
                   </p>
                 </div>
               )}

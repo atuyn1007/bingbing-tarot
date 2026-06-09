@@ -1,6 +1,7 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCardDisplayNames } from './data';
 import { getCardArtwork } from './cardArtwork';
+import { useI18n } from './i18n';
 
 const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, variant = 'minimal', rotateReversed = true }) => {
   const sizeClasses = size === 'small' ? 'w-24 h-36' : 'w-24 h-36 sm:w-32 sm:h-48 lg:w-36 lg:h-56';
@@ -8,6 +9,7 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
   const artworkSrc = getCardArtwork(card);
   const [artworkFailed, setArtworkFailed] = useState(false);
   const shouldShowArtwork = variant === 'artwork' && artworkSrc && !artworkFailed;
+  const { t } = useI18n();
 
   useEffect(() => {
     setArtworkFailed(false);
@@ -40,12 +42,16 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
               </div>
             ) : (
               <>
-                <p className="mb-3 text-[10px] uppercase tracking-[0.35em] text-stone-500">Tarot</p>
+                <p className="mb-3 text-[10px] uppercase tracking-[0.35em] text-stone-500">{t('common.tarotLabel')}</p>
                 <div className="tarot-card-name">
                   <span>{chineseName}</span>
                   <small>{englishName}</small>
                 </div>
-                {showOrientation ? <p className="mt-4 text-xs tracking-[0.28em] text-stone-500">{card.isReversed ? '逆位' : '正位'}</p> : null}
+                {showOrientation ? (
+                  <p className="mt-4 text-xs tracking-[0.28em] text-stone-500">
+                    {card.isReversed ? t('common.orientationReversed') : t('common.orientationUpright')}
+                  </p>
+                ) : null}
               </>
             )}
           </div>
@@ -56,4 +62,3 @@ const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, 
 };
 
 export default TarotCard;
-
