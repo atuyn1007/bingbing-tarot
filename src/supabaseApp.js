@@ -7,6 +7,8 @@ export const OFFICIAL_READER_ID = '3fe35aa6-405d-4f6e-b7fe-2fb9b5aa66d8';
 
 export const OFFICIAL_READER_NICKNAME = '饼饼大人';
 
+const UNKNOWN_USER_LABEL = '未知用户';
+
 function normalizeNickname(nickname) {
   return String(nickname || '').trim();
 }
@@ -307,6 +309,10 @@ export async function createPendingMailboxMessage({
 
   const nextCoins = currentCoins - coinCost;
   let officialReaderCredited = false;
+  const enrichedRecordSnapshot = {
+    ...(recordSnapshot || {}),
+    senderNickname: profile.nickname || normalizeNickname(profile.email) || UNKNOWN_USER_LABEL,
+  };
 
   const { data: updatedProfile, error: deductError } = await supabase
     .from('profiles')
@@ -347,7 +353,7 @@ export async function createPendingMailboxMessage({
     .from('messages')
     .insert({
       ...baseMessagePayload,
-      record_snapshot: recordSnapshot,
+      record_snapshot: enrichedRecordSnapshot,
     })
     .select()
     .single();
@@ -413,7 +419,7 @@ async function ensureSystemRewardNotification(userId) {
 function looksLikeMojibake(value) {
   const text = String(value || '').trim();
   if (!text) return true;
-  return /[锛銆€娴鎰楗鐖鐢浠璇]/.test(text);
+  return text.length < 2 || !/[测试补贴感谢注册使用饼币]/.test(text);
 }
 
 function normalizeSystemNotification(notification) {
@@ -428,9 +434,16 @@ function normalizeSystemNotification(notification) {
 
 async function attachMailboxNicknames(items = []) {
   const senderIds = Array.from(new Set(items.map((item) => item.sender_id).filter(Boolean)));
+  const fallbackItems = items.map((item) => ({
+    ...item,
+    sender_nickname:
+      item.sender_nickname
+      || item.record_snapshot?.senderNickname
+      || (item.sender_id === OFFICIAL_READER_ID ? OFFICIAL_READER_NICKNAME : UNKNOWN_USER_LABEL),
+  }));
 
   if (!senderIds.length) {
-    return items;
+    return fallbackItems;
   }
 
   const { data: profiles, error } = await supabase
@@ -438,10 +451,18 @@ async function attachMailboxNicknames(items = []) {
     .select('id, nickname')
     .in('id', senderIds);
 
-  if (error) throw error;
+  if (error) {
+    console.warn('Failed to enrich mailbox nicknames from profiles:', error);
+    return fallbackItems;
+  }
 
   const nicknameMap = new Map((profiles || []).map((profile) => [profile.id, profile.nickname]));
-  return items.map((item) => ({
+  fallbackItems.forEach((item) => {
+    if (!nicknameMap.has(item.sender_id) && item.sender_nickname) {
+      nicknameMap.set(item.sender_id, item.sender_nickname);
+    }
+  });
+  return fallbackItems.map((item) => ({
     ...item,
     sender_nickname: nicknameMap.get(item.sender_id) || '未知用户',
   }));

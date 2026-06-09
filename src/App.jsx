@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, Bell, Coins, Lock, Mail, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
 import TarotCard from './TarotCard';
@@ -354,6 +354,11 @@ function getMailboxStatusHint(status) {
     default:
       return '信箱状态已更新。';
   }
+}
+
+function getMailboxSenderLabel(item) {
+  if (!item) return '未知用户';
+  return item.sender_nickname || item.record_snapshot?.senderNickname || '未知用户';
 }
 
 function getSystemNotificationStatusLabel(status) {
