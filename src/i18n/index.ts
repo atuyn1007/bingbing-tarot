@@ -1,19 +1,11 @@
 import { useSyncExternalStore } from 'react';
-import en from './locales/en';
-import it from './locales/it';
-import zhCN from './locales/zh-CN';
+import type zhCN from './locales/zh-CN';
 
 export const supportedLanguages = ['zh-CN', 'en', 'it'] as const;
 export type SupportedLanguage = (typeof supportedLanguages)[number];
 export const defaultLanguage: SupportedLanguage = 'zh-CN';
 
 const STORAGE_KEY = 'tarot_language';
-
-const dictionaries = {
-  'zh-CN': zhCN,
-  en,
-  it,
-} as const;
 
 type Dictionary = typeof zhCN;
 type NestedKeyOf<TObj extends object> = {
@@ -26,6 +18,14 @@ type NestedKeyOf<TObj extends object> = {
 }[keyof TObj & string];
 
 export type TranslationKey = NestedKeyOf<Dictionary>;
+
+const localeLoaders: Record<SupportedLanguage, () => Promise<{ default: Dictionary }>> = {
+  'zh-CN': () => import('./locales/zh-CN'),
+  en: () => import('./locales/en'),
+  it: () => import('./locales/it'),
+};
+
+const localeCache: Partial<Record<SupportedLanguage, Dictionary>> = {};
 
 function normalizeLanguage(value: string | null | undefined): SupportedLanguage {
   if (!value) return defaultLanguage;
@@ -66,11 +66,30 @@ function getServerSnapshot() {
   return defaultLanguage;
 }
 
-export function setLanguage(language: SupportedLanguage) {
+async function loadLocale(language: SupportedLanguage) {
+  const cached = localeCache[language];
+  if (cached) return cached;
+
+  const localeModule = await localeLoaders[language]();
+  localeCache[language] = localeModule.default;
+  return localeModule.default;
+}
+
+function getLoadedDictionary(language: SupportedLanguage) {
+  return localeCache[language] || localeCache[defaultLanguage];
+}
+
+export async function preloadInitialLanguage() {
+  currentLanguage = getInitialLanguage();
+  await loadLocale(currentLanguage);
+}
+
+export async function setLanguage(language: SupportedLanguage) {
   if (!supportedLanguages.includes(language) || language === currentLanguage) {
     return;
   }
 
+  await loadLocale(language);
   currentLanguage = language;
 
   if (typeof window !== 'undefined') {
@@ -81,7 +100,9 @@ export function setLanguage(language: SupportedLanguage) {
 }
 
 function getValueByPath(path: string, language: SupportedLanguage) {
-  const dictionary = dictionaries[language] || dictionaries[defaultLanguage];
+  const dictionary = getLoadedDictionary(language);
+  if (!dictionary) return undefined;
+
   return path.split('.').reduce<unknown>((result, segment) => {
     if (result && typeof result === 'object' && segment in result) {
       return (result as Record<string, unknown>)[segment];
@@ -134,6 +155,6 @@ export function useI18n() {
     setLanguage,
     t: <TKey extends TranslationKey>(key: TKey, values?: Record<string, string | number>) =>
       t(key, values, language),
-    locale: dictionaries[language],
+    locale: getLoadedDictionary(language),
   };
 }

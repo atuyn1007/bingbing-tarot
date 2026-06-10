@@ -1,45 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, Bell, Coins, Lock, Mail, MessageCircle, Send, Sparkles, User, X } from 'lucide-react';
-import TarotCard from './TarotCard';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
-import LanguageSwitcher from './components/LanguageSwitcher';
+import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
-import {
-  appendRequestMessage,
-  createPendingMailboxMessage,
-  createRequest,
-  ensureProfile,
-  getAuthenticatedUser,
-  getAuthSession,
-  getLocalDateKey,
-  completeMailboxFeedback,
-  completeMailboxFollowUpReply,
-  claimSystemNotification,
-  listMailboxMessagesForAdmin,
-  listMailboxMessagesForUser,
-  listSystemNotificationsForUser,
-  getProfileById,
-  getRequestById,
-  listRequestsByUser,
-  loginWithEmail,
-  logoutFromSupabase,
-  OFFICIAL_READER_ID,
-  OFFICIAL_READER_NICKNAME,
-  markMailboxMessageRead,
-  refreshAuthSession,
-  rejectMailboxMessage,
-  replyMailboxMessage,
-  requestPasswordReset,
-  registerWithEmail,
-  submitMailboxFollowUp,
-  updatePassword,
-  updateCoinBalance,
-  updateDailyProfile,
-} from './supabaseApp';
-import { supabase } from './supabaseClient';
-import { saveSpreadHistoryRecord, saveTarotHistory } from './supabaseTarot';
+import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
+import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { isSessionExpiredAt } from './sessionUtils';
+
+const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
+const HomePage = lazy(() => import('./pages/HomePage.jsx'));
+const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
+const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
+const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
+const MessagesPage = lazy(() => import('./pages/MessagesPage.jsx'));
+const HistoryModal = lazy(() => import('./components/modals/HistoryModal.jsx'));
+const DailyModal = lazy(() => import('./components/modals/DailyModal.jsx'));
+const CalendarModal = lazy(() => import('./components/modals/CalendarModal.jsx'));
+const HumanRequestModal = lazy(() => import('./components/modals/HumanRequestModal.jsx'));
+const ForgotPasswordModal = lazy(() => import('./components/modals/ForgotPasswordModal.jsx'));
+const SpreadModal = lazy(() => import('./components/modals/SpreadModal.jsx'));
 
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
@@ -379,6 +357,8 @@ function buildHumanReading(cards, question, t) {
 function App() {
   const { language, t } = useI18n();
   const intlLocale = getIntlLocale(language);
+  const getSupabaseApp = () => loadSupabaseAppModule();
+  const getSupabaseTarot = () => loadSupabaseTarotModule();
   const storedUser = readStoredJson('tarot_user', null);
   const storedProfile = readStoredJson(PROFILE_SNAPSHOT_KEY, {});
   const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
@@ -558,6 +538,7 @@ function App() {
 
   const fetchUserProfile = async (authUser) => {
     try {
+      const { ensureProfile, getLocalDateKey } = await getSupabaseApp();
       const profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || nickname);
       const todayKey = getLocalDateKey();
       const isSignedInToday = profile.last_sign_in_date === todayKey;
@@ -593,6 +574,7 @@ function App() {
 
   const getLiveSessionUser = async () => {
     try {
+      const { getAuthSession, refreshAuthSession, getAuthenticatedUser, logoutFromSupabase } = await getSupabaseApp();
       let session = await getAuthSession();
       if (!session && user?.id) {
         session = await refreshAuthSession();
@@ -634,6 +616,7 @@ function App() {
     let syncedRecordId = null;
 
     try {
+      const { saveSpreadHistoryRecord } = await getSupabaseTarot();
       const synced = await saveSpreadHistoryRecord(question, spread.name, cards);
       syncedRecordId = synced?.id ?? null;
     } catch (error) {
@@ -668,6 +651,7 @@ function App() {
     if (!entry || entry.recordId || entry.record_id) return entry;
 
     try {
+      const { saveSpreadHistoryRecord } = await getSupabaseTarot();
       const synced = await saveSpreadHistoryRecord(entry.question, entry.spreadName, entry.cardsData || []);
       const nextEntry = normalizeRecentReadingEntry({
         ...entry,
@@ -727,6 +711,7 @@ function App() {
       }, 4000);
 
       try {
+        const { getAuthSession, refreshAuthSession, getAuthenticatedUser, logoutFromSupabase } = await getSupabaseApp();
         if (hasRecoveryLink && mounted) {
           setIsRecoveryMode(true);
           setIsLogin(true);
@@ -819,58 +804,69 @@ function App() {
   }, [user, isRecoveryMode]);
 
   useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'INITIAL_SESSION') {
-        if (session?.user) {
-          if (isSessionExpired()) {
-            await logoutFromSupabase();
-            clearSession();
-            setIsAuthReady(true);
-            return;
-          }
+    let unsubscribe = () => {};
 
-          await fetchUserProfile(session.user);
-        } else {
-          if (hasPendingAuthInput() || authInteractionRef.current) {
-            localStorage.removeItem('tarot_user');
-            setUser(null);
-            setIsAuthReady(true);
-            setIsSessionSyncing(false);
+    void (async () => {
+      const [{ supabase }, { logoutFromSupabase }] = await Promise.all([
+        loadSupabaseClientModule(),
+        getSupabaseApp(),
+      ]);
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'INITIAL_SESSION') {
+          if (session?.user) {
+            if (isSessionExpired()) {
+              await logoutFromSupabase();
+              clearSession();
+              setIsAuthReady(true);
+              return;
+            }
+
+            await fetchUserProfile(session.user);
           } else {
-            clearSession();
-            setIsAuthReady(true);
-            setIsSessionSyncing(false);
+            if (hasPendingAuthInput() || authInteractionRef.current) {
+              localStorage.removeItem('tarot_user');
+              setUser(null);
+              setIsAuthReady(true);
+              setIsSessionSyncing(false);
+            } else {
+              clearSession();
+              setIsAuthReady(true);
+              setIsSessionSyncing(false);
+            }
           }
+          return;
         }
-        return;
-      }
 
-      if (event === 'PASSWORD_RECOVERY') {
-        setIsRecoveryMode(true);
-        setIsLogin(true);
-        setShowForgotPasswordModal(false);
-        setCurrentPage('home');
-        setIsAuthReady(true);
-        setIsSessionSyncing(false);
-        return;
-      }
+        if (event === 'PASSWORD_RECOVERY') {
+          setIsRecoveryMode(true);
+          setIsLogin(true);
+          setShowForgotPasswordModal(false);
+          setCurrentPage('home');
+          setIsAuthReady(true);
+          setIsSessionSyncing(false);
+          return;
+        }
 
-      if (event === 'SIGNED_OUT') {
-        clearSession();
-        setIsAuthReady(true);
-        return;
-      }
+        if (event === 'SIGNED_OUT') {
+          clearSession();
+          setIsAuthReady(true);
+          return;
+        }
 
-      if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
-        markSessionStarted();
-        setIsSessionSyncing(true);
-        await fetchUserProfile(session.user);
-      }
-    });
+        if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+          markSessionStarted();
+          setIsSessionSyncing(true);
+          await fetchUserProfile(session.user);
+        }
+      });
 
-    return () => subscription.unsubscribe();
+      unsubscribe = () => subscription.unsubscribe();
+    })();
+
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -899,6 +895,7 @@ function App() {
     }
 
     try {
+      const { registerWithEmail } = await getSupabaseApp();
       const result = await registerWithEmail(email.trim(), nickname.trim(), password);
       if (result.needsEmailVerification) {
         alert(t('alerts.registerVerifyMailSent'));
@@ -936,6 +933,7 @@ function App() {
     }
 
     try {
+      const { loginWithEmail, getAuthenticatedUser } = await getSupabaseApp();
       if (authReadyTimeoutRef.current) {
         clearTimeout(authReadyTimeoutRef.current);
         authReadyTimeoutRef.current = null;
@@ -964,6 +962,7 @@ function App() {
     }
 
     try {
+      const { requestPasswordReset } = await getSupabaseApp();
       await requestPasswordReset(email.trim(), window.location.origin);
       setShowForgotPasswordModal(false);
       alert(t('alerts.forgotSent'));
@@ -984,6 +983,7 @@ function App() {
     }
 
     try {
+      const { updatePassword } = await getSupabaseApp();
       await updatePassword(resetPasswordValue.trim());
       setResetPasswordValue('');
       setIsRecoveryMode(false);
@@ -1000,6 +1000,7 @@ function App() {
     clearSession();
 
     try {
+      const { logoutFromSupabase } = await getSupabaseApp();
       await logoutFromSupabase();
     } catch (error) {
       console.error(error);
@@ -1013,6 +1014,10 @@ function App() {
     }
 
     try {
+      const [{ getProfileById, getLocalDateKey, updateDailyProfile }, { saveTarotHistory }] = await Promise.all([
+        getSupabaseApp(),
+        getSupabaseTarot(),
+      ]);
       const profile = await getProfileById(liveUser.id);
       if (!profile) {
         clearSession();
@@ -1170,6 +1175,7 @@ function App() {
   const startPollingReply = (chatId) => {
     const pollInterval = setInterval(async () => {
       try {
+        const { getRequestById } = await getSupabaseApp();
         const data = await getRequestById(chatId);
         if (!data) return;
         setMessages(data.messages || []);
@@ -1203,6 +1209,7 @@ function App() {
     if (!confirmed) return;
 
     try {
+      const { createPendingMailboxMessage } = await getSupabaseApp();
       const { message, coinBalance: nextBalance } = await createPendingMailboxMessage({
         senderId: liveUser.id,
         recordId: selectedRecordId,
@@ -1251,6 +1258,7 @@ function App() {
     setMessageText('');
 
     try {
+      const { appendRequestMessage } = await getSupabaseApp();
       await appendRequestMessage(currentChatId, newMessage);
     } catch (error) {
       console.error(error);
@@ -1259,6 +1267,12 @@ function App() {
 
   const refreshMailbox = async () => {
     if (!user?.id) return;
+
+    const {
+      listMailboxMessagesForAdmin,
+      listMailboxMessagesForUser,
+      listSystemNotificationsForUser,
+    } = await getSupabaseApp();
 
     if (user.id === OFFICIAL_READER_ID) {
       const adminMessages = await listMailboxMessagesForAdmin();
@@ -1287,6 +1301,7 @@ function App() {
     let nextItem = item;
     if (user?.id === OFFICIAL_READER_ID && item.status === 'pending') {
       try {
+        const { markMailboxMessageRead } = await getSupabaseApp();
         const updated = await markMailboxMessageRead(item.id);
         nextItem = updated || { ...item, status: 'read' };
       } catch (error) {
@@ -1306,6 +1321,7 @@ function App() {
     if (!selectedMailboxItem) return;
 
     try {
+      const { rejectMailboxMessage } = await getSupabaseApp();
       const result = await rejectMailboxMessage(selectedMailboxItem.id, adminRejectReason);
       setSelectedMailboxItem(result.message);
       alert(t('alerts.adminRejected'));
@@ -1319,6 +1335,7 @@ function App() {
     if (!selectedMailboxItem) return;
 
     try {
+      const { replyMailboxMessage } = await getSupabaseApp();
       const updated = await replyMailboxMessage(selectedMailboxItem.id, adminInitialReply);
       setSelectedMailboxItem(updated);
       alert(t('alerts.adminReplySent'));
@@ -1332,6 +1349,7 @@ function App() {
     if (!selectedMailboxItem) return;
 
     try {
+      const { completeMailboxFollowUpReply } = await getSupabaseApp();
       const updated = await completeMailboxFollowUpReply(selectedMailboxItem.id, adminFollowUpReply);
       setSelectedMailboxItem(updated);
       alert(t('alerts.adminFollowUpSent'));
@@ -1345,6 +1363,7 @@ function App() {
     if (!selectedMailboxItem || !user?.id) return;
 
     try {
+      const { submitMailboxFollowUp } = await getSupabaseApp();
       const updated = await submitMailboxFollowUp(selectedMailboxItem.id, userFollowUpAsk, user.id);
       setSelectedMailboxItem(updated);
       alert(t('alerts.followUpSent'));
@@ -1358,6 +1377,7 @@ function App() {
     if (!selectedMailboxItem || !user?.id) return;
 
     try {
+      const { completeMailboxFeedback } = await getSupabaseApp();
       const updated = await completeMailboxFeedback(selectedMailboxItem.id, feedback, user.id);
       setSelectedMailboxItem(updated);
       alert(t('alerts.feedbackSent'));
@@ -1371,6 +1391,7 @@ function App() {
     if (!notification?.id || !user?.id) return;
 
     try {
+      const { claimSystemNotification } = await getSupabaseApp();
       const result = await claimSystemNotification(notification.id, user.id);
       setCoinBalance(result.coinBalance ?? coinBalance);
       setSystemNotifications((current) =>
@@ -1435,1124 +1456,251 @@ function App() {
     setAiReading('');
     setDisplayedText('');
   };
-
-  const renderSpreadCards = (cards = drawnCards, spreadKey = isHumanMode ? 'three' : activeSpread.key, options = {}) => {
-    const spread = getSpreadConfig(spreadKey, t);
-    const cardSize = spread.key === 'choice' ? 'small' : 'normal';
-    const isRevealedView = options.isRevealed ?? isRevealing;
-    const showOrientation = options.showOrientation ?? false;
-
-    return (
-      <section className={`reading-spread reading-spread-${spread.key} ${options.className || ''}`.trim()}>
-        {cards.map((card, index) => {
-          const position = spread.positions[index];
-
-          return (
-            <div key={`${spread.key}-${card.id}-${index}`} className={`reading-spread-slot reading-spread-slot-${spread.key}-${index + 1}`}>
-              <TarotCard
-                card={card}
-                isRevealed={isRevealedView}
-                size={cardSize}
-                showOrientation={showOrientation}
-                variant={cardStyle}
-                rotateReversed={options.rotateReversed ?? true}
-              />
-              {cardStyle === 'artwork' && isRevealedView ? (
-                <p className="reading-spread-card-name">{card.name}</p>
-              ) : null}
-              <div className="reading-spread-meta">
-                <p className="reading-spread-label">{position?.title || t('drawing.spreadLabelFallback', { index: index + 1 })}</p>
-                {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
-              </div>
-            </div>
-          );
-        })}
-      </section>
-    );
+  const handleBackFromChat = () => {
+    setCurrentPage('home');
+    setCurrentChatId(null);
+    setIsWaitingForReply(false);
   };
 
-  const renderThemeToggle = (extraClassName = '') => (
-    <div className={`theme-toggle ${extraClassName}`.trim()}>
-      <button
-        type="button"
-        onClick={() => setTheme('aurora')}
-        className={`theme-toggle-button ${theme === 'aurora' ? 'theme-toggle-button-active' : ''}`}
-        aria-label={t('theme.auroraAria')}
-        title={t('theme.auroraTitle')}
-      >
-        <span className="theme-toggle-swatch theme-toggle-swatch-aurora" aria-hidden="true" />
-      </button>
-      <button
-        type="button"
-        onClick={() => setTheme('noir')}
-        className={`theme-toggle-button ${theme === 'noir' ? 'theme-toggle-button-active' : ''}`}
-        aria-label={t('theme.noirAria')}
-        title={t('theme.noirTitle')}
-      >
-        <span className="theme-toggle-swatch theme-toggle-swatch-noir" aria-hidden="true" />
-      </button>
-    </div>
-  );
+  const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
+  const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
+  const monthLabel = getMonthLabel(intlLocale, calendarDate);
+  const suspenseFallback = <AppLoading theme={theme} />;
+  const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
+  const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
+  const mailboxStatusHint = (status) => getMailboxStatusHint(status, t);
+  const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
 
-  const renderCardStyleToggle = (extraClassName = '') => (
-    <div className={`card-style-toggle ${extraClassName}`.trim()}>
-      <button
-        type="button"
-        onClick={() => setCardStyle('minimal')}
-        className={`card-style-button ${cardStyle === 'minimal' ? 'card-style-button-active' : ''}`}
-      >
-        {t('cardStyle.minimal')}
-      </button>
-      <button
-        type="button"
-        onClick={() => setCardStyle('artwork')}
-        className={`card-style-button ${cardStyle === 'artwork' ? 'card-style-button-active' : ''}`}
-      >
-        {t('cardStyle.artwork')}
-      </button>
-    </div>
-  );
-
-  const renderDailyCard = (extraClassName = '') => (
-    <div className={`daily-card ${extraClassName}`.trim()}>
-      <div className="daily-card-head">
-        <p className="eyebrow">{t('daily.eyebrow')}</p>
-      </div>
-
-      {isSignedIn && savedDailyTarot ? (
-        <div className="daily-result">
-          <p className="daily-result-label">{t('daily.resultLabel')}</p>
-          <div className="daily-result-name">
-            <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
-            <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
-          </div>
-          <p className="daily-result-note">{t('daily.signedNote')}</p>
-        </div>
-      ) : (
-        <div className="daily-result">
-          <p className="daily-result-label">{t('daily.checkInLabel')}</p>
-          <p className="daily-result-note">{t('daily.unsignedNote')}</p>
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
-        className="primary-button daily-button"
-      >
-        <Sparkles className="w-5 h-5" />
-        <span>{isSignedIn ? t('daily.openToday') : t('daily.getToday')}</span>
-      </button>
-    </div>
-  );
-  const renderHistoryModal = () => {
-    if (!showHistoryModal || !selectedHistoryReading) return null;
-
-    return (
-      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowHistoryModal(false)}>
-        <motion.div
-          className="calendar-modal history-preview-modal"
-          initial={{ opacity: 0, y: 18, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.96 }}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className="calendar-modal-head">
-            <div>
-              <p className="eyebrow">{t('history.eyebrow')}</p>
-              <h3 className="fortune-modal-title">{t('history.title')}</h3>
-            </div>
-            <button type="button" onClick={() => setShowHistoryModal(false)} className="icon-button">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="history-preview-copy">
-            <p className="history-preview-question">{t('history.questionLabel', { question: selectedHistoryReading.question })}</p>
-            <p className="history-preview-spread">{t('history.spreadLabel', { spread: selectedHistoryReading.spreadName })}</p>
-          </div>
-
-          {renderSpreadCards(selectedHistoryReading.cardsData, selectedHistoryReading.spreadKey, {
-            isRevealed: true,
-            className: 'history-preview-spread',
-          })}
-        </motion.div>
-      </motion.div>
-    );
-  };
-
-  const renderHumanRequestModal = () => {
-    if (!showHumanRequestModal) return null;
-
-    return (
-      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowHumanRequestModal(false)}>
-        <motion.div
-          className="calendar-modal human-request-modal"
-          initial={{ opacity: 0, y: 18, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.96 }}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className="calendar-modal-head">
-            <div>
-              <p className="eyebrow">{OFFICIAL_READER.englishLabel}</p>
-              <h3 className="fortune-modal-title">{t('humanRequest.title')}</h3>
-            </div>
-            <button type="button" onClick={() => setShowHumanRequestModal(false)} className="icon-button">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <p className="human-request-copy">{t('humanRequest.copy')}</p>
-
-          <div className="human-request-list">
-            {recentReadings.map((entry) => (
-              <button
-                key={entry.id}
-                type="button"
-                onClick={() => setSelectedHumanReadingId(entry.id)}
-                className={`human-request-item ${selectedHumanReadingId === entry.id ? 'human-request-item-active' : ''}`}
-              >
-                <p className="human-request-question">{`"${entry.question}"`}</p>
-                <p className="human-request-meta">{formatHistorySummary(entry, t)}</p>
-              </button>
-            ))}
-          </div>
-
-          <div className="human-request-actions">
-            <button type="button" onClick={() => setShowHumanRequestModal(false)} className="secondary-button">
-              {t('humanRequest.thinkAgain')}
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmitHumanRequest}
-              disabled={!selectedHumanReadingId || coinBalance < 10}
-              className="primary-button"
-            >
-              <MessageCircle className="w-5 h-5" />
-              {coinBalance < 10 ? t('humanRequest.notEnoughCoins') : t('humanRequest.sendButton')}
-            </button>
-          </div>
-        </motion.div>
-      </motion.div>
-    );
-  };
-
-  const renderForgotPasswordModal = () => {
-    if (!showForgotPasswordModal) return null;
-
-    return (
-      <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowForgotPasswordModal(false)}>
-        <motion.div
-          className="calendar-modal forgot-password-modal"
-          initial={{ opacity: 0, y: 18, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.96 }}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className="calendar-modal-head">
-            <div>
-              <p className="eyebrow">{t('auth.forgotPasswordEyebrow')}</p>
-              <h3 className="fortune-modal-title">{t('auth.forgotPasswordTitle')}</h3>
-            </div>
-            <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="icon-button">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <p className="human-request-copy">{t('auth.forgotPasswordCopy')}</p>
-          <label className="field-shell">
-            <Mail className="field-icon" />
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder={t('auth.emailPlaceholder')}
-              className="field-input"
-            />
-          </label>
-
-          <div className="human-request-actions">
-            <button type="button" onClick={() => setShowForgotPasswordModal(false)} className="secondary-button">
-              {t('common.cancel')}
-            </button>
-            <button type="button" onClick={handleForgotPassword} className="primary-button">
-              {t('auth.sendResetEmail')}
-            </button>
-          </div>
-        </motion.div>
-      </motion.div>
-    );
-  };
+  let currentView = null;
 
   if (!user) {
-    return (
-      <div className={`screen-shell auth-screen theme-${theme}`}>
-        <div className="orb orb-left" />
-        <div className="orb orb-right" />
-        <motion.div className="auth-card" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div className="auth-toggles">
-            <LanguageSwitcher />
-            {renderThemeToggle('auth-theme-toggle')}
-          </div>
-          <h1 className="hero-title">bingbing&apos;s tarot</h1>
-          <p className="hero-subtitle">
-            {isRecoveryMode
-              ? t('auth.recoverySubtitle')
-              : isSessionSyncing && !hasAuthDraft
-                ? t('auth.syncingSubtitle')
-                : isLogin
-                  ? t('auth.loginSubtitle')
-                  : t('auth.registerSubtitle')}
-          </p>
-
-
-          <div className="auth-form">
-            <label className="field-shell">
-              <Mail className="field-icon" />
-              <input
-                ref={emailInputRef}
-                type="email"
-                value={email}
-                onChange={(event) => {
-                  authInteractionRef.current = true;
-                  setEmail(event.target.value);
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                }}
-                onInput={() => {
-                  if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                  autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
-                }}
-                onFocus={() => {
-                  authInteractionRef.current = true;
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                }}
-                placeholder={t('auth.emailPlaceholder')}
-                className="field-input"
-              />
-            </label>
-
-            {!isLogin && !isRecoveryMode ? (
-              <label className="field-shell">
-                <User className="field-icon" />
-                <input type="text" value={nickname} onChange={(event) => setNickname(event.target.value)} placeholder={t('auth.nicknamePlaceholder')} className="field-input" />
-              </label>
-            ) : null}
-
-            <label className="field-shell">
-              <Lock className="field-icon" />
-              <input
-                ref={passwordInputRef}
-                type="password"
-                value={isRecoveryMode ? resetPasswordValue : password}
-                onChange={(event) => {
-                  authInteractionRef.current = true;
-                  if (isRecoveryMode) {
-                    setResetPasswordValue(event.target.value);
-                  } else {
-                    setPassword(event.target.value);
-                  }
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                }}
-                onInput={() => {
-                  if (autofillSyncTimeoutRef.current) clearTimeout(autofillSyncTimeoutRef.current);
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                  autofillSyncTimeoutRef.current = setTimeout(syncAuthInputValues, 0);
-                }}
-                onFocus={() => {
-                  authInteractionRef.current = true;
-                  if (isSessionSyncing) setIsSessionSyncing(false);
-                }}
-                placeholder={isRecoveryMode ? t('auth.newPasswordPlaceholder') : t('auth.passwordPlaceholder')}
-                className="field-input"
-                onKeyDown={(event) =>
-                  event.key === 'Enter' &&
-                  (isRecoveryMode ? handleCompletePasswordReset() : isLogin ? handleLogin() : handleRegister())
-                }
-              />
-            </label>
-
-            <button
-              type="button"
-              onClick={isRecoveryMode ? handleCompletePasswordReset : isLogin ? handleLogin : handleRegister}
-              className="primary-button"
-            >
-              {isRecoveryMode ? t('auth.updatePasswordButton') : isLogin ? t('auth.loginButton') : t('auth.registerButton')}
-            </button>
-
-            {isLogin && !isRecoveryMode ? (
-              <button type="button" onClick={() => setShowForgotPasswordModal(true)} className="text-button forgot-password-link">
-                {t('auth.forgotPasswordLink')}
-              </button>
-            ) : null}
-
-            {isRecoveryMode ? (
-              <p className="switch-text">
-                {t('auth.recoverySubtitle')}
-                <span
-                  onClick={() => {
-                    setIsRecoveryMode(false);
-                    setResetPasswordValue('');
-                    setPassword('');
-                  }}
-                  className="switch-link"
-                >
-                  {t('auth.backToLogin')}
-                </span>
-              </p>
-            ) : (
-              <p className="switch-text">
-                {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}
-                <span
-                  onClick={() => {
-                    setIsLogin((current) => !current);
-                    setEmail('');
-                    setNickname('');
-                    setPassword('');
-                    setResetPasswordValue('');
-                    setShowForgotPasswordModal(false);
-                  }}
-                  className="switch-link"
-                >
-                  {isLogin ? t('auth.goRegister') : t('auth.goLogin')}
-                </span>
-              </p>
-            )}
-          </div>
-        </motion.div>
-
-        <AnimatePresence>
-          {showForgotPasswordModal && renderForgotPasswordModal()}
-        </AnimatePresence>
-      </div>
+    currentView = (
+      <AuthPage
+        theme={theme}
+        onThemeChange={setTheme}
+        isRecoveryMode={isRecoveryMode}
+        isSessionSyncing={isSessionSyncing}
+        hasAuthDraft={hasAuthDraft}
+        isLogin={isLogin}
+        emailInputRef={emailInputRef}
+        passwordInputRef={passwordInputRef}
+        email={email}
+        setEmail={setEmail}
+        nickname={nickname}
+        setNickname={setNickname}
+        password={password}
+        setPassword={setPassword}
+        resetPasswordValue={resetPasswordValue}
+        setResetPasswordValue={setResetPasswordValue}
+        setIsSessionSyncing={setIsSessionSyncing}
+        setShowForgotPasswordModal={setShowForgotPasswordModal}
+        setIsRecoveryMode={setIsRecoveryMode}
+        setIsLogin={setIsLogin}
+        setShowForgotPasswordModalState={setShowForgotPasswordModal}
+        syncAuthInputValues={syncAuthInputValues}
+        autofillSyncTimeoutRef={autofillSyncTimeoutRef}
+        authInteractionRef={authInteractionRef}
+        handleCompletePasswordReset={handleCompletePasswordReset}
+        handleLogin={handleLogin}
+        handleRegister={handleRegister}
+        t={t}
+      />
+    );
+  } else if (currentPage === 'home') {
+    currentView = (
+      <HomePage
+        theme={theme}
+        onThemeChange={setTheme}
+        t={t}
+        activeNickname={activeNickname}
+        unreadCount={unreadCount}
+        coinBalance={coinBalance}
+        onOpenMessages={() => setCurrentPage('messages')}
+        onLogout={handleLogout}
+        dailyLine={dailyLine}
+        lastSignInDate={lastSignInDate}
+        onOpenCalendar={() => setShowCalendarModal(true)}
+        recentReadings={recentReadings}
+        onOpenHistory={openHistoryModal}
+        onDeleteHistory={deleteRecentReading}
+        formatHistorySummary={formatHistorySummaryLabel}
+        isSignedIn={isSignedIn}
+        savedDailyTarot={savedDailyTarot}
+        getCardDisplayNames={getCardDisplayNames}
+        onDailyAction={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
+        onStartFreeReading={handleStartFreeReading}
+        onOpenHumanRequest={openHumanRequestModal}
+      />
+    );
+  } else if (currentPage === 'drawing-input') {
+    currentView = (
+      <DrawingPage
+        theme={theme}
+        onThemeChange={setTheme}
+        goHome={goHome}
+        isHumanMode={isHumanMode}
+        activeSpread={activeSpread}
+        userQuestion={userQuestion}
+        setUserQuestion={setUserQuestion}
+        handleConfirmQuestion={handleConfirmQuestion}
+        t={t}
+      />
+    );
+  } else if (currentPage === 'drawing') {
+    currentView = (
+      <ResultPage
+        theme={theme}
+        onThemeChange={setTheme}
+        cardStyle={cardStyle}
+        setCardStyle={setCardStyle}
+        goHome={goHome}
+        t={t}
+        isHumanMode={isHumanMode}
+        activeSpread={activeSpread}
+        userQuestion={userQuestion}
+        drawnCards={drawnCards}
+        spreadForCards={spreadForCards}
+        isRevealing={isRevealing}
+        readingComplete={readingComplete}
+        readingLead={readingLead}
+        readingBody={readingBody}
+        onOpenHumanRequest={openHumanRequestModal}
+      />
+    );
+  } else if (currentPage === 'chat') {
+    currentView = (
+      <ChatPage
+        theme={theme}
+        onThemeChange={setTheme}
+        t={t}
+        onBack={handleBackFromChat}
+        userQuestion={userQuestion}
+        drawnCards={drawnCards}
+        messages={messages}
+        isWaitingForReply={isWaitingForReply}
+        messageText={messageText}
+        setMessageText={setMessageText}
+        handleSendMessage={handleSendMessage}
+      />
+    );
+  } else if (currentPage === 'messages') {
+    currentView = (
+      <MessagesPage
+        theme={theme}
+        onThemeChange={setTheme}
+        t={t}
+        intlLocale={intlLocale}
+        onBack={() => setCurrentPage('home')}
+        user={user}
+        officialReaderId={OFFICIAL_READER_ID}
+        mailboxItems={mailboxItems}
+        selectedMailboxItem={selectedMailboxItem}
+        systemNotifications={systemNotifications}
+        unreadCount={unreadCount}
+        getMailboxStatusLabel={mailboxStatusLabel}
+        getMailboxStatusHint={mailboxStatusHint}
+        handleOpenMailboxItem={handleOpenMailboxItem}
+        handleClaimSystemNotification={handleClaimSystemNotification}
+        cardStyle={cardStyle}
+        getSpreadConfig={spreadConfigByKey}
+        adminRejectReason={adminRejectReason}
+        setAdminRejectReason={setAdminRejectReason}
+        adminInitialReply={adminInitialReply}
+        setAdminInitialReply={setAdminInitialReply}
+        adminFollowUpReply={adminFollowUpReply}
+        setAdminFollowUpReply={setAdminFollowUpReply}
+        userFollowUpAsk={userFollowUpAsk}
+        setUserFollowUpAsk={setUserFollowUpAsk}
+        handleAdminReject={handleAdminReject}
+        handleAdminReply={handleAdminReply}
+        handleAdminFollowUpReply={handleAdminFollowUpReply}
+        handleUserFeedback={handleUserFeedback}
+        handleUserFollowUp={handleUserFollowUp}
+      />
     );
   }
 
-  if (currentPage === 'home') {
-    return (
-      <div className={`screen-shell home-screen theme-${theme}`}>
-        <div className="orb orb-left" />
-        <div className="orb orb-right" />
+  return (
+    <Suspense fallback={suspenseFallback}>
+      {currentView}
 
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">{t('home.eyebrow')}</p>
-            <h1 className="topbar-title">{t('common.appName')}</h1>
-          </div>
-          <div className="topbar-actions">
-            <LanguageSwitcher />
-            {renderThemeToggle('topbar-theme-toggle')}
-            <button type="button" onClick={() => setCurrentPage('messages')} className="icon-button">
-              <Bell className="w-5 h-5" />
-              {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
-            </button>
-            <div className="coin-pill">
-              <Coins className="w-4 h-4" />
-              <span>{coinBalance} {t('common.coins')}</span>
-            </div>
-            <button type="button" onClick={handleLogout} className="text-button">
-              {t('home.logout')}
-            </button>
-          </div>
-        </header>
-
-        <main className="home-layout">
-          <motion.section className="hero-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
-            <div className="hero-copy">
-              <p className="hero-kicker">{t('home.heroKicker')}</p>
-              <div className="hero-identity">
-                <h2 className="hero-panel-title hero-panel-title-compact">{activeNickname}</h2>
-              </div>
-                <p className="hero-panel-text">
-                  {dailyLine.text}
-                  <span className="hero-panel-source">{` - ${dailyLine.source}`}</span>
-                </p>
-            </div>
-
-            <div className="stats-row">
-              <div className="stat-card">
-                <span className="stat-label">{t('home.lastSignIn')}</span>
-                <strong className="stat-value">{lastSignInDate || t('home.noLastSignIn')}</strong>
-              </div>
-
-              <button type="button" onClick={() => setShowCalendarModal(true)} className="stat-card calendar-stat-card">
-                <span className="stat-label">{t('home.calendarLabel')}</span>
-                <strong className="stat-value">{t('home.calendarAction')}</strong>
-              </button>
-            </div>
-            <div className="history-card">
-              {recentReadings.length > 0 ? (
-                <div className="history-list">
-                  {recentReadings.map((entry) => (
-                    <article
-                      key={entry.id}
-                      className="history-item"
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => openHistoryModal(entry)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          openHistoryModal(entry);
-                        }
-                      }}
-                    >
-                      <div className="history-item-head">
-                        <p className="history-question">{`"${entry.question}"`}</p>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            deleteRecentReading(entry.id);
-                          }}
-                          className="history-delete-button"
-                          aria-label={t('home.deleteHistoryAria')}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="history-cards">{formatHistorySummary(entry, t)}</p>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <div className="history-empty">
-                  <p className="history-empty-title">{t('home.historyEmptyTitle')}</p>
-                  <p className="history-empty-copy">{t('home.historyEmptyCopy')}</p>
-                </div>
-              )}
-            </div>
-          </motion.section>
-
-          <motion.section className="action-panel" initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.06 }}>
-            <div className="daily-card desktop-daily-card">
-              <div className="daily-card-head">
-                <p className="eyebrow">{t('daily.eyebrow')}</p>
-              </div>
-
-              {isSignedIn && savedDailyTarot ? (
-                <div className="daily-result">
-                  <p className="daily-result-label">{t('daily.resultLabel')}</p>
-                  <div className="daily-result-name">
-                    <span>{savedDailyTarot.name}{savedDailyTarot.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
-                    <small>{getCardDisplayNames(savedDailyTarot).englishName}</small>
-                  </div>
-                  <p className="daily-result-note">{t('daily.signedPanelNote')}</p>
-                </div>
-              ) : (
-                <div className="daily-result">
-                  <p className="daily-result-label">{t('daily.checkInLabel')}</p>
-                  <p className="daily-result-note">{t('daily.unsignedPanelNote')}</p>
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
-                className="primary-button daily-button"
-              >
-                <Sparkles className="w-5 h-5" />
-                <span>{isSignedIn ? t('daily.openToday') : t('daily.getToday')}</span>
-              </button>
-            </div>
-
-            <div className="action-grid">
-              <button type="button" onClick={handleStartFreeReading} className="feature-card feature-card-light">
-                <span className="feature-eyebrow">{t('home.freeReadingEyebrow')}</span>
-                <strong className="feature-title">{t('home.freeReadingTitle')}</strong>
-                <p className="feature-copy">{t('home.freeReadingCopy')}</p>
-              </button>
-
-              <button type="button" onClick={openHumanRequestModal} className="feature-card feature-card-dark">
-                <span className="feature-eyebrow">{OFFICIAL_READER.englishLabel}</span>
-                <strong className="feature-title">{t('home.humanReadingTitle')}</strong>
-                <p className="feature-copy">{t('home.humanReadingCopy')}</p>
-              </button>
-            </div>
-
-          </motion.section>
-        </main>
-
-        <AnimatePresence>
-          {showHistoryModal && renderHistoryModal()}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showHumanRequestModal && renderHumanRequestModal()}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showSpreadModal && (
-            <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowSpreadModal(false)}>
-              <motion.div
-                className="spread-modal"
-                initial={{ opacity: 0, y: 18, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 12, scale: 0.96 }}
-                onClick={(event) => event.stopPropagation()}
-              >
-                <div className="calendar-modal-head">
-                  <div>
-                    <p className="eyebrow">{t('spreads.chooseEyebrow')}</p>
-                    <h3 className="fortune-modal-title">{t('spreads.chooseTitle')}</h3>
-                  </div>
-                  <button type="button" onClick={() => setShowSpreadModal(false)} className="icon-button">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="spread-option-grid">
-                  {spreadOptions.map((spread) => (
-                    <button key={spread.key} type="button" className="spread-option-card" onClick={() => handleSelectSpread(spread.key)}>
-                      <div className={`spread-option-preview spread-option-preview-${spread.key}`}>
-                        {spread.preview.map((label, index) => (
-                          <span key={`${spread.key}-${index}`} className={`spread-option-chip spread-option-chip-${spread.key}-${index + 1}`}>
-                            {label}
-                          </span>
-                        ))}
-                      </div>
-                      <strong className="spread-option-title">{spread.name}</strong>
-                      <p className="spread-option-copy">{spread.description}</p>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showDailyResult && activeDailyCard && (
-            <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowDailyResult(false)}>
-              <motion.div
-                className="fortune-modal"
-                initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 12, scale: 0.96 }}
-                onClick={(event) => event.stopPropagation()}
-              >
-                <p className="eyebrow">{formatDailyFortuneDate(intlLocale)} {t('daily.modalSuffix')}</p>
-                <div className="fortune-modal-tarot">
-                  <TarotCard
-                    card={activeDailyCard}
-                    isRevealed
-                    size="normal"
-                    showOrientation={false}
-                    variant="artwork"
-                    rotateReversed
-                  />
-                </div>
-                <div className="fortune-modal-card">
-                  <span>{activeDailyCard.name}{activeDailyCard.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
-                  <small>{getCardDisplayNames(activeDailyCard).englishName}</small>
-                </div>
-                <p className="fortune-modal-keywords">{t('daily.keywords', { keywords: dailyFortuneKeywords.join(' / ') })}</p>
-                <p className="fortune-modal-note">{getDailyFortuneSummary(activeDailyCard)}</p>
-                <button type="button" onClick={() => setShowDailyResult(false)} className="primary-button">
-                  {t('daily.acknowledge')}
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showCalendarModal && (
-            <motion.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowCalendarModal(false)}>
-              <motion.div
-                className="calendar-modal"
-                initial={{ opacity: 0, y: 20, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 12, scale: 0.96 }}
-                onClick={(event) => event.stopPropagation()}
-              >
-                <div className="calendar-modal-head">
-                  <div>
-                    <p className="eyebrow">{t('calendar.eyebrow')}</p>
-                    <h3 className="fortune-modal-title">{t('calendar.title')}</h3>
-                  </div>
-                  <button type="button" onClick={() => setShowCalendarModal(false)} className="icon-button">
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <p className="calendar-month-label">{getMonthLabel(intlLocale, calendarDate)}</p>
-                <div className="calendar-weekdays">
-                  {t('calendar.weekdays').map((label) => (
-                    <span key={label}>{label}</span>
-                  ))}
-                </div>
-
-                <div className="calendar-grid">
-                  {calendarDays.map((item) => {
-                    if (item.type === 'blank') {
-                      return <div key={item.key} className="calendar-day calendar-day-blank" />;
-                    }
-
-                    const card = dailyHistory[item.dateKey];
-
-                    return (
-                      <div key={item.key} className={`calendar-day ${card ? 'calendar-day-signed' : ''}`.trim()}>
-                        <span className="calendar-day-number">{item.day}</span>
-                        {card ? (
-                          <span className="calendar-day-card">
-                            {card.name}
-                            {card.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : ''}
-                          </span>
-                        ) : (
-                          <span className="calendar-day-empty">{t('calendar.unsigned')}</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  }
-
-  if (currentPage === 'drawing-input') {
-    return (
-      <div className={`screen-shell page-shell theme-${theme}`}>
-        <header className="page-header">
-          <button type="button" onClick={goHome} className="icon-button">
-            <X className="w-5 h-5" />
-          </button>
-          <h1 className="page-title">{isHumanMode ? t('drawing.humanTitle') : t('drawing.freeTitle')}</h1>
-          <div className="page-header-controls">
-            <LanguageSwitcher />
-            {renderThemeToggle()}
-          </div>
-        </header>
-
-        <main className="page-content">
-          <div className="question-panel">
-            <p className="eyebrow">{isHumanMode ? t('drawing.humanTitle') : activeSpread.name}</p>
-            <h2 className="question-title">{isHumanMode ? t('drawing.humanQuestionTitle') : t('drawing.chooseSpreadTitle', { spread: activeSpread.name })}</h2>
-            <p className="question-note">{isHumanMode ? t('drawing.humanQuestionNote') : activeSpread.summary}</p>
-            <textarea
-              value={userQuestion}
-              onChange={(event) => setUserQuestion(event.target.value)}
-              placeholder={t('drawing.questionPlaceholder')}
-              className="question-input"
-              rows={5}
-              autoFocus
-            />
-            <button type="button" onClick={handleConfirmQuestion} disabled={!userQuestion.trim()} className="primary-button">
-              {t('drawing.confirmAndDraw')}
-            </button>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  if (currentPage === 'drawing') {
-    return (
-      <div className={`screen-shell page-shell theme-${theme}`}>
-        <header className="page-header">
-          <button type="button" onClick={goHome} className="icon-button">
-            <X className="w-5 h-5" />
-          </button>
-          <h1 className="page-title">{t('drawing.resultTitle')}</h1>
-          <div className="page-header-controls">
-            <LanguageSwitcher />
-            {renderCardStyleToggle()}
-            {renderThemeToggle()}
-          </div>
-        </header>
-
-        <main className="page-content reading-page-content">
-          <div className="reading-layout">
-          <section className="reading-question-card">
-            <p className="eyebrow">{isHumanMode ? t('drawing.humanTitle') : activeSpread.name}</p>
-            <p className="reading-question-text">{`"${userQuestion}"`}</p>
-          </section>
-
-          {renderSpreadCards()}
-
-          {readingComplete && (
-            <motion.section className="reading-result-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-              <p className="reading-result-lead">{readingLead}</p>
-              <p className="reading-result-text">
-                {readingBody}
-                <span className="reading-cursor">|</span>
-              </p>
-
-              <div className="reading-actions">
-                {isHumanMode ? (
-                  <button type="button" onClick={openHumanRequestModal} className="primary-button">
-                    <MessageCircle className="w-5 h-5" />
-                    {t('humanRequest.sendReadingButton')}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={openHumanRequestModal}
-                    className="primary-button"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    {t('drawing.sendToReader')}
-                  </button>
-                )}
-                <button type="button" onClick={goHome} className="secondary-button">
-                  {t('drawing.backHome')}
-                </button>
-              </div>
-            </motion.section>
-          )}
-          </div>
-        </main>
-
-        <AnimatePresence>
-          {showHumanRequestModal && renderHumanRequestModal()}
-        </AnimatePresence>
-      </div>
-    );
-  }
-
-  if (currentPage === 'chat') {
-    return (
-      <div className={`screen-shell page-shell theme-${theme}`}>
-        <header className="page-header">
-          <button
-            type="button"
-            onClick={() => {
-              setCurrentPage('home');
-              setCurrentChatId(null);
-              setIsWaitingForReply(false);
-            }}
-            className="icon-button"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="page-title">{t('chat.title')}</h1>
-          <div className="page-header-controls">
-            <LanguageSwitcher />
-            {renderThemeToggle()}
-          </div>
-        </header>
-
-        <main className="chat-layout">
-          <section className="chat-summary">
-            <p className="eyebrow">{t('drawing.questionEyebrow')}</p>
-            <p className="chat-question">{`"${userQuestion}"`}</p>
-                <div className="chat-cards">
-                  {drawnCards.map((card, index) => (
-                    <div key={index} className="chat-card-pill">
-                      <span>{card.name}</span>
-                      {card.isReversed && <small>{t('common.orientationReversed')}</small>}
-                    </div>
-                  ))}
-                </div>
-          </section>
-
-          <section className="chat-thread">
-            {messages.map((message) => (
-              <motion.div key={message.id} className={`message-row ${message.sender === 'user' ? 'message-row-user' : ''}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-                <div className={`message-bubble ${message.sender === 'user' ? 'message-bubble-user' : ''}`}>{message.text}</div>
-              </motion.div>
-            ))}
-
-            {isWaitingForReply && messages.length === 0 && <p className="chat-waiting">{t('chat.waiting')}</p>}
-          </section>
-        </main>
-
-        <footer className="chat-footer">
-          <input
-            type="text"
-            value={messageText}
-            onChange={(event) => setMessageText(event.target.value)}
-            placeholder={t('chat.placeholder')}
-            className="chat-input"
-            onKeyDown={(event) => event.key === 'Enter' && handleSendMessage()}
+      {showForgotPasswordModal ? (
+        <Suspense fallback={null}>
+          <ForgotPasswordModal
+            email={email}
+            setEmail={setEmail}
+            onClose={() => setShowForgotPasswordModal(false)}
+            onSubmit={handleForgotPassword}
+            t={t}
           />
-          <button type="button" onClick={handleSendMessage} className="icon-button dark-icon-button">
-            <Send className="w-5 h-5" />
-          </button>
-        </footer>
-      </div>
-    );
-  }
+        </Suspense>
+      ) : null}
 
-  if (currentPage === 'messages') {
-    return (
-      <div className={`screen-shell page-shell theme-${theme}`}>
-        <header className="page-header">
-          <button type="button" onClick={() => setCurrentPage('home')} className="icon-button">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="page-title">{t('mailbox.pageTitle')}</h1>
-          <div className="page-header-controls">
-            <LanguageSwitcher />
-            {renderThemeToggle()}
-          </div>
-        </header>
+      {showHistoryModal && selectedHistoryReading && selectedHistorySpread ? (
+        <Suspense fallback={null}>
+          <HistoryModal
+            reading={selectedHistoryReading}
+            spread={selectedHistorySpread}
+            cardStyle={cardStyle}
+            onClose={() => setShowHistoryModal(false)}
+            t={t}
+          />
+        </Suspense>
+      ) : null}
 
-        <main className="page-content">
-          <div className="mailbox-layout">
-            <section className="question-panel mailbox-list-panel">
-              <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? t('mailbox.adminEyebrow') : t('mailbox.userEyebrow')}</p>
-              <h2 className="question-title">{user?.id === OFFICIAL_READER_ID ? t('mailbox.adminTitle') : t('mailbox.userTitle')}</h2>
-              <p className="question-note">
-                {user?.id === OFFICIAL_READER_ID
-                  ? t('mailbox.adminNote')
-                  : unreadCount > 0
-                    ? t('mailbox.userUnreadNote', { count: unreadCount })
-                    : t('mailbox.userEmptyNote')}
-              </p>
+      {showHumanRequestModal ? (
+        <Suspense fallback={null}>
+          <HumanRequestModal
+            recentReadings={recentReadings}
+            selectedHumanReadingId={selectedHumanReadingId}
+            setSelectedHumanReadingId={setSelectedHumanReadingId}
+            formatHistorySummary={formatHistorySummaryLabel}
+            coinBalance={coinBalance}
+            onClose={() => setShowHumanRequestModal(false)}
+            onSubmit={handleSubmitHumanRequest}
+            t={t}
+          />
+        </Suspense>
+      ) : null}
 
-              {user?.id !== OFFICIAL_READER_ID && systemNotifications.length > 0 ? (
-                <div className="system-notification-list">
-                  {systemNotifications.map((notification) => (
-                    <article key={notification.id} className="system-notification-card">
-                      <div className="mailbox-item-head">
-                        <strong>{notification.title || t('common.systemMessage')}</strong>
-                        <span>{getSystemNotificationStatusLabel(notification.status, t)}</span>
-                      </div>
-                      <p className="mailbox-item-question">{notification.body}</p>
-                      <div className="mailbox-action-row">
-                        <span className="mailbox-item-hint">
-                          {notification.status === 'claimed'
-                            ? t('mailbox.systemClaimedHint', { coins: notification.reward_coins || 99 })
-                            : t('mailbox.systemPendingHint', { coins: notification.reward_coins || 99 })}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleClaimSystemNotification(notification)}
-                          className={notification.status === 'claimed' ? 'secondary-button' : 'primary-button'}
-                        >
-                          {notification.status === 'claimed' ? t('mailbox.claimedSubsidy') : t('mailbox.claimSubsidy')}
-                        </button>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : null}
+      {showSpreadModal ? (
+        <Suspense fallback={null}>
+          <SpreadModal
+            spreadOptions={spreadOptions}
+            onClose={() => setShowSpreadModal(false)}
+            onSelect={handleSelectSpread}
+            t={t}
+          />
+        </Suspense>
+      ) : null}
 
-              <div className="mailbox-item-list">
-                {mailboxItems.length > 0 ? (
-                  mailboxItems.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`mailbox-item-card ${selectedMailboxItem?.id === item.id ? 'mailbox-item-card-active' : ''}`}
-                      onClick={() => handleOpenMailboxItem(item)}
-                    >
-                      <div className="mailbox-item-head">
-                        <strong>{getMailboxStatusLabel(item.status, t)}</strong>
-                        <span>{new Date(item.created_at).toLocaleString(intlLocale)}</span>
-                      </div>
-                      {user?.id === OFFICIAL_READER_ID ? (
-                        <p className="mailbox-item-hint">{t('mailbox.fromLabel', { name: item.sender_nickname || t('common.unknownUser') })}</p>
-                      ) : null}
-                      <p className="mailbox-item-question">{item.initial_question || t('mailbox.noQuestion')}</p>
-                      <p className="mailbox-item-hint">{getMailboxStatusHint(item.status, t)}</p>
-                    </button>
-                  ))
-                ) : (
-                  <div className="mailbox-empty">
-                    <p className="mailbox-empty-title">{t('mailbox.emptyTitle')}</p>
-                    <p className="mailbox-empty-copy">
-                      {user?.id === OFFICIAL_READER_ID ? t('mailbox.adminEmptyCopy') : t('mailbox.userEmptyCopy')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </section>
+      {showDailyResult && activeDailyCard ? (
+        <Suspense fallback={null}>
+          <DailyModal
+            card={activeDailyCard}
+            intlLocale={intlLocale}
+            keywords={dailyFortuneKeywords}
+            summary={getDailyFortuneSummary(activeDailyCard)}
+            onClose={() => setShowDailyResult(false)}
+            t={t}
+            getCardDisplayNames={getCardDisplayNames}
+          />
+        </Suspense>
+      ) : null}
 
-            <section className="question-panel mailbox-detail-panel">
-              {selectedMailboxItem ? (
-                <>
-                  <p className="eyebrow">{user?.id === OFFICIAL_READER_ID ? t('mailbox.detailEyebrowAdmin') : t('mailbox.detailEyebrowUser')}</p>
-                  <h2 className="question-title">{getMailboxStatusLabel(selectedMailboxItem.status, t)}</h2>
-                  <p className="question-note">{getMailboxStatusHint(selectedMailboxItem.status, t)}</p>
-
-                  {user?.id === OFFICIAL_READER_ID ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.senderLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.sender_nickname || t('common.unknownUser')}</p>
-                    </div>
-                  ) : null}
-
-                  <div className="mailbox-detail-block">
-                    <span className="mailbox-detail-label">{t('mailbox.initialQuestionLabel')}</span>
-                    <p className="mailbox-detail-text">{selectedMailboxItem.initial_question || t('common.emptyContent')}</p>
-                  </div>
-
-                  {selectedMailboxItem.record_snapshot?.cardsData?.length ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.spreadLabel')}</span>
-                      <p className="mailbox-detail-text">
-                        {selectedMailboxItem.record_snapshot.spreadName || getSpreadConfig(selectedMailboxItem.record_snapshot.spreadKey || 'three', t).name}
-                      </p>
-                      {renderSpreadCards(
-                        selectedMailboxItem.record_snapshot.cardsData,
-                        selectedMailboxItem.record_snapshot.spreadKey || 'three',
-                        {
-                          isRevealed: true,
-                          className: 'history-preview-spread mailbox-detail-spread',
-                        },
-                      )}
-                    </div>
-                  ) : null}
-
-                  {selectedMailboxItem.reject_reason ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.rejectReasonLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.reject_reason}</p>
-                    </div>
-                  ) : null}
-
-                  {selectedMailboxItem.initial_reply ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.initialReplyLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.initial_reply}</p>
-                    </div>
-                  ) : null}
-
-                  {selectedMailboxItem.follow_up_ask ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.followUpAskLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_ask}</p>
-                    </div>
-                  ) : null}
-
-                  {selectedMailboxItem.follow_up_reply ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.followUpReplyLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.follow_up_reply}</p>
-                    </div>
-                  ) : null}
-
-                  {selectedMailboxItem.feedback ? (
-                    <div className="mailbox-detail-block">
-                      <span className="mailbox-detail-label">{t('mailbox.feedbackLabel')}</span>
-                      <p className="mailbox-detail-text">{selectedMailboxItem.feedback === 'Heart' ? t('mailbox.heartLabel') : t('mailbox.spadeLabel')}</p>
-                    </div>
-                  ) : null}
-
-                  {user?.id === OFFICIAL_READER_ID ? (
-                    <div className="mailbox-admin-actions">
-                      {(selectedMailboxItem.status === 'pending' || selectedMailboxItem.status === 'read') ? (
-                        <>
-                          <label className="mailbox-field">
-                            <span className="mailbox-detail-label">{t('mailbox.rejectReasonLabel')}</span>
-                            <textarea
-                              value={adminRejectReason}
-                              onChange={(event) => setAdminRejectReason(event.target.value)}
-                              placeholder={t('mailbox.rejectReasonPlaceholder')}
-                              className="chat-input mailbox-textarea"
-                              rows={4}
-                            />
-                          </label>
-
-                          <label className="mailbox-field">
-                            <div className="mailbox-field-head">
-                              <span className="mailbox-detail-label">{t('mailbox.initialReplyLabel')}</span>
-                              <span className="mailbox-char-count">{adminInitialReply.length}/1000</span>
-                            </div>
-                            <textarea
-                              value={adminInitialReply}
-                              onChange={(event) => setAdminInitialReply(event.target.value.slice(0, 1000))}
-                              placeholder={t('mailbox.initialReplyPlaceholder')}
-                              className="chat-input mailbox-textarea"
-                              rows={8}
-                            />
-                          </label>
-
-                          <div className="mailbox-action-row">
-                            <button type="button" onClick={handleAdminReject} className="secondary-button">
-                              {t('mailbox.rejectAndRefund')}
-                            </button>
-                            <button type="button" onClick={handleAdminReply} className="primary-button">
-                              {t('mailbox.sendInitialReply')}
-                            </button>
-                          </div>
-                        </>
-                      ) : null}
-
-                      {selectedMailboxItem.status === 'follow_up' ? (
-                        <>
-                          <label className="mailbox-field">
-                            <div className="mailbox-field-head">
-                              <span className="mailbox-detail-label">{t('mailbox.followUpReplyLabel')}</span>
-                              <span className="mailbox-char-count">{adminFollowUpReply.length}/1000</span>
-                            </div>
-                            <textarea
-                              value={adminFollowUpReply}
-                              onChange={(event) => setAdminFollowUpReply(event.target.value.slice(0, 1000))}
-                              placeholder={t('mailbox.followUpReplyPlaceholder')}
-                              className="chat-input mailbox-textarea"
-                              rows={8}
-                            />
-                          </label>
-
-                          <div className="mailbox-action-row">
-                            <button type="button" onClick={handleAdminFollowUpReply} className="primary-button">
-                              {t('mailbox.sendFollowUpReply')}
-                            </button>
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  ) : selectedMailboxItem.status === 'replied' ? (
-                    <div className="mailbox-user-actions">
-                      <label className="mailbox-field">
-                        <div className="mailbox-field-head">
-                          <span className="mailbox-detail-label">{t('mailbox.followUpAskLabel')}</span>
-                          <span className="mailbox-char-count">{userFollowUpAsk.length}/100</span>
-                        </div>
-                        <p className="mailbox-detail-text">
-                          {t('mailbox.followUpAskHint')}
-                        </p>
-                        <textarea
-                          value={userFollowUpAsk}
-                          onChange={(event) => setUserFollowUpAsk(event.target.value.slice(0, 100))}
-                          placeholder={t('mailbox.followUpAskPlaceholder')}
-                          className="chat-input mailbox-textarea mailbox-textarea-short"
-                          rows={4}
-                        />
-                      </label>
-
-                      <div className="mailbox-detail-block">
-                        <span className="mailbox-detail-label">{t('mailbox.feedbackPrompt')}</span>
-                      </div>
-
-                      <div className="mailbox-action-row">
-                        <button type="button" onClick={() => handleUserFeedback('Heart')} className="secondary-button">
-                          {t('mailbox.satisfied')}
-                        </button>
-                        <button type="button" onClick={() => handleUserFeedback('Spade')} className="secondary-button">
-                          {t('mailbox.dissatisfied')}
-                        </button>
-                        <button type="button" onClick={handleUserFollowUp} className="primary-button">
-                          {t('mailbox.sendFollowUp')}
-                        </button>
-                      </div>
-                    </div>
-                  ) : null}
-                </>
-              ) : (
-                <div className="mailbox-empty mailbox-empty-detail">
-                  <p className="mailbox-empty-title">{t('mailbox.openFirstTitle')}</p>
-                  <p className="mailbox-empty-copy">
-                    {user?.id === OFFICIAL_READER_ID ? t('mailbox.pendingOpenHintAdmin') : t('mailbox.pendingOpenHintUser')}
-                  </p>
-                </div>
-              )}
-            </section>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  return null;
+      {showCalendarModal ? (
+        <Suspense fallback={null}>
+          <CalendarModal
+            monthLabel={monthLabel}
+            calendarDays={calendarDays}
+            dailyHistory={dailyHistory}
+            onClose={() => setShowCalendarModal(false)}
+            t={t}
+          />
+        </Suspense>
+      ) : null}
+    </Suspense>
+  );
 }
 
 export default App;
