@@ -31,6 +31,7 @@ function AuthPage({
   handleCompletePasswordReset,
   handleLogin,
   handleRegister,
+  isSubmittingAuth,
   t,
 }) {
   return (
@@ -124,8 +125,9 @@ function AuthPage({
               type="button"
               onClick={isRecoveryMode ? handleCompletePasswordReset : isLogin ? handleLogin : handleRegister}
               className="primary-button"
+              disabled={isSubmittingAuth}
             >
-              {isRecoveryMode ? t('auth.updatePasswordButton') : isLogin ? t('auth.loginButton') : t('auth.registerButton')}
+              {isSubmittingAuth ? t('common.loading') : isRecoveryMode ? t('auth.updatePasswordButton') : isLogin ? t('auth.loginButton') : t('auth.registerButton')}
             </button>
 
             {isLogin && !isRecoveryMode ? (

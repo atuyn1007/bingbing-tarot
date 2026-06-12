@@ -375,6 +375,7 @@ function App() {
   const [resetPasswordValue, setResetPasswordValue] = useState('');
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
+  const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
   const [coinBalance, setCoinBalance] = useState(storedProfile.coinBalance || 0);
   const [lastSignInDate, setLastSignInDate] = useState(storedProfile.lastSignInDate || null);
 
@@ -468,6 +469,7 @@ function App() {
     setResetPasswordValue('');
     setShowForgotPasswordModal(false);
     setIsRecoveryMode(false);
+    setIsSubmittingAuth(false);
     setCoinBalance(0);
     setLastSignInDate(null);
     setCurrentPage('home');
@@ -567,9 +569,11 @@ function App() {
         dailyHistory: profile.daily_history || {},
       });
       setIsAuthReady(true);
+      return profile;
     } catch (error) {
-      console.error(error);
+      console.error('Failed to load profile after auth:', error);
       setIsAuthReady(true);
+      throw error;
     } finally {
       if (authReadyTimeoutRef.current) {
         clearTimeout(authReadyTimeoutRef.current);
@@ -928,6 +932,8 @@ function App() {
   };
 
   const handleLogin = async () => {
+    if (isSubmittingAuth) return;
+
     syncAuthInputValues();
     authInteractionRef.current = true;
 
@@ -940,6 +946,7 @@ function App() {
     }
 
     try {
+      setIsSubmittingAuth(true);
       const { loginWithEmail, getAuthenticatedUser } = await getSupabaseApp();
       if (authReadyTimeoutRef.current) {
         clearTimeout(authReadyTimeoutRef.current);
@@ -959,6 +966,8 @@ function App() {
     } catch (error) {
       setIsSessionSyncing(false);
       alert(error.message || t('alerts.loginFailed'));
+    } finally {
+      setIsSubmittingAuth(false);
     }
   };
 
@@ -1554,6 +1563,7 @@ function App() {
         handleCompletePasswordReset={handleCompletePasswordReset}
         handleLogin={handleLogin}
         handleRegister={handleRegister}
+        isSubmittingAuth={isSubmittingAuth}
         t={t}
       />
     );
