@@ -312,4 +312,13 @@ const zhCN = {
   },
 } as const;
 
+zhCN.home.redeemEyebrow = '兑换码';
+zhCN.home.redeemTitle = '领取奖励饼币';
+zhCN.home.redeemCopy = '输入兑换码后，奖励饼币会立刻发到你的账户里。';
+zhCN.home.redeemPlaceholder = '请输入兑换码';
+zhCN.home.redeemAction = '立即兑换';
+zhCN.alerts.redeemMissing = '请先输入兑换码。';
+zhCN.alerts.redeemSuccess = '{coins} 饼币已经到账，请查收。';
+zhCN.alerts.redeemFailed = '兑换失败，请稍后再试。';
+
 export default zhCN;

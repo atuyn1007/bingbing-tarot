@@ -4,6 +4,7 @@ import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
+import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
 import { isSessionExpiredAt } from './sessionUtils';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
@@ -318,16 +319,17 @@ function shouldAppendFortuneReading(text, keywords) {
   return overlapCount < 2;
 }
 
-function buildSpreadReading(cards, question, spread, t) {
+function buildSpreadReading(cards, question, spread, t, language) {
   const lead = t('drawing.readingLead', { spread: spread.name });
   const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
   const positionLines = cards.map((card, index) => {
     const position = spread.positions[index];
     const label = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
+    const data = resolveCardData(card);
     return t('drawing.positionLine', {
       label,
       card: formatSpreadCardName(card, t),
-      reading: getCardReading(card),
+      reading: getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id })),
     });
   });
 
@@ -341,15 +343,16 @@ function buildSpreadReading(cards, question, spread, t) {
   return [lead, t('drawing.cardsAre', { cards: cardNames }), ...positionLines, closing].join('\n\n');
 }
 
-function buildHumanReading(cards, question, t) {
+function buildHumanReading(cards, question, t, language) {
   const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
-  const lines = cards.map((card, index) =>
-    t('drawing.humanCardLine', {
+  const lines = cards.map((card, index) => {
+    const data = resolveCardData(card);
+    return t('drawing.humanCardLine', {
       index: index + 1,
       card: formatSpreadCardName(card, t),
-      reading: getCardReading(card),
-    }),
-  );
+      reading: getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id })),
+    });
+  });
 
   return [t('drawing.humanFirst', { cards: cardNames }), ...lines, t('drawing.humanClosing', { question })].join('\n\n');
 }
@@ -411,6 +414,8 @@ function App() {
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
   const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
   const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
+  const [redeemCodeValue, setRedeemCodeValue] = useState('');
+  const [isRedeemingCode, setIsRedeemingCode] = useState(false);
   const hasRecoveryLink = hasRecoveryParams();
 
   const typingRef = useRef(null);
@@ -498,6 +503,8 @@ function App() {
     setSelectedHistoryReading(null);
     setShowHumanRequestModal(false);
     setSelectedHumanReadingId(null);
+    setRedeemCodeValue('');
+    setIsRedeemingCode(false);
     setIsAuthReady(true);
     setIsSessionSyncing(false);
   };
@@ -1106,14 +1113,14 @@ function App() {
     const data = resolveCardData(card);
     const keywords = card?.isReversed ? data.reversedKeywords : data.uprightKeywords;
 
-    return Array.isArray(keywords) ? keywords.slice(0, 3) : [];
+    return getLocalizedTarotKeywords(data.id, Boolean(card?.isReversed), language, keywords);
   };
 
   const getDailyFortuneSummary = (card) => {
     if (!card) return '';
 
     const data = resolveCardData(card);
-    return getCardReading({ ...card, id: data.id });
+    return getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id }));
   };
 
   const dailyFortuneKeywords = activeDailyCard ? getDailyFortuneKeywords(activeDailyCard) : [];
@@ -1166,7 +1173,7 @@ function App() {
 
         setTimeout(() => {
           setReadingComplete(true);
-          setAiReading(isHumanMode ? buildHumanReading(cards, trimmedQuestion, t) : buildSpreadReading(cards, trimmedQuestion, spread, t));
+          setAiReading(isHumanMode ? buildHumanReading(cards, trimmedQuestion, t, language) : buildSpreadReading(cards, trimmedQuestion, spread, t, language));
         }, 1100);
       }, 260);
     }, 420);
@@ -1411,6 +1418,38 @@ function App() {
     }
   };
 
+  const handleRedeemCode = async () => {
+    const normalizedCode = redeemCodeValue.trim().toUpperCase();
+
+    if (!normalizedCode) {
+      alert(t('alerts.redeemMissing'));
+      return;
+    }
+
+    try {
+      setIsRedeemingCode(true);
+      const { redeemCoinCode } = await getSupabaseApp();
+      const result = await redeemCoinCode(normalizedCode);
+      const nextBalance = result?.new_coin_balance ?? coinBalance;
+      const rewardCoins = Number(result?.reward_coins || 0);
+
+      setCoinBalance(nextBalance);
+      setRedeemCodeValue('');
+      persistProfileSnapshot({
+        coinBalance: nextBalance,
+        lastSignInDate,
+        isSignedIn,
+        savedDailyTarot,
+        dailyHistory,
+      });
+      alert(t('alerts.redeemSuccess', { coins: rewardCoins }));
+    } catch (error) {
+      alert(error.message || t('alerts.redeemFailed'));
+    } finally {
+      setIsRedeemingCode(false);
+    }
+  };
+
   useEffect(() => {
     if (!aiReading || !readingComplete) return undefined;
 
@@ -1429,6 +1468,18 @@ function App() {
       if (typingRef.current) clearInterval(typingRef.current);
     };
   }, [aiReading, readingComplete]);
+
+  useEffect(() => {
+    if (!readingComplete || drawnCards.length === 0) return;
+
+    const nextReading = isHumanMode
+      ? buildHumanReading(drawnCards, userQuestion.trim(), t, language)
+      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language);
+
+    if (nextReading !== aiReading) {
+      setAiReading(nextReading);
+    }
+  }, [aiReading, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
 
   useEffect(() => {
     if (!user?.id) return undefined;
@@ -1530,6 +1581,10 @@ function App() {
         onDailyAction={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
         onStartFreeReading={handleStartFreeReading}
         onOpenHumanRequest={openHumanRequestModal}
+        redeemCodeValue={redeemCodeValue}
+        setRedeemCodeValue={setRedeemCodeValue}
+        onRedeemCode={handleRedeemCode}
+        isRedeemingCode={isRedeemingCode}
       />
     );
   } else if (currentPage === 'drawing-input') {

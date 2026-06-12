@@ -470,6 +470,36 @@ button:disabled {
   gap: 14px;
 }
 
+.redeem-card {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 26px;
+  border: 1px solid var(--app-border);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: var(--app-card-shadow);
+}
+
+.redeem-card-copy {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.redeem-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.redeem-input-shell {
+  margin: 0;
+}
+
+.redeem-button {
+  min-width: 132px;
+}
+
 .feature-card {
   width: 100%;
   padding: 22px;
@@ -1918,6 +1948,10 @@ button:disabled {
   border: 1px solid #111111;
 }
 
+.theme-noir .redeem-card {
+  background: rgba(255, 255, 255, 0.84);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -2024,6 +2058,14 @@ button:disabled {
 
   .desktop-daily-card {
     display: block;
+  }
+
+  .redeem-form {
+    grid-template-columns: 1fr;
+  }
+
+  .redeem-button {
+    width: 100%;
   }
 
   .hero-panel,

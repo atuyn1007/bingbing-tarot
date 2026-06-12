@@ -25,6 +25,10 @@ function HomePage({
   onDailyAction,
   onStartFreeReading,
   onOpenHumanRequest,
+  redeemCodeValue,
+  setRedeemCodeValue,
+  onRedeemCode,
+  isRedeemingCode,
 }) {
   return (
     <div className={`screen-shell home-screen theme-${theme}`}>
@@ -162,6 +166,30 @@ function HomePage({
                 <strong className="feature-title">{t('home.humanReadingTitle')}</strong>
                 <p className="feature-copy">{t('home.humanReadingCopy')}</p>
               </button>
+            </div>
+
+            <div className="redeem-card">
+              <div className="redeem-card-copy">
+                <span className="feature-eyebrow">{t('home.redeemEyebrow')}</span>
+                <strong className="feature-title">{t('home.redeemTitle')}</strong>
+                <p className="feature-copy">{t('home.redeemCopy')}</p>
+              </div>
+
+              <div className="redeem-form">
+                <label className="field-shell redeem-input-shell">
+                  <input
+                    type="text"
+                    value={redeemCodeValue}
+                    onChange={(event) => setRedeemCodeValue(event.target.value.toUpperCase())}
+                    placeholder={t('home.redeemPlaceholder')}
+                    className="field-input"
+                  />
+                </label>
+
+                <button type="button" onClick={onRedeemCode} className="primary-button redeem-button" disabled={isRedeemingCode}>
+                  {isRedeemingCode ? t('common.loading') : t('home.redeemAction')}
+                </button>
+              </div>
             </div>
           </m.section>
         </LazyMotion>

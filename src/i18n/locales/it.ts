@@ -92,6 +92,11 @@ const it = {
     freeReadingCopy: 'Scegli prima uno schema, poi passa alla domanda e al sorteggio.',
     humanReadingTitle: 'Chiedi una lettura a Bingbing',
     humanReadingCopy: 'Costa 10 monete.',
+    redeemEyebrow: 'Codice premio',
+    redeemTitle: 'Riscatta monete bonus',
+    redeemCopy: 'Inserisci un codice per ricevere subito monete bonus sul tuo account.',
+    redeemPlaceholder: 'Inserisci il codice',
+    redeemAction: 'Riscatta',
     logout: 'Esci',
   },
   daily: {
@@ -311,5 +316,14 @@ const it = {
     dailyFailed: 'Impossibile ottenere la fortuna di oggi. Riprova più tardi.',
   },
 } as const;
+
+it.home.redeemEyebrow = 'Codice premio';
+it.home.redeemTitle = 'Riscatta monete bonus';
+it.home.redeemCopy = 'Inserisci un codice per ricevere subito monete bonus sul tuo account.';
+it.home.redeemPlaceholder = 'Inserisci il codice';
+it.home.redeemAction = 'Riscatta';
+it.alerts.redeemMissing = 'Inserisci prima un codice premio.';
+it.alerts.redeemSuccess = '{coins} monete sono state aggiunte al tuo saldo.';
+it.alerts.redeemFailed = 'Impossibile riscattare questo codice. Riprova pi霉 tardi.';
 
 export default it;

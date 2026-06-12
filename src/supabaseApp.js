@@ -572,6 +572,16 @@ export async function claimSystemNotification(notificationId, userId) {
   };
 }
 
+export async function redeemCoinCode(code) {
+  const normalizedCode = String(code || '').trim().toUpperCase();
+  const { data, error } = await supabase.rpc('redeem_coin_code', {
+    p_code: normalizedCode,
+  });
+
+  if (error) throw error;
+  return Array.isArray(data) ? data[0] || null : data;
+}
+
 export async function markMailboxMessageRead(messageId, receiverId = OFFICIAL_READER_ID) {
   const { data, error } = await supabase
     .from('messages')
