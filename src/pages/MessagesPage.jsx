@@ -1,11 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import ThemeToggle from '../components/ThemeToggle';
 import SpreadCards from '../components/SpreadCards';
 
 function MessagesPage({
   theme,
-  onThemeChange,
   t,
   intlLocale,
   onBack,
@@ -44,7 +42,6 @@ function MessagesPage({
         <h1 className="page-title">{t('mailbox.pageTitle')}</h1>
         <div className="page-header-controls">
           <LanguageSwitcher />
-          <ThemeToggle theme={theme} onChange={onThemeChange} t={t} />
         </div>
       </header>
 

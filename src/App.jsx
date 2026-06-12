@@ -19,6 +19,7 @@ const CalendarModal = lazy(() => import('./components/modals/CalendarModal.jsx')
 const HumanRequestModal = lazy(() => import('./components/modals/HumanRequestModal.jsx'));
 const ForgotPasswordModal = lazy(() => import('./components/modals/ForgotPasswordModal.jsx'));
 const SpreadModal = lazy(() => import('./components/modals/SpreadModal.jsx'));
+const RedeemCodeModal = lazy(() => import('./components/modals/RedeemCodeModal.jsx'));
 
 const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
@@ -364,7 +365,7 @@ function App() {
   const getSupabaseTarot = () => loadSupabaseTarotModule();
   const storedUser = readStoredJson('tarot_user', null);
   const storedProfile = readStoredJson(PROFILE_SNAPSHOT_KEY, {});
-  const [theme, setTheme] = useState(() => localStorage.getItem('tarot_theme') || 'aurora');
+  const theme = 'aurora';
   const [user, setUser] = useState(storedUser);
   const [isAuthReady, setIsAuthReady] = useState(true);
   const [isSessionSyncing, setIsSessionSyncing] = useState(false);
@@ -415,6 +416,7 @@ function App() {
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
   const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
   const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
+  const [showRedeemCodeModal, setShowRedeemCodeModal] = useState(false);
   const [redeemCodeValue, setRedeemCodeValue] = useState('');
   const [isRedeemingCode, setIsRedeemingCode] = useState(false);
   const hasRecoveryLink = hasRecoveryParams();
@@ -443,10 +445,6 @@ function App() {
   const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
   const mailboxStatusHint = (status) => getMailboxStatusHint(status, t);
   const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
-
-  useEffect(() => {
-    localStorage.setItem('tarot_theme', theme);
-  }, [theme]);
 
   useEffect(() => {
     localStorage.setItem('tarot_card_style', cardStyle);
@@ -513,6 +511,7 @@ function App() {
     setSelectedHistoryReading(null);
     setShowHumanRequestModal(false);
     setSelectedHumanReadingId(null);
+    setShowRedeemCodeModal(false);
     setRedeemCodeValue('');
     setIsRedeemingCode(false);
     setIsAuthReady(true);
@@ -1452,6 +1451,7 @@ function App() {
 
       setCoinBalance(nextBalance);
       setRedeemCodeValue('');
+      setShowRedeemCodeModal(false);
       persistProfileSnapshot({
         coinBalance: nextBalance,
         lastSignInDate,
@@ -1536,7 +1536,6 @@ function App() {
     currentView = (
       <AuthPage
         theme={theme}
-        onThemeChange={setTheme}
         isRecoveryMode={isRecoveryMode}
         isSessionSyncing={isSessionSyncing}
         hasAuthDraft={hasAuthDraft}
@@ -1570,12 +1569,12 @@ function App() {
     currentView = (
       <HomePage
         theme={theme}
-        onThemeChange={setTheme}
         t={t}
         activeNickname={activeNickname}
         unreadCount={unreadCount}
         coinBalance={coinBalance}
         onOpenMessages={() => setCurrentPage('messages')}
+        onOpenRedeemModal={() => setShowRedeemCodeModal(true)}
         onLogout={handleLogout}
         dailyLine={dailyLine}
         lastSignInDate={lastSignInDate}
@@ -1590,17 +1589,12 @@ function App() {
         onDailyAction={isSignedIn ? openDailyFortuneModal : handleDailySignIn}
         onStartFreeReading={handleStartFreeReading}
         onOpenHumanRequest={openHumanRequestModal}
-        redeemCodeValue={redeemCodeValue}
-        setRedeemCodeValue={setRedeemCodeValue}
-        onRedeemCode={handleRedeemCode}
-        isRedeemingCode={isRedeemingCode}
       />
     );
   } else if (currentPage === 'drawing-input') {
     currentView = (
       <DrawingPage
         theme={theme}
-        onThemeChange={setTheme}
         goHome={goHome}
         isHumanMode={isHumanMode}
         activeSpread={activeSpread}
@@ -1614,7 +1608,6 @@ function App() {
     currentView = (
       <ResultPage
         theme={theme}
-        onThemeChange={setTheme}
         cardStyle={cardStyle}
         setCardStyle={setCardStyle}
         goHome={goHome}
@@ -1635,7 +1628,6 @@ function App() {
     currentView = (
       <ChatPage
         theme={theme}
-        onThemeChange={setTheme}
         t={t}
         onBack={handleBackFromChat}
         userQuestion={userQuestion}
@@ -1651,7 +1643,6 @@ function App() {
     currentView = (
       <MessagesPage
         theme={theme}
-        onThemeChange={setTheme}
         t={t}
         intlLocale={intlLocale}
         onBack={() => setCurrentPage('home')}
@@ -1733,6 +1724,19 @@ function App() {
             spreadOptions={spreadOptions}
             onClose={() => setShowSpreadModal(false)}
             onSelect={handleSelectSpread}
+            t={t}
+          />
+        </Suspense>
+      ) : null}
+
+      {showRedeemCodeModal ? (
+        <Suspense fallback={null}>
+          <RedeemCodeModal
+            redeemCodeValue={redeemCodeValue}
+            setRedeemCodeValue={setRedeemCodeValue}
+            onSubmit={handleRedeemCode}
+            onClose={() => setShowRedeemCodeModal(false)}
+            isRedeemingCode={isRedeemingCode}
             t={t}
           />
         </Suspense>

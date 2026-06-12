@@ -1,11 +1,9 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { Lock, Mail, User } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import ThemeToggle from '../components/ThemeToggle';
 
 function AuthPage({
   theme,
-  onThemeChange,
   isRecoveryMode,
   isSessionSyncing,
   hasAuthDraft,
@@ -42,7 +40,6 @@ function AuthPage({
         <m.div className="auth-card" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
           <div className="auth-toggles">
             <LanguageSwitcher />
-            <ThemeToggle theme={theme} onChange={onThemeChange} t={t} extraClassName="auth-theme-toggle" />
           </div>
           <h1 className="hero-title">bingbing&apos;s tarot</h1>
           <p className="hero-subtitle">

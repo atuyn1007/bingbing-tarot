@@ -1,13 +1,11 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { MessageCircle, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import ThemeToggle from '../components/ThemeToggle';
 import CardStyleToggle from '../components/CardStyleToggle';
 import SpreadCards from '../components/SpreadCards';
 
 function ResultPage({
   theme,
-  onThemeChange,
   cardStyle,
   setCardStyle,
   goHome,
@@ -33,7 +31,6 @@ function ResultPage({
         <div className="page-header-controls">
           <LanguageSwitcher />
           <CardStyleToggle cardStyle={cardStyle} onChange={setCardStyle} t={t} />
-          <ThemeToggle theme={theme} onChange={onThemeChange} t={t} />
         </div>
       </header>
 

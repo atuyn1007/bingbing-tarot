@@ -1,16 +1,15 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
-import { Bell, Coins, Sparkles, X } from 'lucide-react';
+import { Bell, Coins, Gift, Sparkles, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import ThemeToggle from '../components/ThemeToggle';
 
 function HomePage({
   theme,
-  onThemeChange,
   t,
   activeNickname,
   unreadCount,
   coinBalance,
   onOpenMessages,
+  onOpenRedeemModal,
   onLogout,
   dailyLine,
   lastSignInDate,
@@ -25,10 +24,6 @@ function HomePage({
   onDailyAction,
   onStartFreeReading,
   onOpenHumanRequest,
-  redeemCodeValue,
-  setRedeemCodeValue,
-  onRedeemCode,
-  isRedeemingCode,
 }) {
   return (
     <div className={`screen-shell home-screen theme-${theme}`}>
@@ -42,10 +37,13 @@ function HomePage({
         </div>
         <div className="topbar-actions">
           <LanguageSwitcher />
-          <ThemeToggle theme={theme} onChange={onThemeChange} t={t} extraClassName="topbar-theme-toggle" />
           <button type="button" onClick={onOpenMessages} className="icon-button">
             <Bell className="w-5 h-5" />
             {unreadCount > 0 && <span className="badge-dot">{unreadCount}</span>}
+          </button>
+          <button type="button" onClick={onOpenRedeemModal} className="coin-pill topbar-redeem-button">
+            <Gift className="w-4 h-4" />
+            <span>{t('home.redeemEyebrow')}</span>
           </button>
           <div className="coin-pill">
             <Coins className="w-4 h-4" />
@@ -166,30 +164,6 @@ function HomePage({
                 <strong className="feature-title">{t('home.humanReadingTitle')}</strong>
                 <p className="feature-copy">{t('home.humanReadingCopy')}</p>
               </button>
-            </div>
-
-            <div className="redeem-card">
-              <div className="redeem-card-copy">
-                <span className="feature-eyebrow">{t('home.redeemEyebrow')}</span>
-                <strong className="feature-title">{t('home.redeemTitle')}</strong>
-                <p className="feature-copy">{t('home.redeemCopy')}</p>
-              </div>
-
-              <div className="redeem-form">
-                <label className="field-shell redeem-input-shell">
-                  <input
-                    type="text"
-                    value={redeemCodeValue}
-                    onChange={(event) => setRedeemCodeValue(event.target.value.toUpperCase())}
-                    placeholder={t('home.redeemPlaceholder')}
-                    className="field-input"
-                  />
-                </label>
-
-                <button type="button" onClick={onRedeemCode} className="primary-button redeem-button" disabled={isRedeemingCode}>
-                  {isRedeemingCode ? t('common.loading') : t('home.redeemAction')}
-                </button>
-              </div>
             </div>
           </m.section>
         </LazyMotion>

@@ -1,10 +1,8 @@
 import { X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import ThemeToggle from '../components/ThemeToggle';
 
 function DrawingPage({
   theme,
-  onThemeChange,
   goHome,
   isHumanMode,
   activeSpread,
@@ -22,7 +20,6 @@ function DrawingPage({
         <h1 className="page-title">{isHumanMode ? t('drawing.humanTitle') : t('drawing.freeTitle')}</h1>
         <div className="page-header-controls">
           <LanguageSwitcher />
-          <ThemeToggle theme={theme} onChange={onThemeChange} t={t} />
         </div>
       </header>
 
