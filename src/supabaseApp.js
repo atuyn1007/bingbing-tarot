@@ -574,9 +574,17 @@ export async function claimSystemNotification(notificationId, userId) {
 
 export async function redeemCoinCode(code) {
   const normalizedCode = String(code || '').trim().toUpperCase();
-  const { data, error } = await supabase.rpc('redeem_coin_code', {
+  const rpcPromise = supabase.rpc('redeem_coin_code', {
     p_code: normalizedCode,
   });
+
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error('兑换请求超时了，请稍后重试。'));
+    }, 12000);
+  });
+
+  const { data, error } = await Promise.race([rpcPromise, timeoutPromise]);
 
   if (error) throw error;
   return Array.isArray(data) ? data[0] || null : data;

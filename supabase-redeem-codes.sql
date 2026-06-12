@@ -64,6 +64,9 @@ declare
   code_row public.redeem_codes%rowtype;
   profile_row public.profiles%rowtype;
 begin
+  perform set_config('lock_timeout', '3s', true);
+  perform set_config('statement_timeout', '10s', true);
+
   if current_user_id is null then
     raise exception 'Please sign in first.';
   end if;
