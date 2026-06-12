@@ -435,6 +435,14 @@ function App() {
   const hasAuthDraft =
     Boolean((emailInputRef.current?.value || email || '').trim()) ||
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
+  const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
+  const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
+  const monthLabel = getMonthLabel(intlLocale, calendarDate);
+  const suspenseFallback = <AppLoading theme={theme} />;
+  const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
+  const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
+  const mailboxStatusHint = (status) => getMailboxStatusHint(status, t);
+  const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
 
   useEffect(() => {
     localStorage.setItem('tarot_theme', theme);
@@ -1521,15 +1529,6 @@ function App() {
     setCurrentChatId(null);
     setIsWaitingForReply(false);
   };
-
-  const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
-  const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
-  const monthLabel = getMonthLabel(intlLocale, calendarDate);
-  const suspenseFallback = <AppLoading theme={theme} />;
-  const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
-  const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
-  const mailboxStatusHint = (status) => getMailboxStatusHint(status, t);
-  const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
 
   let currentView = null;
 
