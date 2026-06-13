@@ -321,4 +321,25 @@ zhCN.alerts.redeemMissing = '请先输入兑换码。';
 zhCN.alerts.redeemSuccess = '{coins} 饼币已经到账，请查收。';
 zhCN.alerts.redeemFailed = '兑换失败，请稍后再试。';
 
+zhCN.home.cardMeaningsEyebrow = '牌意查询';
+zhCN.home.cardMeaningsTitle = '查看 78 张牌意';
+zhCN.home.cardMeaningsCopy = '先浏览整套牌面，现在愚人牌已开放完整牌意长文。';
+zhCN.meanings = {
+  eyebrow: '牌意查询',
+  pageTitle: '牌意查询',
+  heroTitle: '浏览 78 张塔罗牌',
+  heroCopy: '目前先开放愚人牌的完整牌意样例，其余牌面已预留结构，后续会逐步补完。',
+  gridAriaLabel: '塔罗牌意列表',
+  readyLabel: '查看详情',
+  inProgress: '内容整理中',
+  detailEyebrow: '牌意详解',
+  detailTitle: '牌意详情',
+  cardLabel: '塔罗牌',
+  numberLabel: '编号',
+  keywordsLabel: '关键词',
+  noKeywords: '关键词正在整理中。',
+  detailLabel: '牌意详解',
+  missingTitle: '暂未找到这张牌',
+};
+
 export default zhCN;

@@ -1,5 +1,5 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
-import { Bell, Coins, Gift, Sparkles, X } from 'lucide-react';
+import { Bell, BookOpen, Coins, Gift, Sparkles, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 
 function HomePage({
@@ -23,6 +23,7 @@ function HomePage({
   getCardDisplayNames,
   onDailyAction,
   onStartFreeReading,
+  onOpenCardMeanings,
   onOpenHumanRequest,
 }) {
   return (
@@ -157,6 +158,13 @@ function HomePage({
                 <span className="feature-eyebrow">{t('home.freeReadingEyebrow')}</span>
                 <strong className="feature-title">{t('home.freeReadingTitle')}</strong>
                 <p className="feature-copy">{t('home.freeReadingCopy')}</p>
+              </button>
+
+              <button type="button" onClick={onOpenCardMeanings} className="feature-card feature-card-light feature-card-meaning">
+                <span className="feature-eyebrow">{t('home.cardMeaningsEyebrow')}</span>
+                <strong className="feature-title">{t('home.cardMeaningsTitle')}</strong>
+                <p className="feature-copy">{t('home.cardMeaningsCopy')}</p>
+                <BookOpen className="feature-card-icon" />
               </button>
 
               <button type="button" onClick={onOpenHumanRequest} className="feature-card feature-card-dark">

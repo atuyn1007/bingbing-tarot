@@ -877,6 +877,197 @@ button:disabled {
   width: min(100%, 760px);
 }
 
+.feature-card-meaning {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card-icon {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 20px;
+  height: 20px;
+  color: rgba(95, 88, 84, 0.6);
+}
+
+.meanings-page-content {
+  display: grid;
+  gap: 20px;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  align-items: flex-start;
+  justify-items: stretch;
+  min-height: auto;
+  padding-bottom: 40px;
+}
+
+.meanings-hero-card,
+.meaning-detail-card {
+  padding: 26px 28px;
+  border: 1px solid var(--app-border);
+  border-radius: 30px;
+  background: var(--app-panel);
+  box-shadow: var(--app-card-shadow);
+  backdrop-filter: blur(16px);
+}
+
+.meanings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.meaning-card {
+  display: grid;
+  gap: 8px;
+  min-height: 156px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid var(--app-border);
+  border-radius: 24px;
+  background: rgba(255, 252, 247, 0.9);
+  color: var(--app-text);
+  box-shadow: 0 12px 28px rgba(118, 109, 102, 0.12);
+}
+
+.meaning-card-artwork-shell {
+  aspect-ratio: 3 / 5;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(241, 234, 225, 0.95);
+  border: 1px solid rgba(106, 95, 87, 0.1);
+}
+
+.meaning-card-artwork {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meaning-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--app-shadow-hover);
+}
+
+.meaning-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.meaning-card-number {
+  font-size: 0.95rem;
+  color: var(--app-muted);
+}
+
+.meaning-card-status {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(231, 221, 209, 0.88);
+  color: var(--app-muted);
+  font-size: 0.78rem;
+}
+
+.meaning-card-status.is-ready {
+  background: rgba(83, 65, 54, 0.12);
+  color: #4b3b33;
+}
+
+.meaning-card-name-cn {
+  font-size: 1.35rem;
+}
+
+.meaning-card-name-en {
+  color: var(--app-muted);
+  font-size: 0.95rem;
+}
+
+.meaning-detail-name {
+  margin: 10px 0 12px;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.meaning-detail-subtitle {
+  margin: 0 0 18px;
+  color: var(--app-muted);
+  font-size: 1rem;
+}
+
+.meaning-detail-artwork-shell {
+  width: min(100%, 320px);
+  aspect-ratio: 3 / 5;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(106, 95, 87, 0.12);
+  background: rgba(241, 234, 225, 0.95);
+  box-shadow: 0 16px 34px rgba(116, 106, 99, 0.15);
+  margin: 0 0 22px;
+}
+
+.meaning-detail-artwork {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.meaning-detail-number {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  color: var(--app-muted);
+}
+
+.meaning-detail-number strong {
+  color: var(--app-text);
+  font-size: 1.1rem;
+}
+
+.meaning-detail-section + .meaning-detail-section {
+  margin-top: 28px;
+}
+
+.meaning-detail-section h3 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  color: var(--app-muted);
+}
+
+.meaning-keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.meaning-keyword-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(232, 223, 214, 0.94);
+  color: #4b3c35;
+}
+
+.meaning-detail-copy {
+  display: grid;
+  gap: 16px;
+}
+
+.meaning-detail-copy p,
+.meaning-detail-empty {
+  margin: 0;
+  line-height: 1.9;
+  color: var(--app-text);
+}
+
+.meaning-detail-empty {
+  color: var(--app-muted);
+}
+
 .question-title {
   margin-top: 10px;
   font-size: clamp(2rem, 3vw, 3rem);
@@ -1803,6 +1994,8 @@ button:disabled {
   .action-panel,
   .auth-card,
   .question-panel,
+  .meanings-hero-card,
+  .meaning-detail-card,
   .reading-question-card,
   .reading-result-card,
   .chat-summary,

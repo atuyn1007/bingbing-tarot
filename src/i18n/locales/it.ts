@@ -326,4 +326,25 @@ it.alerts.redeemMissing = 'Inserisci prima un codice premio.';
 it.alerts.redeemSuccess = '{coins} monete sono state aggiunte al tuo saldo.';
 it.alerts.redeemFailed = 'Impossibile riscattare questo codice. Riprova pi霉 tardi.';
 
+it.home.cardMeaningsEyebrow = 'significati';
+it.home.cardMeaningsTitle = 'Consulta le 78 carte';
+it.home.cardMeaningsCopy = 'Sfoglia l’archivio dei significati: per ora Il Matto è disponibile come primo esempio completo.';
+it.meanings = {
+  eyebrow: 'Significati delle carte',
+  pageTitle: 'Significati delle carte',
+  heroTitle: 'Esplora tutte le 78 carte dei tarocchi',
+  heroCopy: 'Per ora Il Matto è disponibile come primo esempio completo. Le altre carte sono già elencate e verranno completate poco alla volta.',
+  gridAriaLabel: 'Elenco dei significati dei tarocchi',
+  readyLabel: 'Apri',
+  inProgress: 'Contenuto in preparazione',
+  detailEyebrow: 'Significato della carta',
+  detailTitle: 'Dettaglio della carta',
+  cardLabel: 'Carta dei tarocchi',
+  numberLabel: 'Numero',
+  keywordsLabel: 'Parole chiave',
+  noKeywords: 'Le parole chiave sono ancora in preparazione.',
+  detailLabel: 'Significato completo',
+  missingTitle: 'Carta non trovata',
+};
+
 export default it;

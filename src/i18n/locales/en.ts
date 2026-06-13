@@ -320,4 +320,25 @@ const en = {
   },
 } as const;
 
+en.home.cardMeaningsEyebrow = 'card meanings';
+en.home.cardMeaningsTitle = 'Browse card meanings';
+en.home.cardMeaningsCopy = 'Open the archive of 78 tarot cards. Detailed content is ready for The Fool first.';
+en.meanings = {
+  eyebrow: 'Card Meanings',
+  pageTitle: 'Card Meanings',
+  heroTitle: 'Browse all 78 tarot cards',
+  heroCopy: 'The Fool is available as the first full sample. The rest of the deck can already be browsed and will be completed gradually.',
+  gridAriaLabel: 'Tarot card meanings list',
+  readyLabel: 'Open',
+  inProgress: 'Content in progress',
+  detailEyebrow: 'Card Meaning',
+  detailTitle: 'Meaning Detail',
+  cardLabel: 'Tarot Card',
+  numberLabel: 'Number',
+  keywordsLabel: 'Keywords',
+  noKeywords: 'Keywords are still being organized.',
+  detailLabel: 'Meaning',
+  missingTitle: 'Card not found',
+};
+
 export default en;
