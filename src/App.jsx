@@ -846,7 +846,7 @@ function App() {
 
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange(async (event, session) => {
+      } = supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
           setIsRecoveryMode(true);
           setIsLogin(true);
@@ -866,7 +866,9 @@ function App() {
         if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
           markSessionStarted();
           setIsSessionSyncing(true);
-          await fetchUserProfile(session.user);
+          void fetchUserProfile(session.user).catch((error) => {
+            console.error(error);
+          });
         }
       });
 
