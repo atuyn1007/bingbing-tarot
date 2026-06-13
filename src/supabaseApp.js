@@ -48,45 +48,30 @@ function withTimeout(promise, timeoutMs, message) {
 export { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
 
 export async function getAuthSession() {
-  clearAuthLock();
   const {
     data: { session },
     error,
-  } = await withTimeout(
-    supabase.auth.getSession(),
-    8000,
-    'Checking the current sign-in session took too long. Please try again.',
-  );
+  } = await supabase.auth.getSession();
 
   if (error) throw error;
   return session;
 }
 
 export async function refreshAuthSession() {
-  clearAuthLock();
   const {
     data: { session },
     error,
-  } = await withTimeout(
-    supabase.auth.refreshSession(),
-    10000,
-    'Refreshing the sign-in session took too long. Please sign in again.',
-  );
+  } = await supabase.auth.refreshSession();
 
   if (error) throw error;
   return session;
 }
 
 export async function getAuthenticatedUser() {
-  clearAuthLock();
   const {
     data: { user },
     error,
-  } = await withTimeout(
-    supabase.auth.getUser(),
-    8000,
-    'Loading the account information took too long. Please try again.',
-  );
+  } = await supabase.auth.getUser();
 
   if (error) throw error;
   return user;
