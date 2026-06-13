@@ -126,14 +126,10 @@ export async function registerWithEmail(email, nickname, password) {
 
 export async function loginWithEmail(email, password) {
   clearAuthLock();
-  const { data, error } = await withTimeout(
-    supabase.auth.signInWithPassword({
-      email: String(email || '').trim().toLowerCase(),
-      password,
-    }),
-    12000,
-    'Signing in took too long. Please try again.',
-  );
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: String(email || '').trim().toLowerCase(),
+    password,
+  });
 
   if (error) throw error;
   return data;
