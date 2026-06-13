@@ -1,53 +1,5 @@
 import { allTarotCards } from './data';
-
-const majorArcanaFileNames = [
-  '愚者',
-  '魔术师',
-  '女祭祀',
-  '皇后',
-  '皇帝',
-  '教皇',
-  '恋人',
-  '战车',
-  '力量',
-  '隐士',
-  '命运之轮',
-  '正义',
-  '倒吊人',
-  '死神',
-  '节制',
-  '恶魔',
-  '高塔',
-  '星星',
-  '月亮',
-  '太阳',
-  '审判',
-  '世界',
-];
-
-const suitFileNames = {
-  Wands: '权杖',
-  Cups: '圣杯',
-  Swords: '宝剑',
-  Pentacles: '星币',
-};
-
-const rankFileNames = {
-  Ace: 'ACE',
-  Two: '2',
-  Three: '3',
-  Four: '4',
-  Five: '5',
-  Six: '6',
-  Seven: '7',
-  Eight: '8',
-  Nine: '9',
-  Ten: '10',
-  Page: '侍卫',
-  Knight: '骑士',
-  Queen: '王后',
-  King: '国王',
-};
+import { getCardArtwork } from './cardArtwork';
 
 const chineseNameOverrides = {
   死亡: '死神',
@@ -101,19 +53,25 @@ function inferNumber(cardId, arcana, englishName) {
   return rankMap[rank] ?? null;
 }
 
-function getMeaningArtwork(cardId, englishName) {
-  if (cardId <= 21) {
-    const fileStem = majorArcanaFileNames[cardId];
-    if (!fileStem) return '';
-    return `/cards/waite-cn/${String(cardId).padStart(2, '0')}${fileStem}.jpg`;
-  }
+function createPlaceholderMeaning(card) {
+  const arcana = inferArcana(card.id);
 
-  const [rank, suit] = String(englishName || '').split(' of ');
-  const suitFile = suitFileNames[suit];
-  const rankFile = rankFileNames[rank];
-
-  if (!suitFile || !rankFile) return '';
-  return `/cards/waite-cn/${suitFile}${rankFile}.jpg`;
+  return {
+    id: slugifyEnglishName(card.englishName) || `card-${card.id}`,
+    number: inferNumber(card.id, arcana, card.englishName),
+    name_cn: normalizeChineseName(card.name),
+    name_en: card.englishName,
+    arcana,
+    suit: inferSuit(card.englishName, arcana),
+    image: getCardArtwork({ name: normalizeChineseName(card.name) }) || '',
+    keywords: [],
+    daily_upright: '',
+    daily_reversed: '',
+    reading_upright: '',
+    reading_reversed: '',
+    detail: '',
+    translations: {},
+  };
 }
 
 const foolMeaning = {
@@ -141,42 +99,73 @@ const foolMeaning = {
       keywords: ['Beginnings', 'Freedom', 'Adventure', 'Innocence', 'The unknown', 'Starting over'],
       detail:
         'The Fool is card 0 of the Major Arcana. Zero represents a beginning that has not yet taken shape, and also limitless possibility. He is like a blank page not yet written on, standing at the threshold of a new life journey with innocence, freedom, curiosity, and youthful courage.\n\nWhen The Fool appears upright, the world is slowly opening beneath your feet. You may be entering a new phase, beginning a relationship, a plan, a choice, or a new direction in life. At this moment, you do not need to be completely bound by past experience. You are allowed to keep a clear, childlike spirit and trust that the future still holds an open horizon and that you still have the power to begin again.\n\nThe upright Fool does not promise a road without risk, but it strongly encourages the first step. It reminds you that some answers only reveal themselves after you truly begin. Rather than staying trapped in overthinking, carry an open heart and receive the new opportunity that life is placing in front of you.\n\nWhen The Fool appears reversed, it asks you to notice the cliff beneath your feet. You may be acting too impulsively or naively, seeing only distant freedom while overlooking real-world risk. The small dog in the image may be trying to wake you up, asking you not to lose yourself entirely in excitement and fantasy. At this stage, listening to other voices, checking your plan again, and understanding your real situation matter more than rushing ahead blindly.\n\nThe core message of The Fool is this: setting out matters, but staying clear-minded matters too. Keep the heart of a beginner, while still seeing the road beneath your feet.',
+      daily_upright:
+        'Today is good for starting a new chapter and moving forward, but major decisions still need a clear head.',
+      daily_reversed:
+        'Today asks you to watch for risk: do not rush ahead blindly, but do not freeze just because risk exists.',
     },
     it: {
       name: 'Il Matto',
       keywords: ['Inizio', 'Libertà', 'Avventura', 'Innocenza', 'Ignoto', 'Ripartenza'],
       detail:
         'Il Matto è la carta numero 0 degli Arcani Maggiori. Lo zero rappresenta un inizio ancora non definito, ma anche una possibilità senza limite. È come una pagina bianca non ancora scritta: con innocenza, libertà, curiosità e coraggio giovanile, si trova sulla soglia di un nuovo viaggio nella vita.\n\nQuando Il Matto appare diritto, il mondo si sta aprendo lentamente sotto i tuoi piedi. Potresti stare entrando in una nuova fase, iniziando una relazione, un progetto, una scelta o una nuova direzione di vita. In questo momento non devi essere completamente vincolata o vincolato dall’esperienza passata. Puoi mantenere uno spirito limpido, quasi infantile, e credere che il futuro abbia ancora spazio, respiro e nuove possibilità, e che tu abbia ancora la capacità di ricominciare.\n\nIl Matto diritto non promette un cammino privo di rischi, ma incoraggia con forza il primo passo. Ricorda che alcune risposte compaiono solo dopo che hai davvero iniziato. Invece di restare bloccata o bloccato nei pensieri, prova a muoverti con cuore aperto e ad accogliere la nuova occasione che il destino ti mette davanti.\n\nQuando Il Matto appare rovesciato, invita a guardare il precipizio sotto i piedi. Potresti agire in modo troppo impulsivo o ingenuo, vedendo solo la libertà lontana e trascurando i rischi concreti. Il piccolo cane nella carta sembra voler richiamare la tua attenzione, per non lasciarti assorbire del tutto dall’entusiasmo e dalla fantasia. In questo momento ascoltare altri punti di vista, ricontrollare il piano e capire bene la tua situazione è più importante che lanciarti avanti senza misura.\n\nIl messaggio centrale del Matto è questo: partire è importante, ma lo è anche restare lucida o lucido. Conserva il cuore di chi comincia, ma guarda con chiarezza la strada sotto i tuoi piedi.',
+      daily_upright:
+        'Oggi è il momento giusto per iniziare qualcosa di nuovo, ma nelle decisioni importanti serve comunque lucidità.',
+      daily_reversed:
+        'Oggi fai attenzione al rischio: non andare avanti alla cieca, ma non restare ferma o fermo solo per paura.',
     },
   },
 };
 
-export const tarotMeaningCards = allTarotCards.map((card) => {
-  if (card.id === 0) {
-    return foolMeaning;
-  }
+const magicianMeaning = {
+  id: 'the-magician',
+  number: 1,
+  name_cn: '魔术师',
+  name_en: 'The Magician',
+  arcana: 'major',
+  suit: '',
+  image: '/cards/waite-cn/01魔术师.jpg',
+  keywords: ['创造', '行动', '意志', '显化', '资源', '掌控', '开始实践'],
+  daily_upright:
+    '今天适合把想法落到行动上。你手中已有可用的资源，关键是主动调动它们，整合资源，你也有能力去沟通和开启新篇章，而不是继续等待时机。',
+  daily_reversed:
+    '今天要小心空想、拖延或说得太多做得太少。注意在自己擅长的部分翻车，也要留意有人用漂亮话包装真实意图。',
+  reading_upright:
+    '魔术师正位代表创造力、行动力、意志与显化。它说明你并非毫无准备，所需要的工具、资源或能力已经在你身边，只是需要你主动整合并使用它们。\n\n在牌阵中出现时，魔术师提醒你把想法转化为具体行动。它不是单纯的幻想之牌，而是“让事情发生”的牌。你可以通过清晰的目标、专注的意志和实际操作，把原本停留在脑中的可能性变成现实。',
+  reading_reversed:
+    '魔术师逆位代表资源误用、行动力不足、操控、欺骗，或有想法却无法真正落地。你可能拥有某些条件，却没有正确使用；也可能过度依赖技巧和话术，而忽略了真实能力与实际行动。\n\n在牌阵中出现时，它提醒你检查自己是否正在逃避执行，或是否被某种表面的自信迷惑。魔术师逆位也可能表示信息不对称、承诺过度、动机不纯。此时需要看清事实，不要只听漂亮的表达，也不要用空想代替真正的推进。',
+  detail:
+    '魔术师是大阿尔卡那的第 1 张牌。与愚人的纯真出发不同，魔术师已经站到了行动的起点。他面前摆放着权杖、圣杯、宝剑与星币，象征火、水、风、土四种元素，也象征人可以调动的意志、情感、思想与现实资源。\n\n这张牌象征创造、实践、意志与显化。魔术师不是等待命运降临的人，而是把资源聚集起来、让事情真正发生的人。他一只手指向天空，一只手指向大地，像是在连接灵感与现实：上方的想法、愿望和可能性，必须通过具体行动落到地面，才会成为可以触摸的结果。\n\n当魔术师正位出现时，它通常意味着你已经拥有开始所需的条件。也许你还有不确定感，但并不代表你毫无准备。你手中可能已经有知识、经验、人脉、工具或机会，只是它们还没有被整理成一个清晰的方向。魔术师提醒你，与其继续等待完美时机，不如开始动手，把分散的资源转化为真正的成果。\n\n这张牌也强调专注。魔术师的力量不是漫无目的地尝试，而是把注意力集中在一个明确的目标上。它鼓励你主动表达、主动争取、主动设计自己的路径。此时，你的语言、计划和行动都会带来影响力，所以更需要清楚自己想创造什么。\n\n当魔术师逆位出现时，它提醒你留意资源被浪费、能力被误用，或行动与表达之间的落差。你可能说得很多，却没有真正推进；也可能拥有条件，却因为犹豫、分心或缺乏计划而无法发挥。它也可能指向操控、欺骗、话术包装，提醒你不要被表面的自信和漂亮承诺迷惑。空有能力和资源，但是无法开启，无法真正的发挥出来；也可能是有人表现的很好，但实则是一种欺骗和表演。\n\n魔术师的核心信息是：可能性已经出现，但它不会自动变成现实。你需要伸出手，整理工具，确认目标，然后让自己的意志真正进入世界。',
+};
 
-  const arcana = inferArcana(card.id);
+const customMeanings = new Map([
+  [0, foolMeaning],
+  [1, magicianMeaning],
+]);
 
-  return {
-    id: slugifyEnglishName(card.englishName) || `card-${card.id}`,
-    number: inferNumber(card.id, arcana, card.englishName),
-    name_cn: normalizeChineseName(card.name),
-    name_en: card.englishName,
-    arcana,
-    suit: inferSuit(card.englishName, arcana),
-    image: getMeaningArtwork(card.id, card.englishName),
-    keywords: [],
-    daily_upright: '',
-    daily_reversed: '',
-    reading_upright: '',
-    reading_reversed: '',
-    detail: '',
-  };
-});
+export const tarotMeaningCards = allTarotCards.map((card) => customMeanings.get(card.id) || createPlaceholderMeaning(card));
 
 export function getTarotMeaningCard(cardId) {
   return tarotMeaningCards.find((card) => card.id === cardId) || null;
+}
+
+export function findTarotMeaningCard(input) {
+  if (!input) return null;
+
+  if (typeof input === 'string') {
+    return tarotMeaningCards.find(
+      (card) => card.id === input || card.name_cn === input || card.name_en === input,
+    ) || null;
+  }
+
+  if (typeof input.id === 'number') {
+    return tarotMeaningCards.find((card) => card.number === input.id && card.arcana === inferArcana(input.id)) || null;
+  }
+
+  const normalizedName = normalizeChineseName(input.name);
+  return tarotMeaningCards.find(
+    (card) => card.name_cn === normalizedName || card.name_en === input.englishName || card.name_en === input.name,
+  ) || null;
 }
 
 export function getLocalizedMeaningCard(card, language) {
@@ -189,6 +178,10 @@ export function getLocalizedMeaningCard(card, language) {
       secondaryName: card.name_cn,
       displayKeywords: card.translations?.en?.keywords || card.keywords,
       displayDetail: card.translations?.en?.detail || card.detail,
+      displayDailyUpright: card.translations?.en?.daily_upright || card.daily_upright,
+      displayDailyReversed: card.translations?.en?.daily_reversed || card.daily_reversed,
+      displayReadingUpright: card.translations?.en?.reading_upright || card.reading_upright,
+      displayReadingReversed: card.translations?.en?.reading_reversed || card.reading_reversed,
     };
   }
 
@@ -199,6 +192,10 @@ export function getLocalizedMeaningCard(card, language) {
       secondaryName: card.name_en,
       displayKeywords: card.translations?.it?.keywords || card.keywords,
       displayDetail: card.translations?.it?.detail || card.detail,
+      displayDailyUpright: card.translations?.it?.daily_upright || card.daily_upright,
+      displayDailyReversed: card.translations?.it?.daily_reversed || card.daily_reversed,
+      displayReadingUpright: card.translations?.it?.reading_upright || card.reading_upright,
+      displayReadingReversed: card.translations?.it?.reading_reversed || card.reading_reversed,
     };
   }
 
@@ -208,5 +205,16 @@ export function getLocalizedMeaningCard(card, language) {
     secondaryName: card.name_en,
     displayKeywords: card.keywords,
     displayDetail: card.detail,
+    displayDailyUpright: card.daily_upright,
+    displayDailyReversed: card.daily_reversed,
+    displayReadingUpright: card.reading_upright,
+    displayReadingReversed: card.reading_reversed,
   };
 }
+
+export function getLocalizedMeaningDaily(card, isReversed, language) {
+  const meaningCard = getLocalizedMeaningCard(findTarotMeaningCard(card), language);
+  if (!meaningCard) return '';
+  return isReversed ? meaningCard.displayDailyReversed : meaningCard.displayDailyUpright;
+}
+

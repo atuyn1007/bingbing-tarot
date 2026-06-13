@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
-import { getTarotMeaningCard } from './cardMeanings';
+import { findTarotMeaningCard, getLocalizedMeaningCard, getLocalizedMeaningDaily, getTarotMeaningCard } from './cardMeanings';
 import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
@@ -1112,6 +1112,11 @@ function App() {
   };
 
   const getDailyFortuneKeywords = (card) => {
+    const meaningCard = getLocalizedMeaningCard(findTarotMeaningCard(card), language);
+    if (meaningCard?.displayKeywords?.length) {
+      return meaningCard.displayKeywords;
+    }
+
     const data = resolveCardData(card);
     const keywords = card?.isReversed ? data.reversedKeywords : data.uprightKeywords;
 
@@ -1120,6 +1125,11 @@ function App() {
 
   const getDailyFortuneSummary = (card) => {
     if (!card) return '';
+
+    const meaningDaily = getLocalizedMeaningDaily(card, Boolean(card?.isReversed), language);
+    if (meaningDaily) {
+      return meaningDaily;
+    }
 
     const data = resolveCardData(card);
     return getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id }));
