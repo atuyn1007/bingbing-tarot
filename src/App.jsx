@@ -726,6 +726,14 @@ function App() {
     let mounted = true;
 
     const bootstrapSession = async () => {
+      if (!storedUser && !hasRecoveryLink) {
+        if (mounted) {
+          setIsAuthReady(true);
+          setIsSessionSyncing(false);
+        }
+        return;
+      }
+
       setIsSessionSyncing(Boolean(storedUser) && !hasRecoveryLink && !hasPendingAuthInput() && !authInteractionRef.current);
       authReadyTimeoutRef.current = setTimeout(() => {
         if (mounted) {
