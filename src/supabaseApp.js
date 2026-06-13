@@ -13,33 +13,80 @@ function normalizeNickname(nickname) {
   return String(nickname || '').trim();
 }
 
+const AUTH_STORAGE_KEY = 'bingbing-tarot-auth';
+const AUTH_LOCK_KEY = `lock:${AUTH_STORAGE_KEY}`;
+
+function clearAuthLock() {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(AUTH_LOCK_KEY);
+    }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(AUTH_LOCK_KEY);
+    }
+  } catch {
+    // ignore storage access issues
+  }
+}
+
+function withTimeout(promise, timeoutMs, message) {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
 export { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
 
 export async function getAuthSession() {
+  clearAuthLock();
   const {
     data: { session },
     error,
-  } = await supabase.auth.getSession();
+  } = await withTimeout(
+    supabase.auth.getSession(),
+    8000,
+    'Checking the current sign-in session took too long. Please try again.',
+  );
 
   if (error) throw error;
   return session;
 }
 
 export async function refreshAuthSession() {
+  clearAuthLock();
   const {
     data: { session },
     error,
-  } = await supabase.auth.refreshSession();
+  } = await withTimeout(
+    supabase.auth.refreshSession(),
+    10000,
+    'Refreshing the sign-in session took too long. Please sign in again.',
+  );
 
   if (error) throw error;
   return session;
 }
 
 export async function getAuthenticatedUser() {
+  clearAuthLock();
   const {
     data: { user },
     error,
-  } = await supabase.auth.getUser();
+  } = await withTimeout(
+    supabase.auth.getUser(),
+    8000,
+    'Loading the account information took too long. Please try again.',
+  );
 
   if (error) throw error;
   return user;
@@ -93,10 +140,15 @@ export async function registerWithEmail(email, nickname, password) {
 }
 
 export async function loginWithEmail(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: String(email || '').trim().toLowerCase(),
-    password,
-  });
+  clearAuthLock();
+  const { data, error } = await withTimeout(
+    supabase.auth.signInWithPassword({
+      email: String(email || '').trim().toLowerCase(),
+      password,
+    }),
+    12000,
+    'Signing in took too long. Please try again.',
+  );
 
   if (error) throw error;
   return data;
@@ -116,16 +168,26 @@ export async function requestPasswordReset(email, redirectTo) {
 }
 
 export async function updatePassword(nextPassword) {
-  const { data, error } = await supabase.auth.updateUser({
-    password: nextPassword,
-  });
+  clearAuthLock();
+  const { data, error } = await withTimeout(
+    supabase.auth.updateUser({
+      password: nextPassword,
+    }),
+    12000,
+    'Updating the password took too long. Please try again.',
+  );
 
   if (error) throw error;
   return data;
 }
 
 export async function logoutFromSupabase() {
-  const { error } = await supabase.auth.signOut({ scope: 'local' });
+  clearAuthLock();
+  const { error } = await withTimeout(
+    supabase.auth.signOut({ scope: 'local' }),
+    8000,
+    'Signing out took too long. Please refresh the page and try again.',
+  );
   if (error) throw error;
 }
 
@@ -574,6 +636,7 @@ export async function claimSystemNotification(notificationId, userId) {
 
 export async function redeemCoinCode(code) {
   const normalizedCode = String(code || '').trim().toUpperCase();
+  clearAuthLock();
   const rpcPromise = supabase.rpc('redeem_coin_code', {
     p_code: normalizedCode,
   });

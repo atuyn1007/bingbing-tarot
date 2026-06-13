@@ -56,6 +56,8 @@ function AuthPage({
             <label className="field-shell">
               <Mail className="field-icon" />
               <input
+                id="auth-email"
+                name="email"
                 ref={emailInputRef}
                 type="email"
                 value={email}
@@ -75,6 +77,7 @@ function AuthPage({
                 }}
                 placeholder={t('auth.emailPlaceholder')}
                 className="field-input"
+                autoComplete="username"
               />
             </label>
 
@@ -88,6 +91,8 @@ function AuthPage({
             <label className="field-shell">
               <Lock className="field-icon" />
               <input
+                id={isRecoveryMode ? 'auth-new-password' : 'auth-password'}
+                name={isRecoveryMode ? 'new-password' : 'password'}
                 ref={passwordInputRef}
                 type="password"
                 value={isRecoveryMode ? resetPasswordValue : password}
@@ -111,6 +116,7 @@ function AuthPage({
                 }}
                 placeholder={isRecoveryMode ? t('auth.newPasswordPlaceholder') : t('auth.passwordPlaceholder')}
                 className="field-input"
+                autoComplete={isRecoveryMode ? 'new-password' : 'current-password'}
                 onKeyDown={(event) =>
                   event.key === 'Enter' &&
                   (isRecoveryMode ? handleCompletePasswordReset() : isLogin ? handleLogin() : handleRegister())
