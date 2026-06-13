@@ -7,7 +7,6 @@ import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/reader
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
 import { isSessionExpiredAt } from './sessionUtils';
-import { getLocalDateKey } from './dateUtils.js';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -369,15 +368,6 @@ function App() {
   const getSupabaseTarot = () => loadSupabaseTarotModule();
   const storedUser = readStoredJson('tarot_user', null);
   const storedProfile = readStoredJson(PROFILE_SNAPSHOT_KEY, {});
-  const todayKey = getLocalDateKey();
-  const hydratedProfile =
-    storedProfile.lastSignInDate && storedProfile.lastSignInDate !== todayKey
-      ? {
-          ...storedProfile,
-          isSignedIn: false,
-          savedDailyTarot: null,
-        }
-      : storedProfile;
   const theme = 'aurora';
   const [user, setUser] = useState(storedUser);
   const [isAuthReady, setIsAuthReady] = useState(true);
@@ -390,8 +380,8 @@ function App() {
   const [showForgotPasswordModal, setShowForgotPasswordModal] = useState(false);
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isSubmittingAuth, setIsSubmittingAuth] = useState(false);
-  const [coinBalance, setCoinBalance] = useState(hydratedProfile.coinBalance || 0);
-  const [lastSignInDate, setLastSignInDate] = useState(hydratedProfile.lastSignInDate || null);
+  const [coinBalance, setCoinBalance] = useState(storedProfile.coinBalance || 0);
+  const [lastSignInDate, setLastSignInDate] = useState(storedProfile.lastSignInDate || null);
 
   const [currentPage, setCurrentPage] = useState('home');
   const [isHumanMode, setIsHumanMode] = useState(false);
@@ -417,9 +407,9 @@ function App() {
 
   const [dailyCard, setDailyCard] = useState(null);
   const [showDailyResult, setShowDailyResult] = useState(false);
-  const [savedDailyTarot, setSavedDailyTarot] = useState(hydratedProfile.savedDailyTarot || null);
-  const [isSignedIn, setIsSignedIn] = useState(Boolean(hydratedProfile.isSignedIn));
-  const [dailyHistory, setDailyHistory] = useState(hydratedProfile.dailyHistory || {});
+  const [savedDailyTarot, setSavedDailyTarot] = useState(storedProfile.savedDailyTarot || null);
+  const [isSignedIn, setIsSignedIn] = useState(Boolean(storedProfile.isSignedIn));
+  const [dailyHistory, setDailyHistory] = useState(storedProfile.dailyHistory || {});
   const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
@@ -439,7 +429,6 @@ function App() {
   const authReadyTimeoutRef = useRef(null);
   const autofillSyncTimeoutRef = useRef(null);
   const authInteractionRef = useRef(false);
-  const profileSyncRef = useRef(null);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const activeNickname = user?.nickname || nickname;
@@ -477,25 +466,6 @@ function App() {
   const isSessionExpired = () => {
     const startedAt = Number(localStorage.getItem(SESSION_STARTED_AT_KEY) || 0);
     return isSessionExpiredAt(startedAt);
-  };
-
-  const syncDailySnapshotForCurrentDate = () => {
-    const currentDateKey = getLocalDateKey();
-    if (!lastSignInDate || lastSignInDate === currentDateKey) {
-      return;
-    }
-
-    setIsSignedIn(false);
-    setSavedDailyTarot(null);
-    setDailyCard(null);
-    setShowDailyResult(false);
-    persistProfileSnapshot({
-      coinBalance,
-      lastSignInDate,
-      isSignedIn: false,
-      savedDailyTarot: null,
-      dailyHistory,
-    });
   };
 
   const clearSession = () => {
@@ -589,55 +559,41 @@ function App() {
     Boolean((passwordInputRef.current?.value || password || resetPasswordValue || '').trim());
 
   const fetchUserProfile = async (authUser) => {
-    if (!authUser?.id) return null;
+    try {
+      const { ensureProfile, getLocalDateKey } = await getSupabaseApp();
+      const profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || nickname);
+      const todayKey = getLocalDateKey();
+      const isSignedInToday = profile.last_sign_in_date === todayKey;
+      const nextUser = { id: authUser.id, nickname: profile.nickname };
 
-    if (profileSyncRef.current?.userId === authUser.id) {
-      return profileSyncRef.current.promise;
-    }
-
-    const profilePromise = (async () => {
-      try {
-        const { ensureProfile, getLocalDateKey: getProfileDateKey } = await getSupabaseApp();
-        const profile = await ensureProfile(authUser, authUser?.user_metadata?.nickname || nickname);
-        const profileDateKey = getProfileDateKey();
-        const isSignedInToday = profile.last_sign_in_date === profileDateKey;
-        const nextUser = { id: authUser.id, nickname: profile.nickname };
-
-        setUser(nextUser);
-        setNickname(profile.nickname);
-        setCoinBalance(profile.coin_balance || 0);
-        setLastSignInDate(profile.last_sign_in_date || null);
-        setIsSignedIn(isSignedInToday);
-        setSavedDailyTarot(isSignedInToday ? profile.today_card || null : null);
-        setDailyHistory(profile.daily_history || {});
-        localStorage.setItem('tarot_user', JSON.stringify(nextUser));
-        persistProfileSnapshot({
-          coinBalance: profile.coin_balance || 0,
-          lastSignInDate: profile.last_sign_in_date || null,
-          isSignedIn: isSignedInToday,
-          savedDailyTarot: isSignedInToday ? profile.today_card || null : null,
-          dailyHistory: profile.daily_history || {},
-        });
-        setIsAuthReady(true);
-        return profile;
-      } catch (error) {
-        console.error('Failed to load profile after auth:', error);
-        setIsAuthReady(true);
-        throw error;
-      } finally {
-        if (authReadyTimeoutRef.current) {
-          clearTimeout(authReadyTimeoutRef.current);
-          authReadyTimeoutRef.current = null;
-        }
-        setIsSessionSyncing(false);
-        if (profileSyncRef.current?.promise === profilePromise) {
-          profileSyncRef.current = null;
-        }
+      setUser(nextUser);
+      setNickname(profile.nickname);
+      setCoinBalance(profile.coin_balance || 0);
+      setLastSignInDate(profile.last_sign_in_date || null);
+      setIsSignedIn(isSignedInToday);
+      setSavedDailyTarot(isSignedInToday ? profile.today_card || null : null);
+      setDailyHistory(profile.daily_history || {});
+      localStorage.setItem('tarot_user', JSON.stringify(nextUser));
+      persistProfileSnapshot({
+        coinBalance: profile.coin_balance || 0,
+        lastSignInDate: profile.last_sign_in_date || null,
+        isSignedIn: isSignedInToday,
+        savedDailyTarot: isSignedInToday ? profile.today_card || null : null,
+        dailyHistory: profile.daily_history || {},
+      });
+      setIsAuthReady(true);
+      return profile;
+    } catch (error) {
+      console.error('Failed to load profile after auth:', error);
+      setIsAuthReady(true);
+      throw error;
+    } finally {
+      if (authReadyTimeoutRef.current) {
+        clearTimeout(authReadyTimeoutRef.current);
+        authReadyTimeoutRef.current = null;
       }
-    })();
-
-    profileSyncRef.current = { userId: authUser.id, promise: profilePromise };
-    return profilePromise;
+      setIsSessionSyncing(false);
+    }
   };
 
   const getLiveSessionUser = async () => {
@@ -848,28 +804,6 @@ function App() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    syncDailySnapshotForCurrentDate();
-
-    const handleWindowFocus = () => {
-      syncDailySnapshotForCurrentDate();
-    };
-
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        syncDailySnapshotForCurrentDate();
-      }
-    };
-
-    window.addEventListener('focus', handleWindowFocus);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      window.removeEventListener('focus', handleWindowFocus);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [coinBalance, dailyHistory, lastSignInDate]);
 
   useEffect(() => {
     if (user) return undefined;

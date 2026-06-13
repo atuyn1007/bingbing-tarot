@@ -13,38 +13,6 @@ function normalizeNickname(nickname) {
   return String(nickname || '').trim();
 }
 
-const AUTH_STORAGE_KEY = 'bingbing-tarot-auth';
-const AUTH_LOCK_KEY = `lock:${AUTH_STORAGE_KEY}`;
-
-function clearAuthLock() {
-  try {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(AUTH_LOCK_KEY);
-    }
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.removeItem(AUTH_LOCK_KEY);
-    }
-  } catch {
-    // ignore storage access issues
-  }
-}
-
-function withTimeout(promise, timeoutMs, message) {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(message)), timeoutMs);
-
-    promise
-      .then((value) => {
-        clearTimeout(timer);
-        resolve(value);
-      })
-      .catch((error) => {
-        clearTimeout(timer);
-        reject(error);
-      });
-  });
-}
-
 export { getDisplaySignInDate, getLocalDateKey } from './dateUtils.js';
 
 export async function getAuthSession() {
@@ -125,7 +93,6 @@ export async function registerWithEmail(email, nickname, password) {
 }
 
 export async function loginWithEmail(email, password) {
-  clearAuthLock();
   const { data, error } = await supabase.auth.signInWithPassword({
     email: String(email || '').trim().toLowerCase(),
     password,
@@ -149,26 +116,16 @@ export async function requestPasswordReset(email, redirectTo) {
 }
 
 export async function updatePassword(nextPassword) {
-  clearAuthLock();
-  const { data, error } = await withTimeout(
-    supabase.auth.updateUser({
-      password: nextPassword,
-    }),
-    12000,
-    'Updating the password took too long. Please try again.',
-  );
+  const { data, error } = await supabase.auth.updateUser({
+    password: nextPassword,
+  });
 
   if (error) throw error;
   return data;
 }
 
 export async function logoutFromSupabase() {
-  clearAuthLock();
-  const { error } = await withTimeout(
-    supabase.auth.signOut({ scope: 'local' }),
-    8000,
-    'Signing out took too long. Please refresh the page and try again.',
-  );
+  const { error } = await supabase.auth.signOut({ scope: 'local' });
   if (error) throw error;
 }
 
