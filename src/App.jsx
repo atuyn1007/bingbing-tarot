@@ -839,31 +839,6 @@ function App() {
       const {
         data: { subscription },
       } = supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'INITIAL_SESSION') {
-          if (session?.user) {
-            if (isSessionExpired()) {
-              await logoutFromSupabase();
-              clearSession();
-              setIsAuthReady(true);
-              return;
-            }
-
-            await fetchUserProfile(session.user);
-          } else {
-            if (hasPendingAuthInput() || authInteractionRef.current) {
-              localStorage.removeItem('tarot_user');
-              setUser(null);
-              setIsAuthReady(true);
-              setIsSessionSyncing(false);
-            } else {
-              clearSession();
-              setIsAuthReady(true);
-              setIsSessionSyncing(false);
-            }
-          }
-          return;
-        }
-
         if (event === 'PASSWORD_RECOVERY') {
           setIsRecoveryMode(true);
           setIsLogin(true);
@@ -960,7 +935,7 @@ function App() {
 
     try {
       setIsSubmittingAuth(true);
-      const { loginWithEmail, getAuthenticatedUser } = await getSupabaseApp();
+      const { loginWithEmail } = await getSupabaseApp();
       if (authReadyTimeoutRef.current) {
         clearTimeout(authReadyTimeoutRef.current);
         authReadyTimeoutRef.current = null;
@@ -968,14 +943,9 @@ function App() {
       setIsSessionSyncing(true);
       setEmail(submittedEmail);
       setPassword(submittedPassword);
-      const data = await loginWithEmail(submittedEmail, submittedPassword);
+      await loginWithEmail(submittedEmail, submittedPassword);
       markSessionStarted();
       setPassword('');
-      const authUser = data.user || data.session?.user || (await getAuthenticatedUser());
-      if (!authUser) {
-        throw new Error(t('alerts.loginUserMissing'));
-      }
-      await fetchUserProfile(authUser);
     } catch (error) {
       setIsSessionSyncing(false);
       alert(error.message || t('alerts.loginFailed'));
