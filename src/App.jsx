@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
-import { findTarotMeaningCard, getLocalizedMeaningCard, getLocalizedMeaningDaily, getTarotMeaningCard } from './cardMeanings';
+import { findTarotMeaningCard, getLocalizedMeaningCard, getLocalizedMeaningDaily, getTarotMeaningCard } from './cardMeanings.js';
 import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';

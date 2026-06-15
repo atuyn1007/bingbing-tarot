@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { getLocalizedMeaningCard, tarotMeaningCards } from '../cardMeanings';
+import { getLocalizedMeaningCard, tarotMeaningCards } from '../cardMeanings.js';
 
 function formatCardNumber(number) {
   return number === null || number === undefined ? '--' : `${number}`;

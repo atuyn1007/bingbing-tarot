@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { getLocalizedMeaningCard } from '../cardMeanings';
+import { getLocalizedMeaningCard } from '../cardMeanings.js';
 
 function CardMeaningDetailPage({ theme, t, language, card, onBack }) {
   const localizedCard = getLocalizedMeaningCard(card, language);
