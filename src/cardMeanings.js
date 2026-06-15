@@ -53,15 +53,27 @@ function inferNumber(cardId, arcana, englishName) {
   return rankMap[rank] ?? null;
 }
 
-function getMeaningImage(name) {
-  return getCardArtwork({ name: normalizeChineseName(name) }) || '';
+function getMeaningImage(cardLike) {
+  if (!cardLike) return '';
+
+  if (typeof cardLike === 'string') {
+    return getCardArtwork({ name: normalizeChineseName(cardLike) }) || '';
+  }
+
+  return (
+    getCardArtwork({
+      id: cardLike.number,
+      name: normalizeChineseName(cardLike.name_cn),
+      englishName: cardLike.name_en,
+    }) || ''
+  );
 }
 
 function createMeaningCard(config) {
   return {
     arcana: 'major',
     suit: '',
-    image: getMeaningImage(config.name_cn),
+    image: getMeaningImage(config),
     translations: {},
     ...config,
   };
@@ -76,7 +88,11 @@ function createPlaceholderMeaning(card) {
     name_en: card.englishName,
     arcana,
     suit: inferSuit(card.englishName, arcana),
-    image: getMeaningImage(card.name),
+    image: getMeaningImage({
+      number: inferNumber(card.id, arcana, card.englishName),
+      name_cn: card.name,
+      name_en: card.englishName,
+    }),
     keywords: [],
     daily_upright: '',
     daily_reversed: '',
