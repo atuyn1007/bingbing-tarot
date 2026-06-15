@@ -84,8 +84,8 @@ export function getCardData(id) {
       keywords: '',
       uprightKeywords: fallbackUprightKeywords,
       reversedKeywords: fallbackReversedKeywords,
-      upright: '这张牌的正位牌义暂未记录。',
-      reversed: '这张牌的逆位牌义暂未记录。',
+      upright: '这张牌的正位牌意暂未记录。',
+      reversed: '这张牌的逆位牌意暂未记录。',
     };
   }
 
@@ -94,8 +94,8 @@ export function getCardData(id) {
     keywords: fallbackUprightKeywords.join(' / '),
     uprightKeywords: fallbackUprightKeywords,
     reversedKeywords: fallbackReversedKeywords,
-    upright: `${matched.name}正位牌义暂未记录。`,
-    reversed: `${matched.name}逆位牌义暂未记录。`,
+    upright: `${matched.name}正位牌意暂未记录。`,
+    reversed: `${matched.name}逆位牌意暂未记录。`,
   };
 }
 
@@ -142,7 +142,7 @@ export function drawRandomCard() {
   const card = allTarotCards[randomIndex];
   return {
     ...card,
-    isReversed: Math.random() < 0.5,
+    isReversed: Math.random() > 0.5,
   };
 }
 
@@ -155,7 +155,7 @@ export function drawThreeCards() {
     const [card] = deck.splice(randomIndex, 1);
     cards.push({
       ...card,
-      isReversed: Math.random() < 0.5,
+      isReversed: Math.random() > 0.5,
     });
   }
 
