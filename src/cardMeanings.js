@@ -1466,6 +1466,524 @@ Il messaggio centrale della Torre e questo: la falsa stabilita crollera, e la ve
       },
     },
   }),
+  createMeaningCard({
+    id: 'the-star',
+    number: 17,
+    name_cn: '星星',
+    name_en: 'The Star',
+    keywords: ['希望', '疗愈', '纯净', '祝福', '信念', '灵感', '指引', '重生后的宁静'],
+    daily_upright: '今天适合重新相信希望。即使你刚经历过疲惫或动荡，也会有一点温柔的光提醒你：未来仍然可以变好。',
+    daily_reversed: '今天要小心失去信心，或因为过去的伤害而不敢再期待。希望并没有完全消失，只是你暂时看不见它。',
+    reading_upright: `星星正位代表希望、疗愈、纯净的心，以及经历考验之后重新出现的信念。它说明你可能已经走过一段混乱、崩塌或失望的时期，现在开始慢慢回到更安静、更清澈的状态。
+
+在牌阵中出现时，星星提醒你相信未来仍有可能。它不是立刻实现愿望的牌，而是一种温柔的指引：你还没有走到终点，但远处已经有光。它也可能象征来自宇宙的祝福、灵感、贵人般的支持，或某种让你重新恢复生命力的东西。此时最重要的是不要放弃希望，也不要因为曾经受伤，就拒绝继续相信。`,
+    reading_reversed: `星星逆位代表信心低落、希望感减弱、疗愈受阻，或对未来失去期待。你可能正在经历一种心灵上的干涸：明明知道应该往前走，却很难再相信事情会变好。
+
+在牌阵中出现时，星星逆位提醒你先不要责怪自己不够乐观。经历过高塔式的崩塌之后，人当然可能变得谨慎、疲惫，甚至不敢再许愿。它提示你，疗愈需要时间，希望也需要被重新培养。此时不必强迫自己立刻振作，只要愿意保留一点点微弱的光，就已经是在向未来靠近。`,
+    detail: `星星是大阿尔卡那的第 17 张牌，象征希望、疗愈、纯净、信念与来自宇宙的祝福。它紧跟在高塔之后，因此它的希望并不是未经考验的天真，而是在崩塌之后重新出现的光。高塔把虚假的结构击碎，星星则在废墟之后带来一种安静的恢复：你失去了某些东西，但你并没有失去全部；世界裂开之后，天空反而显露出来。
+
+牌面中的女性赤裸地跪在水边，将水倒入池中，也倒向土地。她没有盔甲，没有武器，也没有华丽的遮掩。她的赤裸象征纯净、真实与重新回到本质。经历过动荡之后，人不再需要用坚硬的外壳证明自己。星星让人卸下防备，重新靠近内心最柔软、最诚实的部分。
+
+这张牌的力量很温柔。它不是太阳那种明亮的胜利，也不是战车那种强势的推进。星星更像夜空里安静的光，它不会替你立刻解决所有问题，却会让你知道：黑夜不是永恒的。你仍然可以被指引，仍然可以恢复，仍然可以再次相信生活中有值得期待的东西。
+
+当星星正位出现时，它通常意味着希望正在重新回来。你可能刚经历过失望、动荡、关系破裂、计划失败，或某种精神上的低谷。但星星说明，痛苦之后并不是只剩荒芜。你正在进入一个疗愈期，情绪会慢慢变清，内心会慢慢恢复流动，曾经被打碎的信念也可能以更成熟的方式重新长出来。
+
+星星也代表纯净的心。这里的纯净不是幼稚，而是在经历现实之后仍然没有彻底变得冷硬。它是一种很珍贵的能力：看见过失望，却仍然愿意相信善意；经历过崩塌，却仍然愿意抬头看星空；知道世界并不完美，却仍然不放弃对美好事物的感知。
+
+这张牌也带有灵感和宇宙祝福的意味。星星出现时，常常像是远方有某种力量在回应你。它可能是一段温柔的关系，一个突然出现的机会，一个让你重新燃起创作欲的灵感，也可能只是某个瞬间，你忽然感觉自己没有被世界完全抛下。它不一定轰轰烈烈，却足够让人继续走下去。
+
+在关系中，星星可能代表真诚、疗愈与重新建立信任。它不是强烈的占有，也不是激烈的纠缠，而是一种清澈的陪伴。对方也许无法立刻给你全部答案，但这段关系可能让你感到被理解、被安抚，或重新相信自己值得被温柔对待。
+
+在事业或创作中，星星代表灵感、愿景与长期希望。它不一定表示马上成功，但表示你正在接近一个更适合自己的方向。它鼓励你相信自己的愿望，不要因为短期挫败就否定整条路。星星说的是远方，不是立刻；是信念，不是急功近利。
+
+当星星逆位出现时，它提醒你留意希望感的流失。你可能正在怀疑未来，觉得许愿没有意义，觉得自己已经被现实消耗得太多。你也可能因为过去的创伤而不敢再相信任何祝福，甚至在机会出现时也下意识后退。星星逆位不是说希望不存在，而是说你暂时与希望失去了连接。
+
+此时最重要的不是强迫自己积极，而是允许疗愈慢慢发生。希望不一定一开始就是巨大的光，它可能只是很小的一点：今天愿意起床，愿意洗一杯水，愿意重新写下一句话，愿意相信明天也许没有那么坏。星星逆位提醒你，只要那一点光还在，你就还没有真正与未来断开。
+
+星星的核心信息是：经历过黑夜之后，仍然可以抬头看见光。希望不是幼稚的幻想，而是一种在废墟之后仍愿意继续生活的能力。你被考验过，也仍然可以被祝福；你曾经破碎，也仍然可以重新变得清澈。`,
+    translations: {
+      en: {
+        name: 'The Star',
+        keywords: ['Hope', 'Healing', 'Purity', 'Blessing', 'Faith', 'Inspiration', 'Guidance', 'Calm after rebirth'],
+        daily_upright:
+          'Today is a good day to believe in hope again. Even if you have just come through exhaustion or upheaval, a gentle light can still remind you that the future can improve.',
+        daily_reversed:
+          'Today, watch for a loss of faith or a reluctance to hope because of past wounds. Hope has not disappeared completely. You just may not be able to see it clearly right now.',
+        reading_upright: `The Star upright represents hope, healing, purity of heart, and faith returning after hardship. It suggests that you may already have moved through a period of chaos, collapse, or disappointment and are now slowly coming back to a quieter and clearer state.
+
+In a spread, The Star reminds you that the future is still possible. It is not the card of instant wish fulfillment, but of gentle guidance: you have not reached the end yet, but there is already light in the distance. It can also symbolize a blessing from the universe, inspiration, support that feels almost protective, or something that helps your life force return. What matters now is not giving up on hope and not refusing to believe again just because you were hurt before.`,
+        reading_reversed: `The Star reversed represents low confidence, weakened hope, blocked healing, or difficulty expecting anything good from the future. You may be going through a kind of spiritual dryness: you know you should keep moving, but it is hard to believe things will improve.
+
+In a spread, The Star reversed asks you not to blame yourself for failing to stay optimistic. After a Tower-like collapse, people often become cautious, tired, or even afraid to wish for anything at all. This card reminds you that healing takes time, and hope also has to be nurtured again. You do not need to force yourself to recover immediately. Keeping even a faint light alive is already a movement toward the future.`,
+        detail: `The Star is card 17 of the Major Arcana. It symbolizes hope, healing, purity, faith, and blessings that feel as if they come from the universe itself. It follows The Tower, which is why its hope is not naive or untouched by reality. It is the light that appears after collapse. The Tower breaks false structures apart, while The Star brings a quiet form of restoration after the ruins: you have lost something, but you have not lost everything; once the world cracks open, the sky becomes visible.
+
+The woman in the card kneels naked beside the water, pouring water into the pool and onto the land. She has no armor, no weapons, and no ornate covering. Her nakedness symbolizes purity, honesty, and a return to what is essential. After upheaval, a person no longer needs to prove strength through hard outer defenses. The Star invites you to lower those defenses and move closer to the softest and most truthful part of yourself.
+
+The power of this card is gentle. It is not the bright triumph of The Sun or the forceful advance of The Chariot. It is more like a quiet light in the night sky. It will not solve everything for you at once, but it tells you that night is not forever. You can still be guided, still recover, and still believe again that life contains things worth longing for.
+
+When The Star appears upright, it usually means hope is beginning to return. You may have just gone through disappointment, upheaval, heartbreak, failure, or a spiritual low point. Yet The Star says that pain is not the end of the landscape. You are entering a healing period. Your emotions can gradually become clearer, your inner life can begin to flow again, and beliefs that were once shattered may grow back in a more mature form.
+
+The Star also represents a pure heart. This purity is not childishness. It is the rare ability to go through reality without becoming completely hardened by it. You may have seen disappointment and still choose to believe in kindness. You may have lived through collapse and still choose to lift your eyes to the stars. You may know the world is imperfect and still refuse to lose your sensitivity to beauty.
+
+This card also carries the meaning of inspiration and blessing. When The Star appears, it often feels as though something in the distance is responding to you. It may be a gentle relationship, an unexpected opportunity, a spark that revives your creative drive, or simply a moment when you suddenly realize that the world has not abandoned you completely. It may not be dramatic, but it is enough to help you keep going.
+
+In relationships, The Star can represent sincerity, healing, and the rebuilding of trust. It is not intense possession or painful entanglement, but a clear and soothing kind of companionship. The other person may not be able to give you every answer right away, but the bond can help you feel understood, comforted, or able to believe again that you deserve tenderness.
+
+In work or creative life, The Star points to inspiration, vision, and long-term hope. It does not necessarily mean immediate success, but it does suggest that you are moving toward a direction that fits you better. It encourages you to trust your wishes and not deny the entire path because of temporary setbacks. The Star speaks of distance rather than instant reward, and of faith rather than short-term gain.
+
+When The Star appears reversed, it asks you to notice the loss of hope. You may be doubting the future, feeling that wishing no longer matters, or thinking reality has worn too much out of you. You may also be so shaped by past wounds that you pull back even when blessings or opportunities appear. The Star reversed does not mean hope no longer exists. It means you are temporarily disconnected from it.
+
+What matters most now is not forcing positivity, but letting healing happen slowly. Hope does not need to begin as a great light. It can be something very small: getting out of bed today, pouring a glass of water, writing one sentence again, or allowing yourself to believe that tomorrow may not be quite as bad. The Star reversed reminds you that if even that small light remains, then you have not truly lost contact with the future.
+
+The core message of The Star is this: after the night, you can still lift your head and see light. Hope is not childish fantasy. It is the ability to keep living after ruins. You have been tested and can still be blessed. You have been broken and can still become clear again.`,
+      },
+      it: {
+        name: 'La Stella',
+        keywords: ['Speranza', 'Guarigione', 'Purezza', 'Benedizione', 'Fede', 'Ispirazione', 'Guida', 'Calma dopo la rinascita'],
+        daily_upright:
+          'Oggi e il momento giusto per tornare a credere nella speranza. Anche se hai appena attraversato stanchezza o sconvolgimento, una luce gentile puo ancora ricordarti che il futuro puo migliorare.',
+        daily_reversed:
+          'Oggi fai attenzione a una perdita di fiducia o alla paura di sperare di nuovo a causa di ferite passate. La speranza non e sparita del tutto. E solo che per ora potresti non riuscire a vederla chiaramente.',
+        reading_upright: `La Stella diritta rappresenta speranza, guarigione, purezza di cuore e il ritorno della fede dopo una prova difficile. Indica che potresti aver gia attraversato un periodo di caos, crollo o delusione e che ora stai tornando lentamente verso uno stato piu quieto e piu limpido.
+
+In una stesa, La Stella ti ricorda che il futuro e ancora possibile. Non e la carta dei desideri che si realizzano immediatamente, ma di una guida gentile: non sei ancora arrivata o arrivato alla fine, ma in lontananza c'e gia una luce. Puo anche simboleggiare una benedizione dell'universo, ispirazione, un sostegno quasi protettivo, o qualcosa che ti aiuta a recuperare vitalita. La cosa piu importante ora e non rinunciare alla speranza e non rifiutarti di credere ancora solo perche sei stata ferita o sei stato ferito.`,
+        reading_reversed: `La Stella rovesciata rappresenta fiducia bassa, speranza indebolita, guarigione ostacolata o difficolta a immaginare qualcosa di buono nel futuro. Potresti attraversare una specie di aridita interiore: sai che dovresti andare avanti, ma fai fatica a credere che le cose possano migliorare.
+
+In una stesa, La Stella rovesciata ti chiede di non accusarti per il fatto di non riuscire a restare ottimista. Dopo un crollo simile alla Torre, e naturale diventare cauti, stanchi, o perfino impauriti dall'idea di esprimere un desiderio. Questa carta ricorda che la guarigione richiede tempo e che anche la speranza deve essere coltivata di nuovo. Non hai bisogno di costringerti a riprenderti subito. Conservare anche solo una luce debole significa gia muoverti verso il futuro.`,
+        detail: `La Stella e la carta numero 17 degli Arcani Maggiori. Simboleggia speranza, guarigione, purezza, fede e benedizioni che sembrano arrivare direttamente dall'universo. Segue La Torre, e proprio per questo la sua speranza non e ingenua ne separata dalla realta. E la luce che appare dopo il crollo. La Torre spezza le strutture false, mentre La Stella porta una forma silenziosa di ripresa dopo le rovine: hai perso qualcosa, ma non hai perso tutto; quando il mondo si apre e si spezza, il cielo diventa finalmente visibile.
+
+La figura della carta e inginocchiata nuda accanto all'acqua e versa acqua sia nello stagno sia sulla terra. Non ha armatura, non ha armi, non ha coperture solenni. La sua nudita simboleggia purezza, verita e ritorno all'essenziale. Dopo uno sconvolgimento, una persona non ha piu bisogno di dimostrare forza attraverso difese rigide. La Stella ti invita ad abbassare quelle difese e ad avvicinarti di nuovo alla parte piu morbida e piu sincera di te.
+
+La forza di questa carta e gentile. Non e il trionfo luminoso del Sole, ne l'avanzata energica del Carro. E piuttosto una luce tranquilla nel cielo notturno. Non risolvera tutto in un solo istante, ma ti ricorda che la notte non dura per sempre. Puoi ancora essere guidata o guidato, puoi ancora guarire e puoi ancora credere che la vita contenga qualcosa che valga la pena desiderare.
+
+Quando La Stella appare diritta, di solito significa che la speranza sta tornando. Potresti aver appena attraversato delusione, sconvolgimento, una rottura, un fallimento, o un periodo di calo spirituale. Eppure La Stella dice che il dolore non e la fine del paesaggio. Stai entrando in una fase di guarigione. Le emozioni possono diventare piu limpide, la vita interiore puo tornare a fluire, e le convinzioni che erano state spezzate possono ricrescere in una forma piu matura.
+
+La Stella rappresenta anche un cuore puro. Questa purezza non e infantilita. E la rara capacita di passare attraverso la realta senza diventare completamente induriti. Puoi aver visto la delusione e scegliere comunque di credere nella gentilezza. Puoi aver vissuto il crollo e scegliere comunque di alzare lo sguardo alle stelle. Puoi sapere che il mondo e imperfetto e rifiutarti comunque di perdere la sensibilita verso la bellezza.
+
+Questa carta porta anche il significato di ispirazione e benedizione. Quando appare, spesso sembra che qualcosa da lontano ti stia rispondendo. Puo essere una relazione delicata, un'opportunita inattesa, una scintilla che riaccende il desiderio di creare, o semplicemente un momento in cui capisci che il mondo non ti ha abbandonato del tutto. Non deve essere qualcosa di spettacolare. Basta che ti aiuti a continuare.
+
+Nelle relazioni, La Stella puo rappresentare sincerita, guarigione e ricostruzione della fiducia. Non e possesso intenso o intreccio doloroso, ma una compagnia limpida e rasserenante. L'altra persona potrebbe non poterti dare tutte le risposte subito, ma il legame puo aiutarti a sentirti compresa o compreso, consolata o consolato, e a credere di nuovo di meritare tenerezza.
+
+Nel lavoro o nella creativita, La Stella indica ispirazione, visione e speranza di lungo periodo. Non significa necessariamente successo immediato, ma suggerisce che ti stai muovendo verso una direzione piu adatta a te. Ti incoraggia a fidarti dei tuoi desideri e a non negare l'intero cammino per colpa di ostacoli temporanei. La Stella parla di lontananza piu che di ricompensa immediata, e di fede piu che di guadagno rapido.
+
+Quando La Stella appare rovesciata, ti chiede di notare la perdita di speranza. Potresti dubitare del futuro, sentire che desiderare non serve piu, o pensare che la realta ti abbia consumata o consumato troppo. Potresti anche essere cosi segnata o segnato da ferite passate da arretrare perfino quando arrivano benedizioni o opportunita. La Stella rovesciata non significa che la speranza non esista piu. Significa che per ora sei temporaneamente scollegata o scollegato da essa.
+
+La cosa piu importante non e forzare la guarigione con ottimismo artificiale, ma lasciare che la cura avvenga lentamente. La speranza non deve iniziare come una luce enorme. Puo essere qualcosa di molto piccolo: alzarti dal letto oggi, versarti un bicchiere d'acqua, scrivere di nuovo una frase, o permetterti di credere che domani forse non sara cosi duro. La Stella rovesciata ricorda che se rimane anche solo quella piccola luce, allora non hai davvero perso il contatto con il futuro.
+
+Il messaggio centrale della Stella e questo: dopo la notte, puoi ancora alzare la testa e vedere la luce. La speranza non e una fantasia infantile. E la capacita di continuare a vivere dopo le rovine. Sei stata messa alla prova o sei stato messo alla prova, e puoi ancora essere benedetta o benedetto. Ti sei spezzata o spezzato, e puoi ancora tornare limpida o limpido.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'the-moon',
+    number: 18,
+    name_cn: '月亮',
+    name_en: 'The Moon',
+    keywords: ['迷雾', '恐惧', '幻觉', '潜意识', '想象力', '直觉', '灵感', '隐藏真相', '未知'],
+    daily_upright:
+      '今天要留意不安、误解或看不清的情况，但也可以相信细微的直觉。别急着相信第一眼看到的东西，让月光慢慢带你穿过迷雾。',
+    daily_reversed:
+      '今天适合拨开迷雾，面对一直困扰你的恐惧。隐藏的信息可能慢慢显现，你也会开始分清什么是真相，什么只是焦虑制造的影子。',
+    reading_upright: `月亮正位代表未知、恐惧、幻觉、潜意识、想象力与直觉。它说明当前局面并不完全透明，你看到的可能只是事情的一部分，甚至可能被情绪、想象、恐惧或他人的隐瞒所扭曲。
+
+在牌阵中出现时，月亮提醒你不要急着下结论。你可能正走在一条看不清尽头的夜路上，前方似乎有危险，也似乎有召唤。此时，你需要分辨：什么是真正的直觉，什么只是过去伤口带来的投射；什么是灵感，什么只是恐惧制造的幻影。月亮的光不够明亮，却仍然能给你一点方向。`,
+    reading_reversed: `月亮逆位代表迷雾散去、真相浮现、恐惧被看见，或自欺欺人逐渐结束。你可能终于开始意识到，某些让你不安的东西并不是凭空出现的，也可能发现自己一直被焦虑、幻想或不完整的信息牵着走。
+
+在牌阵中出现时，月亮逆位提醒你面对那些被压进潜意识深处的恐惧。隐藏的力量正在显露，秘密可能被揭开，误解也可能开始澄清。这个过程未必轻松，但它会帮助你把负面的情绪转化为更清醒、更有建设性的力量。`,
+    detail: `月亮是大阿尔卡那的第 18 张牌，象征未知、黑暗、恐惧、幻觉、潜意识、想象力与直觉。它出现在星星之后，却不像星星那样带来清澈的希望。星星是夜空中温柔而确定的光，月亮则是变形的光：它照亮世界，也让世界变得暧昧、神秘、难以辨认。
+
+牌面中的月亮悬在夜空之上，地面有狗、狼、道路、水池和从水中爬出的生物。狗与狼像是文明与本能的两端，一个属于被驯化的意识，一个属于原始的野性。水池象征潜意识，从水中爬出的龙虾像是深处的恐惧、记忆、灵感与本能正在浮出水面。远方的道路通向黑暗之中，说明你正在经过一段看不清终点的旅程。
+
+月亮牌最强烈的感受，是对未知和黑暗的恐惧。你不知道前方有什么，也不知道自己所看见的是否可靠。眼前的事物被月光照亮，却并不完全真实。影子被拉长，轮廓被改变，普通的东西也可能变得可怕。此时，外界的模糊与内心的不安会互相放大，让你很难判断自己究竟是在看见危险，还是在被恐惧支配。
+
+但月亮并不只代表恐惧。它也代表想象力、梦境、灵感和来自潜意识的指引。一方面，你的想象力可能正在占据上风，让你在黑暗中看见过度放大的影子；另一方面，想象力也可能成为你的天赋，让你捕捉到理性尚未能解释的信号。月亮的世界不是白日世界，它不靠清晰的逻辑前进，而靠梦、象征、直觉和微弱的感应。
+
+你像牌面中走上道路的小龙虾，从水里爬出，进入一条未知的路。你并不知道路的深处是否潜伏着危险，但你也不能永远留在水中。月亮的光带来的不是完全的确定，而是一种朦胧的清晰。它让你在黑暗里勉强看见轮廓，也让你学会相信那些细微的感觉：某个梦境、某种预感、某个反复出现的念头，或内心深处一直没有被说出口的声音。
+
+当月亮正位出现时，它通常意味着当前局面存在不确定、隐瞒、误解或自我欺骗。你可能没有得到完整信息，也可能有人没有说出全部真相。你现在看到的，可能只是光明的诡计：某些东西看似清楚，其实仍然被阴影遮住。月亮提醒你，必须继续寻找那些尚未被解开的隐藏力量。
+
+但这张牌也提醒你，不要把所有不确定都视为坏事。有些真相本来就不是立刻显现的，有些灵感也只能在黑暗里诞生。白天太明亮，世界太喧哗，反而让人听不见潜意识的声音。月亮出现时，你需要的不是马上冲出去证明什么，而是在迷雾中保持敏锐，让直觉带你一步一步走过这片黑暗。
+
+在关系中，月亮可能代表暧昧、误会、秘密、猜疑或不安全感。你可能感觉对方有什么没有说清，也可能是自己因为害怕受伤而不断脑补最坏结果。在事业或现实事务中，月亮可能表示信息不透明、方向不清、计划含糊，或你暂时无法看见完整局面。但在创作中，月亮也可能是非常强的灵感牌：它让想象力打开，让梦境、图像、隐喻和情绪流动出来。
+
+当月亮逆位出现时，它通常表示迷雾开始散开。隐藏的真相可能逐渐浮现，内心的恐惧也开始被看见。你可能终于意识到，自己一直害怕的东西是什么，也可能发现某个困扰你的问题并没有想象中那么不可名状。月亮逆位不是立刻走出黑暗，而是开始分辨黑暗里到底有什么。
+
+月亮逆位也代表释放。那些深刻的记忆、恐惧和负能量不能永远被压在心底。它们需要被看见，被命名，被转化。只有这样，它们才不会继续以焦虑、猜疑、自欺欺人或噩梦的形式控制你。此时，真相未必温柔，但它比幻觉更值得信任。
+
+月亮的核心信息是：黑暗会放大恐惧，也会孕育灵感。月光会制造幻象，也会给你微弱的方向。你需要谨慎地走过这段路，不急着相信表象，也不急着否定直觉。真正的清醒，不是立刻照亮全部黑夜，而是在迷雾中仍然保持分辨力，让内心深处的声音带你走向隐藏的真相。`,
+    translations: {
+      en: {
+        name: 'The Moon',
+        keywords: ['Mist', 'Fear', 'Illusion', 'Subconscious', 'Imagination', 'Intuition', 'Inspiration', 'Hidden Truth', 'Unknown'],
+        daily_upright:
+          'Today, pay attention to anxiety, misunderstanding, or situations that are hard to read, but also trust subtle intuition. Do not rush to believe what you see at first glance. Let the moonlight guide you slowly through the fog.',
+        daily_reversed:
+          'Today is a good time to clear the fog and face the fears that have been troubling you. Hidden information may begin to appear, and you may start to distinguish truth from shadows created by anxiety.',
+        reading_upright: `The Moon upright represents the unknown, fear, illusion, the subconscious, imagination, and intuition. It suggests that the current situation is not fully transparent. What you see may be only part of the story, and it may even be distorted by emotion, fantasy, fear, or someone else's concealment.
+
+In a spread, The Moon asks you not to rush to conclusions. You may be walking a night road whose end you cannot clearly see. Ahead of you there seems to be both danger and a strange call forward. At this moment, you need to distinguish between true intuition and projection born from old wounds, between inspiration and images created by fear. The light of The Moon is not bright, but it can still offer direction.`,
+        reading_reversed: `The Moon reversed represents the fog beginning to clear, truth emerging, fear becoming visible, or self-deception gradually coming to an end. You may finally begin to realize that some of the things disturbing you did not appear from nowhere, or that you have been led around by anxiety, fantasy, or incomplete information.
+
+In a spread, The Moon reversed asks you to face the fears buried deep in the subconscious. Hidden forces are beginning to show themselves. Secrets may be exposed, and misunderstandings may start to clear. The process may not be easy, but it can help you transform negative emotion into something clearer and more constructive.`,
+        detail: `The Moon is card 18 of the Major Arcana. It symbolizes the unknown, darkness, fear, illusion, the subconscious, imagination, and intuition. It comes after The Star, yet unlike The Star it does not offer clear hope. The Star is a gentle and certain light in the night sky, while The Moon is a changing light. It illuminates the world, but also makes it ambiguous, mysterious, and difficult to identify.
+
+In the imagery of the card, the moon hangs above the night sky, while below are a dog, a wolf, a road, a pool of water, and a creature climbing out of the water. The dog and the wolf resemble two ends of the human condition: the domesticated mind and primal instinct. The pool represents the subconscious, and the crayfish crawling out of it suggests that deep fears, memories, inspiration, and instinct are rising toward the surface. The road stretches into darkness, showing that you are passing through a journey whose destination is still unclear.
+
+The strongest feeling in The Moon is fear of the unknown and of darkness. You do not know what lies ahead, and you do not know whether what you are seeing can be trusted. Things are lit by moonlight, but not fully revealed. Shadows grow longer, outlines change, and ordinary things can begin to look frightening. In that state, outer uncertainty and inner unease amplify each other, making it hard to tell whether you are perceiving danger or being ruled by fear.
+
+Yet The Moon does not only represent fear. It also represents imagination, dreams, inspiration, and guidance coming from the subconscious. On one hand, imagination may dominate and make you see enlarged shadows in the dark. On the other hand, imagination may be your gift, allowing you to catch signals that reason cannot yet explain. The world of The Moon is not the world of daylight. It does not move forward through clean logic, but through dreams, symbols, intuition, and faint perception.
+
+You are like the small creature on the card leaving the water and entering an unknown path. You do not know whether danger waits deeper along the road, but you also cannot stay in the water forever. The Moon does not give complete certainty. It gives a blurred kind of clarity. It lets you barely make out shapes in the dark, and it teaches you to trust subtle feelings: a dream, a premonition, a recurring thought, or a voice from deep within that has never quite been spoken aloud.
+
+When The Moon appears upright, it usually means the current situation contains uncertainty, concealment, misunderstanding, or self-deception. You may not have complete information, or someone may not be telling the whole truth. What you see now may be a trick of light: something that looks clear but remains partly hidden in shadow. The Moon reminds you to keep searching for the hidden forces that have not yet been fully revealed.
+
+At the same time, this card warns you not to treat all uncertainty as something bad. Some truths are not meant to appear immediately, and some inspiration can only be born in darkness. Daylight can be too bright and the world too loud, drowning out the voice of the subconscious. When The Moon appears, what you need is not to rush out and prove something, but to remain alert in the fog and let intuition lead you one step at a time.
+
+In relationships, The Moon may point to ambiguity, misunderstanding, secrets, suspicion, or insecurity. You may feel that the other person has not said everything clearly, or you may be imagining the worst because you fear being hurt. In work or practical matters, The Moon may indicate unclear information, uncertain direction, a vague plan, or an incomplete view of the whole situation. In creative work, however, The Moon can be a very powerful card of inspiration, opening imagination and letting dreams, images, metaphor, and emotion flow.
+
+When The Moon appears reversed, it often means the fog is beginning to lift. Hidden truth may gradually emerge, and inner fear may start to become visible. You may finally realize what it is you have truly been afraid of, or see that a problem troubling you is not as nameless as it once felt. The Moon reversed is not an instant exit from darkness, but the beginning of knowing what actually lives there.
+
+The Moon reversed also represents release. Deep memories, fear, and negative emotion cannot stay buried forever. They need to be seen, named, and transformed. Only then will they stop controlling you through anxiety, suspicion, self-deception, or nightmares. The truth may not always be gentle, but it is more trustworthy than illusion.
+
+The core message of The Moon is this: darkness magnifies fear, but it also gives birth to inspiration. Moonlight creates illusion, but it also offers a faint direction. You need to walk this path carefully, neither rushing to believe appearances nor rushing to reject intuition. True clarity is not flooding the whole night with light at once. It is keeping your power of discernment in the fog and letting the voice deep inside guide you toward hidden truth.`,
+      },
+      it: {
+        name: 'La Luna',
+        keywords: ['Nebbia', 'Paura', 'Illusione', 'Subconscio', 'Immaginazione', 'Intuizione', 'Ispirazione', 'Verita nascosta', 'Ignoto'],
+        daily_upright: `Oggi fai attenzione a inquietudine, malintesi o situazioni difficili da leggere, ma puoi anche fidarti di un'intuizione sottile. Non avere fretta di credere a cio che vedi al primo sguardo. Lascia che la luce della luna ti accompagni lentamente attraverso la nebbia.`,
+        daily_reversed: `Oggi e un buon momento per diradare la nebbia e affrontare le paure che ti disturbano da tempo. Informazioni nascoste potrebbero emergere poco a poco, e potresti iniziare a distinguere la verita dalle ombre create dall'ansia.`,
+        reading_upright: `La Luna diritta rappresenta l'ignoto, la paura, l'illusione, il subconscio, l'immaginazione e l'intuizione. Indica che la situazione attuale non e completamente trasparente. Cio che vedi potrebbe essere solo una parte della storia, e potrebbe perfino essere deformato da emozioni, fantasia, paura o dal silenzio di qualcun altro.
+
+In una stesa, La Luna ti chiede di non affrettare le conclusioni. Potresti camminare su una strada notturna di cui non riesci a vedere bene la fine. Davanti a te sembra esserci sia pericolo sia una chiamata sottile. In questo momento hai bisogno di distinguere tra vera intuizione e proiezione nata da vecchie ferite, tra ispirazione e immagini create dalla paura. La luce della Luna non e intensa, ma puo comunque offrirti una direzione.`,
+        reading_reversed: `La Luna rovesciata rappresenta la nebbia che comincia a diradarsi, la verita che emerge, la paura che diventa visibile, o l'autoinganno che lentamente si esaurisce. Potresti finalmente iniziare a capire che alcune cose che ti turbano non sono apparse dal nulla, oppure accorgerti di essere stata guidata o guidato da ansia, fantasia o informazioni incomplete.
+
+In una stesa, La Luna rovesciata ti invita a guardare in faccia le paure sepolte nel subconscio. Le forze nascoste stanno iniziando a mostrarsi. Segreti possono essere svelati, e i malintesi possono cominciare a chiarirsi. Il processo potrebbe non essere facile, ma puo aiutarti a trasformare le emozioni negative in una forza piu lucida e piu costruttiva.`,
+        detail: `La Luna e la carta numero 18 degli Arcani Maggiori. Simboleggia l'ignoto, il buio, la paura, l'illusione, il subconscio, l'immaginazione e l'intuizione. Arriva dopo la Stella, ma a differenza della Stella non porta una speranza limpida. La Stella e una luce gentile e certa nel cielo notturno, mentre la Luna e una luce mutevole: illumina il mondo, ma allo stesso tempo lo rende ambiguo, misterioso e difficile da riconoscere con precisione.
+
+Nell'immagine della carta, la luna domina il cielo notturno; sotto di lei compaiono un cane, un lupo, una strada, uno stagno e una creatura che esce dall'acqua. Il cane e il lupo ricordano due estremi dell'esperienza umana: la mente addomesticata e l'istinto primordiale. Lo stagno rappresenta il subconscio, e il gambero che emerge dall'acqua suggerisce che paure profonde, ricordi, ispirazioni e impulsi stanno salendo verso la superficie. La strada prosegue nel buio, mostrando che stai attraversando un percorso di cui non riesci ancora a vedere il termine.
+
+La sensazione piu forte della Luna e la paura dell'ignoto e del buio. Non sai cosa ti aspetta davanti, e non sai se cio che stai vedendo e affidabile. Le cose sono illuminate dal chiarore lunare, ma non sono del tutto rivelate. Le ombre si allungano, i contorni cambiano, e cose ordinarie possono diventare spaventose. In quello stato, l'incertezza esterna e l'inquietudine interiore si amplificano a vicenda, rendendo difficile capire se stai davvero percependo un pericolo oppure se sei dominata o dominato dalla paura.
+
+Eppure La Luna non rappresenta soltanto paura. Rappresenta anche immaginazione, sogni, ispirazione e guida che arrivano dal subconscio. Da una parte, l'immaginazione puo prendere il sopravvento e farti vedere ombre ingigantite nel buio. Dall'altra, l'immaginazione puo anche essere il tuo dono, permettendoti di cogliere segnali che la ragione non sa ancora spiegare. Il mondo della Luna non e il mondo del giorno. Non avanza tramite logica limpida, ma attraverso sogni, simboli, intuizione e percezioni sottili.
+
+Sei come la piccola creatura della carta che esce dall'acqua e si avvia su un sentiero sconosciuto. Non sai se piu avanti ci sara un pericolo, ma non puoi nemmeno restare per sempre nell'acqua. La Luna non offre certezza completa. Offre una chiarezza sfumata. Ti permette di intravedere a fatica i contorni nel buio, e ti insegna a fidarti di sensazioni sottili: un sogno, un presentimento, un pensiero ricorrente, o una voce interiore che non e mai stata del tutto espressa.
+
+Quando La Luna appare diritta, di solito indica che la situazione attuale contiene incertezza, nascondimento, malinteso o autoinganno. Potresti non avere informazioni complete, oppure qualcuno potrebbe non dire tutta la verita. Quello che vedi adesso potrebbe essere un trucco della luce: qualcosa che sembra chiaro ma resta ancora parzialmente coperto dall'ombra. La Luna ti ricorda di continuare a cercare le forze nascoste che non sono ancora state pienamente rivelate.
+
+Allo stesso tempo, questa carta ti avverte di non considerare ogni incertezza come qualcosa di negativo. Alcune verita non sono destinate ad apparire immediatamente, e alcune ispirazioni possono nascere solo nel buio. La luce del giorno puo essere troppo forte, e il mondo troppo rumoroso, fino a coprire la voce del subconscio. Quando appare La Luna, cio di cui hai bisogno non e correre fuori per dimostrare qualcosa, ma restare vigile nella nebbia e lasciare che l'intuizione ti guidi passo dopo passo.
+
+Nelle relazioni, La Luna puo indicare ambiguita, malintesi, segreti, sospetto o insicurezza. Potresti sentire che l'altra persona non ha detto tutto chiaramente, oppure potresti immaginare il peggio per paura di essere ferita o ferito. Nel lavoro o nelle questioni pratiche, La Luna puo indicare informazioni poco trasparenti, direzione incerta, un piano vago o una visione ancora incompleta della situazione. Nella creativita, invece, puo essere una carta molto potente di ispirazione, capace di aprire l'immaginazione e di far fluire sogni, immagini, metafore ed emozioni.
+
+Quando La Luna appare rovesciata, spesso significa che la nebbia comincia a sollevarsi. La verita nascosta puo emergere gradualmente, e la paura interiore puo iniziare a diventare visibile. Potresti finalmente capire di cosa hai davvero avuto paura, oppure vedere che un problema che ti tormentava non era cosi indefinibile come sembrava. La Luna rovesciata non e un'uscita immediata dal buio, ma l'inizio della comprensione di cio che davvero vive li dentro.
+
+La Luna rovesciata rappresenta anche liberazione. Ricordi profondi, paura ed emozioni negative non possono restare sepolti per sempre. Devono essere visti, nominati e trasformati. Solo allora smetteranno di controllarti sotto forma di ansia, sospetto, autoinganno o incubi. La verita potrebbe non essere sempre gentile, ma e piu degna di fiducia dell'illusione.
+
+Il messaggio centrale della Luna e questo: il buio ingrandisce la paura, ma fa nascere anche l'ispirazione. La luce lunare crea illusioni, ma offre anche una direzione sottile. Devi attraversare questo cammino con cautela, senza avere fretta di credere alle apparenze e senza avere fretta di rifiutare l'intuizione. La vera lucidita non consiste nell'illuminare tutta la notte in un solo istante, ma nel conservare discernimento dentro la nebbia e lasciare che la voce piu profonda ti conduca verso la verita nascosta.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'the-sun',
+    number: 19,
+    name_cn: '太阳',
+    name_en: 'The Sun',
+    keywords: ['快乐', '成功', '纯真', '自信', '富足', '光彩', '生命力', '温暖', '分享'],
+    daily_upright: '今天适合自信地站到阳光下。快乐、活力和好运正在靠近，你也会把自己的温暖带给身边的人。',
+    daily_reversed: '今天要小心快乐感被削弱，或因为自我怀疑而看不见已有的成果。阳光仍在，只是你可能暂时被阴影挡住了视线。',
+    reading_upright: `太阳正位代表成功、快乐、富足、自信与生命力。它说明某件事正在走向明朗，原本模糊或压抑的状态会被光照亮，你也更容易感受到幸福、成就和被支持的力量。
+
+在牌阵中出现时，太阳提醒你接受属于自己的光彩。你可能正在迎来成果、认可、好消息，或一段更轻盈、更坦诚的时期。它也代表纯真与开放：你不需要用复杂的方式证明自己，只要自然地散发能量，就会吸引他人靠近。你的成就不只属于你，也会成为别人眼中的希望和灵感。`,
+    reading_reversed: `太阳逆位代表快乐受阻、自信不足、成果延迟，或暂时无法感受到生活中的光。你可能明明已经拥有一些成绩，却仍然不敢相信自己值得被看见；也可能因为疲惫、焦虑或外界压力，而无法真正享受眼前的幸福。
+
+在牌阵中出现时，太阳逆位提醒你重新找回自己的生命力。它并不一定表示失败，而是说明光芒被遮住了。你需要看见自己已经做到的部分，也需要允许自己休息、玩耍、表达和被爱。不要因为短暂的不安，就否定整片阳光。`,
+    detail: `太阳是大阿尔卡那的第 19 张牌，象征快乐、成功、富足、纯真、自信与充满生命力的光。它是一张非常明亮的牌，像太阳本身一样，把温暖、力量和活力带给所有有幸感受到它光芒的人。经历了月亮的迷雾与恐惧之后，太阳让世界重新变得清晰：黑夜过去，阴影退开，生命再次露出明亮的轮廓。
+
+牌面中的孩子通常骑在白马上，周围有鲜艳的太阳花，头顶是巨大的太阳。孩子象征纯真、坦率和不被羞耻压抑的生命力；白马象征自然、自由与纯净的前进力量；太阳花则象征丰盛、开放和面向光生长的姿态。整张牌都在表达一种很直接的幸福：不再躲藏，不再猜测，不再害怕被看见。
+
+当太阳正位出现时，它通常意味着成功、好消息、成果显现和自信回归。你可能在事业、关系、创作、学业或个人成长上迎来更明朗的阶段。某些努力终于有了结果，某些压抑终于被释放，某些长期困扰你的问题也开始变得简单、清楚、可以处理。太阳的能量不是隐秘的，它会把事情带到光下，让你看见真实，也让别人看见你。
+
+太阳也代表富足。这里的富足不只是金钱，也包括精力、爱、认可、机会和生活本身的饱满感。它像是在说：你可以享受已经到来的好东西，不必总是担心它会不会立刻消失。快乐不是肤浅，成功也不需要被压低。你可以坦然承认自己的成就，也可以大方接住来自世界的善意。
+
+这张牌还带有很强的分享意味。因为你自己的个人成就，你也可能为他人带来灵感和快乐。人们会被你吸引，是因为他们能看见你身上温暖而美丽的能量。你不只是在发光，也在照亮别人。你可能处在一个可以分享经验、资源、爱意或成果的位置，把自己的品质和收获传递给关心的人。
+
+在关系中，太阳代表坦诚、快乐、亲密和毫不拧巴的表达。它是一种不需要反复猜测的爱：喜欢就是喜欢，靠近就是靠近，温暖就是温暖。它也可能代表孩子、家庭、公开的关系，或一段让人感到被滋养、被鼓励的连接。太阳的关系不是潮湿的纠缠，而是明亮的陪伴。
+
+在事业或创作中，太阳代表被看见、被认可、成果公开和自信表达。你可能进入一个更适合展示自己的阶段。此时不要过度谦缩，也不要害怕自己的光太亮。真正健康的光芒不会夺走别人的位置，它会让更多东西一起生长。
+
+当太阳逆位出现时，它提醒你留意快乐感的削弱。你可能因为焦虑、疲惫、自我怀疑或外部阻碍，暂时感受不到阳光。也许成果还没有完全到来，也许你已经取得一些成绩，却仍然觉得不够好。太阳逆位有时不是没有光，而是你不敢站进光里。
+
+太阳逆位也可能表示过度乐观、只看好的一面，或把快乐表现成一种必须维持的状态。真正的太阳不是强迫自己开心，而是在承认阴影存在之后，仍然愿意靠近温暖。它提醒你：不必永远灿烂，但不要忘记自己仍然拥有发光的能力。
+
+太阳的核心信息是：快乐、成功和光彩可以被坦然接住。你经历过黑夜，也走过迷雾，现在可以重新相信生命的明亮。让自己被阳光照见，也让你的温暖照向那些你在意的人。`,
+    translations: {
+      en: {
+        name: 'The Sun',
+        keywords: ['Joy', 'Success', 'Innocence', 'Confidence', 'Abundance', 'Radiance', 'Vitality', 'Warmth', 'Sharing'],
+        daily_upright:
+          'Today is a good day to stand confidently in the sunlight. Joy, vitality, and good fortune are moving closer, and your warmth can also reach the people around you.',
+        daily_reversed:
+          'Today, watch for your sense of joy being dimmed, or for self-doubt making you overlook what you have already achieved. The sunlight is still there, but shadows may be blocking your view for now.',
+        reading_upright: `The Sun upright represents success, joy, abundance, confidence, and vitality. It suggests that something is becoming clear and open. A state that was once vague or repressed is now being illuminated, and you are more likely to feel happiness, achievement, and the support that surrounds you.
+
+In a spread, The Sun reminds you to accept the light that belongs to you. You may be moving into results, recognition, good news, or a lighter and more honest phase of life. It also represents innocence and openness: you do not need to prove yourself through complexity. If you simply radiate your energy naturally, others will be drawn closer. Your achievements do not belong only to you; they can also become hope and inspiration in the eyes of others.`,
+        reading_reversed: `The Sun reversed represents blocked joy, weakened confidence, delayed results, or a temporary inability to feel the light in life. You may already have something to be proud of, yet still hesitate to believe that you deserve to be seen. Or you may be too tired, anxious, or burdened by outside pressure to truly enjoy the happiness in front of you.
+
+In a spread, The Sun reversed asks you to reconnect with your own life force. It does not necessarily mean failure. It means the light is being covered. You need to see what you have already done, and you also need to allow yourself to rest, play, express, and receive love. Do not deny an entire field of sunlight because of a passing shadow.`,
+        detail: `The Sun is card 19 of the Major Arcana. It symbolizes joy, success, abundance, innocence, confidence, and a light filled with life force. It is a very bright card. Like the sun itself, it gives warmth, strength, and vitality to all who are fortunate enough to feel its rays. After the fog and fear of The Moon, The Sun makes the world clear again: night passes, shadows retreat, and life reveals its bright outline once more.
+
+The child in the image often rides a white horse, surrounded by vivid sunflowers beneath a great shining sun. The child symbolizes innocence, honesty, and life force that is not suppressed by shame. The white horse symbolizes natural freedom and a pure moving force. The sunflowers symbolize abundance, openness, and a way of growing toward light. The whole card expresses a very direct kind of happiness: no more hiding, no more guessing, no more fear of being seen.
+
+When The Sun appears upright, it usually means success, good news, visible results, and a return of confidence. You may be entering a brighter phase in work, relationships, creativity, study, or personal growth. Some efforts are finally bearing fruit, some repression is finally being released, and some problems that have troubled you for a long time are beginning to feel simpler, clearer, and more manageable. The Sun does not work in secret. It brings things into the light so that you can see what is real, and so that others can see you as well.
+
+The Sun also represents abundance. This abundance is not only material. It includes energy, love, recognition, opportunity, and a sense of fullness in life itself. It is as if the card is saying that you are allowed to enjoy what has already arrived without always fearing that it will disappear at once. Joy is not shallow, and success does not need to be minimized. You can acknowledge your achievements directly, and you can receive the goodwill of the world without shrinking from it.
+
+This card also carries a strong meaning of sharing. Through your own personal success, you may also bring inspiration and joy to other people. Others are drawn to you because they can see warm and beautiful energy in you. You are not only shining; you are also helping to illuminate others. You may be in a position to share experience, resources, affection, or results, passing your qualities and your harvest to the people you care about.
+
+In relationships, The Sun represents honesty, happiness, closeness, and expression without unnecessary complication. It is a kind of love that does not need endless guessing: liking is liking, closeness is closeness, warmth is warmth. It can also point to children, family, a public relationship, or a bond that feels nourishing and encouraging. The Sun is not a damp entanglement. It is bright companionship.
+
+In work or creativity, The Sun represents being seen, being recognized, public results, and confident expression. You may be entering a stage that is more suitable for showing yourself openly. At this moment, do not shrink too much and do not fear that your light is too bright. Healthy radiance does not steal someone else's place. It helps more things grow.
+
+When The Sun appears reversed, it asks you to notice a weakening of joy. You may be too anxious, too tired, too doubtful of yourself, or too blocked by outer conditions to feel the sunlight fully. Perhaps the results have not completely arrived yet, or perhaps you already have some achievements and still feel that they are not enough. Sometimes The Sun reversed does not mean the absence of light. It means you are afraid to step into it.
+
+The Sun reversed can also point to excessive optimism, seeing only the pleasant side, or treating happiness as something that must always be performed. The true Sun is not forcing yourself to be cheerful. It is being willing to move toward warmth even after acknowledging that shadows exist. It reminds you that you do not have to be brilliant all the time, but you should not forget that you still have the ability to shine.
+
+The core message of The Sun is this: joy, success, and radiance can be received without shame. You have lived through night and passed through fog, and now you can believe again in the brightness of life. Let yourself be seen in sunlight, and let your warmth reach the people who matter to you.`,
+      },
+      it: {
+        name: 'Il Sole',
+        keywords: ['Gioia', 'Successo', 'Innocenza', 'Fiducia', 'Abbondanza', 'Splendore', 'Vitalita', 'Calore', 'Condivisione'],
+        daily_upright: `Oggi e il momento giusto per stare con fiducia sotto il sole. Gioia, vitalita e buona sorte si stanno avvicinando, e anche il tuo calore raggiungera le persone che ti sono vicine.`,
+        daily_reversed: `Oggi fai attenzione a un indebolimento della gioia, o al fatto che il dubbio verso te stessa o te stesso ti impedisca di vedere i risultati che hai gia ottenuto. Il sole c'e ancora, ma potresti avere per ora lo sguardo coperto da un'ombra.`,
+        reading_upright: `Il Sole diritto rappresenta successo, gioia, abbondanza, fiducia e vitalita. Indica che qualcosa sta diventando chiaro e luminoso. Uno stato che prima era vago o represso viene ora illuminato, e tu puoi percepire piu facilmente felicita, realizzazione e il sostegno che ti circonda.
+
+In una stesa, Il Sole ti ricorda di accogliere la luce che ti appartiene. Potresti entrare in una fase di risultati, riconoscimento, buone notizie o maggiore leggerezza e sincerita. Rappresenta anche innocenza e apertura: non hai bisogno di dimostrare il tuo valore in modo complicato. Se lasci emergere la tua energia in modo naturale, gli altri si avvicineranno. I tuoi risultati non appartengono solo a te; possono diventare anche speranza e ispirazione per chi ti guarda.`,
+        reading_reversed: `Il Sole rovesciato rappresenta gioia ostacolata, fiducia ridotta, risultati rimandati, o una difficolta temporanea nel sentire la luce della vita. Potresti avere gia ottenuto qualcosa di importante, eppure non riuscire ancora a credere di meritare visibilita. Oppure potresti essere troppo stanca o stanco, troppo ansiosa o ansioso, o troppo sotto pressione per goderti davvero la felicita che hai davanti.
+
+In una stesa, Il Sole rovesciato ti chiede di ritrovare la tua forza vitale. Non significa necessariamente fallimento. Significa che la luce e coperta. Hai bisogno di riconoscere cio che hai gia fatto, e anche di permetterti di riposare, giocare, esprimerti e ricevere amore. Non negare un intero campo di sole solo a causa di un'ombra momentanea.`,
+        detail: `Il Sole e la carta numero 19 degli Arcani Maggiori. Simboleggia gioia, successo, abbondanza, innocenza, fiducia e una luce piena di forza vitale. E una carta molto luminosa. Proprio come il sole, porta calore, forza ed energia a chi ha la fortuna di sentirne i raggi. Dopo la nebbia e la paura della Luna, il Sole rende di nuovo il mondo chiaro: la notte passa, le ombre si ritirano, e la vita mostra ancora una volta il proprio contorno luminoso.
+
+Nell'immagine della carta, il bambino cavalca spesso un cavallo bianco, circondato da grandi girasoli sotto un sole radioso. Il bambino simboleggia innocenza, franchezza e una vitalita non soffocata dalla vergogna. Il cavallo bianco simboleggia liberta naturale e una forza pura che avanza. I girasoli simboleggiano abbondanza, apertura e la capacita di crescere verso la luce. L'intera carta esprime una felicita molto diretta: non nascondersi piu, non indovinare piu, non avere piu paura di essere visti.
+
+Quando Il Sole appare diritto, di solito indica successo, buone notizie, risultati visibili e ritorno della fiducia. Potresti entrare in una fase piu luminosa nel lavoro, nelle relazioni, nella creativita, nello studio o nella crescita personale. Alcuni sforzi stanno finalmente dando frutto, alcune repressioni si stanno finalmente sciogliendo, e alcuni problemi che ti hanno tormentata o tormentato a lungo iniziano a diventare piu semplici, piu chiari e piu gestibili. L'energia del Sole non lavora in segreto. Porta tutto alla luce, cosi che tu possa vedere cio che e reale e cosi che anche gli altri possano vedere te.
+
+Il Sole rappresenta anche abbondanza. Questa abbondanza non e solo materiale. Comprende energia, amore, riconoscimento, opportunita e un senso di pienezza nella vita stessa. E come se la carta ti dicesse che puoi goderti cio che e gia arrivato senza vivere sempre nella paura che scompaia subito. La gioia non e superficiale, e il successo non ha bisogno di essere sminuito. Puoi riconoscere apertamente i tuoi risultati, e puoi accogliere la benevolenza del mondo senza tirarti indietro.
+
+Questa carta porta anche un forte significato di condivisione. Attraverso i tuoi risultati personali, puoi offrire ispirazione e gioia anche agli altri. Le persone sono attratte da te perche vedono in te un'energia calda e bella. Tu non stai solo brillando; stai anche illuminando gli altri. Potresti trovarti in una posizione in cui puoi condividere esperienza, risorse, affetto o risultati, trasmettendo le tue qualita e il tuo raccolto alle persone a cui tieni.
+
+Nelle relazioni, Il Sole rappresenta sincerita, felicita, vicinanza ed espressione senza complicazioni inutili. E un tipo di amore che non richiede continui dubbi: piacere vuol dire piacere, vicinanza vuol dire vicinanza, calore vuol dire calore. Puo anche indicare bambini, famiglia, una relazione vissuta alla luce del sole, o un legame che nutre e incoraggia. Il Sole non e un intreccio umido e soffocante. E una compagnia luminosa.
+
+Nel lavoro o nella creativita, Il Sole rappresenta essere visti, essere riconosciuti, rendere pubblici i risultati ed esprimersi con fiducia. Potresti entrare in una fase piu adatta a mostrarti apertamente. In questo momento, non restringerti troppo e non temere che la tua luce sia eccessiva. Una luce sana non ruba il posto a nessuno. Aiuta piu cose a crescere.
+
+Quando Il Sole appare rovesciato, ti chiede di notare un indebolimento della gioia. Potresti essere troppo ansiosa o ansioso, troppo stanca o stanco, troppo piena o pieno di dubbi, o troppo ostacolata o ostacolato dalle condizioni esterne per sentire pienamente la luce. Forse i risultati non sono ancora arrivati del tutto, o forse ne hai gia alcuni e continui comunque a pensare che non bastino. A volte Il Sole rovesciato non significa assenza di luce. Significa paura di entrarci davvero.
+
+Il Sole rovesciato puo anche indicare ottimismo eccessivo, il vedere solo il lato piacevole, o il trasformare la felicita in una recita da mantenere sempre. Il vero Sole non e costringerti a essere allegra o allegro. E la disponibilita ad avvicinarti al calore anche dopo aver riconosciuto che le ombre esistono. Ti ricorda che non devi essere splendente in ogni momento, ma non devi dimenticare di avere ancora la capacita di brillare.
+
+Il messaggio centrale del Sole e questo: gioia, successo e splendore possono essere accolti senza vergogna. Hai attraversato la notte e superato la nebbia, e ora puoi tornare a credere nella luminosita della vita. Lasciati vedere alla luce del sole, e lascia che il tuo calore raggiunga le persone che contano per te.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'judgement',
+    number: 20,
+    name_cn: '审判',
+    name_en: 'Judgement',
+    keywords: ['审视', '觉醒', '清算', '反省', '成果', '召唤', '重生', '阶段总结', '因果回响'],
+    daily_upright: '今天适合回顾过去的选择和成果。你会更清楚自己走到了哪里，也会看见下一步该如何成长。',
+    daily_reversed: '今天要小心逃避反省，或因为害怕面对结果而停在原地。真正阻碍你的，可能不是过去本身，而是不愿承认过去带来的答案。',
+    reading_upright: `审判正位代表自我反省、阶段性总结、成果显现与精神上的觉醒。它说明某个周期正在进入结算时刻，你需要回头审视自己过去的选择、努力、错误和收获。
+
+在牌阵中出现时，审判提醒你：一分耕耘，一分收获。你现在所处的位置并非凭空出现，而是由过去的行动、选择和经验共同推到这里。此时不是为了责备自己，而是为了更清晰、客观地看见现实：你已经完成了什么，还欠缺什么，又需要如何进入下一个阶段。`,
+    reading_reversed: `审判逆位代表逃避反省、害怕结果、自我否定，或迟迟无法回应内心的召唤。你可能已经知道某个阶段应该结束，也隐约知道自己需要改变，但仍然因为恐惧、内疚或不甘心而不愿真正面对。
+
+在牌阵中出现时，审判逆位提醒你不要一直停留在旧错误里。反省不是为了把自己钉在过去，而是为了看清下一步。它也可能表示你还没有准备好接受某个结果，或总是在等待外界替你给出答案。此时，你需要重新听见内心的声音：你到底被什么召唤？你是否愿意从旧身份中醒来？`,
+    detail: `审判是大阿尔卡那的第 20 张牌，象征觉醒、反省、清算、召唤与重生。它不像正义那样强调外部规则和冷静裁决，也不像命运之轮那样强调不可控的转折。审判更像一个周期结束时响起的号角：你必须回头看，必须总结，必须承认自己已经走到某个阶段的尽头。
+
+牌面中，天使吹响号角，人们从棺木中醒来，抬头回应来自上方的召唤。这个画面并不只是“被审判”，更像是一次从沉睡中苏醒。过去被埋下的东西重新浮现，曾经做出的选择开始产生回响，而人也终于有机会看清自己真正的位置。
+
+审判的核心是自我反省。它要求你不再模糊地生活，不再把一切归因于运气、他人或环境，而是认真看见：我做过什么？我逃避过什么？我真正努力过什么？我从哪些失败中学到了东西？又有哪些问题反复出现，说明我仍然没有完成成长？
+
+当审判正位出现时，它通常意味着某个阶段正在进入总结和评估。可能是一段关系走到需要定论的时候，一份工作或学业迎来成果检验，一个长期计划终于看见结果，或你对自己的人生方向产生更清醒的认识。它有一种“一分耕耘，一分收获”的意味：过去的投入不会完全消失，过去的忽视也不会完全没有代价。
+
+但审判并不是为了惩罚人。它真正的意义是让人变得清醒。通过自我反省，你才能更客观地了解自己现在所处的位置：哪些能力已经长出来，哪些旧问题仍然存在，哪些关系值得继续，哪些身份已经不再适合你。审判给你的不是温柔的幻觉，而是一次严肃的照见。
+
+这张牌也代表召唤。你可能会感觉到，内心有某个声音在提醒你：不能再继续像过去一样生活了。它可能召唤你换一个方向，承担一个责任，结束一段拖延，承认一个事实，或开始真正回应自己的人生任务。这个召唤不一定轻松，因为它要求你离开旧的麻木状态。
+
+在关系中，审判可能代表关系进入评估期。两个人过去如何相处，彼此是否真正成长，关系是否还有继续的意义，都会变得更清楚。它也可能代表旧人旧事重新出现，让你重新审视曾经的决定。在事业中，审判可能代表考核、面试、项目复盘、升迁评估、成果结算，或你终于意识到自己真正适合的道路。
+
+当审判逆位出现时，它提醒你留意对结果的逃避。你可能害怕面对过去的错误，也可能不愿承认某些努力并没有得到理想回报。你也可能一直在自我审判，把反省变成苛责，把成长变成惩罚。这样反而会让你困在过去，无法真正进入新的阶段。
+
+审判逆位也可能表示你没有回应内心的召唤。你听见了那个声音，却装作没有听见；你知道自己该改变，却继续拖延；你知道某个周期已经结束，却仍然留在旧身份里。此时，最重要的不是等待别人来判定你的人生，而是自己承认：我已经看见了，我需要行动。
+
+审判的核心信息是：过去不会凭空消失，它会以成果、经验、代价和觉醒的形式回到你面前。真正的反省不是为了惩罚自己，而是为了看清现在的位置，并更清醒地走向下一阶段。号角已经响起，你需要从旧周期中醒来。`,
+    translations: {
+      en: {
+        name: 'Judgement',
+        keywords: ['Review', 'Awakening', 'Reckoning', 'Reflection', 'Results', 'Calling', 'Rebirth', 'Stage Summary', 'Echo of Cause and Effect'],
+        daily_upright:
+          'Today is a good time to review your past choices and results. You can see more clearly where you have arrived and how you need to grow next.',
+        daily_reversed:
+          'Today, watch for avoiding reflection, or staying still because you are afraid to face the outcome. What is really blocking you may not be the past itself, but your refusal to acknowledge what the past has already shown you.',
+        reading_upright: `Judgement upright represents self-reflection, the summary of a life stage, visible results, and spiritual awakening. It suggests that a cycle is entering a moment of reckoning, and you need to look back at your past choices, efforts, mistakes, and gains.
+
+In a spread, Judgement reminds you that effort brings consequence. The place where you stand now did not appear out of nowhere. It was created by your past actions, decisions, and experiences. This is not a time to blame yourself, but a time to see reality more clearly and more objectively: what you have already completed, what is still lacking, and how you need to move into the next stage.`,
+        reading_reversed: `Judgement reversed represents avoiding reflection, fearing the result, self-denial, or being unable to respond to an inner calling. You may already know that a certain phase should end, and you may sense that change is necessary, yet still refuse to face it because of fear, guilt, or reluctance.
+
+In a spread, Judgement reversed asks you not to remain trapped in old mistakes. Reflection is not for nailing yourself to the past, but for seeing the next step clearly. It can also mean that you are not yet ready to accept a certain result, or that you keep waiting for the outside world to answer for you. At this moment, you need to hear the inner voice again: what is calling you, and are you willing to wake up from the old identity?`,
+        detail: `Judgement is card 20 of the Major Arcana. It symbolizes awakening, reflection, reckoning, calling, and rebirth. It is not like Justice, which emphasizes external rules and calm verdicts, and it is not like the Wheel of Fortune, which emphasizes uncontrollable turns. Judgement is more like a trumpet sounding at the end of a cycle: you have to look back, you have to take stock, and you have to admit that you have reached the end of a certain phase.
+
+In the image, an angel sounds a trumpet while people rise from their coffins and lift their heads toward a call from above. This scene is not only about being judged. It is more like waking from sleep. What was buried in the past begins to rise again, choices once made begin to echo, and a person finally has a chance to see their true position clearly.
+
+The core of Judgement is self-reflection. It asks you to stop living vaguely, to stop blaming everything on luck, other people, or circumstances, and to honestly ask: what have I done, what have I avoided, where have I truly worked, what have I learned from failure, and which problems keep repeating because growth is still unfinished?
+
+When Judgement appears upright, it usually means a phase is entering summary and evaluation. A relationship may be reaching the point where it needs a conclusion. Work or study may be arriving at a moment when results are tested. A long-term plan may finally be showing its outcome. Or you may be gaining a clearer understanding of your direction in life. There is a strong sense here that effort brings harvest, and neglect also has its cost.
+
+But Judgement is not here to punish. Its real meaning is clarity. Through self-reflection, you can understand more objectively where you stand now: which abilities have grown, which old problems still remain, which relationships deserve continuation, and which identities no longer fit who you are. Judgement does not give you a comforting illusion. It gives you a serious mirror.
+
+This card also represents a calling. You may feel that an inner voice is reminding you that you cannot keep living as before. It may call you to change direction, take responsibility, end a long delay, admit a fact, or finally answer the deeper task of your life. This calling is not always easy, because it asks you to leave behind the numbness of the old state.
+
+In relationships, Judgement can represent a period of evaluation. How two people have treated each other, whether growth has actually happened, and whether the relationship still has meaning can all become clearer. It can also represent old people or old events returning so that you can review past choices. In work, Judgement can point to review, interviews, project retrospectives, promotion evaluation, or the settling of results. It can also indicate that you are finally recognizing the path that truly suits you.
+
+When Judgement appears reversed, it asks you to notice avoidance of outcomes. You may be afraid to face past mistakes, or unwilling to admit that certain efforts did not lead to the result you wanted. You may also be judging yourself so harshly that reflection turns into punishment and growth turns into self-condemnation. That only traps you in the past and prevents you from entering a new stage.
+
+Judgement reversed can also mean that you are not responding to the inner call. You hear the voice but pretend not to hear it. You know you need to change, yet you keep delaying. You know a cycle has ended, but you still remain inside the old identity. In such a moment, the important thing is not waiting for someone else to judge your life, but admitting it yourself: I have seen it, and I need to act.
+
+The core message of Judgement is this: the past does not vanish for free. It returns in the form of results, experience, cost, and awakening. True reflection is not about punishing yourself. It is about understanding where you stand now and walking more consciously into the next stage. The trumpet has already sounded. You need to wake up from the old cycle.`,
+      },
+      it: {
+        name: 'Il Giudizio',
+        keywords: ['Esame', 'Risveglio', 'Resa dei conti', 'Riflessione', 'Risultati', 'Chiamata', 'Rinascita', 'Bilancio di fase', 'Eco di causa ed effetto'],
+        daily_upright: `Oggi e un buon momento per ripensare alle scelte e ai risultati del passato. Vedrai con piu chiarezza dove sei arrivata o arrivato, e capirai meglio come crescere nel passo successivo.`,
+        daily_reversed: `Oggi fai attenzione all'evitare la riflessione, o al restare ferma o fermo per paura di affrontare il risultato. Cio che ti blocca davvero potrebbe non essere il passato in se, ma il rifiuto di riconoscere cio che il passato ti ha gia mostrato.`,
+        reading_upright: `Il Giudizio diritto rappresenta autoriflessione, bilancio di una fase, risultati che emergono e risveglio spirituale. Indica che un ciclo sta entrando in un momento di resa dei conti, e che hai bisogno di guardare indietro alle tue scelte, ai tuoi sforzi, ai tuoi errori e ai tuoi guadagni.
+
+In una stesa, Il Giudizio ti ricorda che ogni semina porta un raccolto. Il punto in cui ti trovi ora non e apparso dal nulla. E stato costruito dalle tue azioni, decisioni ed esperienze passate. Questo non e un momento per accusarti, ma per vedere la realta con piu chiarezza e piu obiettivita: che cosa hai gia completato, che cosa manca ancora, e come devi entrare nella fase successiva.`,
+        reading_reversed: `Il Giudizio rovesciato rappresenta fuga dalla riflessione, paura del risultato, negazione di se, o incapacita di rispondere a una chiamata interiore. Potresti gia sapere che una certa fase dovrebbe finire, e potresti intuire che il cambiamento e necessario, ma continuare a non affrontarlo davvero per paura, senso di colpa o riluttanza.
+
+In una stesa, Il Giudizio rovesciato ti chiede di non restare bloccata o bloccato negli errori del passato. Riflettere non significa inchiodarsi al passato, ma vedere con chiarezza il passo successivo. Puo anche indicare che non sei ancora pronta o pronto ad accettare un certo risultato, o che continui ad aspettare che il mondo esterno risponda al posto tuo. In questo momento hai bisogno di ascoltare di nuovo la voce interiore: che cosa ti sta chiamando, e sei disposta o disposto a risvegliarti dalla vecchia identita?`,
+        detail: `Il Giudizio e la carta numero 20 degli Arcani Maggiori. Simboleggia risveglio, riflessione, resa dei conti, chiamata e rinascita. Non e come la Giustizia, che sottolinea le regole esterne e il verdetto calmo, e non e come la Ruota della Fortuna, che sottolinea le svolte incontrollabili. Il Giudizio somiglia piuttosto a una tromba che risuona alla fine di un ciclo: devi voltarti indietro, devi fare il bilancio, e devi ammettere di essere arrivata o arrivato alla fine di una certa fase.
+
+Nell'immagine, un angelo suona la tromba mentre le persone si alzano dai sepolcri e sollevano il volto verso la chiamata che viene dall'alto. Questa scena non parla soltanto di essere giudicati. E piuttosto un risveglio da un lungo sonno. Cio che era stato sepolto nel passato torna a emergere, le scelte fatte in altri momenti iniziano a produrre eco, e una persona ha finalmente l'occasione di vedere con chiarezza la propria posizione reale.
+
+Il nucleo del Giudizio e l'autoriflessione. Ti chiede di smettere di vivere in modo vago, di smettere di attribuire tutto alla fortuna, agli altri o alle circostanze, e di domandarti con sincerita: che cosa ho fatto, che cosa ho evitato, dove ho davvero messo impegno, che cosa ho imparato dai fallimenti, e quali problemi continuano a tornare perche la crescita non e ancora stata completata?
+
+Quando Il Giudizio appare diritto, di solito significa che una fase sta entrando nel momento del riepilogo e della valutazione. Una relazione puo essere arrivata al punto in cui serve una conclusione. Il lavoro o lo studio possono entrare in una fase di verifica dei risultati. Un progetto di lungo periodo puo finalmente mostrare il proprio esito. Oppure potresti ottenere una comprensione piu limpida della tua direzione di vita. In questa carta c'e una forte idea: a ogni sforzo corrisponde un raccolto, e anche la trascuratezza ha un costo.
+
+Ma Il Giudizio non arriva per punire. Il suo vero significato e la lucidita. Attraverso l'autoriflessione puoi capire con piu obiettivita dove ti trovi adesso: quali capacita sono cresciute, quali vecchi problemi restano, quali relazioni meritano di continuare, e quali identita non ti appartengono piu. Il Giudizio non ti offre un'illusione consolante. Ti offre uno specchio serio.
+
+Questa carta rappresenta anche una chiamata. Potresti sentire che una voce interiore ti ricorda che non puoi piu continuare a vivere come prima. Potrebbe chiamarti a cambiare direzione, ad assumerti una responsabilita, a concludere un rinvio, ad ammettere un fatto, o a rispondere finalmente al compito piu profondo della tua vita. Questa chiamata non e sempre facile, perche ti chiede di lasciare lo stato di torpore del passato.
+
+Nelle relazioni, Il Giudizio puo rappresentare un periodo di valutazione. Diventa piu chiaro come due persone si sono trattate, se c'e stata vera crescita, e se il legame ha ancora significato. Puo anche indicare il ritorno di persone o eventi del passato, cosi da permetterti di rivedere vecchie decisioni. Nel lavoro, Il Giudizio puo indicare verifiche, colloqui, revisioni di progetto, valutazioni per avanzamenti, o il momento in cui i risultati vengono messi sul tavolo. Puo anche indicare che stai finalmente riconoscendo il cammino che ti si addice davvero.
+
+Quando Il Giudizio appare rovesciato, ti invita a notare la fuga dalle conseguenze. Potresti avere paura di guardare in faccia gli errori del passato, o non voler ammettere che certi sforzi non hanno portato al risultato desiderato. Potresti anche stare giudicando te stessa o te stesso con troppa durezza, trasformando la riflessione in castigo e la crescita in condanna. Questo ti intrappola nel passato e ti impedisce di entrare veramente in una fase nuova.
+
+Il Giudizio rovesciato puo anche significare che non stai rispondendo alla chiamata interiore. Senti la voce, ma fai finta di non sentirla. Sai che devi cambiare, ma continui a rimandare. Sai che un ciclo e finito, ma resti comunque dentro la vecchia identita. In un momento simile, la cosa importante non e aspettare che siano altri a giudicare la tua vita, ma ammetterlo tu stessa o tu stesso: l'ho visto, e devo agire.
+
+Il messaggio centrale del Giudizio e questo: il passato non sparisce senza lasciare traccia. Ritorna sotto forma di risultati, esperienza, costo e risveglio. La vera riflessione non serve a punirti, ma a capire dove ti trovi adesso e ad avanzare con piu coscienza verso la fase successiva. La tromba ha gia suonato. Devi svegliarti dal vecchio ciclo.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'the-world',
+    number: 21,
+    name_cn: '世界',
+    name_en: 'The World',
+    keywords: ['完成', '圆满', '整合', '抵达', '成就', '毕业', '闭环', '新阶段', '广阔世界'],
+    daily_upright: '今天适合确认自己的成果。某个阶段正在走向圆满，你可以为已经完成的部分感到骄傲，也准备好进入更广阔的世界。',
+    daily_reversed: '今天要小心临门一脚的停滞，或明明已经接近完成，却仍然不敢真正收尾。别让未完成感困住你，先把这一阶段好好结束。',
+    reading_upright: `世界正位代表完成、圆满、整合与阶段性的成功。它说明一段旅程正在抵达终点，过去的努力、经验、失败和成长开始被整合成一个完整的结果。
+
+在牌阵中出现时，世界提醒你：你已经走过了某个重要周期，不再是刚出发时的自己。它可能象征毕业、结项、旅行、搬迁、作品完成、关系进入稳定阶段，或人生进入更成熟、更开阔的位置。世界不是简单的结束，而是完成之后的打开：当一个圆闭合，另一个更大的世界也会向你展开。`,
+    reading_reversed: `世界逆位代表未完成、停滞、临门一脚、无法收尾，或虽然已经经历很多，却还没有真正完成整合。你可能接近成功，却在最后一步犹豫；也可能某个周期迟迟无法结束，让你无法顺利进入新的阶段。
+
+在牌阵中出现时，世界逆位提醒你检查哪里还没有闭环。是否还有未完成的任务、未说出口的话、未整理的经验，或某种不愿承认的结束？它并不一定表示失败，而是说明你还需要完成最后的整理。真正的圆满不是事情看起来结束了，而是你内心也承认：这一章可以翻过去了。`,
+    detail: `世界是大阿尔卡那的第 21 张牌，也是大阿尔卡那旅程的最后一张牌。它象征完成、圆满、整合、抵达与新阶段的开启。从愚人的出发到世界的完成，这是一整个生命旅程的闭环：一个人经历天真、行动、学习、关系、考验、崩塌、希望、迷雾、光明与审判之后，终于来到一个更完整的位置。
+
+牌面中的人物位于花环之中，像是在一个圆形的门内舞动。花环象征完成的周期，也像一扇通往新世界的门。四角常出现象征四元素或四福音兽的形象，代表不同力量被整合到一个稳定的整体之中。世界牌的重点不是某一方面的成功，而是生命各个部分终于形成一种更完整的秩序。
+
+当世界正位出现时，它通常意味着某个阶段已经完成。你可能终于抵达了一个长期目标：完成学业、结束项目、拿到结果、完成作品、走出旧关系、实现迁移，或在精神上完成一次重要成长。它不是一夜之间的好运，而是漫长过程之后的收束。那些曾经混乱、分散、痛苦、迟疑的经验，终于开始拼成一幅完整的图。
+
+世界牌也代表成就感。它允许你承认自己走了很远，也允许你为自己的努力感到骄傲。你不必把一切都说成侥幸，也不必因为未来还有新的难题，就否定此刻的完成。世界提醒你：阶段性的圆满是值得被庆祝的。一个周期闭合，本身就是很大的事情。
+
+这张牌也有“进入广阔世界”的含义。它可能与旅行、跨地域发展、国际交流、公开展示、作品发布、毕业后的新生活，或从小环境走向大环境有关。世界不是让你停在终点，而是告诉你：你已经完成了这一关，所以可以去到更大的地图。它像游戏里通关后的新周目，也像一扇门打开之后，远处突然显现出更辽阔的道路。
+
+在关系中，世界可能代表关系进入成熟、稳定、完整的阶段。它不是单纯的激情，而是一种经历过考验后仍然能够形成整体的状态。两个人可能终于达成理解，也可能某段关系已经完整地完成了它的使命，无论继续还是告别，都不再是混乱的悬而未决。
+
+在事业和创作中，世界代表完成、发表、验收、成果落地与被更大范围看见。它适合项目收尾、作品上线、考试结束、履历阶段完成，或某个努力终于被放到现实世界中接受回应。它是一张很适合“完成作品”的牌，因为它强调从内部孕育到外部呈现的完整过程。
+
+当世界逆位出现时，它提醒你留意未完成感。你可能已经走了很远，却因为最后一步没有完成，而迟迟无法真正松一口气。也许是项目还差一个收尾，关系还差一个明确答案，内心还差一次真正的告别，或者你明明已经成长了，却还在用旧身份看待自己。
+
+世界逆位也可能表示整合尚未完成。你经历了很多事情，但还没有把它们变成经验和智慧。过去像一堆散落的碎片，虽然已经发生，却还没有被你真正理解。此时需要的不是急着开始下一段，而是回头整理：我从这一阶段学到了什么？我完成了什么？我可以带着什么离开？又有什么应该留在原地？
+
+世界的核心信息是：旅程终会抵达，经验终会闭环。真正的圆满不是没有遗憾，而是你终于能够看见，过去的一切如何把你带到现在。一个世界完成了，而你也因此拥有资格，走向下一个更大的世界。`,
+    translations: {
+      en: {
+        name: 'The World',
+        keywords: ['Completion', 'Wholeness', 'Integration', 'Arrival', 'Achievement', 'Graduation', 'Closure', 'New Stage', 'Wider World'],
+        daily_upright:
+          'Today is a good time to acknowledge your results. A certain stage is moving toward completion. You can feel proud of what has already been finished, and you can also prepare to enter a wider world.',
+        daily_reversed:
+          'Today, watch for stagnation at the final step, or for being close to completion yet still not daring to truly finish. Do not let the feeling of incompleteness trap you. Close this phase properly first.',
+        reading_upright: `The World upright represents completion, fulfillment, integration, and stage-based success. It suggests that a journey is reaching its destination, and that past effort, experience, failure, and growth are beginning to gather into a complete result.
+
+In a spread, The World reminds you that you have already moved through an important cycle and are no longer the person you were at the beginning. It can symbolize graduation, closing a project, travel, relocation, the completion of a work, a relationship entering a stable phase, or life itself opening into a more mature and spacious position. The World is not merely an ending. It is the opening that comes after completion: when one circle closes, a larger world begins to unfold before you.`,
+        reading_reversed: `The World reversed represents incompletion, stagnation, being one step away, being unable to finish, or having gone through a great deal without truly integrating it yet. You may be close to success but hesitate at the final step. Or a cycle may be refusing to close, keeping you from entering the next stage smoothly.
+
+In a spread, The World reversed asks you to examine where the loop has not yet closed. Are there tasks left unfinished, words left unsaid, lessons left unorganized, or some ending you still refuse to acknowledge? This does not necessarily mean failure. It means the final layer of completion is still needed. True fulfillment is not only that things look finished from the outside, but that you also admit inwardly that this chapter can be turned.`,
+        detail: `The World is card 21 of the Major Arcana, and it is also the final card of the Major Arcana journey. It symbolizes completion, fulfillment, integration, arrival, and the opening of a new stage. From the departure of The Fool to the completion of The World, this is the closing of an entire life cycle: a person passes through innocence, action, learning, relationship, trial, collapse, hope, fog, light, and judgement, and finally arrives at a more complete position.
+
+The figure in the card stands or dances within a wreath, as if inside a circular gate. The wreath symbolizes a completed cycle, and it also resembles a doorway into a new world. At the four corners there are often figures representing the four elements or the four living beings, showing that different forces have been integrated into one stable whole. The focus of The World is not success in only one area, but the way different parts of life finally form a more complete order.
+
+When The World appears upright, it usually means a phase has been completed. You may finally have reached a long-term goal: finishing your studies, ending a project, receiving a result, completing a work, leaving an old relationship behind, moving elsewhere, or completing an important inner growth process. This is not sudden luck. It is the closing movement after a long journey. Experiences that once felt chaotic, scattered, painful, or uncertain are finally beginning to assemble into a whole picture.
+
+The World also represents a sense of accomplishment. It allows you to admit how far you have come, and it allows you to feel proud of your effort. You do not need to reduce everything to luck, and you do not need to deny this moment of completion simply because new difficulties will still come in the future. The World reminds you that stage-based fulfillment deserves celebration. The closing of a cycle is already something substantial.
+
+This card also carries the meaning of entering a wider world. It may relate to travel, working across regions, international exchange, public display, releasing a work, life after graduation, or stepping from a small environment into a bigger one. The World does not tell you to stay at the finish line. It tells you that you have cleared this level, and therefore you can move into a larger map. It is like starting a new round after finishing a game, or like a door opening and suddenly revealing a wider road in the distance.
+
+In relationships, The World can represent a mature, stable, and complete phase. It is not just passion. It is a state that can hold together after being tested. Two people may finally reach understanding, or a relationship may have fully completed its purpose. Whether it continues or ends, it is no longer a suspended and chaotic question.
+
+In work and creativity, The World points to completion, publication, acceptance, results landing in reality, and being seen on a wider scale. It suits project wrap-up, a work going live, the end of an exam period, a phase of your resume being completed, or an effort finally being placed into the real world for response. It is especially fitting for finishing a work, because it emphasizes the complete process from inner gestation to outer presentation.
+
+When The World appears reversed, it asks you to notice the feeling of incompletion. You may already have come very far, but because the final step has not been taken, you still cannot fully exhale. A project may still need its final close, a relationship may still need a clear answer, your heart may still need a real farewell, or you may already have grown and still be looking at yourself through an old identity.
+
+The World reversed can also indicate that integration is not yet finished. You have experienced many things, but they have not yet become wisdom and understood experience. The past may feel like scattered fragments that happened but were never fully processed. What is needed now is not a rush into the next chapter, but a return to gather what this one has taught you: what did I complete, what can I carry forward, and what should remain behind?
+
+The core message of The World is this: journeys do reach their destination, and experience does close into a whole. True fulfillment is not the absence of regret. It is the ability to see how everything in the past brought you here. One world has been completed, and that completion gives you the right to step into a larger one.`,
+      },
+      it: {
+        name: 'Il Mondo',
+        keywords: ['Compimento', 'Pienezza', 'Integrazione', 'Arrivo', 'Realizzazione', 'Diploma', 'Chiusura del ciclo', 'Nuova fase', 'Mondo piu ampio'],
+        daily_upright:
+          'Oggi e un buon momento per riconoscere i tuoi risultati. Una certa fase si sta avvicinando al compimento. Puoi essere orgogliosa o orgoglioso di cio che hai gia concluso, e allo stesso tempo prepararti a entrare in un mondo piu ampio.',
+        daily_reversed:
+          `Oggi fai attenzione a un blocco proprio all'ultimo passo, o al fatto di essere vicina o vicino alla conclusione senza avere il coraggio di chiudere davvero. Non lasciare che il senso di incompiuto ti trattenga. Concludi bene questa fase prima di tutto.`,
+        reading_upright: `Il Mondo diritto rappresenta compimento, pienezza, integrazione e successo di fase. Indica che un viaggio sta arrivando alla sua destinazione e che sforzi, esperienze, fallimenti e crescita del passato stanno iniziando a raccogliersi in un risultato completo.
+
+In una stesa, Il Mondo ti ricorda che hai gia attraversato un ciclo importante e che non sei piu la persona che eri all'inizio. Puo simboleggiare un diploma, la chiusura di un progetto, un viaggio, un trasferimento, il completamento di un'opera, una relazione che entra in una fase stabile, o la vita che si apre verso una posizione piu matura e piu ampia. Il Mondo non e soltanto una fine. E l'apertura che arriva dopo il completamento: quando un cerchio si chiude, un mondo piu grande inizia ad aprirsi davanti a te.`,
+        reading_reversed: `Il Mondo rovesciato rappresenta incompiutezza, stasi, l'essere a un passo dal traguardo, l'incapacita di chiudere, oppure l'aver vissuto molto senza aver ancora davvero integrato tutto. Potresti essere vicina o vicino al successo, ma esitare proprio nell'ultimo passo. Oppure un ciclo potrebbe non riuscire a chiudersi, impedendoti di entrare con fluidita nella fase successiva.
+
+In una stesa, Il Mondo rovesciato ti chiede di osservare dove il cerchio non si e ancora chiuso. Ci sono compiti lasciati a meta, parole non dette, esperienze non riordinate, o una fine che ancora non vuoi riconoscere? Questo non significa necessariamente fallimento. Significa che manca ancora l'ultimo strato del compimento. La vera pienezza non e solo il fatto che dall'esterno tutto sembri finito, ma anche il fatto che dentro di te tu possa ammettere che questo capitolo puo essere girato.`,
+        detail: `Il Mondo e la carta numero 21 degli Arcani Maggiori ed e anche l'ultima carta del loro viaggio. Simboleggia compimento, pienezza, integrazione, arrivo e l'apertura di una nuova fase. Dalla partenza del Matto al completamento del Mondo, questo e il cerchio che chiude un intero percorso di vita: una persona attraversa innocenza, azione, apprendimento, relazioni, prove, crollo, speranza, nebbia, luce e giudizio, e arriva infine in una posizione piu completa.
+
+La figura della carta si trova o danza all'interno di una ghirlanda, come se fosse dentro una porta circolare. La ghirlanda simboleggia un ciclo compiuto, ma assomiglia anche a un varco verso un mondo nuovo. Ai quattro angoli compaiono spesso figure che rappresentano i quattro elementi o i quattro esseri viventi, a indicare che forze diverse sono state integrate in un insieme stabile. Il centro del Mondo non e il successo in un solo ambito, ma il fatto che le diverse parti della vita siano finalmente entrate in un ordine piu completo.
+
+Quando Il Mondo appare diritto, di solito significa che una fase e stata completata. Potresti aver finalmente raggiunto un obiettivo di lungo periodo: finire gli studi, chiudere un progetto, ricevere un risultato, completare un'opera, uscire da una vecchia relazione, trasferirti, o portare a termine una crescita interiore importante. Non si tratta di fortuna improvvisa. E il movimento di chiusura dopo un lungo percorso. Esperienze che un tempo sembravano caotiche, disperse, dolorose o incerte iniziano finalmente a comporsi in un'immagine intera.
+
+Il Mondo rappresenta anche il senso di realizzazione. Ti permette di riconoscere quanta strada hai fatto, e ti permette di essere fiera o fiero del tuo impegno. Non hai bisogno di ridurre tutto alla fortuna, e non hai bisogno di negare questo momento di compimento solo perche in futuro ci saranno ancora nuove difficolta. Il Mondo ti ricorda che la pienezza di una fase merita di essere celebrata. La chiusura di un ciclo e gia di per se qualcosa di importante.
+
+Questa carta porta anche il significato di entrare in un mondo piu ampio. Puo avere a che fare con viaggi, sviluppo oltre il proprio territorio, scambi internazionali, esposizione pubblica, pubblicazione di un'opera, nuova vita dopo il diploma, o il passaggio da un ambiente piccolo a uno piu grande. Il Mondo non ti dice di restare alla linea d'arrivo. Ti dice che hai superato questo livello, e proprio per questo puoi entrare in una mappa piu vasta. E come iniziare un nuovo giro dopo aver finito un gioco, o come una porta che si apre rivelando all'improvviso una strada piu ampia in lontananza.
+
+Nelle relazioni, Il Mondo puo rappresentare una fase matura, stabile e completa. Non e solo passione. E uno stato che riesce a reggersi dopo essere stato messo alla prova. Due persone possono arrivare finalmente a una comprensione reciproca, oppure una relazione puo aver completato del tutto il proprio compito. Che continui oppure finisca, non resta piu sospesa nel caos.
+
+Nel lavoro e nella creativita, Il Mondo indica completamento, pubblicazione, approvazione, risultati che arrivano nel mondo reale ed essere visti su una scala piu ampia. E adatto alla chiusura di un progetto, all'uscita di un'opera, alla fine di un periodo di esami, al completamento di una fase del proprio percorso, o a uno sforzo che viene finalmente presentato al mondo reale per ricevere risposta. E una carta molto adatta al completamento di un'opera, perche sottolinea l'intero processo che va dalla gestazione interiore alla presentazione esterna.
+
+Quando Il Mondo appare rovesciato, ti chiede di notare il senso di incompiuto. Potresti aver gia percorso molta strada, ma se l'ultimo passo non viene fatto davvero, non riesci ancora a tirare un respiro pieno. Forse un progetto ha ancora bisogno della chiusura finale, una relazione ha ancora bisogno di una risposta chiara, il cuore ha ancora bisogno di un vero saluto, oppure sei gia cresciuta o cresciuto ma continui a guardarti con un'identita vecchia.
+
+Il Mondo rovesciato puo anche indicare che l'integrazione non e ancora compiuta. Hai vissuto molte cose, ma non le hai ancora trasformate in esperienza compresa e in saggezza. Il passato puo sembrare una serie di frammenti sparsi: cose accadute ma mai davvero elaborate. Cio che serve ora non e correre subito verso il capitolo successivo, ma tornare a raccogliere cio che questa fase ti ha insegnato: che cosa ho completato, che cosa posso portare con me, e che cosa deve restare indietro?
+
+Il messaggio centrale del Mondo e questo: i viaggi arrivano davvero a destinazione, e l'esperienza puo chiudersi in un tutto. La vera pienezza non e l'assenza di rimpianti. E la capacita di vedere come tutto cio che e venuto prima ti abbia condotta o condotto fin qui. Un mondo si e completato, e proprio questo compimento ti da il diritto di entrare in uno piu grande.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.number, card]));
