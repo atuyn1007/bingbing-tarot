@@ -912,17 +912,78 @@ button:disabled {
   backdrop-filter: blur(16px);
 }
 
-.meanings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
+.meanings-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 18px 0 14px;
 }
 
-.meaning-card {
+.meanings-search-icon {
+  position: absolute;
+  left: 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--app-muted);
+}
+
+.meanings-search-input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 18px 0 50px;
+  border-radius: 20px;
+  border: 1px solid rgba(49, 31, 20, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--app-text);
+  font-size: 0.98rem;
+}
+
+.meanings-search-input::placeholder {
+  color: rgba(99, 90, 83, 0.72);
+}
+
+.meanings-filter-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.meanings-filter-row::-webkit-scrollbar {
+  display: none;
+}
+
+.meanings-filter-chip {
+  flex: 0 0 auto;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(106, 95, 87, 0.12);
+  background: rgba(255, 252, 247, 0.92);
+  color: var(--app-muted);
+  font-size: 0.92rem;
+}
+
+.meanings-filter-chip.is-active {
+  background: rgba(83, 65, 54, 0.12);
+  color: #4b3b33;
+  border-color: rgba(83, 65, 54, 0.12);
+}
+
+.meanings-index-grid {
   display: grid;
-  gap: 8px;
-  min-height: 156px;
-  padding: 20px;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.meaning-index-item {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  padding: 14px 16px;
   text-align: left;
   border: 1px solid var(--app-border);
   border-radius: 24px;
@@ -931,58 +992,85 @@ button:disabled {
   box-shadow: 0 12px 28px rgba(118, 109, 102, 0.12);
 }
 
-.meaning-card-artwork-shell {
-  aspect-ratio: 3 / 5;
+.meaning-index-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--app-shadow-hover);
+}
+
+.meaning-index-thumb-shell {
+  width: 56px;
+  height: 56px;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(241, 234, 225, 0.95);
   border: 1px solid rgba(106, 95, 87, 0.1);
 }
 
-.meaning-card-artwork {
+.meaning-index-thumb {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.meaning-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--app-shadow-hover);
+.meaning-index-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
 }
 
-.meaning-card-head {
-  display: flex;
+.meaning-index-name-cn {
+  font-size: 1.05rem;
+}
+
+.meaning-index-name-en,
+.meaning-index-meta {
+  color: var(--app-muted);
+  font-size: 0.9rem;
+}
+
+.meaning-index-name-cn,
+.meaning-index-name-en,
+.meaning-index-meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meaning-index-trailing {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.meaning-card-number {
-  font-size: 0.95rem;
+  gap: 8px;
   color: var(--app-muted);
 }
 
-.meaning-card-status {
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: rgba(231, 221, 209, 0.88);
-  color: var(--app-muted);
-  font-size: 0.78rem;
+.meaning-index-open {
+  font-size: 0.82rem;
 }
 
-.meaning-card-status.is-ready {
-  background: rgba(83, 65, 54, 0.12);
-  color: #4b3b33;
+.meaning-index-arrow {
+  width: 18px;
+  height: 18px;
 }
 
-.meaning-card-name-cn {
-  font-size: 1.35rem;
+.meanings-empty-card {
+  padding: 24px 28px;
+  border: 1px solid var(--app-border);
+  border-radius: 30px;
+  background: var(--app-panel);
+  box-shadow: var(--app-card-shadow);
 }
 
-.meaning-card-name-en {
-  color: var(--app-muted);
-  font-size: 0.95rem;
+@media (min-width: 900px) {
+  .meanings-index-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1240px) {
+  .meanings-index-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .meaning-detail-name {
@@ -999,6 +1087,7 @@ button:disabled {
 .meaning-detail-artwork-shell {
   width: min(100%, 320px);
   aspect-ratio: 3 / 5;
+  max-height: min(70vh, 560px);
   overflow: hidden;
   border-radius: 24px;
   border: 1px solid rgba(106, 95, 87, 0.12);
@@ -1066,6 +1155,19 @@ button:disabled {
 
 .meaning-detail-empty {
   color: var(--app-muted);
+}
+
+.back-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(106, 95, 87, 0.12);
+  background: rgba(255, 252, 247, 0.92);
+  color: var(--app-text);
+  box-shadow: 0 12px 28px rgba(118, 109, 102, 0.08);
 }
 
 .question-title {
@@ -2038,6 +2140,33 @@ button:disabled {
   .feature-copy,
   .daily-result-note {
     font-size: 0.98rem;
+  }
+
+  .meanings-search-input {
+    min-height: 50px;
+    font-size: 0.95rem;
+  }
+
+  .meaning-index-item {
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    min-height: 82px;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .meaning-index-thumb-shell {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .meaning-index-open {
+    display: none;
+  }
+
+  .meaning-detail-artwork-shell {
+    width: min(100%, 280px);
+    max-height: min(58vh, 420px);
   }
 
   .reading-cards-row {

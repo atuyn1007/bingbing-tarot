@@ -15,8 +15,9 @@ function CardMeaningDetailPage({ theme, t, language, card, onBack }) {
       <div className="orb orb-right" />
 
       <header className="page-header">
-        <button type="button" onClick={onBack} className="icon-button">
+        <button type="button" onClick={onBack} className="back-link-button">
           <ArrowLeft className="w-5 h-5" />
+          <span>{t('meanings.backToList')}</span>
         </button>
         <div className="page-header-copy">
           <p className="eyebrow">{t('meanings.detailEyebrow')}</p>

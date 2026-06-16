@@ -420,6 +420,8 @@ function App() {
   const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
   const [selectedHumanReadingId, setSelectedHumanReadingId] = useState(null);
   const [selectedMeaningCardId, setSelectedMeaningCardId] = useState(null);
+  const [meaningSearchTerm, setMeaningSearchTerm] = useState('');
+  const [meaningCategoryFilter, setMeaningCategoryFilter] = useState('all');
   const [showRedeemCodeModal, setShowRedeemCodeModal] = useState(false);
   const [redeemCodeValue, setRedeemCodeValue] = useState('');
   const [isRedeemingCode, setIsRedeemingCode] = useState(false);
@@ -1600,6 +1602,10 @@ function App() {
         theme={theme}
         t={t}
         language={language}
+        searchTerm={meaningSearchTerm}
+        onSearchTermChange={setMeaningSearchTerm}
+        categoryFilter={meaningCategoryFilter}
+        onCategoryFilterChange={setMeaningCategoryFilter}
         onBack={goHome}
         onOpenCard={(cardId) => {
           setSelectedMeaningCardId(cardId);
