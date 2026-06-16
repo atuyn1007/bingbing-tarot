@@ -74,7 +74,8 @@ const zhCN = {
     backToLogin: '返回登录',
     forgotPasswordEyebrow: 'Password Reset',
     forgotPasswordTitle: '找回密码',
-    forgotPasswordCopy: '输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。收到邮件后点击链接，会回到本站直接设置新密码。',
+    forgotPasswordCopy:
+      '输入注册时使用的邮箱，我们会把重置密码链接发到你的邮箱。收到邮件后点击链接，会回到本站直接设置新密码。',
     sendResetEmail: '发送重置邮件',
   },
   home: {
@@ -92,6 +93,14 @@ const zhCN = {
     freeReadingCopy: '先选牌阵，再进入提问和抽牌流程。',
     humanReadingTitle: '链接饼饼为你解读',
     humanReadingCopy: '消耗 10 饼币。',
+    redeemEyebrow: '兑换码',
+    redeemTitle: '领取奖励饼币',
+    redeemCopy: '输入兑换码后，奖励饼币会立刻发到你的账户里。',
+    redeemPlaceholder: '请输入兑换码',
+    redeemAction: '立即兑换',
+    cardMeaningsEyebrow: '牌意查询',
+    cardMeaningsTitle: '查看 78 张牌意',
+    cardMeaningsCopy: '先浏览整副牌组，再进入独立详情页查看完整牌意。',
     logout: '退出',
   },
   daily: {
@@ -140,7 +149,8 @@ const zhCN = {
       name: '圣三角牌阵',
       shortName: '圣三角',
       description: '适合看见自己以为的状况、真实的情况，以及当下最需要的建议。',
-      summary: '圣三角会把表层判断、真实状态和建议拆开来看，适合处理“我到底有没有看清局面”这类问题。',
+      summary:
+        '圣三角会把表层判断、真实状态和建议拆开来看，适合处理“我到底有没有看清局面”这类问题。',
       positions: [
         { title: '我以为的状况', subtitle: '表层认知' },
         { title: '真实的状况', subtitle: '现实落点' },
@@ -177,12 +187,16 @@ const zhCN = {
     readingLead: '本次使用：{spread}',
     cardsAre: '你抽到的牌是：{cards}。',
     positionLine: '{label}：{card}：{reading}',
-    triangleClosing: '围绕“{question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议推进，会更容易看见清晰的出口。',
-    choiceClosing: '围绕“{question}”来看，这组牌会把两个选项的走向和你的真实状态并排摊开。别急着选一个最响亮的答案，先看哪个方向更贴近你真正能长期承受的节奏。',
-    generalClosing: '围绕“{question}”来看，这组牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。',
+    triangleClosing:
+      '围绕“{question}”来看，这组牌更像是在帮你分辨表象与真实之间的落差。先接受现状的复杂，再按建议推进，会更容易看见清晰的出口。',
+    choiceClosing:
+      '围绕“{question}”来看，这组牌会把两个选项的走向和你的真实状态并排摊开。别急着选一个最响亮的答案，先看哪个方向更贴近你真正能长期承受的节奏。',
+    generalClosing:
+      '围绕“{question}”来看，这组牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。',
     humanFirst: '你抽到的三张牌是：{cards}。',
     humanCardLine: '第{index}张牌 {card}：{reading}',
-    humanClosing: '围绕“{question}”来看，这三张牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。',
+    humanClosing:
+      '围绕“{question}”来看，这三张牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。',
   },
   chat: {
     title: '与饼饼对话',
@@ -217,7 +231,7 @@ const zhCN = {
     followUpAskHint: '最多有一次追加提问的机会哦，追加提问不额外花费饼币。',
     followUpAskPlaceholder: '如果还想追问一次，可以在这里补充。',
     feedbackPrompt: '如果没有追加提问，请对本次解读打分：',
-    rejectAndRefund: '驳回并退回 10 饼币',
+    rejectAndRefund: '驳回并退还 10 饼币',
     sendInitialReply: '发送初次回复',
     sendFollowUpReply: '发送二次回复并结案',
     satisfied: '♥ 满意',
@@ -278,7 +292,7 @@ const zhCN = {
     confirmSendRequest: '确认要把这条抽牌记录发送给饼饼大人吗？发送后会扣除 10 饼币。',
     requestSent: '已发送，等待饼饼解读。',
     requestSendFailed: '发送失败，请稍后再试。',
-    adminRejected: '已驳回，并已退回 10 饼币。',
+    adminRejected: '已驳回，并已退还 10 饼币。',
     adminRejectFailed: '驳回失败，请稍后再试。',
     adminReplySent: '已发送回复。',
     adminReplyFailed: '回复失败，请稍后再试。',
@@ -291,6 +305,9 @@ const zhCN = {
     subsidyClaimed: '这份测试补贴已经领取过了。',
     subsidyReceived: '99 饼币已经到账，请查收。',
     subsidyFailed: '领取失败，请稍后再试。',
+    redeemMissing: '请先输入兑换码。',
+    redeemSuccess: '{coins} 饼币已经到账，请查收。',
+    redeemFailed: '兑换失败，请稍后再试。',
     registerMissing: '请输入邮箱、昵称和密码',
     registerVerifyMailSent: '注册成功，请去邮箱验证登录。验证完成后回到这里，用邮箱和密码登录。',
     registerSuccess: '注册成功，请登录。',
@@ -300,61 +317,48 @@ const zhCN = {
     loginMissing: '请输入邮箱和密码',
     loginUserMissing: '登录成功，但暂时没有拿到用户信息。',
     loginFailed: '登录失败',
-    forgotMissingEmail: '请输入注册时使用的邮箱',
+    forgotMissingEmail: '请输入注册时使用的邮箱。',
     forgotSent: '重置密码邮件已经发送。请打开邮箱里的重置邮件，点击其中的链接后会回到本站设置新密码；如果没看到，请检查垃圾邮件。',
     forgotFailed: '密码重置邮件发送失败，请稍后再试。',
-    resetMissingPassword: '请输入新的密码',
-    resetPasswordShort: '新密码至少需要 6 位',
+    resetMissingPassword: '请输入新的密码。',
+    resetPasswordShort: '新密码至少需要 6 位。',
     resetSuccess: '密码已经更新，请直接用邮箱和新密码登录。',
     resetFailed: '密码更新失败，请重新打开邮件里的链接再试。',
     profileMissing: '当前账号资料不存在，请重新登录。',
     dailyFailed: '今日运势获取失败，请稍后再试。',
   },
-} as const;
-
-zhCN.home.redeemEyebrow = '兑换码';
-zhCN.home.redeemTitle = '领取奖励饼币';
-zhCN.home.redeemCopy = '输入兑换码后，奖励饼币会立刻发到你的账户里。';
-zhCN.home.redeemPlaceholder = '请输入兑换码';
-zhCN.home.redeemAction = '立即兑换';
-zhCN.alerts.redeemMissing = '请先输入兑换码。';
-zhCN.alerts.redeemSuccess = '{coins} 饼币已经到账，请查收。';
-zhCN.alerts.redeemFailed = '兑换失败，请稍后再试。';
-
-zhCN.home.cardMeaningsEyebrow = '牌意查询';
-zhCN.home.cardMeaningsTitle = '查看 78 张牌意';
-zhCN.home.cardMeaningsCopy = '先浏览整套牌面，现在愚人牌已开放完整牌意长文。';
-zhCN.meanings = {
-  eyebrow: '牌意查询',
-  pageTitle: '牌意查询',
-  heroTitle: '塔罗牌图鉴索引',
-  heroCopy: '通过紧凑索引浏览整副牌组。点击任意一张牌后，再进入独立详情页查看完整牌意。',
-  searchLabel: '搜索牌名',
-  searchPlaceholder: '搜索中文、英文、意大利语或牌组',
-  filterLabel: '按类别筛选',
-  filters: {
-    all: '全部',
-    major: '大阿尔卡纳',
-    wands: '权杖',
-    cups: '圣杯',
-    swords: '宝剑',
-    pentacles: '星币',
+  meanings: {
+    eyebrow: '牌意查询',
+    pageTitle: '牌意查询',
+    heroTitle: '塔罗牌图鉴索引',
+    heroCopy: '通过紧凑索引浏览整副牌组。点击任意一张牌后，再进入独立详情页查看完整牌意。',
+    searchLabel: '搜索牌名',
+    searchPlaceholder: '搜索中文、英文、意大利语或牌组',
+    filterLabel: '按类别筛选',
+    filters: {
+      all: '全部',
+      major: '大阿尔卡纳',
+      wands: '权杖',
+      cups: '圣杯',
+      swords: '宝剑',
+      pentacles: '星币',
+    },
+    gridAriaLabel: '塔罗牌索引列表',
+    openDetail: '进入',
+    emptyEyebrow: '没有结果',
+    noResults: '没有找到符合当前搜索或筛选条件的牌。',
+    readyLabel: '已整理',
+    inProgress: '内容整理中',
+    detailEyebrow: '牌意详情',
+    detailTitle: '塔罗牌详情',
+    backToList: '返回列表',
+    cardLabel: '塔罗牌',
+    numberLabel: '编号',
+    keywordsLabel: '关键词',
+    noKeywords: '暂时还没有关键词。',
+    detailLabel: '牌意详解',
+    missingTitle: '未找到这张牌',
   },
-  gridAriaLabel: '塔罗牌索引列表',
-  openDetail: '进入',
-  emptyEyebrow: '没有结果',
-  noResults: '没有找到符合当前搜索或筛选条件的牌。',
-  readyLabel: '已整理',
-  inProgress: '内容整理中',
-  detailEyebrow: '牌意详情',
-  detailTitle: '塔罗牌详情',
-  backToList: '返回列表',
-  cardLabel: '塔罗牌',
-  numberLabel: '编号',
-  keywordsLabel: '关键词',
-  noKeywords: '暂时还没有关键词。',
-  detailLabel: '牌意详解',
-  missingTitle: '未找到这张牌',
-};
+} as const;
 
 export default zhCN;

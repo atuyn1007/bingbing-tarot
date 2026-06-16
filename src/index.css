@@ -1160,6 +1160,9 @@ button:disabled {
 .back-link-button {
   display: inline-flex;
   align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   gap: 8px;
   min-height: 46px;
   padding: 0 16px;
@@ -1168,6 +1171,10 @@ button:disabled {
   background: rgba(255, 252, 247, 0.92);
   color: var(--app-text);
   box-shadow: 0 12px 28px rgba(118, 109, 102, 0.08);
+}
+
+.back-link-button span {
+  white-space: nowrap;
 }
 
 .question-title {
