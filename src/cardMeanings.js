@@ -2001,6 +2001,200 @@ Il messaggio centrale del Mondo e questo: i viaggi arrivano davvero a destinazio
     },
   }),
   createMeaningCard({
+    id: 'ace-of-wands',
+    number: 1,
+    name_cn: '权杖首牌',
+    name_en: 'Ace of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['新开始', '灵感', '行动力', '创造力', '热情', '机会', '生命力', '火种'],
+    daily_upright:
+      '今天可能出现新的灵感、机会或行动冲动。别轻视这点火苗，它也许会成为你下一段旅程的开始。',
+    daily_reversed:
+      '今天要小心热情受阻，或明明有想法却迟迟没有行动。火种已经出现，但它需要被点燃，而不是被放在原地冷掉。',
+    reading_upright: `权杖首牌正位代表新的开始、灵感降临、行动力苏醒与创造力的火种。它说明某件事正在被点燃，你可能突然有了想做、想试、想表达、想出发的冲动。
+
+在牌阵中出现时，权杖首牌提醒你抓住最初的热情。它不一定表示计划已经成熟，但表示生命力正在回到你身上。此时适合开始新项目、提出新想法、尝试新方向，或把心中一直燃着的小火真正带到现实里。`,
+    reading_reversed: `权杖首牌逆位代表灵感受阻、行动力不足、热情熄灭，或机会没有被真正接住。你可能有想法、有欲望，也感到某种新的可能性正在靠近，但却因为犹豫、拖延、疲惫或外部阻碍而无法开始。
+
+在牌阵中出现时，权杖首牌逆位提醒你看清火焰为什么没有燃起来。是你还没有准备好，还是害怕失败？是现实条件不足，还是你把灵感消耗在反复想象里？此时需要保护最初的热情，同时为它找到一个具体的出口。`,
+    detail: `权杖首牌是权杖牌组的第一张牌，也是火元素最原初的种子。它象征灵感、热情、行动力、创造欲和新机会的出现。它不是已经完成的成果，也不是稳定成熟的计划，而是一股刚刚冒出来的生命力：突然想开始，突然想表达，突然觉得自己还有力气去做点什么。
+
+牌面中，通常有一只手从云中伸出，握着一根发芽的权杖。云中的手像是命运递来的机会，而权杖上的嫩芽说明这份机会带有生长的可能。它还很年轻，还没有变成树，也没有结出果实，但它已经有了向上生长的力量。
+
+当权杖首牌正位出现时，它通常意味着一段新的行动周期正在开启。你可能会被某个想法点燃，也可能遇到一个让你兴奋的人、项目、工作机会、创作方向或生活计划。这张牌带来的不是安静的思考，而是更直接的冲动：去做，去试，去开始，去让事情发生。
+
+权杖首牌也很适合代表创作和事业上的开端。它可能是一篇文章的第一句话，一个项目的初始概念，一次创业的念头，一次面试机会，一次想要改变生活的冲动。它不保证你立刻成功，但它说明你已经拿到了第一根火柴。接下来重要的是，你要不要把它划亮。
+
+这张牌也与身体里的生命力有关。它可能代表热情回归、欲望苏醒、勇气出现，或一个人重新感到“我想活得更有劲一点”。它的能量是向外的、向上的、带着一点野性和冒险感。它让你从停滞里醒来，让你意识到自己还有创造现实的力量。
+
+但权杖首牌也有不稳定的一面。火种很珍贵，也很容易熄灭。如果只停留在兴奋里，不去行动，它会慢慢变成空想；如果太急着燃烧，又可能在一开始就耗尽。它需要被接住，被保护，也需要一点现实层面的安排。
+
+当权杖首牌逆位出现时，它提醒你留意灵感被堵住的状态。你可能很想开始某件事，却总是被拖延、恐惧、自我怀疑或现实压力拦住。也可能是机会已经出现，但你没有真正伸手接住。此时，你需要问自己：这点火为什么没有燃起来？它缺少燃料，还是我不敢让它变大？
+
+权杖首牌的核心信息是：新的火已经出现。不要急着要求它立刻变成完整的事业、关系或成果，先承认它的存在，给它一个开始的动作。很多宏大的旅程，最初都只是心里那一下“我想试试”的发热。`,
+    translations: {
+      en: {
+        name: 'Ace of Wands',
+        keywords: ['new beginning', 'inspiration', 'drive', 'creativity', 'passion', 'opportunity', 'vitality', 'spark'],
+        daily_upright:
+          'A new spark, opportunity, or impulse to act may appear today. Do not dismiss this small flame. It may become the beginning of your next journey.',
+        daily_reversed:
+          'Watch out today for blocked passion or ideas that never become action. The spark is already here, but it needs to be lit instead of left to go cold.',
+        reading_upright: `The Ace of Wands upright represents a new beginning, arriving inspiration, awakening drive, and the spark of creativity. Something is being lit, and you may suddenly feel the urge to act, try, express yourself, or set out.
+
+In a spread, the Ace of Wands asks you to hold on to your first burst of passion. The plan may not be mature yet, but your life force is returning. This is a good time to begin a new project, propose a new idea, test a new direction, or bring a small inner flame into reality.`,
+        reading_reversed: `The Ace of Wands reversed represents blocked inspiration, weak momentum, fading passion, or an opportunity that was never truly taken. You may have ideas and desire, and you may feel a new possibility approaching, but hesitation, delay, fatigue, or outside obstacles are keeping you from starting.
+
+In a spread, the reversed Ace of Wands asks why the fire did not catch. Are you not ready, or are you afraid to fail? Are practical conditions lacking, or have you spent your spark in endless imagining? Protect the first flame, and find a concrete outlet for it.`,
+        detail: `The Ace of Wands is the first card of the Wands suit and the most primal seed of fire. It symbolizes inspiration, passion, drive, creative desire, and the appearance of a new opportunity. It is not a finished result or a stable mature plan. It is a pulse of life just beginning to rise: suddenly wanting to start, speak, create, or move.
+
+In the image, a hand usually reaches out from a cloud holding a budding wand. The hand from the cloud feels like an opportunity offered by fate, while the fresh shoots show that this chance carries the power to grow. It is still young. It has not become a tree or borne fruit, but the force of upward growth is already present.
+
+When the Ace of Wands appears upright, it usually means a new cycle of action is opening. You may be lit up by an idea, or encounter a person, project, job opening, creative path, or life plan that excites you. This card does not bring quiet reflection. It brings a direct impulse: do it, try it, begin it, make it happen.
+
+It is also a strong card for creative and professional beginnings. It may be the first sentence of an article, the initial concept of a project, the thought of starting a business, an interview opportunity, or the urge to change your life. It does not promise instant success, but it tells you that you already have the first match. What matters now is whether you will strike it.
+
+This card is also tied to vitality in the body. It can signal returning passion, awakened desire, renewed courage, or the feeling that you want to live with more force again. Its energy moves outward and upward with a wild and adventurous edge. It wakes you out of stagnation and reminds you that you still have the power to create reality.
+
+Yet the Ace of Wands is also unstable. A spark is precious, and it can die easily. If you stay only in excitement without acting, it becomes fantasy. If you rush to burn too hard, it can consume itself at the start. It must be received, protected, and given some practical structure.
+
+When the Ace of Wands appears reversed, it asks you to notice where inspiration has become blocked. You may want to begin something but keep being stopped by delay, fear, self-doubt, or pressure from reality. Or the opportunity may have appeared without you truly reaching out to take it. Ask yourself why the spark did not catch. Is it lacking fuel, or are you afraid to let it grow?
+
+The core message of the Ace of Wands is simple: a new fire has appeared. Do not demand that it instantly become a whole career, relationship, or result. First acknowledge it, then give it one real beginning. Many great journeys start with nothing more than the heat of I want to try.`,
+      },
+      it: {
+        name: 'Asso di Bastoni',
+        keywords: ['nuovo inizio', 'ispirazione', 'slancio', 'creativita', 'passione', 'opportunita', 'vitalita', 'scintilla'],
+        daily_upright:
+          'Oggi puo comparire una nuova scintilla, un’occasione o un impulso ad agire. Non sottovalutare questa piccola fiamma: potrebbe essere l’inizio del tuo prossimo viaggio.',
+        daily_reversed:
+          'Oggi fai attenzione a una passione bloccata o a idee che non diventano azione. La scintilla c’è gia, ma va accesa invece di lasciarla raffreddare.',
+        reading_upright: `L’Asso di Bastoni diritto rappresenta un nuovo inizio, l’arrivo dell’ispirazione, il risveglio dell’azione e la scintilla della creativita. Qualcosa si sta accendendo e potresti sentire improvvisamente il desiderio di fare, provare, esprimerti o partire.
+
+In una stesa, l’Asso di Bastoni ti ricorda di afferrare il primo slancio. Il piano forse non e ancora maturo, ma la tua forza vitale sta tornando. Questo e un buon momento per iniziare un nuovo progetto, proporre una nuova idea, testare una nuova direzione o portare nel reale una piccola fiamma interiore.`,
+        reading_reversed: `L’Asso di Bastoni rovesciato rappresenta ispirazione bloccata, poca energia d’azione, passione che si spegne oppure un’opportunita non davvero raccolta. Potresti avere idee e desiderio, e sentire che una nuova possibilita si avvicina, ma esitazione, rinvio, stanchezza o ostacoli esterni ti impediscono di iniziare.
+
+In una stesa, l’Asso di Bastoni rovesciato ti chiede di capire perche il fuoco non si e acceso. Non sei pronta o pronto, oppure temi di fallire? Mancano le condizioni pratiche, oppure hai consumato la scintilla nell’immaginazione ripetuta? Proteggi il primo slancio e trovagli un’uscita concreta.`,
+        detail: `L’Asso di Bastoni e la prima carta del seme di Bastoni ed e il seme piu originario dell’elemento fuoco. Simboleggia ispirazione, passione, slancio, desiderio creativo e comparsa di una nuova opportunita. Non e un risultato compiuto, ne un piano stabile e maturo. E una forza vitale che sta appena emergendo: il desiderio improvviso di iniziare, esprimerti, creare o muoverti.
+
+Nell’immagine compare spesso una mano che esce da una nuvola e regge un bastone che germoglia. La mano nella nuvola sembra un’occasione offerta dal destino, mentre i germogli mostrano che questa opportunita ha il potere di crescere. E ancora giovane. Non e diventata un albero e non ha ancora dato frutti, ma la spinta verso l’alto e gia presente.
+
+Quando l’Asso di Bastoni appare diritto, di solito indica l’apertura di un nuovo ciclo d’azione. Potresti essere acceso da un’idea, oppure incontrare una persona, un progetto, un’opportunita di lavoro, una direzione creativa o un piano di vita che ti entusiasma. Questa carta non porta riflessione quieta. Porta un impulso diretto: fallo, provaci, comincia, fai accadere le cose.
+
+E anche una carta molto forte per gli inizi creativi e professionali. Puo essere la prima frase di un testo, il concetto iniziale di un progetto, l’idea di avviare un’attivita, un colloquio, oppure il desiderio di cambiare vita. Non promette successo immediato, ma indica che hai gia il primo fiammifero. Adesso conta se deciderai di accenderlo.
+
+Questa carta e legata anche alla vitalita del corpo. Puo indicare il ritorno della passione, il risveglio del desiderio, il ritorno del coraggio o la sensazione di voler vivere con piu forza. La sua energia va verso l’esterno e verso l’alto, con una sfumatura un po’ selvatica e avventurosa. Ti risveglia dalla stagnazione e ti ricorda che hai ancora il potere di creare realta.
+
+Ma l’Asso di Bastoni e anche instabile. Una scintilla e preziosa, e puo spegnersi facilmente. Se rimani solo nell’entusiasmo senza agire, diventa fantasia. Se bruci troppo in fretta, potresti consumarti all’inizio. Deve essere raccolta, protetta e accompagnata da un minimo di struttura concreta.
+
+Quando l’Asso di Bastoni appare rovesciato, ti invita a notare dove l’ispirazione si e bloccata. Potresti voler iniziare qualcosa, ma essere fermata o fermato da rinvii, paura, dubbi su di te o pressione della realta. Oppure l’occasione puo essere comparsa senza che tu l’abbia davvero afferrata. Chiediti perche la scintilla non si e accesa. Manca combustibile, oppure hai paura di farla diventare piu grande?
+
+Il messaggio centrale dell’Asso di Bastoni e semplice: e apparso un fuoco nuovo. Non pretendere che diventi subito una carriera intera, una relazione intera o un risultato completo. Riconoscilo, e poi dagli un primo gesto reale. Molti grandi viaggi iniziano soltanto con quel calore interiore che dice: voglio provare.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'two-of-wands',
+    number: 2,
+    name_cn: '权杖二',
+    name_en: 'Two of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['规划', '远方', '选择', '野心', '布局', '视野', '等待时机', '扩张'],
+    daily_upright:
+      '今天适合为未来做规划。你已经不满足于眼前的小范围，心里开始望向更远的地方。',
+    daily_reversed:
+      '今天要小心想得很远却迟迟不动，或因为害怕离开舒适区而停在原地。远方很好，但也需要真正迈出第一步。',
+    reading_upright: `权杖二正位代表规划、选择、远方视野与扩张的野心。它说明你已经拥有一定基础，不再只是被灵感点燃，而是开始思考下一步要去哪里、如何把手中的可能性发展成更大的版图。
+
+在牌阵中出现时，权杖二提醒你站高一点看问题。你可能正在考虑新的道路、新的城市、新的事业方向、新的合作机会，或某个需要长远布局的计划。此时不必急着冲出去，但需要认真判断：你真正想抵达的远方是什么？`,
+    reading_reversed: `权杖二逆位代表犹豫不决、计划停滞、视野受限，或害怕踏出舒适区。你可能已经看见了新的可能，却仍然抓着熟悉的东西不愿放手。
+
+在牌阵中出现时，权杖二逆位提醒你不要只在脑中规划未来。你可能想要更大的世界，却又害怕承担选择带来的风险。它也可能表示计划不够成熟，或你对远方的想象过于理想化。此时需要重新评估方向，把宏大的愿景拆成可以执行的步骤。`,
+    detail: `权杖二是权杖首牌之后的阶段。如果权杖首牌是火种的出现，那么权杖二就是一个人握着这点火，站在高处开始看向远方。热情已经不只是短暂冲动，它开始变成规划、野心和对未来版图的想象。
+
+牌面中，人物通常站在城墙或高处，一手握着权杖，一手拿着地球仪，望向远方。这个画面很重要：他已经拥有某种基础，脚下有城堡，有已有的资源和位置；但他的目光并不只停留在眼前。他开始意识到，世界比现在所在的地方更大，自己也许可以走得更远。
+
+当权杖二正位出现时，它通常意味着你进入了规划阶段。你可能正在考虑未来方向、职业选择、出国旅行、搬迁、合作、创业，或某个更长远的发展计划。它不像权杖骑士那样立刻冲出去，而是先站在高处观察路线。它的力量不是速度，而是视野。
+
+权杖二也代表选择。你可能已经拥有一根权杖，也就是已有的资源、位置和安全感；但另一根权杖指向外面的世界，象征更大的可能性。此时的问题是：你要继续留在熟悉的地方，还是向未知扩张？你要守住已有的一切，还是冒险去争取更大的地图？
+
+这张牌有很强的野心感，但这种野心还没有完全行动化。它像事业蓝图的初稿，也像远行之前展开的地图。它提醒你，真正的扩张不是盲目出走，而是先理解自己拥有什么、缺什么、想去哪里，以及愿意承担怎样的风险。
+
+在事业中，权杖二可能代表战略规划、市场扩张、跨地域发展、职业转向，或开始思考更大的舞台。在关系中，它可能表示一个人正在评估关系的未来：这段关系能不能走远？两个人是否有共同方向？自己是否愿意为这段关系走出原有舒适区？
+
+当权杖二逆位出现时，它提醒你留意计划与行动之间的断裂。你可能想得很多，规划很多，也幻想过很多远方，但迟迟没有迈出真正的一步。也可能是你害怕离开熟悉环境，所以宁愿停在原地，用“再等等”来掩盖内心的犹豫。
+
+权杖二逆位也可能表示视野受限。你可能只看到眼前的安全感，却不敢承认自己其实想要更大的世界；或者相反，把远方想得太美，却没有认真考虑现实条件。此时需要的不只是梦想，而是更清楚的计划和更诚实的自我判断。
+
+权杖二的核心信息是：你已经站到可以眺望远方的位置。眼前的世界并不是全部，你心里也开始知道自己想要更多。现在要做的，是把野心变成路线，把远方变成计划，然后决定自己是否真的愿意出发。`,
+    translations: {
+      en: {
+        name: 'Two of Wands',
+        keywords: ['planning', 'distance', 'choice', 'ambition', 'strategy', 'vision', 'timing', 'expansion'],
+        daily_upright:
+          'Today is good for planning the future. You are no longer satisfied with a small immediate horizon, and your mind is beginning to look farther ahead.',
+        daily_reversed:
+          'Watch out today for thinking far ahead without moving, or staying still because you fear leaving your comfort zone. The distance may be promising, but it still requires a real first step.',
+        reading_upright: `The Two of Wands upright represents planning, choice, a far-reaching view, and the ambition to expand. You already have some foundation. You are no longer only lit by inspiration, but are starting to think about where to go next and how to turn what you hold into a larger map.
+
+In a spread, the Two of Wands asks you to stand higher and look wider. You may be considering a new road, a new city, a new career direction, a new collaboration, or a plan that needs long-range design. You do not need to rush out yet, but you do need to judge carefully what destination you truly want.`,
+        reading_reversed: `The Two of Wands reversed represents hesitation, stalled planning, limited vision, or fear of stepping out of the comfort zone. You may already see new possibilities but still cling to what is familiar.
+
+In a spread, the reversed Two of Wands reminds you not to plan the future only in your head. You may want a larger world while fearing the risk that choice brings. It can also mean the plan is not mature enough yet, or that your idea of the far horizon is too idealized. Reassess the direction and break the grand vision into workable steps.`,
+        detail: `The Two of Wands comes after the Ace of Wands. If the Ace is the appearance of a spark, then the Two is the stage where someone holds that spark, stands at a height, and begins to look toward the distance. Passion is no longer only a passing impulse. It begins to turn into planning, ambition, and an image of a future map.
+
+In the card image, a figure usually stands on a wall or high place, holding one wand and a globe, looking toward the horizon. This image matters. The person already has some foundation beneath their feet: a castle, resources, a position already gained. Yet their gaze does not remain on what is close. They begin to understand that the world is larger than the place they stand, and that they may be able to go farther.
+
+When the Two of Wands appears upright, it usually means you are entering a planning stage. You may be thinking about future direction, career choices, travel abroad, relocation, collaboration, entrepreneurship, or a longer-term development plan. It is not like the Knight of Wands charging out immediately. It first stands high and studies the route. Its strength is not speed, but vision.
+
+The Two of Wands also represents choice. You may already possess one wand, meaning resources, position, and a degree of security. But the other wand points outward toward a larger world. The question becomes whether you remain where things are familiar or expand into the unknown, whether you protect what you already have or risk yourself for a wider map.
+
+This card carries a strong sense of ambition, but that ambition has not yet fully become action. It is like the first draft of a business blueprint or a map opened before a long journey. It reminds you that real expansion is not blind departure. It begins by understanding what you have, what you lack, where you want to go, and what kind of risk you are willing to bear.
+
+In career matters, the Two of Wands can represent strategy, market expansion, development across regions, a career shift, or the desire for a bigger stage. In relationships, it may show someone evaluating the future of the bond: can it go farther, do both people share a direction, and is one willing to step beyond the old comfort zone for this relationship?
+
+When the Two of Wands appears reversed, it asks you to notice the break between planning and action. You may think a great deal, plan a great deal, and imagine many horizons, yet still fail to take a real step. Or you may fear leaving familiar surroundings so much that you stay still and hide that hesitation behind the thought of waiting a little longer.
+
+The reversed Two of Wands can also indicate limited vision. You may see only the security before you and not admit that you want a larger world, or you may imagine the distant horizon too beautifully without taking practical conditions seriously. What is needed now is not only dreaming, but clearer planning and more honest self-judgment.
+
+The core message of the Two of Wands is this: you have reached a place from which you can look out toward distance. The world before you is not the whole world, and you are beginning to know that you want more. Now you must turn ambition into route, turn distance into plan, and decide whether you are truly willing to depart.`,
+      },
+      it: {
+        name: 'Due di Bastoni',
+        keywords: ['pianificazione', 'lontananza', 'scelta', 'ambizione', 'strategia', 'visione', 'attesa del momento', 'espansione'],
+        daily_upright:
+          'Oggi e un buon momento per pianificare il futuro. Non ti basta piu l’orizzonte immediato, e il tuo sguardo comincia a spingersi piu lontano.',
+        daily_reversed:
+          'Oggi fai attenzione a pensare molto lontano senza muoverti, oppure a restare ferma o fermo per paura di uscire dalla zona di comfort. Il lontano e promettente, ma richiede comunque un primo passo reale.',
+        reading_upright: `Il Due di Bastoni diritto rappresenta pianificazione, scelta, visione ampia e ambizione di espansione. Hai gia una certa base. Non sei piu soltanto acceso dall’ispirazione, ma stai iniziando a pensare a dove andare e a come trasformare cio che hai in una mappa piu grande.
+
+In una stesa, il Due di Bastoni ti invita a guardare la situazione da una posizione piu alta. Potresti valutare una nuova strada, una nuova citta, una nuova direzione professionale, una nuova collaborazione, oppure un piano che richiede una strategia a lungo termine. Non serve correre subito, ma serve capire con precisione quale orizzonte vuoi davvero raggiungere.`,
+        reading_reversed: `Il Due di Bastoni rovesciato rappresenta esitazione, pianificazione bloccata, visione limitata o paura di uscire dalla zona di comfort. Potresti gia vedere nuove possibilita e continuare comunque ad aggrapparti a cio che conosci.
+
+In una stesa, il Due di Bastoni rovesciato ti ricorda di non progettare il futuro soltanto nella tua testa. Potresti desiderare un mondo piu grande e allo stesso tempo temere il rischio che la scelta comporta. Puo anche indicare che il piano non e ancora abbastanza maturo, oppure che la tua immagine del lontano e troppo idealizzata. Rivedi la direzione e trasforma la grande visione in passaggi concreti.`,
+        detail: `Il Due di Bastoni arriva dopo l’Asso di Bastoni. Se l’Asso e la comparsa della scintilla, il Due e il momento in cui qualcuno prende quella scintilla, si mette in alto e guarda verso la distanza. La passione non e piu solo impulso momentaneo. Inizia a diventare pianificazione, ambizione e immaginazione di una mappa futura.
+
+Nell’immagine della carta, una figura si trova spesso su una muraglia o in un punto elevato, con un bastone in mano e un globo, mentre guarda l’orizzonte. Questa immagine e importante. La persona possiede gia una certa base: ha un castello, risorse, una posizione conquistata. Ma il suo sguardo non resta fermo su cio che e vicino. Inizia a capire che il mondo e piu grande del luogo in cui si trova e che forse puo andare molto oltre.
+
+Quando il Due di Bastoni appare diritto, di solito indica che stai entrando in una fase di pianificazione. Potresti pensare alla direzione futura, a scelte professionali, a un viaggio all’estero, a un trasferimento, a una collaborazione, a un progetto imprenditoriale o a uno sviluppo di lungo periodo. Non e come il Cavaliere di Bastoni che parte subito all’attacco. Prima osserva il percorso dall’alto. La sua forza non e la velocita, ma la visione.
+
+Il Due di Bastoni rappresenta anche la scelta. Potresti gia possedere un bastone, cioe risorse, posizione e una certa sicurezza. Ma l’altro bastone punta verso il mondo esterno, simbolo di una possibilita piu grande. La domanda diventa allora questa: restare dove tutto e familiare oppure espanderti nell’ignoto? Difendere cio che gia possiedi oppure rischiare per una mappa piu ampia?
+
+Questa carta porta una forte energia di ambizione, ma non ancora completamente trasformata in azione. E come la prima bozza di una strategia o una mappa aperta prima di un lungo viaggio. Ti ricorda che l’espansione reale non e partire alla cieca. Comincia col capire cosa hai, cosa ti manca, dove vuoi andare e quale tipo di rischio sei disposta o disposto a sostenere.
+
+Nel lavoro, il Due di Bastoni puo rappresentare strategia, espansione del mercato, sviluppo in altre aree, svolta professionale o desiderio di un palcoscenico piu grande. Nelle relazioni, puo mostrare una persona che sta valutando il futuro del legame: puo andare lontano, esiste una direzione comune, e si e davvero disposte o disposti a uscire dalla vecchia comodita per questa relazione?
+
+Quando il Due di Bastoni appare rovesciato, ti invita a notare la frattura tra pianificazione e azione. Potresti pensare moltissimo, pianificare moltissimo e immaginare molti orizzonti, senza pero compiere un vero passo. Oppure potresti avere cosi tanta paura di lasciare cio che conosci da restare ferma o fermo, coprendo l’esitazione con l’idea di aspettare ancora un po’.
+
+Il Due di Bastoni rovesciato puo anche indicare una visione limitata. Potresti vedere solo la sicurezza davanti a te e non ammettere di desiderare un mondo piu grande, oppure potresti idealizzare troppo il lontano senza considerare seriamente le condizioni reali. In questo momento non basta sognare: servono un piano piu chiaro e un giudizio piu onesto su te stessa o te stesso.
+
+Il messaggio centrale del Due di Bastoni e questo: sei gia arrivata o arrivato in un punto da cui puoi guardare lontano. Il mondo davanti a te non e tutto il mondo, e dentro di te stai gia capendo di volere di piu. Ora il compito e trasformare l’ambizione in percorso, la distanza in piano, e decidere se sei davvero pronta o pronto a partire.`,
+      },
+    },
+  }),
+  createMeaningCard({
     id: 'page-of-wands',
     number: 32,
     name_cn: '权杖侍从',
