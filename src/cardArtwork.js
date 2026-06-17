@@ -170,20 +170,20 @@ function getMinorFilenameFromChineseName(name) {
 export function getCardArtwork(card) {
   if (!card) return '';
 
+  const byEnglishName = getMinorFilenameFromEnglishName(card.englishName);
+  if (byEnglishName) return toAssetPath(byEnglishName);
+
+  const byChineseName = getMinorFilenameFromChineseName(normalizeName(card.name));
+  if (byChineseName) return toAssetPath(byChineseName);
+
   if (typeof card.id === 'number' && MAJOR_FILENAMES.has(card.id)) {
     return toAssetPath(MAJOR_FILENAMES.get(card.id));
   }
-
-  const byEnglishName = getMinorFilenameFromEnglishName(card.englishName);
-  if (byEnglishName) return toAssetPath(byEnglishName);
 
   const normalizedName = normalizeName(card.name);
   if (MAJOR_NAME_TO_FILE.has(normalizedName)) {
     return toAssetPath(MAJOR_NAME_TO_FILE.get(normalizedName));
   }
-
-  const byChineseName = getMinorFilenameFromChineseName(normalizedName);
-  if (byChineseName) return toAssetPath(byChineseName);
 
   return '';
 }
