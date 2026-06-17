@@ -2795,6 +2795,212 @@ Il messaggio centrale dell’Otto di Bastoni e questo: il vento si e alzato e le
     },
   }),
   createMeaningCard({
+    id: 'nine-of-wands',
+    number: 9,
+    name_cn: '权杖九',
+    name_en: 'Nine of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['坚持', '防备', '疲惫', '韧性', '最后防线', '受伤后的警觉', '守护', '经验'],
+    daily_upright:
+      '今天可能会有点累，但你并不是毫无力量。过去的经验让你更加警觉，也让你知道自己还能再撑一段路。',
+    daily_reversed:
+      '今天要小心过度防备，或因为过去受过伤而不敢放松。不是所有靠近你的东西都是威胁，也不是所有事情都需要你独自硬撑。',
+    reading_upright: `权杖九正位代表受伤后的坚持、疲惫中的韧性、最后防线与高度警觉。它说明你可能已经经历过一轮压力、竞争或消耗，虽然还站着，但身心都已经留下了战斗的痕迹。
+
+在牌阵中出现时，权杖九提醒你不要轻易放弃。你也许已经很累，也许对未来仍然保持防备，但你并不是没有能力继续守住局面。这张牌不是轻松的胜利，而是“我已经受过伤，但我还没有倒下”。此时需要保护自己，也需要相信自己过去积累下来的经验。`,
+    reading_reversed: `权杖九逆位代表防备过度、疲惫透支、旧伤未愈，或因为害怕再次受伤而无法继续前进。你可能已经把自己绷得太紧，习惯性预设最坏结果，甚至把每一个新情况都当成潜在威胁。
+
+在牌阵中出现时，权杖九逆位提醒你检查自己的防线是否已经变成牢笼。保护自己是必要的，但如果你永远处在战斗姿态里，就很难真正恢复力量。此时需要分辨：眼前是真的危险，还是过去的伤口仍然在替你判断现实？`,
+    detail: `权杖九是权杖牌组中非常疲惫、但也非常坚韧的一张牌。牌面中的人物头上缠着绷带，手里握着一根权杖，身后还有八根权杖像栅栏一样立着。他不是刚刚开始战斗的人，也不是意气风发的胜利者。他像一个已经经历过很多的人，受过伤，流过血，累得不轻，但仍然没有放下手中的权杖。
+
+这张牌的核心是“受伤后的坚持”。它不是天真的勇敢，而是知道世界有多难之后，仍然选择站在那里。权杖九的人并不轻松，他可能已经不再像权杖侍从那样兴奋，也不像权杖骑士那样冲动。他的火焰变得更谨慎、更紧绷，也更有经验。
+
+当权杖九正位出现时，它通常意味着你正在接近某个阶段的尾声，但还没有完全结束。你可能已经通过很多考验，面对过竞争、压力、拒绝、冲突、消耗，甚至是失败。现在的你也许很累，但你还在守住最后一道防线。它提醒你：不要在离终点很近的时候轻易倒下。
+
+权杖九也代表警觉。过去的经历让你更懂得保护自己，你不再轻易相信所有承诺，也不再随便把自己的位置让出去。这种防备并不一定是坏事，因为它来自真实的经验。你知道哪些事情可能伤害你，也知道自己需要边界。
+
+但权杖九的困难在于，它很难真正放松。一个长期处在防守状态的人，容易把世界看成连续不断的战场。即使危险已经过去，身体和内心仍然保持紧张。它可能让人变得敏感、怀疑、孤独，也可能让你明明需要帮助，却仍然习惯一个人硬撑。
+
+在事业中，权杖九可能代表长期努力后的疲惫阶段。你已经做了很多，撑了很久，但还有最后一段路要走。它适合形容项目收尾前的压力、求职过程中的反复受挫、考试前的坚持，或一个人在竞争环境中不断被考验之后仍然没有退场。
+
+在关系中，权杖九可能代表受过伤后的防备。你也许仍然想靠近别人，但过去的经验让你不敢完全放下戒心。它不是没有爱，而是爱已经变得小心。你可能需要时间确认：这一次，我是否真的安全？
+
+当权杖九逆位出现时，它提醒你留意过度防御。你可能已经不只是保护自己，而是把自己关了起来。你可能拒绝新的机会、拒绝亲近、拒绝信任，只因为你太害怕再次受伤。可是，如果防线永远不放下，人也很难真正得到休息。
+
+权杖九逆位也可能表示你已经太累了，不能再靠意志力硬撑。此时不是继续咬牙，而是要恢复、求助、调整战线。不是所有事情都需要你一个人扛到最后，也不是所有坚持都等于胜利。
+
+权杖九的核心信息是：你已经走过很长一段艰难的路，受过伤，但你仍然站着。请承认自己的韧性，也承认自己的疲惫。真正的坚强，不只是继续防守，也包括知道什么时候可以慢慢放下戒备。`,
+    translations: {
+      en: {
+        name: 'Nine of Wands',
+        keywords: ['Perseverance', 'Defensiveness', 'Fatigue', 'Resilience', 'Last stand', 'Wounded vigilance', 'Protection', 'Experience'],
+        daily_upright:
+          'Today may feel tiring, but you are not powerless. Past experience has made you more alert, and it also proves you can hold on a little longer.',
+        daily_reversed:
+          'Today, watch out for excessive defensiveness, or being unable to relax because of old wounds. Not everything approaching you is a threat, and not everything has to be carried alone.',
+        reading_upright: `The upright Nine of Wands represents perseverance after being hurt, resilience within exhaustion, the last line of defense, and high alertness. It suggests you may already have gone through a cycle of pressure, competition, or depletion. You are still standing, but the battle has left marks on both body and mind.
+
+When it appears in a spread, the Nine of Wands tells you not to give up too quickly. You may be very tired, and still cautious about what comes next, but you are not incapable of holding your ground. This is not an easy victory. It is the state of saying, "I have been hurt, but I am not down." Protect yourself, and trust the experience you have earned.`,
+        reading_reversed: `The reversed Nine of Wands represents over-defensiveness, burnout, wounds that have not healed, or an inability to keep moving because of fear of being hurt again. You may have kept yourself so tense that you automatically expect the worst and treat every new situation as a potential threat.
+
+When it appears in a spread, the reversed Nine of Wands asks whether your defenses have become a prison. Protecting yourself matters, but if you are always in battle mode, true recovery becomes difficult. Ask whether the danger is real, or whether old wounds are still interpreting the present for you.`,
+        detail: `The Nine of Wands is one of the most exhausted, yet also one of the most resilient, cards in the Wands suit. The figure in the image has a bandage around the head, grips one wand tightly, and stands before eight more wands like a fence. This is not someone just entering battle, nor someone enjoying a triumphant victory. It is someone who has already been through a great deal, has been hurt, has bled, is deeply tired, and yet still has not let go.
+
+The core of this card is perseverance after injury. It is not naive courage. It is the decision to remain standing after already learning how difficult the world can be. The fire of the Nine of Wands is no longer as innocent as the Page, nor as impulsive as the Knight. It is more cautious, tighter, and shaped by experience.
+
+When upright, it often appears when you are approaching the end of a difficult stage, but have not quite finished yet. You may already have endured pressure, rejection, competition, conflict, depletion, or even failure. You are tired, but still holding the final line. The message is clear: do not collapse just when the finish line is near.
+
+This card also speaks of vigilance. Past experience has taught you how to protect yourself. You are less likely to believe every promise, and less likely to surrender your place easily. That caution is not necessarily bad. It comes from what you have truly lived through, and from knowing where your boundaries matter.
+
+The difficulty of the Nine of Wands is that it can be hard to relax. Someone who has been defending for a long time may start to experience the entire world as a battlefield. Even when the danger has passed, the body and mind may remain tense. This can create sensitivity, suspicion, loneliness, or the habit of carrying everything alone even when help is available.
+
+In work, this card may describe the exhausted phase after prolonged effort. You have already done a lot and endured a lot, but there is still one final stretch. It fits the pressure before finishing a project, the repeated frustration of job hunting, the final stage before an exam, or remaining in a competitive environment after being tested again and again.
+
+In relationships, the Nine of Wands may represent guardedness after being hurt. You may still want closeness, but past experience makes it difficult to lower your defenses completely. It is not a lack of love. It is love made cautious. You may need time to ask whether this time you are truly safe.
+
+When reversed, this card points to overprotection. You may no longer be simply protecting yourself, but locking yourself away. You may reject new chances, intimacy, or trust because you are too afraid of being hurt again. Yet if the defenses are never lowered, real rest never comes.
+
+The reversed Nine of Wands can also mean you are too depleted to keep relying on willpower alone. This is the moment to recover, ask for help, and rearrange the line of defense. Not everything has to be carried to the very end by yourself, and not every form of endurance is victory.
+
+The core message of the Nine of Wands is this: you have already come a very long way, you have been hurt, and you are still standing. Acknowledge your resilience, and acknowledge your exhaustion too. True strength is not only continuing to defend. It is also knowing when you can slowly lower your guard.`,
+      },
+      it: {
+        name: 'Nove di Bastoni',
+        keywords: ['Perseveranza', 'Difesa', 'Stanchezza', 'Resilienza', 'Ultima linea', 'Vigilanza dopo la ferita', 'Protezione', 'Esperienza'],
+        daily_upright:
+          'Oggi potresti sentirti stanco, ma non sei senza forza. L esperienza del passato ti ha reso piu vigile e ti mostra che puoi ancora resistere per un altro tratto.',
+        daily_reversed:
+          'Oggi fai attenzione a una difesa eccessiva, o al non riuscire a rilassarti per colpa di vecchie ferite. Non tutto cio che si avvicina e una minaccia, e non tutto deve essere sopportato da solo.',
+        reading_upright: `Il Nove di Bastoni diritto rappresenta la perseveranza dopo essere stati feriti, la resilienza nella stanchezza, l ultima linea di difesa e un alto stato di allerta. Indica che potresti aver gia attraversato un ciclo di pressione, competizione o logoramento. Sei ancora in piedi, ma la battaglia ha lasciato segni sul corpo e sulla mente.
+
+Quando appare in una stesa, il Nove di Bastoni ti dice di non arrenderti troppo presto. Potresti essere molto stanco e ancora prudente verso cio che verra, ma non sei incapace di mantenere la tua posizione. Non e una vittoria facile. E lo stato di dire: "Sono stato ferito, ma non sono ancora caduto." Proteggiti e fidati dell esperienza che hai conquistato.`,
+        reading_reversed: `Il Nove di Bastoni rovesciato rappresenta un eccessiva difesa, esaurimento, ferite non guarite o l incapacita di andare avanti per paura di essere feriti di nuovo. Potresti esserti irrigidito cosi tanto da aspettarti automaticamente il peggio e trattare ogni nuova situazione come una minaccia potenziale.
+
+Quando appare in una stesa, il Nove di Bastoni rovesciato ti chiede se le tue difese siano diventate una prigione. Proteggerti e importante, ma se resti sempre in modalita combattimento, il vero recupero diventa difficile. Chiediti se il pericolo e reale, o se sono ancora le vecchie ferite a interpretare il presente al posto tuo.`,
+        detail: `Il Nove di Bastoni e una delle carte piu stanche, ma anche piu resistenti, del seme di Bastoni. La figura nell immagine ha una benda sulla testa, stringe un bastone e ne ha altri otto alle spalle come una recinzione. Non e qualcuno che sta appena entrando in battaglia, ne qualcuno che si gode una vittoria trionfale. E una persona che ha gia attraversato molto, che e stata ferita, che ha sanguinato, che e profondamente stanca, e che tuttavia non ha ancora lasciato andare il bastone.
+
+Il cuore di questa carta e la perseveranza dopo la ferita. Non e coraggio ingenuo. E la scelta di restare in piedi dopo aver capito quanto il mondo possa essere duro. Il fuoco del Nove di Bastoni non e piu innocente come quello del Paggio, ne impulsivo come quello del Cavaliere. E piu cauto, piu contratto, piu formato dall esperienza.
+
+Quando appare diritto, spesso segnala che stai arrivando alla fine di una fase difficile, ma che non hai ancora del tutto concluso. Potresti gia aver sopportato pressione, rifiuti, competizione, conflitti, logoramento o perfino fallimenti. Sei stanco, ma tieni ancora l ultima linea. Il messaggio e chiaro: non crollare proprio quando il traguardo e vicino.
+
+Questa carta parla anche di vigilanza. L esperienza del passato ti ha insegnato a proteggerti. Sei meno incline a credere a ogni promessa e meno disposto a cedere facilmente il tuo posto. Questa cautela non e necessariamente negativa. Nasce da cio che hai vissuto davvero e dalla consapevolezza di dove i tuoi confini contano.
+
+La difficolta del Nove di Bastoni e che puo diventare difficile rilassarsi. Chi ha difeso a lungo puo iniziare a percepire il mondo intero come un campo di battaglia. Anche quando il pericolo e passato, corpo e mente possono restare tesi. Questo puo creare sensibilita, sospetto, solitudine o l abitudine di portare tutto da solo anche quando l aiuto esiste.
+
+Nel lavoro, questa carta puo descrivere la fase di stanchezza dopo uno sforzo prolungato. Hai gia fatto molto e sopportato molto, ma resta ancora un ultimo tratto. Si adatta alla pressione prima della chiusura di un progetto, alla frustrazione ripetuta della ricerca di lavoro, alla fase finale prima di un esame o al restare in un ambiente competitivo dopo essere stati messi alla prova piu e piu volte.
+
+Nelle relazioni, il Nove di Bastoni puo rappresentare la difesa dopo essere stati feriti. Potresti desiderare ancora vicinanza, ma il passato rende difficile abbassare del tutto la guardia. Non e assenza d amore. E amore diventato prudente. Potresti aver bisogno di tempo per chiederti se questa volta sei davvero al sicuro.
+
+Quando e rovesciato, questa carta indica un eccessiva protezione. Potresti non stare piu semplicemente proteggendoti, ma rinchiudendoti. Potresti rifiutare nuove occasioni, intimita o fiducia perche hai troppa paura di essere ferito di nuovo. Ma se le difese non si abbassano mai, il vero riposo non arriva.
+
+Il Nove di Bastoni rovesciato puo anche significare che sei troppo esausto per continuare a vivere solo di forza di volonta. Questo e il momento di recuperare, chiedere aiuto e ridisegnare la linea di difesa. Non tutto deve essere portato fino in fondo da solo, e non ogni forma di resistenza equivale a una vittoria.
+
+Il messaggio centrale del Nove di Bastoni e questo: hai gia fatto molta strada, sei stato ferito, e sei ancora in piedi. Riconosci la tua resilienza e riconosci anche la tua stanchezza. La vera forza non e solo continuare a difendere. E anche sapere quando puoi abbassare lentamente la guardia.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'ten-of-wands',
+    number: 10,
+    name_cn: '权杖十',
+    name_en: 'Ten of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['负担', '责任', '压力', '过载', '硬撑', '完成前的疲惫', '承担', '放下'],
+    daily_upright:
+      '今天可能会感觉事情太多、责任太重。你已经走到接近完成的位置，但也要小心把所有重量都压在自己身上。',
+    daily_reversed:
+      '今天适合放下一部分不属于你的负担。不是所有责任都必须由你一个人承担，减轻重量并不等于失败。',
+    reading_upright: `权杖十正位代表沉重的责任、压力过载、过度承担与完成前的疲惫。它说明你可能已经把太多事情扛在自己身上，虽然仍然在前进，但每一步都变得吃力。
+
+在牌阵中出现时，权杖十提醒你看见自己的负担。你也许接近某个目标，也许正在履行承诺、完成任务、照顾别人，或承担一段关系和生活中的大量责任。但这张牌也在问你：这些重量都必须由你一个人背吗？你是在走向完成，还是已经被责任压得看不见路？`,
+    reading_reversed: `权杖十逆位代表卸下负担、责任重新分配、从过载中解脱，或终于意识到自己不能再继续硬撑。你可能开始放弃某些不必要的任务，也可能学会求助、拒绝、分工，或者承认自己已经到了极限。
+
+在牌阵中出现时，权杖十逆位提醒你把重量放下来。不是所有承诺都值得继续，不是所有责任都真的属于你。它也可能表示你仍然不愿放手，明明已经快被压垮，却还在强撑体面。此时最重要的是诚实地面对自己的承受能力。`,
+    detail: `权杖十是权杖牌组数字牌的最后一张，也是一张非常沉重的牌。牌面中，一个人抱着十根权杖，身体前倾，几乎看不清前方的路。他并不是完全失败的人，相反，他已经收集到了很多权杖，说明他承担了很多、做了很多、也许已经接近完成某个目标。但问题在于：他拿得太多了。
+
+这张牌的核心是负担与过载。权杖原本象征热情、行动力、创造力和野心，但到了十的时候，这些火焰变成了责任。曾经让你兴奋的事情，可能已经变成压力；曾经主动选择的目标，可能变成必须完成的任务；曾经让你感到有力量的承诺，可能变成压在肩上的重量。
+
+当权杖十正位出现时，它通常意味着你正在承担过多。可能是工作任务太重，家庭责任太多，关系中你付出得太多，或者你为了一个目标不断压榨自己的精力。你仍然在走，但你走得很累。你可能觉得只要再忍一下、再撑一下，就能到达终点，可是身体和心已经开始发出警告。
+
+权杖十也有“完成前的疲惫”。它不一定表示事情毫无意义，而是说明你已经走到了收尾阶段，但收尾本身也需要力气。就像一个项目快结束时，反而会出现最多杂事；一段旅程快到终点时，背包反而显得最重。它提醒你，不要因为快完成了，就忽视自己的极限。
+
+在事业中，权杖十可能代表工作过载、责任过多、职位压力、项目收尾、独自承担团队任务，或为了目标牺牲太多生活质量。在关系中，它可能表示一个人承担了过多情绪劳动、照顾责任、经济压力或维系关系的任务。表面上你很能扛，实际上你可能已经累到失去快乐。
+
+这张牌也会问一个很现实的问题：这些权杖全都属于你吗？有些责任也许确实是你必须完成的，但有些可能是别人推给你的，有些是你为了证明自己而主动背上的，有些是你害怕拒绝所以没有放下的。权杖十不只是叫你坚持，也叫你重新分配重量。
+
+当权杖十逆位出现时，它通常意味着负担开始松动。你可能终于愿意求助，愿意拒绝，愿意把任务分出去，愿意承认自己不是无限电量。它是一张很适合“减负”的牌：减少不必要的承诺，退出消耗性的责任，把不属于自己的东西还回去。
+
+但权杖十逆位也可能表示你仍然不愿意放下。你明明已经累得不行，却还在说“我可以”；明明已经看不见路，却还在把所有权杖抱得更紧。此时，这张牌会非常直接地提醒你：继续硬撑并不一定是负责，有时只是你不允许自己停下来。
+
+权杖十的核心信息是：你已经承担了很多，也走了很远，但不能把活着变成一场永远不能放下的负重训练。完成很重要，责任也很重要，可是你自己同样重要。真正成熟的行动力，不只是把所有权杖扛到终点，也包括知道哪些重量该放下，哪些责任该分出去。`,
+    translations: {
+      en: {
+        name: 'Ten of Wands',
+        keywords: ['Burden', 'Responsibility', 'Pressure', 'Overload', 'Pushing through', 'Exhaustion before completion', 'Carrying', 'Letting go'],
+        daily_upright:
+          'Today may feel like too much is happening and too much responsibility is resting on you. You are close to finishing something, but be careful not to place every weight on your own shoulders.',
+        daily_reversed:
+          'Today is suitable for putting down some burdens that do not truly belong to you. Not every responsibility has to be carried alone, and reducing the load is not failure.',
+        reading_upright: `The upright Ten of Wands represents heavy responsibility, overload, overextension, and exhaustion before completion. It suggests you may already be carrying too much on your own. You are still moving forward, but every step has become harder.
+
+When it appears in a spread, the Ten of Wands asks you to see your burden clearly. You may be close to a goal, honoring commitments, finishing tasks, caring for others, or holding up a large amount of responsibility in life or in a relationship. But this card also asks: do all of these weights truly have to be carried by you alone? Are you moving toward completion, or have responsibilities become so heavy that you can no longer see the road ahead?`,
+        reading_reversed: `The reversed Ten of Wands represents putting burdens down, redistributing responsibility, release from overload, or finally realizing that you cannot keep forcing yourself onward. You may begin to drop unnecessary tasks, learn to ask for help, say no, delegate, or admit that you have reached your limit.
+
+When it appears in a spread, the reversed Ten of Wands tells you to put the weight down. Not every commitment is worth continuing, and not every responsibility is truly yours. It can also indicate that you still refuse to let go, even while you are close to collapse and trying to preserve appearances. The most important thing now is to face your actual capacity honestly.`,
+        detail: `The Ten of Wands is the last numbered card in the Wands suit, and it is a very heavy one. In the image, a person carries ten wands with the body bent forward, barely able to see the road ahead. This is not someone who has completely failed. On the contrary, the many wands suggest that much has been taken on, much has been done, and a goal may even be close. The problem is simple: the load has become too much.
+
+The core of this card is burden and overload. Wands normally symbolize passion, action, creativity, and ambition, but by the time the suit reaches ten, the fire has turned into responsibility. Things that once excited you may now feel like pressure. Goals you once chose willingly may have become obligations. Promises that once made you feel powerful may now weigh on your shoulders.
+
+When upright, the Ten of Wands often means you are carrying too much. This may be heavy work, too much family responsibility, overgiving in a relationship, or draining your own energy to complete a goal. You are still walking, but you are walking while exhausted. You may think that if you endure just a little longer, you will make it to the end, yet both body and mind may already be sending warnings.
+
+The Ten of Wands also contains the feeling of exhaustion before completion. It does not necessarily mean the effort is meaningless. It means you have entered the closing stage, and even the closing stage requires energy. Just as projects often become busiest right before they finish, or journeys feel heaviest right before the destination, this card warns you not to ignore your limits merely because the end seems near.
+
+In work, the Ten of Wands may represent overload, too much responsibility, positional pressure, the final push of a project, carrying a team alone, or sacrificing too much of your life quality for a goal. In relationships, it may show one person carrying too much emotional labor, care work, financial stress, or the effort of keeping the relationship going. On the surface, you may look strong. In reality, you may already be too tired to feel any joy.
+
+This card also asks a practical question: do all these wands actually belong to you? Some responsibilities may truly be yours, but some may have been handed to you by others, some may have been picked up to prove yourself, and some may remain only because you were afraid to refuse. The Ten of Wands does not merely tell you to endure. It asks you to redistribute the weight.
+
+When reversed, the Ten of Wands often suggests the burden is beginning to loosen. You may finally be willing to ask for help, say no, share tasks, or admit that you are not an unlimited battery. It is a card of reducing the load: cutting unnecessary commitments, stepping away from draining responsibilities, and returning what does not belong to you.
+
+But the reversed Ten of Wands can also show unwillingness to let go. You may already be exhausted and still saying, "I can handle it." You may no longer be able to see the road and still clutch every wand tighter. In that case, the card is blunt: continuing to force yourself is not always responsibility. Sometimes it is simply your refusal to let yourself stop.
+
+The core message of the Ten of Wands is this: you have carried a great deal and come a long way, but life cannot become a permanent weight-bearing exercise. Completion matters. Responsibility matters. But you matter too. Mature action is not only about carrying every wand to the finish line. It is also about knowing which weight must be set down, and which responsibility needs to be shared.`,
+      },
+      it: {
+        name: 'Dieci di Bastoni',
+        keywords: ['Fardello', 'Responsabilita', 'Pressione', 'Sovraccarico', 'Resistere a forza', 'Stanchezza prima della conclusione', 'Portare', 'Lasciare andare'],
+        daily_upright:
+          'Oggi potresti sentire che ci sono troppe cose e troppe responsabilita sulle tue spalle. Sei vicino alla conclusione di qualcosa, ma fai attenzione a non caricarti addosso ogni peso.',
+        daily_reversed:
+          'Oggi e il momento giusto per lasciare andare una parte del peso che non ti appartiene davvero. Non ogni responsabilita deve essere portata da solo, e alleggerirsi non significa fallire.',
+        reading_upright: `Il Dieci di Bastoni diritto rappresenta responsabilita pesanti, sovraccarico, eccesso di compiti e stanchezza prima della conclusione. Indica che potresti gia stare portando troppo da solo. Stai ancora andando avanti, ma ogni passo e diventato piu difficile.
+
+Quando appare in una stesa, il Dieci di Bastoni ti chiede di vedere chiaramente il tuo peso. Potresti essere vicino a un obiettivo, mantenere promesse, finire compiti, prenderti cura degli altri o sostenere un grande carico di responsabilita nella vita o in una relazione. Ma questa carta ti chiede anche: tutti questi pesi devono davvero essere portati da te solo? Stai andando verso la conclusione, o le responsabilita ti hanno schiacciato al punto da non vedere piu la strada?`,
+        reading_reversed: `Il Dieci di Bastoni rovesciato rappresenta l atto di deporre il peso, la redistribuzione delle responsabilita, la liberazione dal sovraccarico o il rendersi finalmente conto che non puoi continuare a forzarti. Potresti iniziare a lasciare compiti inutili, imparare a chiedere aiuto, dire di no, delegare, o ammettere di essere arrivato al limite.
+
+Quando appare in una stesa, il Dieci di Bastoni rovesciato ti dice di posare il peso. Non ogni promessa merita di essere portata avanti, e non ogni responsabilita e davvero tua. Puo anche indicare che continui a non voler mollare, pur essendo vicino al crollo e cercando ancora di salvare le apparenze. Ora la cosa piu importante e guardare con onesta alla tua reale capacita di reggere.`,
+        detail: `Il Dieci di Bastoni e l ultima carta numerata del seme di Bastoni, ed e una carta molto pesante. Nell immagine, una persona porta dieci bastoni con il corpo piegato in avanti, quasi incapace di vedere la strada davanti a se. Non e qualcuno che ha completamente fallito. Al contrario, i molti bastoni mostrano che molto e stato assunto, molto e stato fatto, e forse un obiettivo e persino vicino. Il problema e semplice: il carico e diventato troppo grande.
+
+Il cuore di questa carta e il peso e il sovraccarico. I Bastoni di solito simboleggiano passione, azione, creativita e ambizione, ma quando il seme arriva al dieci, quel fuoco si trasforma in responsabilita. Cose che una volta ti entusiasmavano ora possono sembrare pressione. Obiettivi che hai scelto volontariamente possono diventare obblighi. Promesse che un tempo ti facevano sentire forte ora possono gravare sulle tue spalle.
+
+Quando appare diritto, il Dieci di Bastoni spesso indica che stai portando troppo. Puo trattarsi di lavoro pesante, troppe responsabilita familiari, eccessivo investimento in una relazione, o del consumare la tua energia per raggiungere un obiettivo. Stai ancora camminando, ma lo fai da esausto. Potresti pensare che, resistendo ancora un po, arriverai alla fine, eppure corpo e mente potrebbero gia darti segnali d allarme.
+
+Il Dieci di Bastoni contiene anche la sensazione della stanchezza prima della conclusione. Non significa necessariamente che lo sforzo sia inutile. Significa che sei entrato nella fase finale, e anche la fase finale richiede energia. Proprio come i progetti diventano piu pesanti prima di finire, o i viaggi sembrano piu faticosi quando la meta e vicina, questa carta ti avverte di non ignorare i tuoi limiti solo perche la fine sembra prossima.
+
+Nel lavoro, il Dieci di Bastoni puo rappresentare sovraccarico, troppe responsabilita, pressione del ruolo, la spinta finale di un progetto, portare il peso del team da solo, o sacrificare troppo della tua qualita di vita per un obiettivo. Nelle relazioni, puo mostrare una persona che regge troppo lavoro emotivo, troppe cure, troppe pressioni economiche o tutto lo sforzo di mantenere in piedi il rapporto. In superficie puoi sembrare forte. In realta potresti essere gia troppo stanco per provare gioia.
+
+Questa carta pone anche una domanda pratica: tutti questi bastoni appartengono davvero a te? Alcune responsabilita possono essere davvero tue, ma alcune potrebbero essere state scaricate da altri, alcune potrebbero essere state prese per dimostrare qualcosa, e alcune potrebbero essere rimaste solo perche avevi paura di rifiutare. Il Dieci di Bastoni non ti dice soltanto di resistere. Ti chiede di ridistribuire il peso.
+
+Quando appare rovesciato, il Dieci di Bastoni spesso suggerisce che il carico stia iniziando ad alleggerirsi. Potresti finalmente essere disposto a chiedere aiuto, dire di no, condividere i compiti o ammettere di non avere una batteria infinita. E una carta di alleggerimento: ridurre gli impegni inutili, uscire da responsabilita consumanti e restituire cio che non ti appartiene.
+
+Ma il Dieci di Bastoni rovesciato puo anche mostrare la difficolta di lasciare andare. Potresti essere gia esausto e continuare a dire: "Posso farcela." Potresti non vedere piu la strada e stringere ancora di piu tutti i bastoni. In quel caso la carta e molto diretta: continuare a forzarti non e sempre responsabilita. A volte e solo il rifiuto di permetterti di fermarti.
+
+Il messaggio centrale del Dieci di Bastoni e questo: hai portato molto e hai fatto molta strada, ma la vita non puo diventare un esercizio permanente di carico. La conclusione conta. La responsabilita conta. Ma conti anche tu. L azione matura non consiste solo nel portare ogni bastone fino al traguardo. Consiste anche nel sapere quale peso va posato e quale responsabilita va condivisa.`,
+      },
+    },
+  }),
+  createMeaningCard({
     id: 'page-of-wands',
     number: 32,
     name_cn: '权杖侍从',
