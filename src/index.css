@@ -3,6 +3,25 @@
 @tailwind utilities;
 
 :root {
+  --app-font-serif:
+    'Noto Serif SC',
+    'Songti SC',
+    'STSong',
+    'SimSun',
+    'Source Han Serif SC',
+    'Georgia',
+    'Times New Roman',
+    serif;
+  --app-font-ui:
+    'PingFang SC',
+    'Hiragino Sans GB',
+    'Microsoft YaHei',
+    'Noto Sans SC',
+    'Source Han Sans SC',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
   --app-text: #3c3533;
   --app-muted: #7d7470;
   --app-border: rgba(102, 92, 86, 0.14);
@@ -21,7 +40,7 @@
     radial-gradient(circle at top right, rgba(181, 191, 205, 0.24), transparent 30%),
     radial-gradient(circle at bottom left, rgba(196, 205, 191, 0.2), transparent 28%),
     linear-gradient(180deg, #f6f0ea 0%, #efe6de 46%, #e8dfd7 100%);
-  font-family: 'Georgia', 'Times New Roman', serif;
+  font-family: var(--app-font-serif);
 }
 
 html,
@@ -33,6 +52,7 @@ body,
 body {
   margin: 0;
   color: var(--app-text);
+  font-family: var(--app-font-serif);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -142,6 +162,24 @@ button:disabled {
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--app-muted);
+}
+
+html[lang='zh-CN'] .eyebrow,
+html[lang='zh-CN'] .page-title,
+html[lang='zh-CN'] .question-title,
+html[lang='zh-CN'] .question-note,
+html[lang='zh-CN'] .meanings-search-input,
+html[lang='zh-CN'] .meanings-filter-chip,
+html[lang='zh-CN'] .meaning-index-meta,
+html[lang='zh-CN'] .meaning-index-open,
+html[lang='zh-CN'] .meaning-detail-section h3,
+html[lang='zh-CN'] .meaning-detail-empty {
+  font-family: var(--app-font-ui);
+}
+
+html[lang='zh-CN'] .eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: none;
 }
 
 .topbar-title,
