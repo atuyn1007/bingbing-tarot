@@ -2195,6 +2195,206 @@ Il messaggio centrale del Due di Bastoni e questo: sei gia arrivata o arrivato i
     },
   }),
   createMeaningCard({
+    id: 'three-of-wands',
+    number: 3,
+    name_cn: '权杖三',
+    name_en: 'Three of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['远见', '扩张', '规划', '等待成果', '视野', '远方', '机会', '事业版图'],
+    daily_upright:
+      '今天适合把目光放远一点。你已经走出第一步，现在可以站在更高的位置，规划下一阶段的扩张。',
+    daily_reversed:
+      '今天要小心视野受限，或计划迟迟没有回应。别只盯着眼前的阻碍，也要重新确认远方是否仍然值得前往。',
+    reading_upright: `权杖三正位代表远见、扩张、未来规划与等待成果回流。它说明你已经不再停留在最初的想法阶段，而是开始站在更高的位置，观察局势、规划版图，并期待自己的行动带来更大的结果。
+
+在牌阵中出现时，权杖三提醒你拓宽视野。你可能正在考虑跨地域发展、事业扩张、合作机会、旅行、留学、外部市场，或某个比眼前生活更大的目标。此时需要的不只是热情，而是战略感：你要看见远方，也要知道自己如何抵达远方。`,
+    reading_reversed: `权杖三逆位代表扩张受阻、等待落空、计划延迟，或视野被眼前环境限制。你可能已经做出了一些努力，却还没有看到期待中的回报；也可能想要更大的发展，却被现实条件、资源不足或内心的不确定困住。
+
+在牌阵中出现时，权杖三逆位提醒你重新检查自己的蓝图。是时机还没有成熟，还是方向本身需要调整？你是否只是在等待外部回应，却没有继续主动拓展？此时不必急着否定远方，但需要让规划变得更具体、更现实。`,
+    detail: `权杖三是权杖二之后的进一步展开。如果权杖二是站在城墙上看着地球仪，开始想象未来的版图，那么权杖三就是已经把目光投向更远的海面，等待船只远行或归来。它不是单纯的幻想，而是行动之后的远眺：你已经做出某些选择，现在开始观察这些选择会把你带向哪里。
+
+这张牌有一种“站在高处看天下”的感觉。人物背对观者，面向广阔的远方，脚下是高地，眼前是海洋与船只。这个画面象征视野、扩张、远方机会，以及一个人开始意识到自己不必只停留在原来的小世界里。权杖三不是眼前的小胜利，而是更大的格局感：事业可以扩张，人生可以打开，未来可以被重新规划。
+
+当权杖三正位出现时，它通常意味着你正在进入一个需要拓宽视野的阶段。你可能已经完成了初步准备，也已经迈出第一步，现在要开始考虑更大的发展方向。它可能对应事业上的市场扩张、跨国机会、远程合作、作品发布、资源外延，也可能对应人生中的旅行、迁移、留学、远方关系，或任何让你离开原有边界的选择。
+
+权杖三也和“等待成果”有关。你已经把船放出海，现在需要等待它带回消息、资源或回应。这种等待不是被动躺平，而是一种有计划的等待。你要继续观察风向，调整路线，判断下一步是否继续投入。它提醒你，真正的扩张需要时间，远方不会立刻抵达，但你已经站在了能够看见远方的位置。
+
+在事业和创作中，权杖三是一张很有野心的牌。它表示你不再只满足于完成手头任务，而是想把事情做大、做远、做成更完整的版图。它鼓励你寻找新平台、新受众、新市场，也鼓励你把个人能力放到更大的环境里检验。
+
+在关系中，权杖三可能代表两个人一起规划未来，也可能代表远距离、异地、旅行、共同目标，或一段关系正在考虑是否能够走向更广阔的生活。它不只是当下的甜蜜，而是“我们能不能一起看向远方”。
+
+当权杖三逆位出现时，它提醒你留意扩张中的延迟和阻碍。你可能没有等到期待的回报，或者远方的机会没有想象中顺利。它也可能表示你被眼前环境困住，害怕离开舒适区，或者虽然有野心，却没有真正建立可执行的路线。
+
+权杖三逆位并不一定意味着远方不存在，而是说明你需要重新评估自己的计划。你的船是否真的已经出发？你等待的是现实中的回应，还是脑海里的幻想？你是否需要更多资源、信息、合作或耐心？此时，与其盲目扩大，不如先把方向、节奏和风险重新看清。
+
+权杖三的核心信息是：你已经站上高处，眼前不再只有脚下这片土地。把视野放远，规划未来，等待你的船只从远方带回消息。真正的扩张，不只是走得更远，也是在更大的世界里重新确认自己的位置。`,
+    translations: {
+      en: {
+        name: 'Three of Wands',
+        keywords: ['foresight', 'expansion', 'planning', 'waiting for results', 'vision', 'distance', 'opportunity', 'business scope'],
+        daily_upright:
+          'Today is good for lifting your gaze farther ahead. You have already taken the first step, and now you can stand higher and plan the next stage of expansion.',
+        daily_reversed:
+          'Watch out today for limited vision or plans that receive no response. Do not stare only at the obstacle in front of you. Reconfirm whether the distance is still worth pursuing.',
+        reading_upright: `The Three of Wands upright represents foresight, expansion, future planning, and waiting for results to return. You are no longer only at the stage of first ideas. You are beginning to stand higher, observe the situation, map out a wider field, and expect your actions to bring larger outcomes.
+
+In a spread, the Three of Wands asks you to widen your perspective. You may be considering cross-regional development, career expansion, partnership opportunities, travel, study abroad, an outside market, or a goal larger than your current life. What is needed now is not only passion, but strategy: you need to see the distance and understand how you will reach it.`,
+        reading_reversed: `The Three of Wands reversed represents blocked expansion, empty waiting, delayed plans, or a vision limited by immediate surroundings. You may have already made efforts without seeing the return you hoped for, or you may want greater growth while feeling trapped by practical conditions, limited resources, or inner uncertainty.
+
+In a spread, the reversed Three of Wands asks you to review your blueprint. Has the right timing not arrived yet, or does the direction itself need adjustment? Are you only waiting for outside response without continuing to extend yourself? You do not need to deny the distance, but your plan does need to become more specific and more realistic.`,
+        detail: `The Three of Wands is a further unfolding after the Two of Wands. If the Two is standing on the wall with a globe and imagining the future map, then the Three has already cast its gaze over a wider sea, waiting for ships to go out or return. It is not mere fantasy. It is a look into distance after action: you have already made certain choices, and now you begin to observe where those choices may lead.
+
+This card carries the feeling of standing high and surveying a larger world. The figure faces the horizon with high ground beneath their feet and ships before them. The image symbolizes vision, expansion, distant opportunities, and the realization that you do not have to remain inside the small world you came from. The Three of Wands is not a nearby little victory. It is the sense of a larger pattern: business can expand, life can open, and the future can be redesigned.
+
+When the Three of Wands appears upright, it usually means you are entering a phase that requires wider vision. You may have finished early preparation and taken the first step, and now you need to consider a larger direction of development. It can point to market expansion, international opportunity, remote collaboration, publishing work, extending resources, travel, relocation, study abroad, long-distance relationships, or any path that asks you to leave an old boundary.
+
+The Three of Wands is also connected to waiting for results. You have already sent the ship out to sea, and now you wait for it to return with news, resources, or response. This is not passive collapse into idleness. It is planned waiting. You continue to watch the wind, adjust the route, and decide whether to invest further. It reminds you that real expansion takes time. The distance does not arrive at once, but you are already standing where you can see it.
+
+In work and creative life, the Three of Wands is a highly ambitious card. It shows that you are no longer satisfied with merely completing what is in front of you. You want to make it larger, farther-reaching, and more fully shaped. It encourages you to seek new platforms, new audiences, and new markets, and to test your ability in a wider environment.
+
+In relationships, the Three of Wands can mean two people planning a future together, or it can point to distance, travel, shared goals, or a relationship considering whether it can move into a larger life. It is not only about present sweetness. It is about whether both people can look toward the horizon together.
+
+When the Three of Wands appears reversed, it asks you to notice delay and obstruction within expansion. You may not have received the return you expected, or the opportunities in the distance may not be moving as smoothly as imagined. It can also mean that you are trapped by your immediate environment, afraid to leave a comfort zone, or full of ambition without having built a route that can actually be followed.
+
+The reversed Three of Wands does not necessarily mean that the distance is unreal. It means you need to reassess your plan. Has your ship truly departed? Are you waiting for a real-world response or only for a fantasy in your mind? Do you need more resources, information, collaboration, or patience? Instead of expanding blindly, it is wiser now to recheck direction, rhythm, and risk.
+
+The core message of the Three of Wands is this: you are already standing on higher ground, and the world before you is larger than the land beneath your feet. Widen your sight, plan for the future, and wait for your ships to bring back news from the distance. Real expansion is not only about going farther, but also about rediscovering your place in a wider world.`,
+      },
+      it: {
+        name: 'Tre di Bastoni',
+        keywords: ['visione', 'espansione', 'pianificazione', 'attesa dei risultati', 'sguardo ampio', 'lontananza', 'opportunita', 'sviluppo professionale'],
+        daily_upright:
+          'Oggi e il momento di guardare un po’ piu lontano. Hai gia mosso il primo passo, e ora puoi metterti in una posizione piu alta per pianificare la prossima fase di espansione.',
+        daily_reversed:
+          'Oggi fai attenzione a una visione limitata o a piani che non ricevono risposta. Non fissarti solo sugli ostacoli immediati: verifica anche se il lontano vale ancora il viaggio.',
+        reading_upright: `Il Tre di Bastoni diritto rappresenta visione, espansione, pianificazione futura e attesa del ritorno dei risultati. Non sei piu ferma o fermo nella fase dell’idea iniziale. Stai iniziando a guardare la situazione da una posizione piu alta, a disegnare una mappa piu ampia e ad aspettarti che le tue azioni producano esiti piu grandi.
+
+In una stesa, il Tre di Bastoni ti invita ad ampliare la prospettiva. Potresti valutare sviluppo oltre il tuo territorio, espansione professionale, opportunita di collaborazione, viaggi, studio all’estero, mercati esterni o un obiettivo piu grande della tua vita attuale. Qui non basta il solo entusiasmo: serve anche una visione strategica. Devi vedere il lontano e sapere come arrivarci.`,
+        reading_reversed: `Il Tre di Bastoni rovesciato rappresenta espansione bloccata, attesa vuota, piani ritardati oppure uno sguardo limitato dall’ambiente immediato. Potresti aver gia fatto diversi sforzi senza vedere il ritorno sperato, oppure desiderare una crescita piu ampia ma sentirti trattenuta o trattenuto da condizioni pratiche, risorse insufficienti o incertezza interiore.
+
+In una stesa, il Tre di Bastoni rovesciato ti chiede di rivedere il tuo progetto. Il momento giusto non e ancora arrivato, oppure e la direzione stessa a richiedere un aggiustamento? Stai solo aspettando una risposta esterna senza continuare ad aprire nuove strade? Non serve negare il lontano, ma serve rendere il piano piu concreto e piu realistico.`,
+        detail: `Il Tre di Bastoni e un’ulteriore espansione dopo il Due di Bastoni. Se il Due mostra qualcuno che osserva un globo e immagina la mappa del futuro, il Tre ha gia posato lo sguardo su un mare piu ampio e aspetta navi in partenza o di ritorno. Non e semplice fantasia. E uno sguardo verso la distanza dopo l’azione: hai gia preso alcune decisioni e ora inizi a osservare dove potrebbero portarti.
+
+Questa carta ha il sapore di chi guarda il mondo dall’alto. La figura volge le spalle all’osservatore, guarda l’orizzonte, con il terreno elevato sotto i piedi e il mare con le navi davanti. L’immagine simboleggia visione, espansione, opportunita lontane e la consapevolezza che non sei costretta o costretto a restare nel piccolo mondo da cui provieni. Il Tre di Bastoni non e una piccola vittoria vicina. E il senso di una scala piu grande: il lavoro puo espandersi, la vita puo aprirsi e il futuro puo essere riprogettato.
+
+Quando il Tre di Bastoni appare diritto, di solito indica che stai entrando in una fase che richiede una prospettiva piu ampia. Potresti aver completato la preparazione iniziale e aver gia mosso il primo passo; adesso devi considerare una direzione di sviluppo piu grande. Puo corrispondere a espansione del mercato, opportunita internazionali, collaborazioni a distanza, pubblicazione di lavori, estensione delle risorse, viaggi, trasferimenti, studio all’estero, relazioni a distanza o qualunque scelta che ti porti oltre un vecchio confine.
+
+Il Tre di Bastoni e anche collegato all’attesa dei risultati. Hai gia mandato la nave in mare e adesso aspetti che torni con notizie, risorse o risposte. Questa non e attesa passiva. E un’attesa pianificata. Continui a osservare il vento, regolare la rotta e decidere se investire ancora. Ti ricorda che l’espansione autentica richiede tempo. Il lontano non arriva subito, ma tu sei gia nel punto da cui puoi scorgerlo.
+
+Nel lavoro e nella creativita, il Tre di Bastoni e una carta molto ambiziosa. Mostra che non ti basta piu completare il compito immediato. Vuoi farlo crescere, portarlo piu lontano e trasformarlo in una struttura piu ampia. Ti incoraggia a cercare nuove piattaforme, nuovi pubblici e nuovi mercati, e a mettere le tue capacita alla prova in un ambiente piu grande.
+
+Nelle relazioni, il Tre di Bastoni puo indicare due persone che pianificano il futuro insieme, oppure distanza, viaggi, obiettivi comuni o una relazione che valuta se puo aprirsi a una vita piu ampia. Non riguarda solo la dolcezza del presente. Riguarda la possibilita di guardare insieme verso l’orizzonte.
+
+Quando il Tre di Bastoni appare rovesciato, ti invita a notare ritardi e ostacoli dentro il processo di espansione. Potresti non aver ricevuto il ritorno che aspettavi, oppure le opportunita lontane potrebbero non muoversi come immaginavi. Puo anche indicare che sei trattenuta o trattenuto dall’ambiente immediato, che temi di uscire dalla zona di comfort, oppure che hai ambizione ma non hai ancora costruito una rotta davvero praticabile.
+
+Il Tre di Bastoni rovesciato non significa per forza che il lontano non esista. Significa che devi rivalutare il piano. La tua nave e davvero partita? Stai aspettando una risposta concreta o solo una fantasia mentale? Ti servono piu risorse, piu informazioni, piu collaborazione o piu pazienza? Invece di espanderti alla cieca, ora e piu utile ricontrollare direzione, ritmo e rischio.
+
+Il messaggio centrale del Tre di Bastoni e questo: sei gia in alto e davanti a te c’e un mondo piu grande del terreno su cui stai. Allarga lo sguardo, pianifica il futuro e aspetta che le tue navi ti riportino notizie dal lontano. L’espansione reale non significa solo andare piu lontano, ma anche ridefinire il tuo posto in un mondo piu ampio.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'four-of-wands',
+    number: 4,
+    name_cn: '权杖四',
+    name_en: 'Four of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['稳定', '庆祝', '家庭', '快乐', '归属感', '玩乐', '团聚', '阶段成果'],
+    daily_upright:
+      '今天适合放松、庆祝和享受身边人的陪伴。稳定的快乐正在出现，你可以暂时放下紧绷，安心玩一会儿。',
+    daily_reversed:
+      '今天要小心家庭、关系或团体中的不稳定感。表面的热闹未必等于真正安心，也可能需要重新整理归属感。',
+    reading_upright: `权杖四正位代表稳定的快乐、家庭关系、庆祝、团聚与阶段性成果。它说明某件事已经抵达一个相对安全、轻松、值得庆祝的位置，你可以暂时从奔跑中停下来，享受已经建立起来的稳定。
+
+在牌阵中出现时，权杖四提醒你接住生活中的快乐。它可能象征家庭聚会、朋友相处、恋爱关系稳定、搬家、订婚、婚礼、活动、派对，或某个阶段成果终于落地。它不是孤独的胜利，而是可以和别人一起分享的快乐。`,
+    reading_reversed: `权杖四逆位代表不稳定的家庭关系、归属感不足、庆祝被延迟，或外表热闹但内在并不安心。你可能身处某个关系或团体之中，却没有真正感到被接纳；也可能某个阶段成果还没完全稳住，所以难以放心庆祝。
+
+在牌阵中出现时，权杖四逆位提醒你检查自己的安全感来源。你是真的感到快乐，还是只是在维持一种“看起来很好”的场面？它也可能提示家庭、朋友、伴侣或团队之间需要更多沟通，才能重新建立稳定和信任。`,
+    detail: `权杖四是权杖牌组里非常快乐的一张牌。它象征稳定、庆祝、家庭、归属感、玩乐和阶段性成果。经过权杖首牌的点火、权杖二的规划、权杖三的远眺之后，权杖四终于回到一个可以落脚、可以庆祝、可以和他人共享喜悦的位置。
+
+牌面中通常有四根权杖搭成类似花门或庆典入口的结构，远处有人欢庆、跳舞，背景中有城堡或稳定的建筑。四这个数字本身就带有稳定、结构和落地的意味。权杖的火不再只是向外冲，而是在地面上搭起了一个可以让人停留的空间。这里有欢笑，有花环，有仪式，也有“我终于可以安心一下”的感觉。
+
+当权杖四正位出现时，它通常代表某个阶段已经进入相对稳定、值得庆祝的状态。可能是一个项目完成初步成果，一段关系确定下来，一个家庭或居住环境变得更安心，也可能是一次聚会、活动、节日、旅行、婚礼、搬家或朋友间的快乐时刻。它提醒你，不要总是只想着下一步，也要允许自己享受已经拥有的部分。
+
+权杖四的快乐不是太阳牌那种个人光芒的盛大绽放，而是更生活化、更有烟火气的快乐。它可以是和朋友一起吃饭，是家里灯亮着，是有人等你回来，是项目结束后大家一起庆祝，是终于拥有一个可以卸下防备的空间。它对应到玩乐，也对应到一种稳定的关系和生活感。
+
+在家庭和关系中，权杖四是一张很好的牌。它可能代表家庭和睦、朋友支持、恋爱稳定、关系公开、共同生活，或一种“我们属于同一个地方”的归属感。它强调的不是强烈的占有，而是轻松、安心、自然地待在一起。好的权杖四关系，会让人觉得可以玩、可以笑、可以做自己。
+
+在事业和现实事务中，权杖四代表阶段性成果和团队庆祝。你可能已经完成了一个节点，建立了某种基础，或者获得了可以暂时稳定下来的条件。它不是最终的大圆满，但它是一个值得停下来喝一杯、挂上花环、说一句“我们做到了”的时刻。
+
+当权杖四逆位出现时，它提醒你留意稳定感的缺失。表面上可能有聚会、关系、家庭或团体，但内在未必真正安心。也许有人在热闹中感到孤独，也许某段关系看似确定却仍然摇晃，也许一个家庭或团队表面和气，实际有未被处理的问题。
+
+权杖四逆位也可能表示庆祝被延迟。某个阶段还没真正完成，或者完成之后你仍然无法放松。你可能太习惯紧绷，以至于快乐来了也不敢安心享受。此时需要问自己：我是否允许自己休息和玩乐？我是否真的拥有归属感？我所在的地方，是否让我感到安全和被欢迎？
+
+权杖四的核心信息是：稳定之后，快乐才有地方停留。你可以庆祝，可以玩乐，可以回到让你安心的人和空间之中。不是所有成长都必须痛苦地向前冲，有些时刻的意义，就是和重要的人一起站在花门下，承认这一刻已经足够好。`,
+    translations: {
+      en: {
+        name: 'Four of Wands',
+        keywords: ['stability', 'celebration', 'home', 'joy', 'belonging', 'play', 'reunion', 'milestone'],
+        daily_upright:
+          'Today is good for relaxing, celebrating, and enjoying the company of people around you. A stable kind of happiness is appearing, and you can set tension down for a while and simply enjoy yourself.',
+        daily_reversed:
+          'Watch out today for instability in family, relationships, or groups. Surface excitement does not always mean true ease, and your sense of belonging may need to be reorganized.',
+        reading_upright: `The Four of Wands upright represents stable happiness, family ties, celebration, reunion, and a milestone result. Something has reached a relatively safe, easy, and worthy place of celebration. You can pause from constant striving for a moment and enjoy the stability that has been built.
+
+In a spread, the Four of Wands asks you to receive the joy in life. It can symbolize family gatherings, friendship, a stable romantic bond, moving house, engagement, marriage, events, parties, or a stage of effort finally landing. It is not a lonely victory. It is happiness that can be shared with others.`,
+        reading_reversed: `The Four of Wands reversed represents unstable family dynamics, weak belonging, delayed celebration, or a scene that looks lively on the outside but does not feel secure inside. You may be inside a relationship or group without truly feeling accepted, or a milestone may not yet be steady enough for celebration.
+
+In a spread, the reversed Four of Wands asks you to examine the source of your safety. Are you genuinely happy, or only maintaining a scene that appears good? It can also suggest that family, friends, partners, or teams need more communication in order to rebuild stability and trust.`,
+        detail: `The Four of Wands is one of the happiest cards in the suit of Wands. It symbolizes stability, celebration, home, belonging, play, and a milestone result. After the spark of the Ace, the planning of the Two, and the far-reaching view of the Three, the Four of Wands returns to a place where you can land, celebrate, and share joy with others.
+
+In the image, four wands usually form something like a floral gate or festive entrance. In the distance people celebrate or dance, and the background often includes a castle or another stable structure. The number four itself carries the meaning of stability, structure, and grounding. The fire of the wands is no longer only rushing outward. It has built a space on the ground where people can stay. There is laughter, decoration, ritual, and the feeling that at last you can breathe.
+
+When the Four of Wands appears upright, it usually means a stage has entered a relatively stable and celebratory condition. It may be an early success in a project, a relationship becoming secure, a home becoming more peaceful, or a gathering, festival, trip, wedding, move, or joyful moment among friends. It reminds you not to think only about the next step. You are also allowed to enjoy what already exists.
+
+The joy of the Four of Wands is not the grand blazing of personal radiance found in The Sun. It is a more lived, human, everyday kind of happiness. It can be eating with friends, lights on at home, someone waiting for you, a team celebrating the end of a project, or finally having a place where you can lower your guard. It points to play, and it points to a stable feeling of life and relationship.
+
+In family and relationships, the Four of Wands is a very positive card. It can represent harmony at home, support from friends, stability in love, a relationship becoming public, shared living, or the feeling that we belong in the same place. It does not emphasize possession. It emphasizes ease, safety, and being together naturally. A healthy Four of Wands relationship feels like a place where you can laugh, play, and be yourself.
+
+In work and practical life, the Four of Wands represents a milestone and shared celebration. You may have completed a stage, built a foundation, or gained conditions that allow temporary stability. It is not the final total completion, but it is a moment worth pausing for, worth raising a glass for, worth saying: we did it.
+
+When the Four of Wands appears reversed, it asks you to notice where stability is missing. There may be gatherings, relationships, family, or a group on the surface, but inwardly the safety may not be real. Someone may feel lonely in the middle of the crowd, a relationship may look settled while still shaking, or a household or team may seem peaceful while carrying unresolved issues.
+
+The reversed Four of Wands can also mean celebration delayed. A stage may not truly be complete yet, or even after completion you may still be unable to relax. You may be so used to tension that joy arrives and you still do not dare to rest in it. Ask yourself whether you allow yourself rest and play, whether you truly have a sense of belonging, and whether the place you are in feels safe and welcoming.
+
+The core message of the Four of Wands is this: only after stability exists does joy have somewhere to rest. You can celebrate, play, and return to people and spaces that make you feel safe. Not every form of growth must be a painful rush forward. Sometimes the meaning of a moment is simply to stand under the flowered gate with the people who matter and admit that this moment is already good.`,
+      },
+      it: {
+        name: 'Quattro di Bastoni',
+        keywords: ['stabilita', 'celebrazione', 'famiglia', 'gioia', 'appartenenza', 'gioco', 'ritrovo', 'traguardo'],
+        daily_upright:
+          'Oggi e il momento di rilassarti, festeggiare e goderti la compagnia delle persone vicine. Sta comparendo una felicita stabile, e puoi lasciare andare la tensione per un po’ e concederti leggerezza.',
+        daily_reversed:
+          'Oggi fai attenzione a instabilita in famiglia, nelle relazioni o nei gruppi. L’allegria esterna non coincide sempre con una vera tranquillita, e il senso di appartenenza potrebbe aver bisogno di essere rimesso in ordine.',
+        reading_upright: `Il Quattro di Bastoni diritto rappresenta gioia stabile, legami familiari, celebrazione, ritrovo e un risultato di tappa. Qualcosa e arrivato in un punto relativamente sicuro, leggero e degno di festa. Puoi fermarti per un momento dalla corsa continua e goderti la stabilita che e stata costruita.
+
+In una stesa, il Quattro di Bastoni ti invita a ricevere la gioia della vita. Puo simboleggiare riunioni di famiglia, amicizia, una relazione amorosa stabile, un trasloco, un fidanzamento, un matrimonio, eventi, feste, oppure il fatto che una fase di sforzo si sia finalmente concretizzata. Non e una vittoria solitaria. E una felicita da condividere.`,
+        reading_reversed: `Il Quattro di Bastoni rovesciato rappresenta instabilita familiare, scarso senso di appartenenza, celebrazione rinviata oppure una scena che all’esterno appare viva ma dentro non da sicurezza. Potresti trovarti in una relazione o in un gruppo senza sentirti davvero accolta o accolto, oppure un traguardo potrebbe non essere ancora abbastanza stabile da essere festeggiato.
+
+In una stesa, il Quattro di Bastoni rovesciato ti invita a verificare da dove nasce il tuo senso di sicurezza. Sei davvero felice, oppure stai mantenendo una scena che sembra bella solo all’esterno? Puo anche indicare che famiglia, amici, partner o team hanno bisogno di piu comunicazione per ricostruire stabilita e fiducia.`,
+        detail: `Il Quattro di Bastoni e una delle carte piu gioiose del seme di Bastoni. Simboleggia stabilita, celebrazione, casa, appartenenza, gioco e un risultato di tappa. Dopo la scintilla dell’Asso, la pianificazione del Due e lo sguardo lontano del Tre, il Quattro di Bastoni ritorna a un luogo in cui puoi atterrare, festeggiare e condividere gioia con gli altri.
+
+Nell’immagine, quattro bastoni formano spesso una specie di arco fiorito o ingresso da festa. In lontananza si vedono persone che celebrano o danzano, e sullo sfondo appare spesso un castello o un edificio stabile. Il numero quattro porta gia il significato di stabilita, struttura e radicamento. Il fuoco dei bastoni non corre piu soltanto verso l’esterno. Ha creato uno spazio sulla terra dove si puo restare. Ci sono risate, decorazioni, rituale e la sensazione di poter finalmente respirare.
+
+Quando il Quattro di Bastoni appare diritto, di solito indica che una fase e entrata in una condizione relativamente stabile e degna di celebrazione. Puo trattarsi di un primo successo in un progetto, di una relazione che si consolida, di una casa che diventa piu serena, oppure di una festa, un viaggio, un matrimonio, un trasloco o un momento felice tra amici. Ti ricorda di non pensare solo al passo successivo. Ti e permesso anche godere di cio che hai gia costruito.
+
+La gioia del Quattro di Bastoni non e lo splendore grandioso e personale del Sole. E una felicita piu vissuta, piu umana, piu quotidiana. Puo essere mangiare con gli amici, vedere la luce accesa in casa, sapere che qualcuno ti aspetta, festeggiare la fine di un progetto con il team, o avere finalmente uno spazio in cui abbassare le difese. Parla di gioco, e parla di un senso stabile di vita e di relazione.
+
+Nella famiglia e nelle relazioni, il Quattro di Bastoni e una carta molto positiva. Puo rappresentare armonia domestica, sostegno degli amici, stabilita amorosa, una relazione resa pubblica, convivenza, oppure la sensazione che noi apparteniamo allo stesso luogo. Non mette al centro il possesso. Mette al centro la naturalezza, la sicurezza e lo stare insieme con leggerezza. Una relazione sana da Quattro di Bastoni e un luogo in cui si puo ridere, giocare ed essere se stessi.
+
+Nel lavoro e nella vita pratica, il Quattro di Bastoni rappresenta un traguardo intermedio e una celebrazione condivisa. Potresti aver completato una fase, costruito una base, oppure ottenuto condizioni che permettono una stabilita temporanea. Non e il compimento finale assoluto, ma e un momento che merita una pausa, un brindisi, e la frase: ce l’abbiamo fatta.
+
+Quando il Quattro di Bastoni appare rovesciato, ti invita a notare dove manca stabilita. In superficie possono esserci incontri, relazioni, famiglia o gruppo, ma interiormente la sicurezza potrebbe non essere reale. Qualcuno potrebbe sentirsi solo nel mezzo della festa, una relazione potrebbe sembrare definita ma restare instabile, oppure una casa o un team potrebbero apparire sereni pur avendo questioni non risolte.
+
+Il Quattro di Bastoni rovesciato puo anche indicare una celebrazione rimandata. Una fase potrebbe non essere davvero completa, oppure tu potresti non riuscire a rilassarti nemmeno dopo averla conclusa. Potresti essere cosi abituata o abituato alla tensione da non riuscire a riposare davvero quando la gioia arriva. Chiediti se ti permetti riposo e gioco, se possiedi davvero un senso di appartenenza, e se il luogo in cui ti trovi ti fa sentire al sicuro e benvenuta o benvenuto.
+
+Il messaggio centrale del Quattro di Bastoni e questo: solo dopo la stabilita la gioia ha un posto in cui fermarsi. Puoi festeggiare, giocare e tornare verso persone e spazi che ti fanno sentire al sicuro. Non ogni crescita deve essere una corsa dolorosa in avanti. A volte il senso di un momento e semplicemente stare sotto un arco fiorito con le persone importanti e riconoscere che, per adesso, questo basta gia.`,
+      },
+    },
+  }),
+  createMeaningCard({
     id: 'page-of-wands',
     number: 32,
     name_cn: '权杖侍从',
