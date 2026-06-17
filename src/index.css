@@ -164,6 +164,15 @@ button:disabled {
   color: var(--app-muted);
 }
 
+html[lang='zh-CN'] .page-header-copy,
+html[lang='zh-CN'] .meanings-page-content,
+html[lang='zh-CN'] .meanings-page-content input,
+html[lang='zh-CN'] .meanings-page-content button,
+html[lang='zh-CN'] .meanings-page-content h1,
+html[lang='zh-CN'] .meanings-page-content h2,
+html[lang='zh-CN'] .meanings-page-content h3,
+html[lang='zh-CN'] .meanings-page-content p,
+html[lang='zh-CN'] .meanings-page-content span,
 html[lang='zh-CN'] .eyebrow,
 html[lang='zh-CN'] .page-title,
 html[lang='zh-CN'] .question-title,
@@ -174,7 +183,7 @@ html[lang='zh-CN'] .meaning-index-meta,
 html[lang='zh-CN'] .meaning-index-open,
 html[lang='zh-CN'] .meaning-detail-section h3,
 html[lang='zh-CN'] .meaning-detail-empty {
-  font-family: var(--app-font-ui);
+  font-family: var(--app-font-serif);
 }
 
 html[lang='zh-CN'] .eyebrow {
