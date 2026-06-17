@@ -2000,6 +2000,170 @@ Il messaggio centrale del Mondo e questo: i viaggi arrivano davvero a destinazio
       },
     },
   }),
+  createMeaningCard({
+    id: 'page-of-wands',
+    number: 32,
+    name_cn: '权杖侍从',
+    name_en: 'Page of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['灵感', '探索', '热情', '好奇', '新消息', '冒险', '创意萌芽', '行动欲'],
+    daily_upright:
+      '今天可能有新的灵感或想尝试的事情冒出来。先让好奇心带你走一步，不必一开始就要求自己完全成熟。',
+    daily_reversed:
+      '今天要小心三分钟热度、冲动开始又很快放弃。灵感和驱动力很珍贵，但也需要一点计划来保护它。',
+    reading_upright: `权杖侍从正位代表新的热情、创意萌芽、探索欲和充满可能性的开始。它说明你可能刚刚被某件事点燃，心里出现了想行动、想尝试、想走出去看看的冲动。
+
+在牌阵中出现时，权杖侍从提醒你不要轻视刚出现的小火苗。它也许还不是成熟的计划，但已经代表生命力开始苏醒。此时适合学习、尝试、表达、发起新项目，或接受某个让你感到兴奋的新消息。`,
+    reading_reversed: `权杖侍从逆位代表热情不稳定、行动力分散、冲动冒进，或有想法却迟迟没有真正开始。你可能脑中有很多计划，但每一个都还停留在“想想而已”的阶段。
+
+在牌阵中出现时，它提醒你检查自己的热情是否真的能持续。不要因为一时兴奋就做出过度承诺，也不要因为害怕失败就把灵感一直压着。此时需要把模糊的冲动整理成更具体的小步骤。`,
+    detail: `权杖侍从是权杖牌组中最年轻、最原初的火焰。它象征热情刚刚点燃、创意刚刚出现、行动欲刚刚冒头的状态。它不像权杖骑士那样已经冲出去，也不像权杖国王那样能够掌控全局；它更像一个站在荒野中的年轻人，手里握着权杖，眼睛里亮着“我想试试看”的光。
+
+这张牌最核心的能量是好奇和探索。你可能突然对某件事产生兴趣，想学习一门技能，想开始一个项目，想去一个新的地方，或者想用更大胆的方式表达自己。权杖侍从不保证事情一定成功，但它代表一种非常珍贵的开始：你重新对世界产生了兴趣。
+
+当权杖侍从正位出现时，它通常意味着新的灵感、新消息、新机会或新阶段的邀请。它可能出现在创作、学习、旅行、社交、事业探索，或任何需要热情推动的场景中。它鼓励你先迈出一步，因为很多事情只有真正试过，才知道会不会长成更大的火焰。
+
+但权杖侍从也有不成熟的一面。它容易兴奋，也容易转移注意力；容易被新鲜感吸引，却未必已经准备好承担长期责任。它的火焰明亮，但还小，需要被保护、被培养，而不是被自己的一阵风吹灭。
+
+当权杖侍从逆位出现时，它可能表示灵感受阻、热情不稳、拖延开始，或冲动行动之后很快失去兴趣。你可能很想做很多事，却没有真正落实；也可能因为担心自己不够好，而一直不敢把想法拿出来。此时最重要的是不要让火苗熄灭，也不要假装火苗已经是篝火。先从一个小行动开始，让热情有地方落地。
+
+权杖侍从的核心信息是：灵感刚刚出现时，不要急着审判它。先保护那一点火光，带着好奇心试试看。很多真正重要的旅程，都是从一个“不如我去看看”开始的。`,
+    translations: {
+      en: {
+        name: 'Page of Wands',
+        keywords: ['inspiration', 'exploration', 'passion', 'curiosity', 'new message', 'adventure', 'creative spark', 'urge to act'],
+        daily_upright:
+          'A new idea or a fresh urge to try something may appear today. Let curiosity move you one step forward without demanding total maturity from yourself at the start.',
+        daily_reversed:
+          'Watch out today for short-lived excitement, impulsive beginnings, and giving up too quickly. Inspiration and drive are valuable, but they also need a little structure to survive.',
+        reading_upright: `The Page of Wands upright represents fresh enthusiasm, the first spark of creativity, curiosity, and a beginning full of possibility. It suggests that something has just lit you up, and you may feel an urge to act, experiment, and step out to see what is possible.
+
+In a spread, the Page of Wands reminds you not to dismiss a small new flame. It may not yet be a fully formed plan, but it already signals that your life force is waking up. This is a good time to learn, experiment, express yourself, start a new project, or welcome news that excites you.`,
+        reading_reversed: `The Page of Wands reversed represents unstable enthusiasm, scattered action, reckless impulsiveness, or ideas that never quite become a real beginning. You may have many plans in mind, but each of them still remains at the stage of only thinking about it.
+
+In a spread, this card asks you to check whether your enthusiasm can actually last. Do not overpromise because of temporary excitement, and do not keep suppressing your inspiration just because you fear failure. What is needed now is to turn vague impulses into smaller, more concrete steps.`,
+        detail: `The Page of Wands is the youngest and most primal flame in the suit of Wands. It symbolizes the moment when passion has just been lit, creativity has just appeared, and the urge to act has only begun to rise. It is not yet like the Knight of Wands already racing ahead, nor like the King of Wands holding the whole field in command. It is more like a young person standing in the open land, wand in hand, with eyes shining with the thought: I want to try.
+
+The core energy of this card is curiosity and exploration. You may suddenly become interested in something, want to learn a skill, start a project, travel somewhere new, or express yourself in a bolder way. The Page of Wands does not promise success, but it represents a very precious beginning: you are becoming interested in the world again.
+
+When the Page of Wands appears upright, it usually means new inspiration, new messages, new opportunities, or an invitation into a new phase. It can show up in creativity, study, travel, social life, career exploration, or any area that needs passion to move forward. It encourages you to take the first step, because many things only reveal their future size after you truly try them.
+
+But the Page of Wands also has an immature side. It gets excited easily, and it can lose focus just as easily. It may be drawn to novelty without being ready to hold long-term responsibility. Its flame is bright, but it is still small. It needs protection and cultivation rather than being blown out by its own sudden gust of energy.
+
+When the Page of Wands appears reversed, it can point to blocked inspiration, unstable passion, delays in beginning, or impulsive action that quickly loses momentum. You may want to do many things without truly grounding any of them, or you may keep your ideas hidden because you worry you are not good enough. The important thing now is not to let the spark die, but also not to pretend that the spark is already a bonfire. Start with one small act, and give your passion a place to land.
+
+The core message of the Page of Wands is this: when inspiration first appears, do not rush to judge it. Protect that small flame first, and let curiosity lead you. Many important journeys begin with nothing more than the thought: maybe I should go and see.`,
+      },
+      it: {
+        name: 'Fante di Bastoni',
+        keywords: ['ispirazione', 'esplorazione', 'passione', 'curiosita', 'nuove notizie', 'avventura', 'scintilla creativa', 'voglia di agire'],
+        daily_upright:
+          'Oggi potrebbe emergere una nuova idea o la voglia di provare qualcosa. Lascia che la curiosita ti faccia muovere di un passo, senza pretendere da subito una piena maturita.',
+        daily_reversed:
+          'Fai attenzione oggi agli entusiasmi che durano poco, agli inizi impulsivi e al mollare troppo presto. Ispirazione e slancio sono preziosi, ma hanno bisogno anche di un minimo di struttura per essere protetti.',
+        reading_upright: `Il Fante di Bastoni diritto rappresenta nuovo entusiasmo, il germoglio della creativita, desiderio di esplorare e un inizio pieno di possibilita. Indica che qualcosa potrebbe averti appena acceso dentro, facendoti venire voglia di agire, provare e uscire a vedere che cosa puo accadere.
+
+In una stesa, il Fante di Bastoni ti ricorda di non sottovalutare quella piccola fiamma appena nata. Forse non e ancora un piano maturo, ma segnala gia che la tua energia vitale sta tornando a svegliarsi. Questo e un buon momento per imparare, sperimentare, esprimerti, avviare un nuovo progetto o accogliere una notizia che ti entusiasma.`,
+        reading_reversed: `Il Fante di Bastoni rovesciato rappresenta entusiasmo instabile, energia dispersa, impulsivita eccessiva, oppure idee che non riescono mai a diventare un vero inizio. Potresti avere molti progetti in mente, ma ognuno di essi e ancora fermo alla fase del solo pensarci.
+
+In una stesa, questa carta ti chiede di verificare se il tuo entusiasmo puo davvero durare. Non fare promesse troppo grandi per un'eccitazione momentanea, ma non continuare nemmeno a reprimere l'ispirazione per paura di fallire. Ora serve trasformare l'impulso vago in piccoli passi concreti.`,
+        detail: `Il Fante di Bastoni e la fiamma piu giovane e piu originaria del seme di Bastoni. Simboleggia il momento in cui la passione si e appena accesa, la creativita e appena comparsa e la voglia di agire sta appena emergendo. Non e ancora come il Cavaliere di Bastoni che e gia partito al galoppo, ne come il Re di Bastoni che sa governare l'intero quadro. Assomiglia di piu a un giovane fermo nella terra aperta, con un bastone in mano e negli occhi quella luce che dice: voglio provare.
+
+L'energia centrale di questa carta e la curiosita, insieme all'esplorazione. Potresti improvvisamente interessarti a qualcosa, voler imparare una competenza, iniziare un progetto, andare in un luogo nuovo o esprimerti in modo piu audace. Il Fante di Bastoni non promette il successo, ma rappresenta un inizio molto prezioso: stai tornando a interessarti al mondo.
+
+Quando il Fante di Bastoni appare diritto, di solito annuncia nuova ispirazione, nuove notizie, nuove opportunita o l'invito a entrare in una fase diversa. Puo comparire nella creativita, nello studio, nei viaggi, nella socialita, nell'esplorazione professionale o in qualunque ambito abbia bisogno della passione per muoversi. Ti incoraggia a fare il primo passo, perche molte cose rivelano quanto possono crescere solo dopo che le hai davvero provate.
+
+Ma il Fante di Bastoni ha anche un lato immaturo. Si entusiasma facilmente, e con la stessa facilita puo distrarsi. Puo essere attratto dalla novita senza essere ancora pronto a sostenere una responsabilita lunga. La sua fiamma e luminosa, ma e ancora piccola. Deve essere protetta e coltivata, non spenta da una raffica prodotta dalla sua stessa fretta.
+
+Quando il Fante di Bastoni appare rovesciato, puo indicare ispirazione bloccata, passione instabile, ritardo nel cominciare o un'azione impulsiva che perde slancio in fretta. Potresti voler fare molte cose senza concretizzarne davvero nessuna, oppure nascondere le tue idee per paura di non essere abbastanza. Il punto adesso e non lasciare spegnere la scintilla, ma nemmeno fingere che la scintilla sia gia un grande fuoco. Parti da un piccolo gesto e dai alla tua passione un posto concreto dove atterrare.
+
+Il messaggio centrale del Fante di Bastoni e questo: quando l'ispirazione appare per la prima volta, non correre a giudicarla. Proteggi prima quella piccola fiamma e lascia che sia la curiosita a guidarti. Molti viaggi davvero importanti cominciano con un semplice pensiero: forse dovrei andare a vedere.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'knight-of-wands',
+    number: 33,
+    name_cn: '权杖骑士',
+    name_en: 'Knight of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['冲刺', '热情', '冒险', '行动力', '野心', '速度', '征服欲', '急躁'],
+    daily_upright:
+      '今天适合主动出击，把热情变成行动。你有很强的推进力，但也要记得看清方向再加速。',
+    daily_reversed:
+      '今天要小心急躁、冲动和说走就走的失控感。别让一时的兴奋把你带进没有准备好的局面。',
+    reading_upright: `权杖骑士正位代表强烈的行动力、冒险精神、冲刺欲望和对目标的热情追逐。它说明你已经不满足于停在想法阶段，而是想立刻行动、立刻推进、立刻去证明自己。
+
+在牌阵中出现时，权杖骑士提醒你可以大胆一点。它适合突破、迁移、旅行、竞争、表达、追求目标，也适合在停滞的局面中打出一股向前的力量。但这张牌也要求你保持方向感，因为速度越快，越需要知道自己要去哪里。`,
+    reading_reversed: `权杖骑士逆位代表冲动、鲁莽、缺乏耐心、方向混乱，或热情来得快去得也快。你可能正在被强烈的欲望和胜负心推动，却没有真正考虑后果。
+
+在牌阵中出现时，它提醒你不要把行动力变成失控。你可能太急着赢、太急着离开、太急着得到结果，以至于忽略了细节、承诺和他人的感受。此时需要先稳住节奏，否则热情会变成消耗。`,
+    detail: `权杖骑士是权杖牌组中最猛烈、最有冲击力的火焰。它象征行动、速度、冒险、野心和不可压抑的热情。如果权杖侍从是刚点燃的小火苗，那么权杖骑士就是已经冲起来的火。他不愿久等，也不擅长停留，他想要出发、征服、证明、抵达。
+
+当权杖骑士正位出现时，它通常表示一个充满行动力的阶段正在到来。你可能会突然想推动某个计划，离开旧环境，开启新的挑战，向某个人表达心意，或在事业中更积极地争取机会。它是一张很适合“冲”的牌，尤其当你已经拖延太久、犹豫太久时，权杖骑士会像一匹马，把你从原地带出去。
+
+这张牌也有强烈的魅力。权杖骑士常常代表热情、吸引力、直接表达和强烈存在感。他带来的能量鲜明、明亮、甚至有一点危险。你很难忽视他，因为他出现时，空气会变热，局面会开始移动。
+
+但权杖骑士的问题也很明显：他太快。快到可能还没想清楚就开始，快到承诺还没落地就已经想去下一个战场。它可能代表三分钟热度、冲动决定、冒险过头，或者只享受追逐过程，却不擅长承担后续责任。
+
+当权杖骑士逆位出现时，它提醒你留意失控的火。你可能因为愤怒、焦虑、欲望或胜负心而行动过快，也可能在一段关系或计划中忽冷忽热，让别人难以跟上你的节奏。此时不一定要完全停下，但需要重新握住方向盘。
+
+权杖骑士的核心信息是：热情需要出口，行动需要方向。你可以奔跑，可以追逐，可以让野心带你向前，但不要忘记，真正能抵达终点的火，不只是燃得猛，还要燃得稳。`,
+    translations: {
+      en: {
+        name: 'Knight of Wands',
+        keywords: ['charge', 'passion', 'adventure', 'action', 'ambition', 'speed', 'desire to conquer', 'impatience'],
+        daily_upright:
+          'Today favors taking initiative and turning passion into action. You have strong forward drive, but make sure you know your direction before accelerating.',
+        daily_reversed:
+          'Watch out today for impatience, impulsiveness, and the feeling of rushing off without control. Do not let a burst of excitement drag you into a situation you are not prepared for.',
+        reading_upright: `The Knight of Wands upright represents intense drive, adventurous spirit, the urge to charge ahead, and a passionate pursuit of a goal. It suggests that you are no longer satisfied with staying at the idea stage and want to act now, push now, and prove yourself now.
+
+In a spread, the Knight of Wands reminds you that boldness can be useful. It supports breakthroughs, relocation, travel, competition, expression, and pursuit of a target, and it can also inject forward force into a stagnant situation. But this card also asks you to keep your sense of direction, because the faster you move, the more necessary it becomes to know where you are going.`,
+        reading_reversed: `The Knight of Wands reversed represents impulsiveness, recklessness, lack of patience, confusion of direction, or passion that arrives quickly and disappears just as fast. You may be driven by strong desire and the urge to win without truly considering consequences.
+
+In a spread, it warns you not to let your power to act become a loss of control. You may be too eager to win, too eager to leave, or too eager to get results, and in doing so you may ignore details, commitments, and the feelings of others. What is needed now is to steady the rhythm before passion turns into pure depletion.`,
+        detail: `The Knight of Wands is the fiercest and most forceful fire in the suit of Wands. It symbolizes action, speed, adventure, ambition, and passion that refuses to be held back. If the Page of Wands is the first small spark, then the Knight of Wands is the fire already in motion. He does not like to wait, and he is not skilled at staying still. He wants to depart, conquer, prove, and arrive.
+
+When the Knight of Wands appears upright, it usually signals that a highly active phase is coming. You may suddenly want to push a plan forward, leave an old environment, begin a new challenge, express your feelings to someone, or fight more aggressively for opportunity in your career. It is a card that suits charging ahead, especially when you have already been delaying or hesitating for too long. The Knight of Wands can be the horse that finally carries you out of place.
+
+This card also carries strong charisma. The Knight of Wands often represents passion, attraction, direct expression, and a vivid personal presence. The energy he brings is bright, obvious, and even a little dangerous. He is difficult to ignore, because when he appears the air heats up and the situation begins to move.
+
+But the problem with the Knight of Wands is just as clear: he is too fast. Fast enough to begin before thinking, and fast enough to look for the next battlefield before a promise has even landed. He can point to short-lived enthusiasm, impulsive decisions, overdone risk-taking, or someone who enjoys the chase but is less prepared for the responsibility that follows.
+
+When the Knight of Wands appears reversed, it asks you to watch the fire when it becomes unstable. You may be acting too quickly because of anger, anxiety, desire, or competitiveness, or you may be running hot and cold in a relationship or plan, making it difficult for others to keep pace with you. This does not always mean you must stop completely, but it does mean you need to take the wheel again.
+
+The core message of the Knight of Wands is this: passion needs an outlet, and action needs direction. You can run, pursue, and let ambition drive you forward, but do not forget that the fire that truly reaches the finish line is not only fierce. It is also steady enough to last.`,
+      },
+      it: {
+        name: 'Cavaliere di Bastoni',
+        keywords: ['slancio', 'passione', 'avventura', 'azione', 'ambizione', 'velocita', 'desiderio di conquista', 'impazienza'],
+        daily_upright:
+          'Oggi e il momento di prendere l’iniziativa e trasformare la passione in azione. Hai una forte spinta in avanti, ma ricordati di vedere bene la direzione prima di accelerare.',
+        daily_reversed:
+          'Fai attenzione oggi all’impazienza, all’impulsivita e alla sensazione di partire senza controllo. Non lasciare che un’ondata di entusiasmo ti trascini in una situazione per cui non sei pronta o pronto.',
+        reading_upright: `Il Cavaliere di Bastoni diritto rappresenta una forte energia d'azione, spirito d'avventura, desiderio di scatto in avanti e inseguimento appassionato di un obiettivo. Indica che non ti basta piu restare nella fase dell'idea: vuoi agire subito, spingere subito e dimostrare subito chi sei.
+
+In una stesa, il Cavaliere di Bastoni ti ricorda che un po' di audacia puo essere utile. Favorisce svolte, trasferimenti, viaggi, competizione, espressione e inseguimento di un traguardo, e puo anche portare una spinta in avanti dentro una situazione ferma. Ma questa carta ti chiede anche di mantenere il senso della direzione, perche piu corri e piu diventa necessario sapere dove stai andando.`,
+        reading_reversed: `Il Cavaliere di Bastoni rovesciato rappresenta impulsivita, imprudenza, poca pazienza, confusione di direzione, oppure una passione che arriva in fretta e in fretta si consuma. Potresti essere spinta o spinto da un forte desiderio e da una grande voglia di vincere, senza aver davvero considerato le conseguenze.
+
+In una stesa, ti avverte di non trasformare la tua forza d'azione in perdita di controllo. Potresti avere troppa fretta di vincere, di andartene o di ottenere un risultato, e cosi rischi di trascurare dettagli, impegni e sentimenti altrui. Quello che serve adesso e ritrovare il ritmo prima che la passione si trasformi in puro logoramento.`,
+        detail: `Il Cavaliere di Bastoni e il fuoco piu impetuoso e piu travolgente del seme di Bastoni. Simboleggia azione, velocita, avventura, ambizione e una passione che non vuole essere trattenuta. Se il Fante di Bastoni e la prima piccola scintilla, allora il Cavaliere di Bastoni e il fuoco gia lanciato nella corsa. Non ama aspettare e non sa stare fermo a lungo. Vuole partire, conquistare, dimostrare e arrivare.
+
+Quando il Cavaliere di Bastoni appare diritto, di solito segnala l'arrivo di una fase molto attiva. Potresti voler improvvisamente spingere avanti un piano, lasciare un vecchio ambiente, aprire una nuova sfida, dichiarare i tuoi sentimenti a qualcuno o cercare con piu decisione un'opportunita nel lavoro. E una carta perfetta per il movimento, soprattutto se hai gia rimandato o esitato troppo a lungo. Il Cavaliere di Bastoni puo essere il cavallo che finalmente ti porta fuori dall'immobilita.
+
+Questa carta porta anche un forte carisma. Il Cavaliere di Bastoni rappresenta spesso passione, attrazione, espressione diretta e una presenza molto intensa. L'energia che porta e luminosa, evidente e perfino un po' pericolosa. E difficile ignorarlo, perche quando arriva l'aria si scalda e la situazione si mette in moto.
+
+Ma il suo problema e altrettanto evidente: corre troppo. Tanto da iniziare prima di aver riflettuto bene, e tanto da cercare gia il prossimo campo di battaglia prima ancora che una promessa si sia davvero posata. Puo indicare entusiasmi brevi, decisioni impulsive, rischio eccessivo o qualcuno che ama l'inseguimento ma e meno disposto a sostenere la responsabilita che viene dopo.
+
+Quando il Cavaliere di Bastoni appare rovesciato, ti chiede di osservare il fuoco quando diventa instabile. Potresti agire troppo in fretta per rabbia, ansia, desiderio o competitivita, oppure alternare caldo e freddo in una relazione o in un progetto, rendendo difficile agli altri stare al tuo passo. Questo non significa sempre che devi fermarti del tutto, ma significa che devi tornare a tenere il timone.
+
+Il messaggio centrale del Cavaliere di Bastoni e questo: la passione ha bisogno di uno sbocco e l'azione ha bisogno di direzione. Puoi correre, inseguire e lasciare che l'ambizione ti spinga avanti, ma non dimenticare che il fuoco che arriva davvero al traguardo non e solo impetuoso. E anche abbastanza stabile da durare.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.number, card]));
