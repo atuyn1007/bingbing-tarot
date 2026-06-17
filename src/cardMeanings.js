@@ -2395,6 +2395,406 @@ Il messaggio centrale del Quattro di Bastoni e questo: solo dopo la stabilita la
     },
   }),
   createMeaningCard({
+    id: 'five-of-wands',
+    number: 5,
+    name_cn: '权杖五',
+    name_en: 'Five of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['竞争', '冲突', '分歧', '较量', '表达', '训练', '挑战', '良性对抗'],
+    daily_upright:
+      '今天可能会遇到意见不合、竞争或需要表达立场的场面。你不一定喜欢冲突，但它也可能帮你看见自己的力量。',
+    daily_reversed:
+      '今天要小心逃避冲突，或把小分歧压成更大的问题。也要避免无意义的争吵，把精力浪费在谁也说服不了谁的地方。',
+    reading_upright: `权杖五正位代表竞争、分歧、冲突与意见碰撞。它说明当前局面中可能有多个声音、多个立场、多个目标同时存在，每个人都在挥舞自己的权杖，试图表达、争取或证明自己。
+
+在牌阵中出现时，权杖五提醒你面对冲突，而不是立刻逃开。这里的冲突不一定带有恶意，它也可能是一场练习、一场表演、一种良性的竞争。你也许并不喜欢这种混乱的局面，但正是通过表达、比较、较量和被挑战，你才能更清楚自己的位置，并让能力得到提升。`,
+    reading_reversed: `权杖五逆位代表冲突回避、内耗、暗中较劲，或混乱逐渐平息。你可能正在避免表达真实想法，因为害怕争执、尴尬或关系变坏；也可能表面平静，内在却充满不满和竞争感。
+
+在牌阵中出现时，权杖五逆位提醒你分辨：眼前的问题是真的不值得争，还是你只是害怕冲突？有些争论确实没有意义，需要及时退出；但有些分歧必须被说出来，否则它会变成长期的误解和压抑。此时需要找到更成熟的表达方式，而不是把所有不舒服都吞下去。`,
+    detail: `权杖五是权杖牌组中充满碰撞感的一张牌。牌面中，五个男人各自拿着权杖，在空中挥舞。乍看之下，这像是一场混乱的冲突；但仔细看，他们的姿态并不一定充满仇恨，反而像是在演练、竞赛、争论，甚至有一点年轻人之间互相较劲的肾上腺素。
+
+五这个数字在塔罗中常常带来不稳定、挑战和摩擦。权杖五的分歧来自火元素：每个人都有自己的热情、目标、表达欲和行动冲动。大家都想证明自己，都想让自己的权杖被看见，于是局面变得嘈杂、混乱，缺少统一方向。
+
+当权杖五正位出现时，它通常意味着你正在面对竞争或冲突。可能是工作中的竞争对手，团队中的意见不合，关系中的争执，创作中的比较，面试、考试、竞赛，或某种你必须站出来表达自己的场面。它不是最舒服的牌，因为它会带来压力，也会让不喜欢冲突的人感到疲惫。
+
+但权杖五并不一定是坏事。它有时代表一种良性的对抗：通过竞争发现自己的不足，通过辩论磨出更清晰的观点，通过和别人比较知道自己真正想要什么。就像训练场上的较量，它未必是为了伤害对方，而是为了让每个人都变得更强。
+
+这张牌尤其提醒那些不喜欢冲突的人：表达立场不等于制造战争，面对竞争也不等于变得恶意。有时你需要允许自己进入场上，允许自己发声，允许自己被看见。你不必把每一次分歧都视为危险，它也可能是成长的入口。
+
+在事业中，权杖五可能代表竞争激烈、团队意见不统一、项目方向拉扯，或需要在多人之中争取资源和位置。在关系中，它可能代表争吵、磨合、价值观碰撞，也可能只是双方都太有火气、太想表达自己，导致暂时难以安静地听见对方。
+
+当权杖五逆位出现时，它可能表示冲突正在减弱，大家不再正面争执；但它也可能表示问题被压下去了。表面没有吵架，不代表分歧消失。有人可能选择沉默，有人选择退让，有人把不满藏起来，最后变成暗中较劲和长期内耗。
+
+权杖五逆位也提醒你，不是所有冲突都值得参与。有些争论只是消耗，有些竞争只是无意义的比较，有些场合无论你怎么解释，对方都不会真正听见。此时，你需要判断：这是值得让我变强的挑战，还是只会让我燃尽的混乱？
+
+权杖五的核心信息是：冲突不一定是灾难，竞争也不一定是敌意。你可以不喜欢争斗，但仍然需要学会在分歧中表达自己。真正的成长，有时就发生在你不得不举起自己的权杖、站进人群之中的那一刻。`,
+    translations: {
+      en: {
+        name: 'Five of Wands',
+        keywords: ['competition', 'conflict', 'difference', 'clash', 'expression', 'training', 'challenge', 'healthy rivalry'],
+        daily_upright:
+          'Today may bring disagreement, competition, or a situation where you need to state your position. You may not enjoy conflict, but it can still show you your own strength.',
+        daily_reversed:
+          'Watch out today for avoiding conflict or pressing a small disagreement into a much larger problem. Also avoid meaningless arguments that only waste energy where no one will truly persuade anyone else.',
+        reading_upright: `The Five of Wands upright represents competition, disagreement, conflict, and collision of viewpoints. Several voices, positions, or goals may be active at once, and everyone is raising their own wand to express, fight for, or prove something.
+
+In a spread, the Five of Wands asks you to face conflict rather than flee it immediately. The conflict here is not always malicious. It can be practice, performance, or a healthy rivalry. You may dislike the chaos, but through expression, comparison, challenge, and contest, you can understand your own position more clearly and sharpen your ability.`,
+        reading_reversed: `The Five of Wands reversed represents avoidance of conflict, inner friction, silent rivalry, or a chaos that is beginning to calm down. You may be avoiding your true opinion because you fear argument, awkwardness, or damage to the relationship, or things may look calm on the surface while resentment and competitiveness continue inside.
+
+In a spread, the reversed Five of Wands asks you to distinguish whether the problem truly is not worth fighting over, or whether you are only afraid of conflict. Some arguments really are pointless and should be left. But some differences must be voiced, or they turn into long-term misunderstanding and suppression. A more mature way of speaking is needed now, rather than swallowing everything uncomfortable.`,
+        detail: `The Five of Wands is one of the most collision-filled cards in the suit of Wands. In the image, five men each hold a wand and swing them through the air. At first glance it looks like chaotic conflict, but on closer inspection the poses do not necessarily show hatred. They can look like training, competition, argument, or even the adrenaline of young people testing each other.
+
+The number five in Tarot often brings instability, challenge, and friction. The disagreement of the Five of Wands comes from fire: everyone has their own passion, goal, urge to express, and impulse to act. Everyone wants to prove themselves and have their wand seen, so the scene becomes noisy, messy, and lacking one shared direction.
+
+When the Five of Wands appears upright, it usually means you are facing competition or conflict. It can be work rivals, disagreement in a team, argument in a relationship, comparison in creative life, an interview, exam, contest, or any situation where you have to step forward and make yourself heard. It is not the easiest card, because it brings pressure and can exhaust people who dislike conflict.
+
+But the Five of Wands is not always negative. Sometimes it represents healthy opposition: discovering your weaknesses through competition, refining your thinking through debate, and learning what you truly want by measuring yourself against others. Like a training match, it is not always about hurting the other person. It can be about making everyone stronger.
+
+This card especially reminds people who dislike conflict that stating a position is not the same as starting a war, and facing competition is not the same as becoming malicious. Sometimes you need to allow yourself onto the field, allow yourself to speak, and allow yourself to be seen. You do not have to treat every disagreement as danger. It may also be the entrance to growth.
+
+In work, the Five of Wands can mean fierce competition, a team lacking agreement, project direction being pulled apart, or a need to fight for resources and place among many people. In relationships, it can point to arguments, adjustment, and clashing values, or simply both people being too fiery and too eager to express themselves to hear each other quietly.
+
+When the Five of Wands appears reversed, it may mean that direct conflict is lessening, but it can also mean the problem has merely been pressed down. No open argument does not mean the differences are gone. Someone may stay silent, someone may withdraw, and someone may hide resentment until it turns into quiet rivalry and long-term internal drain.
+
+The reversed Five of Wands also reminds you that not every conflict deserves participation. Some arguments only drain you, some competitions are meaningless comparison, and some situations will never truly hear your explanation no matter how hard you try. You need to judge whether this is a challenge that makes you stronger or only a chaos that burns you out.
+
+The core message of the Five of Wands is this: conflict is not always disaster, and competition is not always hostility. You may not enjoy fighting, but you still need to learn how to express yourself in the middle of difference. Sometimes real growth begins the moment you are forced to lift your own wand and step into the crowd.`,
+      },
+      it: {
+        name: 'Cinque di Bastoni',
+        keywords: ['competizione', 'conflitto', 'divergenza', 'scontro', 'espressione', 'allenamento', 'sfida', 'rivalita sana'],
+        daily_upright:
+          'Oggi potresti incontrare disaccordi, competizione o una situazione in cui serve dichiarare la tua posizione. Il conflitto forse non ti piace, ma puo comunque mostrarti la tua forza.',
+        daily_reversed:
+          'Oggi fai attenzione a evitare il conflitto o a comprimere una piccola divergenza fino a trasformarla in un problema piu grande. Evita anche litigi inutili che consumano energia senza portare nessuno ad ascoltare davvero l’altro.',
+        reading_upright: `Il Cinque di Bastoni diritto rappresenta competizione, divergenza, conflitto e scontro di opinioni. Potrebbero essere presenti piu voci, piu posizioni o piu obiettivi insieme, e ognuno alza il proprio bastone per esprimersi, lottare o dimostrare qualcosa.
+
+In una stesa, il Cinque di Bastoni ti invita ad affrontare il conflitto invece di scappare subito. Questo scontro non e sempre cattivo. Puo essere allenamento, esibizione o competizione sana. Forse non ami il caos, ma proprio attraverso il confronto, la sfida, il paragone e l’espressione puoi capire meglio il tuo posto e migliorare le tue capacita.`,
+        reading_reversed: `Il Cinque di Bastoni rovesciato rappresenta evitamento del conflitto, logoramento interno, rivalita silenziosa oppure un caos che lentamente si placa. Potresti evitare di esprimere cio che pensi davvero per paura di litigare, creare imbarazzo o rovinare il rapporto; oppure all’esterno tutto puo sembrare calmo mentre dentro restano competizione e malcontento.
+
+In una stesa, il Cinque di Bastoni rovesciato ti chiede di distinguere se il problema non vale davvero la lotta oppure se sei solo spaventata o spaventato dal conflitto. Alcune discussioni sono davvero inutili e vanno lasciate andare. Ma alcune differenze devono essere espresse, altrimenti diventano incomprensione e repressione di lungo periodo. Serve un modo piu maturo di parlare, non ingoiare tutto il disagio.`,
+        detail: `Il Cinque di Bastoni e una delle carte piu cariche di attrito nel seme di Bastoni. Nell’immagine, cinque uomini impugnano ciascuno un bastone e li agitano in aria. A prima vista sembra una scena di conflitto caotico, ma osservando meglio le posture non trasmettono necessariamente odio. Possono ricordare allenamento, competizione, discussione o persino l’adrenalina di giovani che si misurano tra loro.
+
+Il numero cinque nei Tarocchi porta spesso instabilita, sfida e attrito. La divergenza del Cinque di Bastoni nasce dall’elemento fuoco: ognuno ha la propria passione, il proprio obiettivo, il proprio bisogno di esprimersi e il proprio impulso ad agire. Tutti vogliono dimostrare qualcosa e far vedere il proprio bastone, cosi la scena diventa rumorosa, confusa e senza una direzione unica.
+
+Quando il Cinque di Bastoni appare diritto, di solito significa che stai affrontando competizione o conflitto. Puo trattarsi di rivali nel lavoro, disaccordi nel team, discussioni nelle relazioni, confronti nella creativita, colloqui, esami, gare, oppure qualsiasi contesto in cui devi farti avanti e far sentire la tua voce. Non e una carta comoda, perche porta pressione e puo stancare chi non ama il confronto.
+
+Ma il Cinque di Bastoni non e sempre negativo. A volte rappresenta una forma sana di opposizione: scoprire i propri punti deboli attraverso la competizione, chiarire meglio le idee grazie al dibattito, capire cosa si desidera davvero confrontandosi con gli altri. Come in un campo di allenamento, non si tratta sempre di ferire l’altro. Si tratta anche di rendere tutti piu forti.
+
+Questa carta ricorda soprattutto alle persone che non amano il conflitto che esprimere una posizione non significa dichiarare guerra, e affrontare la competizione non significa diventare ostili. A volte devi permetterti di entrare in campo, di parlare e di farti vedere. Non ogni divergenza e un pericolo. Puo anche essere la soglia della crescita.
+
+Nel lavoro, il Cinque di Bastoni puo indicare competizione intensa, un team senza accordo, una direzione di progetto tirata da piu lati, oppure la necessita di contendere risorse e spazio tra molte persone. Nelle relazioni, puo rappresentare litigi, aggiustamenti, scontro di valori o semplicemente due persone troppo accese e troppo desiderose di esprimersi per riuscire ad ascoltarsi con calma.
+
+Quando il Cinque di Bastoni appare rovesciato, puo significare che il conflitto diretto si sta riducendo, ma puo anche indicare che il problema e stato solo schiacciato verso il basso. L’assenza di litigi aperti non significa che le differenze siano sparite. Qualcuno puo tacere, qualcuno puo ritirarsi, qualcuno puo nascondere il malcontento, finche tutto si trasforma in rivalita silenziosa e logoramento interiore.
+
+Il Cinque di Bastoni rovesciato ricorda anche che non ogni conflitto merita la tua partecipazione. Alcune discussioni ti consumano soltanto, alcune competizioni sono confronto sterile, e in certi contesti nessuno ascoltera davvero le tue ragioni. Devi capire se questa e una sfida che ti rende piu forte oppure solo un caos che ti esaurisce.
+
+Il messaggio centrale del Cinque di Bastoni e questo: il conflitto non e sempre una catastrofe, e la competizione non e sempre ostilita. Anche se non ami la lotta, hai comunque bisogno di imparare a esprimerti nel mezzo delle divergenze. A volte la crescita vera comincia proprio nel momento in cui sei costretta o costretto ad alzare il tuo bastone ed entrare nella folla.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'six-of-wands',
+    number: 6,
+    name_cn: '权杖六',
+    name_en: 'Six of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['胜利', '认可', '成功', '升迁', '公认成就', '凯旋', '荣誉', '自信'],
+    daily_upright:
+      '今天适合接受认可和赞赏。你的努力可能被看见，也可能迎来一个值得庆祝的小胜利。',
+    daily_reversed:
+      '今天要小心不被看见的失落感，或过度依赖外界认可。胜利很重要，但不要让掌声决定你的全部价值。',
+    reading_upright: `权杖六正位代表胜利、升迁、公认的成功与外界认可。它说明你可能正在穿过竞争之后，获得一个清晰的成果：被看见、被肯定、被推到更显眼的位置。
+
+在牌阵中出现时，权杖六提醒你接住属于自己的荣耀。它可能象征考试通过、面试成功、项目获奖、职位提升、公开表扬、社群认可，或某件事终于得到了正面反馈。这个胜利不是藏在心里的自我安慰，而是有机会被他人看见和承认的成就。`,
+    reading_reversed: `权杖六逆位代表认可延迟、胜利不稳、自信受挫，或表面成功背后仍有压力。你可能已经付出努力，却没有得到应有的肯定；也可能过度在意别人怎么看自己，导致内在的成就感变得脆弱。
+
+在牌阵中出现时，权杖六逆位提醒你重新看待成功。你需要分辨：是外界真的没有看见你，还是你把所有价值都交给了掌声？它也可能表示胜利之后仍需巩固位置，不能因为一次成功就放松警惕。真正稳固的认可，需要后续持续的能力支撑。`,
+    detail: `权杖六是权杖五之后的胜利。经历过竞争、冲突、较量和表达之后，终于有人从人群中脱颖而出。牌面中，人物骑在马上，头戴胜利花环，手中的权杖也装饰着花环，周围有人群注视和欢迎。这不是一个人的秘密成功，而是公开的凯旋。
+
+这张牌象征胜利、认可、升迁、公认成就与自信。它说明努力被看见，表现被肯定，竞争之后出现结果。和权杖五的混乱相比，权杖六已经有了明确的方向和位置：你不再只是人群中挥舞权杖的一员，而是成为了被大家看见的人。
+
+当权杖六正位出现时，它通常代表好消息、成功、晋升、通过、获奖、项目完成、公开表扬，或在某个领域获得认可。它很适合用来描述事业上的进展：面试通过，业绩提升，职位上升，作品被喜欢，账号涨粉，团队认可，或者个人能力终于被放到台面上评价并得到正向回应。
+
+权杖六的重点是“公认”。有些牌的成功是内在的，比如隐士的智慧、节制的平衡、星星的疗愈；但权杖六的成功更外显。它关心的是别人是否看见你，社会是否认可你，成果是否被公开确认。它是一张很适合升迁、荣誉和阶段性胜利的牌。
+
+这张牌也有自信回归的意味。经历过权杖五的竞争之后，你可能终于发现自己并没有那么弱。你可以赢，可以被看见，可以站到更中心的位置。它鼓励你不要过度谦缩，也不要把自己的成果藏起来。该被认可的时候，就坦然接住认可。
+
+但权杖六也有阴影面。掌声很美，但掌声也会让人上瘾。如果你把自己的价值完全建立在外界认可上，那么一旦掌声变少，内心就会立刻动摇。权杖六提醒你享受胜利，但不要被胜利绑架。被看见是一件好事，但你不必永远活在游行队伍中。
+
+在关系中，权杖六可能代表被重视、被公开承认、被对方骄傲地选择。它也可能表示关系中一方很需要面子、尊严或外界认可。在事业中，它是一张很强的成功牌，尤其对应公开表现、竞争胜出、升职加薪、项目成绩、社会评价和个人品牌。
+
+当权杖六逆位出现时，它可能表示胜利被延迟，认可没有到来，或你明明已经努力很多，却仍然觉得自己没有被看见。它也可能表示表面上赢了，内在却并不踏实：位置上去了，但压力也变大了；获得关注了，但害怕下一次不能继续维持。
+
+权杖六逆位也可能提醒你，不要为了赢而失去方向。有些人太想被认可，于是开始迎合掌声；太想证明自己，于是无法接受普通和失败。此时需要重新确认：我追求的是确实的成长，还是只是别人眼中的胜利？
+
+权杖六的核心信息是：你的努力可以被看见，你的胜利也值得被庆祝。经历过竞争之后，请允许自己骑上马，走过人群，接住花环。但也要记得，真正长久的成功，不只来自掌声，也来自你在掌声之后仍然持续前进的能力。`,
+    translations: {
+      en: {
+        name: 'Six of Wands',
+        keywords: ['victory', 'recognition', 'success', 'promotion', 'public achievement', 'triumph', 'honor', 'confidence'],
+        daily_upright:
+          'Today favors receiving recognition and praise. Your effort may be seen, and you may also meet a small victory worth celebrating.',
+        daily_reversed:
+          'Watch out today for the disappointment of not being seen, or for relying too heavily on outside approval. Victory matters, but applause should not determine your entire value.',
+        reading_upright: `The Six of Wands upright represents victory, promotion, publicly recognized success, and outside approval. It suggests that after passing through competition, you may gain a clear result: being seen, being affirmed, and being placed more visibly before others.
+
+In a spread, the Six of Wands asks you to receive the honor that belongs to you. It can symbolize passing an exam, succeeding in an interview, winning recognition for a project, being promoted, being praised in public, receiving community approval, or finally getting positive feedback for something important. This victory is not only private self-comfort. It is an achievement that others can witness and confirm.`,
+        reading_reversed: `The Six of Wands reversed represents delayed recognition, unstable victory, shaken confidence, or pressure hiding beneath apparent success. You may have worked hard without receiving the affirmation you deserved, or you may care too much about how other people see you, making your sense of achievement fragile.
+
+In a spread, the reversed Six of Wands asks you to rethink success. Is the outer world truly failing to see you, or have you handed all of your worth to applause? It can also mean that even after victory, the position still needs to be secured. One success alone is not enough to relax completely. Enduring recognition needs continued strength to support it.`,
+        detail: `The Six of Wands is the victory that follows the Five of Wands. After competition, conflict, comparison, and expression, someone finally rises above the crowd. In the card image, a figure rides a horse wearing a laurel wreath, and the wand they hold is also decorated with a wreath. People around them watch and welcome them. This is not secret success. It is public triumph.
+
+This card symbolizes victory, recognition, promotion, public achievement, and confidence. It shows that effort is seen, performance is affirmed, and competition has produced a result. Compared with the confusion of the Five of Wands, the Six already has a clear direction and position. You are no longer only one among the crowd waving a wand. You are the one being noticed.
+
+When the Six of Wands appears upright, it usually represents good news, success, advancement, passing, awards, a project completed, public praise, or recognition in a particular field. It is excellent for describing career progress: getting through an interview, raising performance, moving up in position, seeing your work appreciated, gaining followers, being recognized by a team, or having your ability finally evaluated in public and answered positively.
+
+The key word here is public recognition. Some cards hold inward success, such as the Hermit's wisdom, Temperance's balance, or the Star's healing. But the success of the Six of Wands is more visible. It cares about whether others see you, whether society recognizes you, and whether achievement is publicly confirmed. It is a strong card for promotion, honor, and milestone success.
+
+This card also carries the return of confidence. After the competition of the Five of Wands, you may finally realize that you are not as weak as you feared. You can win, be seen, and stand nearer the center. It encourages you not to shrink too much and not to hide your results. When recognition is due, receive it honestly.
+
+But the Six of Wands has a shadow side. Applause is beautiful, but it can also become addictive. If you build your value entirely on outer recognition, then the moment applause quiets, your inner ground may shake. The Six of Wands asks you to enjoy victory without becoming imprisoned by it. Being seen is good, but you do not have to live forever inside the parade.
+
+In relationships, the Six of Wands can mean being valued, publicly acknowledged, or proudly chosen by the other person. It can also show that one side of the relationship strongly needs face, dignity, or outer approval. In work, it is a powerful success card, especially for public performance, winning competition, promotion, raise, project results, social evaluation, and personal reputation.
+
+When the Six of Wands appears reversed, it can mean that victory is delayed, recognition does not arrive, or despite your effort you still feel unseen. It can also mean that success exists on the surface while insecurity remains underneath: you have moved upward, but pressure has increased; you have received attention, but now you fear you may not maintain it next time.
+
+The reversed Six of Wands may also warn you not to lose your direction for the sake of winning. Some people become so hungry for recognition that they start performing for applause. Some become so obsessed with proving themselves that they cannot accept ordinary life or failure. What matters now is asking whether you are pursuing true growth or only a victory that lives in other people's eyes.
+
+The core message of the Six of Wands is this: your effort can be seen, and your victory deserves celebration. After competition, allow yourself to ride the horse, pass through the crowd, and receive the wreath. But remember that lasting success comes not only from applause, but from the ability to keep moving even after the applause has faded.`,
+      },
+      it: {
+        name: 'Sei di Bastoni',
+        keywords: ['vittoria', 'riconoscimento', 'successo', 'promozione', 'traguardo pubblico', 'trionfo', 'onore', 'fiducia'],
+        daily_upright:
+          'Oggi e il momento di accogliere riconoscimento e apprezzamento. Il tuo impegno puo essere visto, e puo arrivare anche una piccola vittoria degna di festa.',
+        daily_reversed:
+          'Oggi fai attenzione alla delusione di non essere vista o visto, oppure al rischio di dipendere troppo dall’approvazione esterna. La vittoria conta, ma gli applausi non devono decidere tutto il tuo valore.',
+        reading_upright: `Il Sei di Bastoni diritto rappresenta vittoria, promozione, successo riconosciuto pubblicamente e approvazione esterna. Dopo aver attraversato la competizione, potresti ottenere un risultato chiaro: essere vista o visto, essere confermata o confermato, ed essere portata o portato in una posizione piu evidente.
+
+In una stesa, il Sei di Bastoni ti invita ad accogliere l’onore che ti appartiene. Puo simboleggiare il superamento di un esame, il successo in un colloquio, il riconoscimento di un progetto, una promozione, un elogio pubblico, il consenso di una comunita oppure il fatto che qualcosa riceva finalmente un riscontro positivo. Questa vittoria non e solo consolazione privata: e un risultato che puo essere visto e confermato dagli altri.`,
+        reading_reversed: `Il Sei di Bastoni rovesciato rappresenta riconoscimento in ritardo, vittoria instabile, fiducia ferita oppure pressione nascosta dietro un successo apparente. Potresti aver lavorato molto senza ottenere la conferma che meritavi, oppure potresti dipendere troppo dallo sguardo degli altri, rendendo fragile il tuo senso di valore.
+
+In una stesa, il Sei di Bastoni rovesciato ti invita a ripensare il significato del successo. E davvero il mondo esterno a non vederti, oppure hai consegnato tutto il tuo valore agli applausi? Puo anche indicare che, dopo la vittoria, la posizione va ancora consolidata. Un solo successo non basta a rilassarsi del tutto. Il riconoscimento duraturo ha bisogno di forza continua per essere sostenuto.`,
+        detail: `Il Sei di Bastoni e la vittoria che segue il Cinque di Bastoni. Dopo competizione, conflitto, confronto ed espressione, qualcuno finalmente emerge dalla folla. Nell’immagine, una figura cavalca un cavallo, indossa una corona d’alloro e tiene un bastone anch’esso ornato di alloro. Le persone intorno guardano e accolgono. Non e un successo segreto. E un trionfo pubblico.
+
+Questa carta simboleggia vittoria, riconoscimento, promozione, traguardo pubblico e fiducia in se. Mostra che l’impegno viene visto, la prestazione viene confermata, e la competizione produce un risultato. Rispetto alla confusione del Cinque di Bastoni, il Sei ha gia una direzione e una posizione chiare. Non sei piu soltanto una persona nella folla che agita un bastone. Sei quella che viene notata.
+
+Quando il Sei di Bastoni appare diritto, di solito rappresenta buone notizie, successo, avanzamento, superamento, premi, un progetto concluso, lode pubblica o riconoscimento in un certo campo. E una carta eccellente per descrivere il progresso professionale: superare un colloquio, migliorare i risultati, salire di ruolo, vedere apprezzato il proprio lavoro, ricevere seguito, ottenere approvazione dal team, o avere finalmente le proprie capacita valutate pubblicamente in modo positivo.
+
+La parola chiave qui e riconoscimento pubblico. Alcune carte custodiscono un successo interiore, come la saggezza dell’Eremita, l’equilibrio della Temperanza o la guarigione della Stella. Ma il successo del Sei di Bastoni e piu visibile. Riguarda il fatto che gli altri ti vedano, che la societa ti riconosca, e che il tuo risultato venga confermato apertamente. E una carta forte per promozione, onore e vittoria di tappa.
+
+Questa carta porta anche il ritorno della fiducia. Dopo la competizione del Cinque di Bastoni, potresti finalmente renderti conto di non essere cosi fragile come temevi. Puoi vincere, puoi essere vista o visto, puoi stare piu vicino al centro. Ti incoraggia a non rimpicciolirti troppo e a non nascondere i tuoi risultati. Quando il riconoscimento e dovuto, accoglilo con sincerita.
+
+Ma il Sei di Bastoni ha anche un lato ombra. Gli applausi sono belli, ma possono creare dipendenza. Se costruisci tutto il tuo valore sul riconoscimento esterno, appena gli applausi diminuiscono il terreno interiore puo vacillare. Il Sei di Bastoni ti invita a goderti la vittoria senza diventarne prigioniera o prigioniero. Essere visti e una cosa buona, ma non devi vivere per sempre nella parata.
+
+Nelle relazioni, il Sei di Bastoni puo indicare essere valorizzati, essere riconosciuti pubblicamente o essere scelti con orgoglio dall’altra persona. Puo anche mostrare che una parte della relazione ha molto bisogno di immagine, dignita o approvazione esterna. Nel lavoro e una carta molto forte di successo, soprattutto per performance pubblica, vittoria nella competizione, promozione, aumento, risultati di progetto, reputazione sociale e immagine personale.
+
+Quando il Sei di Bastoni appare rovesciato, puo significare che la vittoria e rinviata, che il riconoscimento non arriva, oppure che nonostante gli sforzi continui a sentirti invisibile. Puo anche indicare che il successo esiste in superficie ma dentro manca stabilita: sei salita o salito di livello, ma la pressione e aumentata; hai ricevuto attenzione, ma temi di non riuscire a mantenerla.
+
+Il Sei di Bastoni rovesciato puo anche avvertirti di non perdere la direzione solo per vincere. Alcune persone desiderano cosi tanto il riconoscimento da cominciare a esibirsi per gli applausi. Altre vogliono cosi tanto dimostrare il proprio valore da non riuscire piu ad accettare ordinarieta e fallimento. La domanda importante qui e se stai cercando una crescita reale oppure soltanto una vittoria che esiste negli occhi degli altri.
+
+Il messaggio centrale del Sei di Bastoni e questo: il tuo impegno puo essere visto e la tua vittoria merita di essere festeggiata. Dopo la competizione, concediti di salire sul cavallo, passare tra la folla e ricevere la corona. Ma ricorda anche che il successo duraturo non nasce solo dagli applausi: nasce dalla tua capacita di continuare a camminare anche dopo che gli applausi si spengono.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'seven-of-wands',
+    number: 7,
+    name_cn: '权杖七',
+    name_en: 'Seven of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['防守', '坚持', '挑战', '立场', '竞争', '高地', '压力', '守住优势'],
+    daily_upright:
+      '今天可能需要守住自己的立场。即使周围有质疑或挑战，只要你站稳位置，就不必轻易退让。',
+    daily_reversed:
+      '今天要小心被压力压倒，或为了避免冲突而放弃自己的位置。也要分清：哪些值得坚持，哪些只是无意义的消耗。',
+    reading_upright: `权杖七正位代表防守、坚持、面对挑战与守住自己的优势。它说明你已经站到了某个位置上，也许刚刚取得一点成果，或者拥有某种主动权，但外界的竞争、质疑和压力也随之而来。
+
+在牌阵中出现时，权杖七提醒你不要轻易让出自己的高地。你可能需要解释、争取、反驳、维护边界，或在多人竞争中证明自己。它不是轻松的胜利，而是胜利之后的守卫：你已经走到这里，现在需要有勇气继续站稳。`,
+    reading_reversed: `权杖七逆位代表压力过大、防线松动、自我怀疑，或因为害怕冲突而不敢坚持立场。你可能感觉自己被很多问题同时围攻，明明想守住某个位置，却越来越疲惫。
+
+在牌阵中出现时，权杖七逆位提醒你重新评估自己的战场。你是否真的需要回应每一个质疑？是否把所有挑战都当成必须打赢的战争？它也可能表示你正在放弃原本该守住的边界。此时需要找回力量，但也要学会选择真正值得防守的东西。`,
+    detail: `权杖七是权杖六之后的牌。权杖六代表胜利和被认可，而权杖七则提醒你：被看见之后，挑战也会随之而来。站到高处并不意味着从此轻松，反而意味着你需要面对更多目光、更多竞争，以及更多试图把你拉下去的力量。
+
+牌面中，一个人站在高地上，手中拿着权杖，下面有六根权杖向他逼近。他的位置比别人高，说明他并非毫无优势；但他的处境也并不轻松，因为他必须同时面对多个方向的挑战。这张牌的核心不是主动进攻，而是守住自己已经争取到的位置。
+
+当权杖七正位出现时，它通常意味着你需要坚持立场。你可能正在面对竞争者、质疑者、反对意见，或某种让你不得不证明自己的局面。也许你并不喜欢冲突，但此时退让未必是最好的选择。你需要清楚地表达自己的观点，维护自己的边界，也维护自己已经付出努力才得到的位置。
+
+权杖七也很适合形容事业和竞争中的“守擂”。你可能已经通过面试、拿到机会、获得关注、完成阶段胜利，但接下来还需要继续证明自己配得上这个位置。它是一张带着压力的牌，但也是有力量的牌。它说明你并不是站在低处挨打，而是拥有高地，只是需要更坚定地守住。
+
+在关系中，权杖七可能代表防御、争取、自我保护，或在关系中坚持自己的底线。你可能需要告诉对方哪些事情不能被越界，也可能需要在外界压力面前维护这段关系。但如果这张牌能量过重，也可能表示双方都太防备，沟通变成了互相抵抗。
+
+当权杖七逆位出现时，它提醒你留意两种情况。第一种是你快要被压力压垮了，已经没有力气继续防守。你可能觉得所有人都在反对你，所有问题都同时涌来，最后变得疲惫、烦躁、自我怀疑。第二种是你太快放弃了本该守住的东西，因为你不想争、不想解释、不想面对冲突。
+
+权杖七逆位也提醒你，不是所有战斗都值得打。你不需要回应每一个声音，也不需要向所有人证明自己。真正重要的是分辨：这里是我的高地吗？这个位置值得我守吗？这些挑战是在让我变强，还是只是在消耗我？
+
+权杖七的核心信息是：站到高处之后，要有守住高处的勇气。你可以不喜欢冲突，但你需要知道自己的立场在哪里。真正的坚持不是盲目硬撑，而是在重要的地方不轻易后退。`,
+    translations: {
+      en: {
+        name: 'Seven of Wands',
+        keywords: ['defense', 'persistence', 'challenge', 'position', 'competition', 'high ground', 'pressure', 'holding advantage'],
+        daily_upright:
+          'Today may ask you to hold your ground. Even if doubts or challenges surround you, you do not need to retreat easily as long as you stay steady in your place.',
+        daily_reversed:
+          'Watch out today for being overwhelmed by pressure or giving up your place just to avoid conflict. Also distinguish between what is worth defending and what is only meaningless exhaustion.',
+        reading_upright: `The Seven of Wands upright represents defense, persistence, meeting challenge, and protecting your advantage. You have already reached a certain position. You may have just gained a result or some initiative, but outside competition, doubt, and pressure are arriving with it.
+
+In a spread, the Seven of Wands asks you not to surrender your high ground too easily. You may need to explain yourself, fight for your place, answer objections, defend boundaries, or prove yourself in a crowded field. This is not an easy victory. It is the guard that comes after victory: you have made it this far, and now you need the courage to remain standing.`,
+        reading_reversed: `The Seven of Wands reversed represents excessive pressure, weakening defenses, self-doubt, or fear of conflict that keeps you from holding your position. You may feel attacked by many problems at once and become more exhausted the more you try to hold on.
+
+In a spread, the reversed Seven of Wands asks you to reassess your battlefield. Do you truly need to answer every doubt? Have you turned every challenge into a war that must be won? It can also mean that you are abandoning boundaries you actually needed to hold. You need your strength back, but you also need to choose what is truly worth defending.`,
+        detail: `The Seven of Wands follows the Six of Wands. The Six represents victory and recognition, while the Seven reminds you that once you are seen, challenge follows. Standing at a higher place does not mean everything becomes easy. It often means facing more eyes, more competition, and more forces trying to pull you down.
+
+In the card image, one figure stands on high ground with a wand in hand while six other wands rise up toward them. The higher position shows that this person does have an advantage, but the situation is not simple, because challenge comes from several directions at once. The core of this card is not attacking first. It is holding the place you have already earned.
+
+When the Seven of Wands appears upright, it usually means you need to stand by your position. You may be facing competitors, critics, resistance, or a situation that forces you to prove yourself. You may not enjoy conflict, but stepping back now may not serve you. You need to express your view clearly, defend your boundaries, and protect the place you reached through effort.
+
+The Seven of Wands is also a good image for defending your place in work and competition. You may already have passed an interview, gained an opportunity, attracted attention, or achieved a stage of victory, but now you still need to prove that you belong where you stand. It is a card of pressure, but also a card of strength. You are not on low ground being beaten. You already hold the height. You simply need to defend it with more conviction.
+
+In relationships, the Seven of Wands can represent defensiveness, self-protection, or holding your line. You may need to tell another person what cannot be crossed, or protect the relationship itself against outside pressure. But if the energy becomes too heavy, it can also mean both people are too guarded and communication turns into resistance.
+
+When the Seven of Wands appears reversed, it asks you to notice two possibilities. The first is that pressure is close to crushing you, and you no longer have the strength to keep defending. Everything may seem to be coming at you at once until you end up tired, irritable, and full of self-doubt. The second is that you give up too quickly on something that should have been protected, because you do not want to argue, explain, or face conflict.
+
+The reversed Seven of Wands also reminds you that not every battle deserves your energy. You do not need to answer every voice, and you do not need to prove yourself to everyone. What matters is whether this is truly your high ground, whether this place is worth defending, and whether these challenges are making you stronger or only draining you.
+
+The core message of the Seven of Wands is this: once you reach higher ground, you need the courage to remain there. You do not have to enjoy conflict, but you do need to know where you stand. Real persistence is not blind stubbornness. It is refusing to retreat too easily where something truly matters.`,
+      },
+      it: {
+        name: 'Sette di Bastoni',
+        keywords: ['difesa', 'tenacia', 'sfida', 'posizione', 'competizione', 'vantaggio', 'pressione', 'mantenere il terreno'],
+        daily_upright:
+          'Oggi potresti dover difendere la tua posizione. Anche se intorno a te ci sono dubbi o sfide, non devi arretrare facilmente se resti saldo o salda nel tuo posto.',
+        daily_reversed:
+          'Oggi fai attenzione a farti schiacciare dalla pressione o a rinunciare alla tua posizione solo per evitare il conflitto. Distingui anche cio che vale davvero la pena difendere da cio che e solo consumo inutile di energia.',
+        reading_upright: `Il Sette di Bastoni diritto rappresenta difesa, perseveranza, confronto con la sfida e capacita di mantenere il proprio vantaggio. Sei gia arrivata o arrivato in una certa posizione: forse hai appena ottenuto un risultato o una quota di iniziativa, ma insieme a questo arrivano anche competizione, dubbi e pressione esterna.
+
+In una stesa, il Sette di Bastoni ti ricorda di non cedere troppo facilmente il terreno conquistato. Potresti dover spiegarti, lottare per il tuo posto, rispondere alle obiezioni, difendere confini o dimostrare il tuo valore in un contesto competitivo. Non e una vittoria facile, ma la difesa che segue la vittoria: sei arrivata o arrivato fin qui, e adesso serve il coraggio di restare in piedi.`,
+        reading_reversed: `Il Sette di Bastoni rovesciato rappresenta pressione eccessiva, difese che cedono, insicurezza, oppure paura del conflitto che ti impedisce di mantenere la tua posizione. Potresti sentirti attaccata o attaccato da piu problemi insieme e diventare sempre piu stanca o stanco nel tentativo di resistere.
+
+In una stesa, il Sette di Bastoni rovesciato ti chiede di rivalutare il tuo campo di battaglia. Hai davvero bisogno di rispondere a ogni dubbio? Hai trasformato ogni sfida in una guerra da vincere? Puo anche indicare che stai abbandonando confini che invece avresti dovuto difendere. Ti serve recuperare forza, ma anche scegliere cio che merita davvero la tua difesa.`,
+        detail: `Il Sette di Bastoni arriva dopo il Sei di Bastoni. Il Sei rappresenta vittoria e riconoscimento, mentre il Sette ricorda che, una volta diventata visibile o visibile, arrivano anche le sfide. Stare in alto non significa che tutto diventi facile. Spesso significa affrontare piu sguardi, piu concorrenza e piu forze che cercano di tirarti giu.
+
+Nell’immagine della carta, una figura si trova in alto con un bastone in mano, mentre altre sei aste salgono verso di lei o lui. La posizione elevata mostra che esiste un vantaggio reale, ma la situazione non e semplice, perche le sfide arrivano da piu direzioni insieme. Il cuore di questa carta non e attaccare per primi. E mantenere il posto che ci si e gia guadagnati.
+
+Quando il Sette di Bastoni appare diritto, di solito indica che devi sostenere la tua posizione. Potresti avere a che fare con concorrenti, critiche, opposizioni o circostanze che ti costringono a dimostrare il tuo valore. Forse il conflitto non ti piace, ma arretrare ora potrebbe non aiutarti. Serve esprimere con chiarezza il tuo punto di vista, difendere i tuoi confini e proteggere il posto che hai raggiunto con fatica.
+
+Il Sette di Bastoni descrive bene anche il difendere il proprio posto nel lavoro e nella competizione. Potresti aver superato un colloquio, ottenuto un’opportunita, ricevuto attenzione o completato una fase vincente, ma ora devi ancora mostrare di meritare davvero quella posizione. E una carta di pressione, ma anche di forza. Non sei in basso a subire. Hai gia il terreno alto. Devi solo difenderlo con piu fermezza.
+
+Nelle relazioni, il Sette di Bastoni puo rappresentare difesa, autoprotezione o il mantenere il proprio limite. Potresti dover dire all’altra persona quali confini non possono essere superati, oppure proteggere la relazione stessa dalla pressione esterna. Ma se questa energia diventa troppo pesante, puo anche indicare che entrambe le persone sono troppo sulla difensiva e che la comunicazione si trasforma in resistenza reciproca.
+
+Quando il Sette di Bastoni appare rovesciato, ti invita a osservare due possibilita. La prima e che la pressione stia quasi per schiacciarti e che tu non abbia piu forza per difenderti. Potrebbe sembrarti che tutto ti stia arrivando addosso nello stesso momento, finche non diventi stanca o stanco, irritabile e piena o pieno di dubbi. La seconda e che tu rinunci troppo presto a qualcosa che invece andava protetto, solo per evitare discussioni, spiegazioni o conflitti.
+
+Il Sette di Bastoni rovesciato ti ricorda anche che non ogni battaglia merita la tua energia. Non devi rispondere a ogni voce, e non devi dimostrare il tuo valore a chiunque. Cio che conta e capire se questo e davvero il tuo terreno alto, se quella posizione merita di essere difesa e se queste sfide ti stanno rendendo piu forte oppure ti stanno solo consumando.
+
+Il messaggio centrale del Sette di Bastoni e questo: una volta raggiunto un terreno piu alto, serve il coraggio di restarci. Non devi amare il conflitto, ma devi sapere dove si trova la tua posizione. La vera perseveranza non e ostinazione cieca. E la capacita di non arretrare troppo facilmente quando qualcosa conta davvero.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'eight-of-wands',
+    number: 8,
+    name_cn: '权杖八',
+    name_en: 'Eight of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['加速', '消息', '推进', '行动', '旅行', '变化', '快速发展', '远方回应'],
+    daily_upright:
+      '今天事情可能会突然加速，好的消息、机会或进展来得很快。保持敏锐，及时回应，不要错过窗口和好运。',
+    daily_reversed:
+      '今天要小心延迟、沟通混乱，或事情推进太快导致失控。别急着同时接住所有信息，先理清优先级。',
+    reading_upright: `权杖八正位代表快速推进、消息传来、行动加速与局势流动。它说明某件原本停滞或等待中的事情，可能突然有了回应，开始朝一个明确方向发展。
+
+在牌阵中出现时，权杖八提醒你抓住速度。它可能象征消息、邀约、旅行、远程联系、项目推进、关系升温，或某个机会迅速落地。此时不要过度拖延，因为能量正在飞行，窗口可能不会停留太久。`,
+    reading_reversed: `权杖八逆位代表延迟、阻塞、误会、节奏失控，或太多事情同时发生导致混乱。你可能期待某个回应，但消息迟迟没有来；也可能信息太多、变化太快，让你一时无法判断该怎么处理。
+
+在牌阵中出现时，权杖八逆位提醒你放慢一点，重新整理沟通和节奏。不是所有事情都适合立刻推进，也不是所有消息都需要马上回应。此时需要确认方向、减少误解，避免因为匆忙而让局面变得更乱。`,
+    detail: `权杖八是权杖牌组中速度感最强的一张牌。牌面中，八根权杖划过天空，像箭、像讯号、像突然飞来的机会。它没有人物，只有运动本身，因此这张牌的重点非常明确：事情正在加速，能量正在流动，原本静止的局面开始向前推进。
+
+当权杖八正位出现时，它通常意味着消息、进展、行动或变化来得很快。你可能收到等待已久的回复，项目突然进入下一步，关系迅速升温，旅行或迁移计划被提上日程，或者某个机会没有太多犹豫时间，需要你尽快做出反应。
+
+这张牌带有“远方回应”的感觉。前面的权杖三像是在高处等待船只归来，而权杖八则像是远方终于有了消息，箭已经射出，信号已经发来，事情不再只是规划，而是开始真正移动。它适合对应邮件、通知、面试反馈、合作邀约、跨地区联系、快速沟通，也适合一段关系中突然变得热烈的阶段。
+
+权杖八的能量是轻快而直接的。它不像权杖七那样需要防守，也不像权杖九那样疲惫坚持。它更像风顺了、路通了、节奏打开了。此时如果你一直在等待一个机会，权杖八可能说明机会正在靠近，你需要保持反应速度。
+
+但权杖八的速度也有风险。事情来得太快时，人容易来不及思考；信息太多时，人容易判断失误；热情推进太猛时，也可能忽略细节和后果。它提醒你抓住机会，但不是完全失去分寸。速度是优势，前提是方向没有错。
+
+在关系中，权杖八可能代表快速联系、频繁沟通、暧昧升温、远距离消息，或一段关系突然推进。它有一种“消息飞来”的感觉，适合形容聊天变多、邀约出现、情绪迅速流动。在事业中，它代表快速进展、项目推进、反馈到来、出差旅行，或之前卡住的事情突然开始动起来。
+
+当权杖八逆位出现时，它通常代表延迟和阻塞。你期待的消息可能没有来，沟通可能出现误会，计划可能因为细节、交通、时间安排或外部条件而被拖慢。它也可能表示事情不是太慢，而是太快，快到你失去掌控，无法好好消化。
+
+权杖八逆位提醒你重新整理节奏。你需要确认信息是否准确，沟通是否清楚，计划是否过于匆忙。不要因为焦虑而连续催促，也不要因为机会来得快就立刻全部接下。此时最重要的是把飞来的权杖接住，而不是被它们砸乱。
+
+权杖八的核心信息是：风已经起来了，事情正在移动。你需要保持敏锐，及时回应，顺着打开的通道向前。但也要记得，速度不是唯一的答案；真正好的推进，是快得起来，也稳得下来。`,
+    translations: {
+      en: {
+        name: 'Eight of Wands',
+        keywords: ['acceleration', 'message', 'progress', 'action', 'travel', 'change', 'rapid development', 'response from afar'],
+        daily_upright:
+          'Things may suddenly speed up today. Good news, opportunity, or progress may arrive quickly. Stay alert, respond in time, and do not miss the opening or the luck that comes with it.',
+        daily_reversed:
+          'Watch out today for delay, confused communication, or events moving so fast that control is lost. Do not rush to catch every message at once. Sort out priorities first.',
+        reading_upright: `The Eight of Wands upright represents rapid progress, incoming messages, acceleration of action, and momentum in the situation. Something that had been stalled or waiting may suddenly receive a response and begin moving in a clear direction.
+
+In a spread, the Eight of Wands asks you to catch the speed. It can symbolize news, invitations, travel, long-distance contact, project movement, a warming relationship, or an opportunity landing quickly. Do not delay too much now, because the energy is already in flight and the window may not stay open for long.`,
+        reading_reversed: `The Eight of Wands reversed represents delay, blockage, misunderstanding, loss of rhythm, or confusion caused by too many things happening at once. You may be waiting for a reply that still has not come, or there may be so much information and so much movement that you cannot decide what to do with it.
+
+In a spread, the reversed Eight of Wands asks you to slow down and reorganize communication and timing. Not everything needs to move at once, and not every message needs an immediate answer. Confirm direction, reduce misunderstanding, and avoid turning haste into a bigger mess.`,
+        detail: `The Eight of Wands is the fastest card in the suit of Wands. In the image, eight wands streak across the sky like arrows, signals, or sudden opportunities. There are no people, only motion itself, which makes the message very clear: things are speeding up, energy is flowing, and a once static situation is now moving forward.
+
+When the Eight of Wands appears upright, it usually means that news, progress, action, or change arrives quickly. You may receive a long-awaited reply, a project may suddenly advance, a relationship may heat up quickly, travel or relocation plans may move onto the schedule, or an opportunity may require a fast response with little time for hesitation.
+
+This card carries the feeling of a response from afar. Earlier, the Three of Wands stood watching ships in the distance. The Eight of Wands feels like the message finally comes back: the arrow has been shot, the signal has been sent, and things are no longer only being planned. They are moving. It suits emails, notices, interview feedback, invitations to collaborate, cross-regional communication, or a relationship that suddenly becomes more intense.
+
+The energy of the Eight of Wands is direct and light. It is not defensive like the Seven of Wands, and it is not weary persistence like the Nine. It is more like the wind has turned favorable, the road has opened, and the pace has begun. If you have been waiting for an opportunity, the Eight of Wands can mean that the opportunity is drawing near and that you need to keep your response time sharp.
+
+But this speed also carries risk. When things come too quickly, people can fail to think; when information piles up, judgment can slip; when passion pushes too hard, details and consequences can be ignored. The card tells you to seize opportunity, but not to abandon proportion. Speed is an advantage only when direction is still correct.
+
+In relationships, the Eight of Wands can represent quick contact, frequent communication, rising chemistry, long-distance messages, or a bond that suddenly accelerates. It has the feeling of news flying in. It suits times when chats multiply, invitations appear, and emotion moves fast. In work, it points to fast progress, project movement, arriving feedback, travel, or a situation that had been stuck and suddenly starts moving again.
+
+When the Eight of Wands appears reversed, it usually points to delay and blockage. The news you want may not arrive, communication may become tangled, and plans may be slowed by detail, transport, scheduling, or outside conditions. It can also mean the opposite of slowness: things moving so fast that you lose control and cannot digest them well.
+
+The reversed Eight of Wands asks you to reorganize pace. Check whether information is accurate, whether communication is clear, and whether your plan has become too rushed. Do not keep pushing from anxiety, and do not grab every fast-arriving chance all at once. What matters now is to catch the flying wands, not let them strike you into disorder.
+
+The core message of the Eight of Wands is this: the wind has risen and things are moving. Stay alert, respond in time, and move through the open channel. But remember that speed is not the only answer. The best progress is progress that can move quickly and still stay steady.`,
+      },
+      it: {
+        name: 'Otto di Bastoni',
+        keywords: ['accelerazione', 'messaggio', 'avanzamento', 'azione', 'viaggio', 'cambiamento', 'sviluppo rapido', 'risposta da lontano'],
+        daily_upright:
+          'Oggi le cose possono accelerare all’improvviso. Buone notizie, occasioni o progressi possono arrivare rapidamente. Resta attenta o attento, rispondi in tempo e non perdere la finestra che si apre.',
+        daily_reversed:
+          'Oggi fai attenzione a ritardi, comunicazione confusa o eventi che corrono cosi in fretta da diventare ingestibili. Non cercare di prendere tutte le informazioni insieme: metti prima in ordine le priorita.',
+        reading_upright: `L’Otto di Bastoni diritto rappresenta avanzamento rapido, messaggi in arrivo, accelerazione dell’azione e movimento della situazione. Qualcosa che era bloccato o in attesa puo ricevere improvvisamente una risposta e iniziare a procedere in una direzione chiara.
+
+In una stesa, l’Otto di Bastoni ti invita a cogliere la velocita. Puo simboleggiare notizie, inviti, viaggi, contatti a distanza, avanzamento di un progetto, una relazione che si scalda, oppure un’opportunita che si concretizza velocemente. Non rimandare troppo, perche l’energia e gia in volo e la finestra potrebbe non restare aperta a lungo.`,
+        reading_reversed: `L’Otto di Bastoni rovesciato rappresenta ritardo, blocco, equivoci, perdita del ritmo o confusione provocata da troppe cose che accadono insieme. Potresti aspettare una risposta che continua a non arrivare, oppure esserci cosi tante informazioni e cosi tanto movimento da non sapere come gestirli.
+
+In una stesa, l’Otto di Bastoni rovesciato ti chiede di rallentare e rimettere ordine nella comunicazione e nei tempi. Non tutto deve avanzare subito, e non ogni messaggio richiede una risposta immediata. Conferma la direzione, riduci i malintesi ed evita che la fretta trasformi tutto in un disordine maggiore.`,
+        detail: `L’Otto di Bastoni e la carta piu veloce del seme di Bastoni. Nell’immagine, otto bastoni attraversano il cielo come frecce, segnali o occasioni improvvise. Non ci sono figure umane, ma solo movimento puro, e questo rende il messaggio molto chiaro: le cose stanno accelerando, l’energia sta fluendo e una situazione prima ferma ora si sta muovendo in avanti.
+
+Quando l’Otto di Bastoni appare diritto, di solito significa che notizie, progressi, azione o cambiamenti arrivano in fretta. Potresti ricevere una risposta attesa da tempo, un progetto potrebbe avanzare all’improvviso, una relazione potrebbe scaldarsi rapidamente, un viaggio o un trasferimento potrebbe entrare davvero in programma, oppure un’opportunita potrebbe richiederti una reazione veloce e lasciare poco spazio all’esitazione.
+
+Questa carta porta con se il senso di una risposta che arriva da lontano. Prima, il Tre di Bastoni guardava le navi all’orizzonte. L’Otto di Bastoni e come il momento in cui il messaggio finalmente ritorna: la freccia e stata lanciata, il segnale e partito, e le cose non sono piu solo nella fase di pianificazione. Stanno accadendo. Si adatta bene a email, notifiche, feedback di colloqui, inviti a collaborare, contatti tra luoghi diversi o a una relazione che improvvisamente prende intensita.
+
+L’energia dell’Otto di Bastoni e diretta e leggera. Non e difensiva come il Sette di Bastoni, e non e la perseveranza stanca del Nove. E piu come il vento che diventa favorevole, la strada che si apre e il ritmo che finalmente prende forma. Se stavi aspettando un’occasione, l’Otto di Bastoni puo indicare che sta arrivando e che devi mantenere tempi di risposta rapidi.
+
+Ma questa velocita porta anche un rischio. Quando tutto arriva troppo in fretta, si puo pensare meno del necessario; quando le informazioni sono troppe, il giudizio puo sbagliare; quando la passione spinge eccessivamente, dettagli e conseguenze possono essere trascurati. La carta ti invita a cogliere l’opportunita, ma non a perdere completamente misura. La velocita e un vantaggio solo se la direzione resta giusta.
+
+Nelle relazioni, l’Otto di Bastoni puo indicare contatti rapidi, comunicazione frequente, un aumento della tensione romantica, messaggi a distanza o un legame che accelera all’improvviso. Ha davvero il sapore di notizie che arrivano volando. E adatto a quei periodi in cui i messaggi aumentano, compaiono inviti e le emozioni iniziano a scorrere in fretta. Nel lavoro, rappresenta avanzamento rapido, sviluppo di progetto, feedback in arrivo, viaggi, oppure una situazione bloccata che finalmente ricomincia a muoversi.
+
+Quando l’Otto di Bastoni appare rovesciato, di solito parla di ritardo e blocco. Le notizie che aspetti possono non arrivare, la comunicazione puo ingarbugliarsi e i piani possono essere rallentati da dettagli, trasporti, tempi o condizioni esterne. Ma puo anche indicare il contrario della lentezza: cose che corrono cosi in fretta da farti perdere il controllo e impedirti di assimilarle bene.
+
+L’Otto di Bastoni rovesciato ti chiede di rimettere ordine nel ritmo. Verifica che le informazioni siano corrette, che la comunicazione sia chiara e che il piano non sia diventato troppo precipitato. Non continuare a spingere solo per ansia, e non accettare tutte le occasioni che arrivano in fretta nello stesso momento. Adesso il punto e riuscire a prendere i bastoni in volo, non lasciare che ti colpiscano nel caos.
+
+Il messaggio centrale dell’Otto di Bastoni e questo: il vento si e alzato e le cose si stanno muovendo. Resta attenta o attento, rispondi in tempo e attraversa il canale che si e aperto. Ma ricorda che la velocita non e l’unica risposta. Il miglior avanzamento e quello che sa accelerare senza perdere stabilita.`,
+      },
+    },
+  }),
+  createMeaningCard({
     id: 'page-of-wands',
     number: 32,
     name_cn: '权杖侍从',
