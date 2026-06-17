@@ -2164,6 +2164,194 @@ Il messaggio centrale del Cavaliere di Bastoni e questo: la passione ha bisogno 
       },
     },
   }),
+  createMeaningCard({
+    id: 'queen-of-wands',
+    number: 34,
+    name_cn: '权杖王后',
+    name_en: 'Queen of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['自信', '魅力', '热情', '独立', '吸引力', '创造力', '生命力', '社交能量', '女性贵人'],
+    daily_upright:
+      '今天适合自信地表达自己。你的热情和魅力会被看见，也能吸引与你频率相近的人靠近。你的勇气会被嘉奖。',
+    daily_reversed:
+      '今天要小心自我怀疑、嫉妒或能量被消耗。别因为别人的眼光缩小自己，也别把魅力变成过度证明，陷入极端的个人主义之中。',
+    reading_upright: `权杖王后正位代表自信、魅力、独立、热情与强大的生命力。它说明你正在散发一种很有吸引力的能量，不一定要刻意争夺注意力，也能自然地被人看见。
+
+在牌阵中出现时，权杖王后提醒你相信自己的存在感。她鼓励你表达、创造、社交、领导，也鼓励你用热情感染他人。她不是依附他人而发光的人，而是因为内在火焰稳定，所以能把周围也照亮。`,
+    reading_reversed: `权杖王后逆位代表自信受损、魅力被压抑、嫉妒、控制欲，或过度在意外界评价。你可能明明有能力和吸引力，却因为比较、焦虑或被否定的经验而不敢真正站出来。
+
+在牌阵中出现时，它提醒你重新拿回自己的火。不要为了获得认可而表演，也不要因为害怕被评价就隐藏自己。权杖王后逆位也可能提示人际中的竞争、暗中较劲，或某种热情被扭曲成占有和不安。`,
+    detail: `权杖王后是权杖牌组中成熟而稳定的火。她不像权杖骑士那样急着冲刺，也不像权杖侍从那样还在探索。她已经知道自己的热情在哪里，也知道如何把这份热情变成魅力、创造力和影响力。
+
+这张牌象征自信、独立、吸引力和强大的生命力。权杖王后通常是一个很有存在感的人：她勇敢、热情、明亮、有行动力，也不害怕被看见。她的魅力不是单纯外貌上的漂亮，而是一种从内在散发出来的活力。她知道自己是谁，也不急着向所有人解释自己。
+
+当权杖王后正位出现时，它通常意味着你可以更大胆地表达自己。无论是在创作、事业、社交还是关系中，你都可以让自己的热情被看见。你可能正在进入一个更有吸引力、更有影响力的阶段，也可能需要像权杖王后一样，相信自己有能力掌控自己的生活，可以更快速地推进完成事情。
+
+权杖王后也很适合代表女性力量。她不是柔弱地等待别人选择，而是主动生活、主动创造、主动发光。她可以性感，可以强势，可以温暖，也可以骄傲。她的能量不需要被削弱成“讨人喜欢”，因为她本身就有一种让人靠近的生命热度。
+
+在人际和关系中，权杖王后代表热情、坦率、吸引力和彼此鼓励。她喜欢真诚而有活力的连接，不喜欢死气沉沉的关系。她也可能象征一个外向、自信、有创造力、很会带动气氛的人。
+
+当权杖王后逆位出现时，它提醒你留意自信的失衡。一种可能是自信被压抑：你不敢展示自己，害怕被比较、被嫉妒、被否定。另一种可能是自信过度扭曲，变成控制欲、嫉妒心、情绪化或对关注的过度渴望。
+
+权杖王后逆位并不意味着你的火消失了，而是说明这团火可能被困住、被误用，或被外界眼光扰乱。你需要重新回到自己的中心，不是为了证明自己比谁更亮，而是为了让自己的生命力重新顺畅地燃烧。
+
+权杖王后的核心信息是：你的热情和魅力不需要被隐藏。真正稳定的自信，不是压倒别人，而是允许自己明亮地存在，并让这份光自然地感染世界。`,
+    translations: {
+      en: {
+        name: 'Queen of Wands',
+        keywords: ['confidence', 'charisma', 'passion', 'independence', 'attraction', 'creativity', 'vitality', 'social energy', 'female benefactor'],
+        daily_upright:
+          'Today favors expressing yourself with confidence. Your passion and charisma will be noticed, and you can attract people who resonate with your energy. Your courage will be rewarded.',
+        daily_reversed:
+          'Watch out today for self-doubt, jealousy, or drained energy. Do not shrink because of other people’s eyes, and do not turn charm into overcompensation or extreme individualism.',
+        reading_upright: `The Queen of Wands upright represents confidence, charisma, independence, passion, and strong life force. It suggests that you are radiating an attractive energy and can be noticed naturally even without fighting for attention.
+
+In a spread, the Queen of Wands reminds you to trust your own presence. She encourages expression, creativity, social connection, and leadership, and she urges you to inspire others with your passion. She is not someone who shines by attaching herself to others. She shines because her inner fire is steady enough to light the space around her.`,
+        reading_reversed: `The Queen of Wands reversed represents damaged confidence, suppressed charm, jealousy, controlling tendencies, or excessive concern with outside judgment. You may clearly have ability and attraction, yet comparison, anxiety, or past experiences of being dismissed may keep you from fully stepping forward.
+
+In a spread, it asks you to reclaim your own fire. Do not perform just to win approval, and do not hide yourself because you fear being judged. The reversed Queen of Wands can also point to social rivalry, silent competition, or passion distorted into possessiveness and insecurity.`,
+        detail: `The Queen of Wands is the mature and steady fire of the Wands suit. She is not rushing like the Knight of Wands, and she is no longer only exploring like the Page of Wands. She already knows where her passion lives, and she knows how to transform that passion into charisma, creativity, and influence.
+
+This card symbolizes confidence, independence, attraction, and powerful vitality. The Queen of Wands is often someone with a strong presence: brave, passionate, bright, active, and unafraid of being seen. Her charm is not merely physical beauty. It is the vitality that radiates from within. She knows who she is, and she does not hurry to explain herself to everyone.
+
+When the Queen of Wands appears upright, it usually means that you can express yourself more boldly. In creativity, career, social life, or relationships, your passion can be visible. You may be entering a more magnetic and influential phase, or you may need to become like the Queen of Wands herself and trust that you are capable of steering your own life and moving things forward more decisively.
+
+The Queen of Wands also strongly represents feminine power. She does not wait weakly for others to choose her. She lives actively, creates actively, and shines actively. She can be sensual, powerful, warm, and proud. Her energy does not need to be reduced into simply being likable, because she already carries a living warmth that naturally draws people closer.
+
+In relationships and social dynamics, the Queen of Wands represents passion, candor, attraction, and mutual encouragement. She likes connections that are alive and sincere, not relationships that feel lifeless. She can also symbolize an outgoing, confident, creative person who knows how to energize the room.
+
+When the Queen of Wands appears reversed, it asks you to notice imbalance in confidence. One possibility is that confidence has been suppressed: you do not dare to show yourself because you fear comparison, jealousy, or rejection. Another possibility is that confidence has become distorted into control, envy, moodiness, or an excessive hunger for attention.
+
+The Queen of Wands reversed does not mean your fire has disappeared. It means that this fire may be trapped, misused, or disturbed by the gaze of others. You need to return to your own center, not to prove you are brighter than anyone else, but to let your life force burn freely again.
+
+The core message of the Queen of Wands is this: your passion and charisma do not need to be hidden. Stable confidence is not about overpowering others. It is about allowing yourself to exist brightly and letting that light naturally warm the world around you.`,
+      },
+      it: {
+        name: 'Regina di Bastoni',
+        keywords: ['fiducia in se', 'carisma', 'passione', 'indipendenza', 'attrazione', 'creativita', 'vitalita', 'energia sociale', 'figura femminile favorevole'],
+        daily_upright:
+          'Oggi e il momento di esprimerti con fiducia. La tua passione e il tuo carisma saranno notati, e potrai attrarre persone che vibrano su una frequenza simile alla tua. Il tuo coraggio verra premiato.',
+        daily_reversed:
+          'Fai attenzione oggi al dubbio verso te stessa o te stesso, alla gelosia o al consumo eccessivo di energia. Non rimpicciolirti per lo sguardo degli altri e non trasformare il tuo fascino in una prova continua di te stessa o te stesso, scivolando in un individualismo estremo.',
+        reading_upright: `La Regina di Bastoni diritta rappresenta fiducia in se, carisma, indipendenza, passione e una forte vitalita. Indica che stai emanando un'energia molto attraente e che puoi essere notata o notato in modo naturale, anche senza lottare per ottenere attenzione.
+
+In una stesa, la Regina di Bastoni ti ricorda di avere fiducia nella tua presenza. Ti incoraggia a esprimerti, creare, socializzare e guidare, e ti invita a contagiare gli altri con il tuo entusiasmo. Non e una figura che brilla appoggiandosi a qualcun altro. Brilla perche il suo fuoco interiore e abbastanza stabile da illuminare anche cio che la circonda.`,
+        reading_reversed: `La Regina di Bastoni rovesciata rappresenta fiducia ferita, fascino represso, gelosia, bisogno di controllo o eccessiva attenzione al giudizio esterno. Potresti avere chiaramente capacita e attrattiva, ma il confronto, l'ansia o esperienze di svalutazione potrebbero impedirti di emergere davvero.
+
+In una stesa, ti chiede di riprenderti il tuo fuoco. Non recitare per ottenere approvazione, e non nasconderti per paura del giudizio. La Regina di Bastoni rovesciata puo anche indicare competizione sociale, rivalita silenziosa, oppure una passione deformata in possessivita e insicurezza.`,
+        detail: `La Regina di Bastoni e il fuoco maturo e stabile del seme di Bastoni. Non corre con l'urgenza del Cavaliere di Bastoni, e non e piu soltanto in esplorazione come il Fante di Bastoni. Sa gia dove vive la sua passione, e sa come trasformarla in carisma, creativita e influenza.
+
+Questa carta simboleggia fiducia in se, indipendenza, attrazione e una grande forza vitale. La Regina di Bastoni e spesso una persona con una presenza molto forte: coraggiosa, appassionata, luminosa, attiva e non impaurita dal fatto di essere vista. Il suo fascino non e solo una questione di bellezza esteriore. E una vitalita che si irradia dall'interno. Sa chi e, e non ha fretta di spiegarsi a tutti.
+
+Quando la Regina di Bastoni appare diritta, di solito significa che puoi esprimerti con piu audacia. Nella creativita, nel lavoro, nella socialita o nelle relazioni, la tua passione puo essere vista. Potresti entrare in una fase piu magnetica e influente, oppure potresti aver bisogno di incarnare la Regina di Bastoni e credere di poter guidare la tua vita con maggiore decisione e velocita nel portare a compimento le cose.
+
+La Regina di Bastoni rappresenta molto bene anche il potere femminile. Non aspetta debolmente che qualcuno la scelga. Vive in modo attivo, crea in modo attivo e splende in modo attivo. Puo essere sensuale, forte, calda e orgogliosa. La sua energia non ha bisogno di essere ridotta al semplice essere gradevole, perche possiede gia un calore vitale che attira naturalmente gli altri.
+
+Nelle relazioni e nella sfera sociale, la Regina di Bastoni rappresenta passione, franchezza, attrazione e incoraggiamento reciproco. Ama le connessioni sincere e vive, non i rapporti spenti. Puo anche simboleggiare una persona estroversa, sicura di se, creativa e capace di animare l'atmosfera.
+
+Quando la Regina di Bastoni appare rovesciata, ti invita a osservare lo squilibrio della fiducia. Una possibilita e che la fiducia sia repressa: non osi mostrarti per paura del confronto, della gelosia o del rifiuto. Un'altra possibilita e che la fiducia si deformi in bisogno di controllo, invidia, emotivita o desiderio eccessivo di attenzione.
+
+La Regina di Bastoni rovesciata non significa che il tuo fuoco sia scomparso. Significa che questo fuoco puo essere intrappolato, usato male o disturbato dallo sguardo esterno. Hai bisogno di tornare al tuo centro, non per dimostrare di brillare piu di chiunque altro, ma per lasciare che la tua forza vitale torni a bruciare in modo libero e fluido.
+
+Il messaggio centrale della Regina di Bastoni e questo: la tua passione e il tuo carisma non hanno bisogno di essere nascosti. La vera fiducia stabile non consiste nel schiacciare gli altri, ma nel permetterti di esistere con luce e lasciare che quel calore tocchi naturalmente il mondo intorno a te.`,
+      },
+    },
+  }),
+  createMeaningCard({
+    id: 'king-of-wands',
+    number: 35,
+    name_cn: '权杖国王',
+    name_en: 'King of Wands',
+    arcana: 'minor',
+    suit: 'wands',
+    keywords: ['领导力', '远见', '野心', '掌控', '创业', '决断', '影响力', '成熟火焰', '男性贵人'],
+    daily_upright:
+      '今天适合拿出领导力和决断力。不要只停留在想法里，你可以把愿景变成具体行动，并带动局面向前。',
+    daily_reversed:
+      '今天要小心强势过头、急于掌控，或因为野心太大而忽略细节和他人的节奏。真正的领导不是只让别人服从你。',
+    reading_upright: `权杖国王正位代表成熟的行动力、领导力、远见和将愿景落地的能力。它说明你不仅有热情，也有能力规划方向、调动资源，并带领事情走向更大的目标。
+
+在牌阵中出现时，权杖国王提醒你站到更高的位置看问题。它适合创业、管理、决策、公开表达、战略规划，也可能象征一位有野心、有影响力、有事业能量的男性或领导型人物。此时，关键不是有没有火，而是你能不能掌控这团火，让它成为真正的事业和成就。`,
+    reading_reversed: `权杖国王逆位代表专断、控制欲、暴躁、滥用权力，或野心失控。你可能太想推进自己的目标，却忽略了现实条件、团队节奏，或他人的真实感受。
+
+在牌阵中出现时，它提醒你检查自己的领导方式。你是在带领别人，还是在强迫别人配合你的意志？你是在创造愿景，还是只是在用热情掩盖不稳定的判断？权杖国王逆位也可能代表一个强势但不成熟的权威人物，需要小心他的承诺和脾气。`,
+    detail: `权杖国王是权杖牌组中最成熟、最有掌控力的火。他不只是拥有热情，而是能够管理热情；不只是想行动，而是能够制定方向；不只是自己发光，而是能够让一群人围绕共同的愿景行动起来。
+
+这张牌象征领导力、远见、野心、创造力和现实中的影响力。权杖国王不是被动等待机会的人，他会主动开辟道路，设定目标，聚集资源，并把脑中的愿景推进到现实之中。他有创业者、领导者、开拓者的气质，身上带着一种“我要把这件事做成”的强烈气场。
+
+当权杖国王正位出现时，它通常意味着你需要更大胆地掌控局面。你可能已经不适合只做执行者，而需要站到更高的位置，思考方向、策略和长期目标。它也可能提示你正在拥有更强的影响力，别人会看你的态度、听你的判断，甚至被你的热情带动。
+
+在事业中，权杖国王是一张很强的牌。它适合创业、管理、拓展市场、做决策、带团队、制定战略，或把个人热情转化成可持续的事业。它不是短暂冲动，而是成熟火焰：燃得旺，也懂得如何让火持续燃烧。
+
+在人际或关系中，权杖国王可能代表一个有自信、有野心、有主导欲的人。他可能很有魅力，也很有行动力，但并不总是温柔细腻。他的爱往往表现为推动、承担、保护、规划，而不是反复表达情绪。如果这张牌代表你自己，它提醒你可以更主动、更明确地争取想要的东西。
+
+但权杖国王也有阴影面。当他的火失去自控，就会变成专断、暴躁、控制欲和自我中心。他可能只相信自己的判断，要求别人跟上他的节奏，却忘了真正的领导需要听见不同声音。野心如果没有责任感，就会变成压迫；远见如果没有落地能力，也可能只是宏大的空话。
+
+当权杖国王逆位出现时，它提醒你留意火焰的失控。你可能太急于证明自己，太想掌控结果，或把自己的愿景强加给别人。它也可能代表一个强势但不稳定的人：他说得很大，气势很足，但未必真的能承担后果。
+
+权杖国王的核心信息是：真正成熟的火，不只是燃烧，而是照亮方向、带动行动，并承担由此产生的责任。你可以有野心，可以有愿景，可以站到领导的位置上；但你也需要记得，能让人追随的从来不只是力量，还有稳定、远见和担当。`,
+    translations: {
+      en: {
+        name: 'King of Wands',
+        keywords: ['leadership', 'vision', 'ambition', 'command', 'entrepreneurship', 'decisiveness', 'influence', 'mature fire', 'male benefactor'],
+        daily_upright:
+          'Today favors leadership and decisiveness. Do not stay only in ideas. You can turn vision into concrete action and move the situation forward.',
+        daily_reversed:
+          'Watch out today for being overly forceful, too eager to control, or so ambitious that you ignore details and other people’s pace. Real leadership is not just making others obey.',
+        reading_upright: `The King of Wands upright represents mature action, leadership, vision, and the ability to bring a vision into reality. It suggests that you not only have passion, but also the ability to set direction, mobilize resources, and lead matters toward a larger goal.
+
+In a spread, the King of Wands asks you to step back and see the situation from a higher vantage point. It supports entrepreneurship, management, decision-making, public expression, and strategic planning, and it can also symbolize an ambitious, influential man or leadership figure with strong career energy. The key now is not whether you have fire, but whether you can command that fire and turn it into real work and accomplishment.`,
+        reading_reversed: `The King of Wands reversed represents authoritarian behavior, controlling tendencies, anger, abuse of power, or ambition that has become unstable. You may be so eager to push your own goals that you ignore practical conditions, team rhythm, or the real feelings of other people.
+
+In a spread, it asks you to examine your style of leadership. Are you guiding others, or forcing them to match your will? Are you building a vision, or using passion to cover unstable judgment? The reversed King of Wands can also point to a forceful but immature authority figure whose promises and temper should be handled carefully.`,
+        detail: `The King of Wands is the most mature and most commanding fire in the suit of Wands. He does not merely possess passion. He can manage passion. He does not simply want to act. He can establish direction. He does not only shine by himself. He can bring a group of people into motion around a shared vision.
+
+This card symbolizes leadership, vision, ambition, creativity, and real-world influence. The King of Wands is not someone who passively waits for opportunity. He opens roads, sets goals, gathers resources, and pushes the vision in his mind into reality. He carries the temperament of an entrepreneur, leader, and pioneer, along with a strong field that says: I am going to make this happen.
+
+When the King of Wands appears upright, it usually means you need to take control more boldly. You may no longer be in a place where being only an executor is enough. Instead, you may need to stand higher and think about direction, strategy, and long-term goals. It can also indicate that your influence is growing: others may watch your attitude, listen to your judgment, and even be moved by your passion.
+
+In career matters, the King of Wands is a very strong card. It supports entrepreneurship, management, market expansion, decision-making, team leadership, strategic planning, or turning personal passion into sustainable work. It is not brief impulse. It is mature fire: powerful, and also able to keep burning over time.
+
+In relationships or human dynamics, the King of Wands can represent a confident, ambitious, dominant person. He may be charismatic and highly active, but not always gentle or emotionally subtle. His love may show up through pushing forward, taking responsibility, protecting, and planning, rather than repeated emotional expression. If this card represents you, it reminds you that you can pursue what you want in a more direct and active way.
+
+But the King of Wands also has a shadow side. When his fire loses self-command, it becomes authoritarian, volatile, controlling, and self-centered. He may trust only his own judgment and demand that others keep pace with him, forgetting that real leadership must hear different voices. Ambition without responsibility becomes pressure, and vision without grounded execution can become nothing more than grand words.
+
+When the King of Wands appears reversed, it asks you to notice fire when it becomes misdirected. You may be too eager to prove yourself, too eager to control the outcome, or too ready to impose your vision on others. It can also represent a forceful but unstable person: someone who speaks big and carries strong presence, yet may not truly bear the consequences.
+
+The core message of the King of Wands is this: mature fire does not only burn. It lights direction, mobilizes action, and accepts the responsibility that follows. You can have ambition, vision, and a leadership position, but remember that what truly makes others follow is not force alone. It is steadiness, foresight, and accountability as well.`,
+      },
+      it: {
+        name: 'Re di Bastoni',
+        keywords: ['leadership', 'visione', 'ambizione', 'controllo', 'spirito imprenditoriale', 'decisione', 'influenza', 'fuoco maturo', 'figura maschile favorevole'],
+        daily_upright:
+          'Oggi e il momento di mostrare leadership e capacita decisionale. Non restare solo nelle idee: puoi trasformare la visione in azione concreta e spingere la situazione in avanti.',
+        daily_reversed:
+          'Fai attenzione oggi all’eccesso di forza, alla fretta di controllare tutto o a un’ambizione cosi grande da farti ignorare i dettagli e il ritmo altrui. La vera leadership non consiste solo nel farsi obbedire.',
+        reading_upright: `Il Re di Bastoni diritto rappresenta azione matura, leadership, visione e la capacita di trasformare una visione in realta. Indica che non possiedi soltanto passione, ma anche la capacita di stabilire una direzione, mobilitare risorse e guidare le situazioni verso un obiettivo piu grande.
+
+In una stesa, il Re di Bastoni ti invita a osservare il quadro da una posizione piu alta. Favorisce impresa, gestione, decisioni, espressione pubblica e pianificazione strategica, e puo anche simboleggiare un uomo ambizioso, influente o una figura di comando con una forte energia professionale. Il punto ora non e se hai fuoco, ma se sai governarlo e trasformarlo in vero lavoro e vero risultato.`,
+        reading_reversed: `Il Re di Bastoni rovesciato rappresenta autoritarismo, bisogno di controllo, rabbia, abuso di potere o ambizione fuori equilibrio. Potresti essere cosi concentrata o concentrato sul portare avanti i tuoi obiettivi da ignorare le condizioni reali, il ritmo del gruppo o i sentimenti autentici degli altri.
+
+In una stesa, ti chiede di esaminare il tuo modo di guidare. Stai conducendo gli altri, oppure li stai forzando a seguire la tua volonta? Stai costruendo una visione, oppure stai usando la passione per coprire un giudizio instabile? Il Re di Bastoni rovesciato puo anche indicare una figura autoritaria ma immatura, di cui conviene osservare con attenzione promesse e temperamento.`,
+        detail: `Il Re di Bastoni e il fuoco piu maturo e piu capace di comando del seme di Bastoni. Non possiede soltanto passione: sa governarla. Non vuole soltanto agire: sa stabilire una direzione. Non si limita a brillare da solo: sa mettere in moto un gruppo intero attorno a una visione condivisa.
+
+Questa carta simboleggia leadership, visione, ambizione, creativita e influenza concreta nel mondo reale. Il Re di Bastoni non e qualcuno che aspetta passivamente l'occasione. Apre strade, stabilisce obiettivi, raccoglie risorse e porta nella realta la visione che ha in mente. Ha il temperamento dell'imprenditore, del leader e del pioniere, con un forte campo energetico che dice: questa cosa la porto a compimento.
+
+Quando il Re di Bastoni appare diritto, di solito significa che devi prendere il controllo con maggiore audacia. Potresti non essere piu in una fase in cui basta eseguire. Potresti invece dover salire piu in alto e pensare a direzione, strategia e obiettivi di lungo periodo. Puo anche indicare che la tua influenza sta crescendo: gli altri osservano il tuo atteggiamento, ascoltano il tuo giudizio e possono perfino lasciarsi muovere dalla tua passione.
+
+Nel lavoro, il Re di Bastoni e una carta molto forte. Favorisce impresa, gestione, espansione, decisioni, guida del team, pianificazione strategica o la trasformazione della passione personale in un'attivita sostenibile. Non e un impulso momentaneo. E fuoco maturo: arde forte e sa anche come continuare ad ardere nel tempo.
+
+Nelle relazioni o nelle dinamiche umane, il Re di Bastoni puo rappresentare una persona sicura di se, ambiziosa e dominante. Puo essere carismatica e molto attiva, ma non sempre delicata o sottile sul piano emotivo. Il suo amore spesso si manifesta nel portare avanti, nel prendersi responsabilita, nel proteggere e nel pianificare, piu che nel ripetere espressioni emotive. Se questa carta rappresenta te, ti ricorda che puoi cercare cio che desideri in modo piu diretto e piu attivo.
+
+Ma il Re di Bastoni ha anche un lato ombra. Quando il suo fuoco perde autocontrollo, diventa autoritario, impulsivo, controllante e centrato su se stesso. Puo fidarsi solo del proprio giudizio e pretendere che gli altri stiano al suo ritmo, dimenticando che la vera leadership deve saper ascoltare voci diverse. L'ambizione senza responsabilita diventa pressione, e la visione senza capacita di realizzazione puo ridursi a grandi parole.
+
+Quando il Re di Bastoni appare rovesciato, ti chiede di notare il fuoco quando perde direzione. Potresti essere troppo presa o preso dal bisogno di dimostrare qualcosa, troppo desiderosa o desideroso di controllare il risultato, o troppo pronta o pronto a imporre la tua visione agli altri. Puo anche rappresentare una persona forte ma instabile: parla in grande, ha molta presenza, ma non e detto che sappia davvero assumersi le conseguenze.
+
+Il messaggio centrale del Re di Bastoni e questo: il fuoco maturo non si limita a bruciare. Illumina la direzione, mette in moto l'azione e si assume la responsabilita che ne deriva. Puoi avere ambizione, visione e posizione di guida, ma ricorda che cio che fa davvero seguire gli altri non e la sola forza. Sono anche stabilita, lungimiranza e senso di responsabilita.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.number, card]));
