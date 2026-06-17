@@ -331,7 +331,7 @@ const zhCN = {
     eyebrow: '牌意查询',
     pageTitle: '牌意查询',
     heroTitle: '塔罗牌图鉴索引',
-    heroCopy: '通过紧凑索引浏览整副牌组。点击任意一张牌后，再进入独立详情页查看完整牌意。',
+    heroCopy: '通过紧凑索引浏览整副牌组。点击任意一张牌后，再进入独立详情页查看完整牌意内容。',
     searchLabel: '搜索牌名',
     searchPlaceholder: '搜索中文、英文、意大利语或牌组',
     filterLabel: '按类别筛选',
