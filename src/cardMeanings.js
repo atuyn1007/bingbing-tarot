@@ -53,6 +53,25 @@ function inferNumber(cardId, arcana, englishName) {
   return rankMap[rank] ?? null;
 }
 
+function resolveCatalogCard(cardLike) {
+  if (!cardLike) return null;
+
+  if (typeof cardLike.id === 'number') {
+    return allTarotCards.find((card) => card.id === cardLike.id) || null;
+  }
+
+  const normalizedName = normalizeChineseName(cardLike.name_cn || cardLike.name || '');
+  const englishName = cardLike.name_en || cardLike.englishName || '';
+
+  return (
+    allTarotCards.find(
+      (card) =>
+        card.englishName === englishName ||
+        normalizeChineseName(card.name) === normalizedName,
+    ) || null
+  );
+}
+
 function getMeaningImage(cardLike) {
   if (!cardLike) return '';
 
@@ -62,7 +81,7 @@ function getMeaningImage(cardLike) {
 
   return (
     getCardArtwork({
-      id: cardLike.number,
+      id: resolveCatalogCard(cardLike)?.id ?? cardLike.catalogId ?? cardLike.number,
       name: normalizeChineseName(cardLike.name_cn),
       englishName: cardLike.name_en,
     }) || ''
@@ -70,9 +89,12 @@ function getMeaningImage(cardLike) {
 }
 
 function createMeaningCard(config) {
+  const catalogCard = resolveCatalogCard(config);
+
   return {
     arcana: 'major',
     suit: '',
+    catalogId: catalogCard?.id ?? config.catalogId ?? config.number,
     image: getMeaningImage(config),
     translations: {},
     ...config,
@@ -83,12 +105,15 @@ function createPlaceholderMeaning(card) {
   const arcana = inferArcana(card.id);
   return {
     id: slugifyEnglishName(card.englishName) || `card-${card.id}`,
+    catalogId: card.id,
     number: inferNumber(card.id, arcana, card.englishName),
     name_cn: normalizeChineseName(card.name),
     name_en: card.englishName,
     arcana,
     suit: inferSuit(card.englishName, arcana),
     image: getMeaningImage({
+      id: card.id,
+      catalogId: card.id,
       number: inferNumber(card.id, arcana, card.englishName),
       name_cn: card.name,
       name_en: card.englishName,
@@ -3354,12 +3379,12 @@ Il messaggio centrale del Re di Bastoni e questo: il fuoco maturo non si limita 
   }),
 ];
 
-const customMeanings = new Map(meaningCards.map((card) => [card.number, card]));
+const customMeanings = new Map(meaningCards.map((card) => [card.catalogId, card]));
 
 export const tarotMeaningCards = allTarotCards.map((card) => customMeanings.get(card.id) || createPlaceholderMeaning(card));
 
 export function getTarotMeaningCard(cardId) {
-  return tarotMeaningCards.find((card) => card.id === cardId) || tarotMeaningCards.find((card) => card.number === cardId) || null;
+  return tarotMeaningCards.find((card) => card.id === cardId || card.catalogId === cardId) || null;
 }
 
 export function findTarotMeaningCard(input) {
@@ -3371,7 +3396,7 @@ export function findTarotMeaningCard(input) {
   }
 
   if (typeof input.id === 'number') {
-    return tarotMeaningCards.find((card) => card.number === input.id) || null;
+    return tarotMeaningCards.find((card) => card.catalogId === input.id) || null;
   }
 
   const normalizedName = normalizeChineseName(input.name);
