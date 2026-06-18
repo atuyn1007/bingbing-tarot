@@ -3377,6 +3377,124 @@ Il messaggio centrale del Re di Bastoni e questo: il fuoco maturo non si limita 
       },
     },
   }),
+  createMeaningCard({
+    id: 'page-of-cups',
+    number: 46,
+    name_cn: '圣杯侍从',
+    name_en: 'Page of Cups',
+    arcana: 'minor',
+    suit: 'cups',
+    keywords: ['理想主义', '敏感', '梦想家', '天真', '内心的孩子', '直觉灵感', '想象力'],
+    daily_upright:
+      '今天可能会出现意想不到的灵感、或温柔触动到你的消息。别急着否定这些微小的感受，它们也许来自你的直觉和内心深处真正的声音。',
+    daily_reversed:
+      '今天要小心情绪脆弱、不安全感，或用白日梦逃避现实。照顾好你的内在小孩，但也不要让幻想代替真正的行动。',
+    reading_upright: `圣杯侍从正位代表理想主义、敏感、想象力、直觉灵感与内在小孩的苏醒。它说明某种来自潜意识的讯息正在浮现，可能是一段温柔的感情、一个创意念头、一个梦境，或某种你一开始无法完全理解的灵感。
+
+在牌阵中出现时，圣杯侍从提醒你对新的感受和想法保持开放。它不像权杖侍从那样急着行动和探索外部世界，而是更像心里突然浮上来的一条小鱼：柔软、奇妙、带着童话感。它鼓励你表达情绪、释放创造力，也提醒你不要因为害怕显得幼稚或脆弱，就压抑真正的自己。`,
+    reading_reversed: `圣杯侍从逆位代表情绪脆弱、不成熟、忽视内在小孩、逃避现实、不安全感，或创意表达受阻。你可能很敏感，很容易被外界的一点回应影响，也可能沉浸在幻想里，却没有真正面对现实中的问题。
+
+在牌阵中出现时，圣杯侍从逆位提醒你照顾那个没有被好好回应的自己。你可能缺乏灵感，或者并不是没有灵感，而是忘记了自己最初为什么喜欢某件事。它也可能表示你害怕表达感情，害怕被拒绝，于是把真实情绪藏起来。此时需要重新连接内在小孩，但也要学会让梦想落到现实里。`,
+    detail: `圣杯侍从是圣杯牌组中最年轻、最柔软、也最像梦的一张宫廷牌。它属于水元素，因此它的重点不是权杖式的行动力，也不是宝剑式的逻辑判断，而是情感、直觉、想象力和潜意识中突然浮现的讯息。它像一个还没有完全被现实训练过的孩子，保留着天真、敏感、好奇和相信奇迹的能力。
+
+牌面中，一位年轻人站在海边，身穿带有花卉图案的蓝色衣服，手中拿着金色圣杯。杯子里探出一条鱼，像是童话故事里突然开口说话的生物。侍从看着这条鱼，既惊讶，又像是被某种不可思议的东西吸引。这个画面非常像圣杯侍从的核心：来自无意识的灵感突然出现，而你还不知道该如何理解它。
+
+鱼象征潜意识、梦境、情绪和创造力。它不是通过理性计划产生的，而是从水面之下游上来的。也许是一句歌词，一段画面，一个角色设定，一个梦，一个突如其来的心动，或一种说不清原因的预感。圣杯侍从提醒你，不要轻视这些看似不现实的东西。很多真正重要的创作和感情，最开始都不是清晰的计划，而是一种细微的触动。
+
+当圣杯侍从正位出现时，它通常意味着你需要对新想法、新感受和直觉灵感保持开放。你可能正在收到一份来自内心的邀请：去创作，去表达，去靠近一段感情，去重新相信某个梦想。即使这个想法现在看起来不成熟、不实际，甚至有点幼稚，它也可能为你打开新的门。
+
+这张牌也和“内在小孩”有关。它代表你心里那个仍然会惊奇、会期待、会因为一点温柔而感动的部分。这个部分也许曾经被你压下去，因为你觉得现实不允许你天真，不允许你脆弱，不允许你做梦。但圣杯侍从会说：真正的成熟不是杀死内在小孩，而是学会保护它、理解它，并让它用健康的方式表达自己。
+
+在爱情中，圣杯侍从可能代表一种很新鲜、很柔软的心动。它可能是暧昧、告白、温柔的消息，也可能是你用全新的眼光看待一段关系。你会重新发现爱情里那种惊奇感：原来一个人的一句话、一个表情、一个小小的回应，都能让内心泛起涟漪。如果你是单身，它也可能代表你对爱情仍然带着一种童话般的期待。
+
+在事业和创作中，圣杯侍从尤其适合艺术、音乐、文字、影像、时尚、游戏叙事、角色创作等需要想象力和情感表达的领域。它提醒你，创意不能只靠理性挤出来，也需要让自己进入更自由、更感性的状态。你可以白日梦，可以幻想，可以让脑袋飘在云里，但最后仍然需要把这些灵感慢慢接到现实中。
+
+不过，圣杯侍从也有不稳定的一面。它太敏感，太容易受伤，也太容易沉浸在自己的想象里。它可能把一点好意理解成爱情，把一个灵感想象成完整人生，把一个尚未开始的机会幻想成已经实现的结果。它的水很清澈，但也很容易被情绪搅乱。
+
+当圣杯侍从逆位出现时，它提醒你留意情绪脆弱和逃避现实。你可能因为不安全感而不敢表达自己，也可能因为害怕失败而把梦想只留在脑内。你可能说自己没有灵感，其实是忘记了最初的快乐；也可能不是不想面对现实，而是现实太沉重，所以你躲进幻想里让自己暂时安全。
+
+圣杯侍从逆位也可能表示内在小孩被忽视。你也许一直要求自己成熟、懂事、现实、有效率，却没有问过自己真正喜欢什么、害怕什么、想表达什么。被压抑的情绪不会消失，它可能会变成不安全感、依赖、逃避、低自我价值，或对外界回应的过度敏感。
+
+这张牌逆位时也需要注意感情中的不成熟。可能有人很会表现脆弱，却没有能力真正承担关系；也可能你自己因为害怕被拒绝，而在感情里变得退缩、试探、患得患失。此时最重要的不是责怪自己的敏感，而是学习更稳定地照顾情绪。
+
+圣杯侍从的核心信息是：请认真对待你内心那条从杯中探头的小鱼。它也许幼稚，也许奇怪，也许还不能立刻变成现实，但它带来了来自潜意识的讯息。保护你的敏感，表达你的情感，也让梦想慢慢长出能够落地的形状。`,
+    translations: {
+      en: {
+        name: 'Page of Cups',
+        keywords: ['Idealism', 'Sensitivity', 'Dreamer', 'Innocence', 'Inner Child', 'Intuitive Inspiration', 'Imagination'],
+        daily_upright:
+          'An unexpected spark of inspiration or a gentle message may reach you today. Do not dismiss small feelings too quickly. They may come from your intuition and from a deeper inner truth.',
+        daily_reversed:
+          'Watch for emotional fragility, insecurity, or escaping reality through daydreaming today. Care for your inner child, but do not let fantasy replace real action.',
+        reading_upright: `The Page of Cups upright represents idealism, sensitivity, imagination, intuitive inspiration, and the awakening of the inner child. It suggests that a message from the subconscious is rising to the surface. It may be a tender feeling, a creative idea, a dream, or a form of inspiration you cannot fully explain at first.
+
+In a spread, the Page of Cups asks you to stay open to new feelings and impressions. Unlike the Page of Wands, who rushes toward action and the outer world, this card is more like a little fish suddenly surfacing in the heart: soft, strange, and touched by fairy-tale wonder. It encourages emotional expression and creativity, and it reminds you not to suppress your true self just because you fear seeming childish or vulnerable.`,
+        reading_reversed: `The Page of Cups reversed represents emotional fragility, immaturity, neglect of the inner child, avoidance of reality, insecurity, or blocked creative expression. You may be highly sensitive to small reactions from the outside world, or you may drift into fantasy without addressing what is actually happening in your life.
+
+In a spread, the reversed Page of Cups asks you to care for the part of yourself that was never fully met or soothed. You may think inspiration is gone, when in fact you have simply forgotten why you loved something in the first place. It can also suggest fear of emotional expression and fear of rejection, causing you to hide what you truly feel. The task now is to reconnect with the inner child, while also letting dreams take on real shape in the world.`,
+        detail: `The Page of Cups is the youngest, softest, and most dreamlike court card in the suit of Cups. It belongs to the element of water, so its focus is not the outward action of Wands or the hard logic of Swords, but emotion, intuition, imagination, and the sudden messages that rise from the subconscious. It resembles a child not yet fully trained by reality, still able to remain innocent, sensitive, curious, and willing to believe in wonder.
+
+In the image, a young figure stands by the sea in blue clothing patterned with flowers, holding a golden cup. A fish rises from the cup as if it were a creature from a fairy tale suddenly beginning to speak. The Page looks at it with surprise, but also with fascination. This is the heart of the card: inspiration emerges from the unconscious before you yet know how to interpret it.
+
+The fish symbolizes the subconscious, dreams, emotion, and creativity. It does not arrive through strict rational planning. It swims up from beneath the surface. It may be a lyric, a visual fragment, a character idea, a dream, an unexpected attraction, or a strange intuition that cannot yet be explained. The Page of Cups reminds you not to dismiss what seems unrealistic. Many of the most important creative works and emotional openings begin not as plans, but as subtle stirrings.
+
+When upright, the Page of Cups usually suggests that you need to stay open to new feelings, ideas, and intuitive flashes. You may be receiving an inner invitation to create, to express, to move toward tenderness, or to believe in a dream again. Even if it seems immature, impractical, or even a little naive at first, it may still be the opening to something meaningful.
+
+This card is also deeply connected to the inner child. It points to the part of you that can still be amazed, still hope, and still be moved by a small gesture of kindness. Perhaps that part has been suppressed because reality seemed to leave no room for innocence, softness, or dreaming. But the Page of Cups says that maturity does not mean killing the inner child. It means protecting it, understanding it, and helping it express itself in a healthy way.
+
+In love, the Page of Cups may represent a fresh and tender stir of feeling. It can be flirtation, confession, a gentle message, or seeing a relationship through new eyes. It reawakens the sense of wonder in love: how a word, a look, or a small reply can ripple through the heart. If you are single, it may show that you still carry a fairy-tale kind of hope about love.
+
+In work and creativity, the Page of Cups is especially suited to art, music, writing, image-making, fashion, game narrative, and character creation. It reminds you that creativity cannot be forced through logic alone. You need room for freedom, feeling, and dream. You can let your mind drift for a while, but eventually those inspirations still need to be gently brought into reality.
+
+The unstable side of this card is that it is very sensitive, easily hurt, and easily lost in imagination. It may mistake a little kindness for love, a passing inspiration for an entire life path, or an unrealized opportunity for something already achieved. Its water is clear, but also easy to disturb.
+
+When reversed, the Page of Cups warns of emotional fragility and escape. You may avoid expressing yourself because of insecurity, or keep your dreams only in your mind because failure feels too frightening. You may say you have no inspiration, when really you have forgotten your original joy. Or perhaps reality feels so heavy that fantasy becomes your temporary shelter.
+
+Reversed, this card can also show the inner child being neglected. You may have demanded maturity, efficiency, realism, and control from yourself without ever asking what you truly like, fear, or need to say. Suppressed feelings do not disappear. They may become insecurity, dependence, avoidance, low self-worth, or hypersensitivity to other people’s reactions.
+
+In relationships, the reversed Page of Cups also asks you to notice emotional immaturity. Someone may know how to appear vulnerable without being able to truly carry a relationship. Or you may shrink, test, and second-guess because you fear rejection. The answer is not to shame your sensitivity, but to learn to care for your emotions with more stability.
+
+The core message of the Page of Cups is this: take seriously the little fish rising from your cup. It may be strange, childish, or not yet ready for reality, but it still carries a message from the subconscious. Protect your sensitivity, express your feelings, and let your dreams slowly grow into something that can stand in the world.`,
+      },
+      it: {
+        name: 'Fante di Coppe',
+        keywords: ['Idealismo', 'Sensibilita', 'Sognatore', 'Innocenza', 'Bambino Interiore', 'Intuizione', 'Immaginazione'],
+        daily_upright:
+          'Oggi potrebbe arrivare un’ispirazione inattesa o un messaggio capace di toccarti con dolcezza. Non liquidare troppo in fretta queste piccole sensazioni: potrebbero venire dalla tua intuizione e dalla voce piu profonda dentro di te.',
+        daily_reversed:
+          'Oggi fai attenzione a fragilita emotiva, insicurezza o fuga dalla realta attraverso le fantasie. Prenditi cura del tuo bambino interiore, ma non lasciare che l’immaginazione sostituisca l’azione reale.',
+        reading_upright: `Il Fante di Coppe diritto rappresenta idealismo, sensibilita, immaginazione, intuizione e il risveglio del bambino interiore. Indica che un messaggio proveniente dal subconscio sta emergendo: potrebbe trattarsi di un sentimento delicato, di un’idea creativa, di un sogno o di un’intuizione che all’inizio non sai ancora spiegare del tutto.
+
+In una stesa, il Fante di Coppe ti invita a restare aperta o aperto verso nuove emozioni e nuove impressioni. A differenza del Fante di Bastoni, che corre verso l’azione e verso il mondo esterno, questa carta assomiglia di piu a un piccolo pesce che affiora improvvisamente nel cuore: morbido, strano, con un senso quasi fiabesco. Ti incoraggia a esprimere le emozioni e a liberare la creativita, ricordandoti di non reprimere il tuo vero io solo per paura di sembrare ingenua, ingenuo, fragile o vulnerabile.`,
+        reading_reversed: `Il Fante di Coppe rovesciato rappresenta fragilita emotiva, immaturita, trascuratezza del bambino interiore, fuga dalla realta, insicurezza o espressione creativa bloccata. Potresti essere molto sensibile alle piccole reazioni del mondo esterno, oppure rifugiarti nella fantasia senza affrontare davvero cio che sta succedendo nella tua vita.
+
+In una stesa, il Fante di Coppe rovesciato ti chiede di prenderti cura della parte di te che non e mai stata davvero ascoltata o rassicurata. Potresti pensare di non avere piu ispirazione, quando in realta hai solo dimenticato perche amavi qualcosa all’inizio. Puo anche indicare paura di esprimere i sentimenti e paura del rifiuto, al punto da nascondere quello che provi davvero. Il compito ora e riconnetterti con il bambino interiore, ma anche permettere ai sogni di prendere una forma concreta nel mondo.`,
+        detail: `Il Fante di Coppe e la carta di corte piu giovane, piu morbida e piu simile a un sogno nel seme di Coppe. Appartiene all’elemento acqua, percio il suo centro non e l’azione esterna dei Bastoni ne la logica dura delle Spade, ma l’emozione, l’intuizione, l’immaginazione e i messaggi che emergono improvvisamente dal subconscio. Assomiglia a un bambino non ancora del tutto addestrato dalla realta, capace di conservare innocenza, sensibilita, curiosita e la volonta di credere ancora al meraviglioso.
+
+Nell’immagine, una giovane figura sta in riva al mare, vestita di blu con motivi floreali, e tiene in mano una coppa dorata. Dalla coppa spunta un pesce, come una creatura fiabesca che all’improvviso comincia a parlare. Il Fante lo guarda con stupore, ma anche con fascino. Questa e l’essenza della carta: un’ispirazione sale dall’inconscio prima ancora che tu sappia come interpretarla.
+
+Il pesce simboleggia subconscio, sogni, emozioni e creativita. Non arriva attraverso un piano razionale rigido. Risale da sotto la superficie. Puo essere un verso, un frammento visivo, un’idea per un personaggio, un sogno, un’attrazione improvvisa o un’intuizione difficile da spiegare. Il Fante di Coppe ti ricorda di non disprezzare cio che sembra poco realistico. Molte delle aperture creative e affettive piu importanti non iniziano come piani, ma come lievi movimenti interiori.
+
+Quando appare diritto, il Fante di Coppe suggerisce di restare aperti a nuove emozioni, idee e lampi intuitivi. Potresti ricevere un invito interiore a creare, a esprimerti, ad avvicinarti alla tenerezza o a credere di nuovo in un sogno. Anche se l’idea sembra immatura, poco pratica o persino un po’ ingenua, potrebbe comunque essere la porta verso qualcosa di significativo.
+
+Questa carta e profondamente legata anche al bambino interiore. Indica la parte di te che sa ancora stupirsi, sperare e commuoversi per un piccolo gesto gentile. Forse quella parte e stata messa a tacere perche la realta sembrava non lasciare spazio all’innocenza, alla morbidezza o al sogno. Ma il Fante di Coppe ricorda che maturare non significa uccidere il bambino interiore. Significa proteggerlo, comprenderlo e aiutarlo a esprimersi in modo sano.
+
+In amore, il Fante di Coppe puo rappresentare un’emozione fresca e delicata che nasce. Puo essere flirt, confessione, un messaggio gentile o il guardare una relazione con occhi nuovi. Riporta in vita il senso di meraviglia dell’amore: come una parola, uno sguardo o una piccola risposta possano creare onde nel cuore. Se sei single, puo indicare che conservi ancora una speranza quasi fiabesca nell’amore.
+
+Nel lavoro e nella creativita, il Fante di Coppe e particolarmente adatto ad arte, musica, scrittura, immagini, moda, narrazione di giochi e creazione di personaggi. Ricorda che la creativita non puo essere spremuta soltanto con la logica. Serve spazio per liberta, emozione e sogno. Puoi lasciar vagare la mente per un po’, ma poi quelle ispirazioni vanno accompagnate con delicatezza nella realta.
+
+Il lato instabile della carta e che e molto sensibile, si ferisce facilmente e si perde facilmente nell’immaginazione. Puo scambiare un piccolo gesto di gentilezza per amore, un’ispirazione passeggera per un intero destino, o un’opportunita non ancora realizzata per qualcosa di gia compiuto. La sua acqua e limpida, ma anche facile da agitare.
+
+Quando appare rovesciato, il Fante di Coppe mette in guardia da fragilita emotiva e fuga. Potresti evitare di esprimerti per insicurezza, oppure tenere i tuoi sogni soltanto nella mente perche il fallimento ti spaventa troppo. Potresti dire di non avere piu ispirazione, quando in realta hai dimenticato la tua gioia originaria. Oppure la realta puo sembrarti cosi pesante che la fantasia diventa un rifugio momentaneo.
+
+Rovesciato, puo anche mostrare il bambino interiore trascurato. Potresti aver chiesto a te stessa o a te stesso soltanto maturita, efficienza, realismo e controllo, senza mai domandarti che cosa ti piace davvero, che cosa temi davvero o che cosa desideri dire. Le emozioni represse non spariscono: possono trasformarsi in insicurezza, dipendenza, evitamento, bassa autostima o ipersensibilita alle reazioni altrui.
+
+Nelle relazioni, il Fante di Coppe rovesciato invita anche a osservare l’immaturita emotiva. Qualcuno potrebbe saper apparire vulnerabile senza saper davvero portare una relazione. Oppure potresti ritirarti, testare e dubitare di continuo per paura del rifiuto. La risposta non e vergognarti della tua sensibilita, ma imparare a prenderti cura delle emozioni con maggiore stabilita.
+
+Il messaggio centrale del Fante di Coppe e questo: prendi sul serio il piccolo pesce che emerge dalla tua coppa. Potra sembrare strano, infantile o non ancora pronto per il mondo reale, ma porta comunque un messaggio dal subconscio. Proteggi la tua sensibilita, esprimi i tuoi sentimenti e lascia che i sogni crescano lentamente fino a diventare qualcosa che possa stare in piedi nel mondo.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.catalogId, card]));
