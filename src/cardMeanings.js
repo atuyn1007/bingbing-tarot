@@ -3607,6 +3607,130 @@ Il messaggio centrale del Cavaliere di Coppe e questo: i sentimenti devono esser
       },
     },
   }),
+  createMeaningCard({
+    id: 'queen-of-cups',
+    number: 48,
+    name_cn: '圣杯王后',
+    name_en: 'Queen of Cups',
+    arcana: 'minor',
+    suit: 'cups',
+    keywords: ['共情', '直觉', '情绪智慧', '温柔', '关怀', '疗愈', '内在声音', '情感边界', '女性贵人'],
+    daily_upright:
+      '今天适合照顾自己的情绪，也适合用温柔和理解回应他人。你的直觉很敏锐，可以相信内心深处那个安静但可靠的声音。',
+    daily_reversed:
+      '今天要小心情绪边界模糊，或为了照顾别人而忽略自己。共情很珍贵，但你不需要替所有人承受痛苦。',
+    reading_upright: `圣杯王后正位代表共情、直觉、温柔、情绪智慧与疗愈能力。它说明你正在以一种细腻、包容、感受力很强的方式理解自己和他人，也可能有一位温柔、可靠、善于倾听的女性贵人进入你的生活。
+
+在牌阵中出现时，圣杯王后提醒你相信自己的内在感受。她不像权杖王后那样靠外放魅力照亮他人，也不像星币王后那样通过现实资源照顾别人。她的力量来自水元素：情绪、直觉、共情和内心深处的理解。她像一面镜子，能映照出别人真正的情绪，也让人以新的眼光看见自己。`,
+    reading_reversed: `圣杯王后逆位代表情绪过载、边界不清、过度付出、逃避现实，或被他人的情绪牵着走。你可能太容易感受到别人的痛苦，以至于忘记自己的需要；也可能因为情绪太满，而无法保持清晰判断。
+
+在牌阵中出现时，圣杯王后逆位提醒你把注意力收回自己。你可以温柔，但不能没有边界；你可以理解别人，但不能替别人活。它也可能表示情绪操控、受害者心态，或用脆弱包装控制。此时需要重新分辨：什么是同情，什么是过度承担；什么是直觉，什么只是情绪淹没后的反应。`,
+    detail: `圣杯王后是圣杯牌组中成熟、深邃、安静的水。她统治着情感、直觉、无意识和内在感受的领域。她不像圣杯侍从那样刚刚接触情绪，也不像圣杯骑士那样带着情感向外追寻。她已经能够坐在水边，凝视内心的潮汐，理解情绪的流动，也知道感受本身拥有力量。
+
+牌面中，圣杯王后的宝座位于大海边缘。水通常象征无意识、情绪和潜意识，而陆地象征现实、意识和理性。她坐在海与陆之间，说明她处在情感与思想、直觉与现实之间的位置。她能接触水，但她的脚并没有完全浸入水中，这一点很重要：她理解情绪，但不一定被情绪吞没；她靠近潜意识，但仍保留观察自己的能力。
+
+她手中的圣杯与其他圣杯不同，往往是封闭的，带有天使形状的装饰。这个封闭的杯子象征内在世界、潜意识中的想法、尚未被完全说出的感受，以及那些只属于心灵深处的秘密。圣杯王后不一定会把所有情绪立刻说出来，她更像是在守护一个深而复杂的内在空间。
+
+当圣杯王后正位出现时，它通常代表同情、关怀、理解和情绪上的支持。她可能是一个在你生活中出现的女性形象：母亲、姐姐、朋友、咨询者、疗愈者，或任何能够安静听你说话、让你感到被接住的人。她不会用命令推动你，也不会急着给你现实方案，而是先理解你的感受。
+
+这张牌也可能代表你自己。你可能正在成为别人情感上的锚，是别人可以倾诉、依靠、获得安慰的人。你能看见别人没有说出口的痛苦，也能敏锐地察觉关系中的微妙变化。圣杯王后的共情不是表面的礼貌，而是一种深入情绪层面的连接。
+
+圣杯王后也像一面镜子。她能映照出他人内心深处的东西，让别人通过她的理解重新看见自己。很多时候，人们喜欢她，不只是因为她温柔，而是因为她让人觉得：我的情绪没有被否定，我的脆弱没有被嘲笑，我那些说不清楚的东西终于有人听懂了。
+
+她的直觉非常强大，某种程度上只有女祭司能与之相比。但两者仍然不同。女祭司更像守在神秘门槛前的知识与秘密，她代表直觉中的静默、隐藏和精神性；圣杯王后则更贴近情感世界，她的直觉来自共情、梦、情绪、关系和内心的波动。她不是在解读宇宙的谜语，而是在读懂一颗心。
+
+在关系中，圣杯王后代表深情、包容、体贴和情绪上的安全感。她不一定是最外放的人，但她会让人感到被温柔地理解。她的爱不是权杖式的热烈追逐，也不是星币式的实际照顾，而是一种情感上的承接：我听见你，我理解你，我愿意在你脆弱的时候陪着你。
+
+在事业或创作中，圣杯王后适合心理、疗愈、咨询、艺术、文学、影视、音乐、用户研究、叙事设计、照护类工作，以及所有需要感受力、同理心和情绪理解的领域。她提醒你，有些问题不能只靠逻辑解决。当理性方法暂时失效时，直觉、梦境、情绪和细腻观察也可能提供答案。
+
+但圣杯王后也有阴影面。她太容易感受别人，也太容易把别人的痛苦吸收到自己身上。如果没有边界，共情会变成负担；温柔会变成自我牺牲；理解会变成替别人找借口。她可能为了照顾他人而忽略自己的情绪健康，也可能在一段关系中一直承接对方，却忘了问自己是否也被照顾。
+
+当圣杯王后逆位出现时，它提醒你留意情绪的失衡。你可能正在被情绪淹没，无法客观判断；也可能把直觉和焦虑混在一起，把别人的问题当成自己的责任。它也可能表示一个人表面温柔，内在却用情绪、脆弱或沉默来影响别人，让关系变得模糊而沉重。
+
+圣杯王后逆位并不意味着你不该温柔，而是提醒你：真正成熟的温柔必须包含自我保护。你可以照顾别人，但也要照顾自己；你可以倾听别人，但也要听见自己的声音。自爱不是冷漠，而是让你的同情心不至于被耗尽的根基。
+
+圣杯王后的核心信息是：你的情绪和直觉值得被信任，但它们也需要清澈的边界。像坐在海边的王后一样，靠近水，理解水，聆听水，却不要完全被水吞没。只有当你先照顾好自己的内在之杯，才有能力真正温柔地回应这个世界。`,
+    translations: {
+      en: {
+        name: 'Queen of Cups',
+        keywords: ['Empathy', 'Intuition', 'Emotional Wisdom', 'Gentleness', 'Care', 'Healing', 'Inner Voice', 'Emotional Boundaries', 'Female Benefactor'],
+        daily_upright:
+          'Today favors caring for your own emotions and responding to others with gentleness and understanding. Your intuition is sharp. You can trust the quiet but reliable voice deep within.',
+        daily_reversed:
+          'Watch out today for blurred emotional boundaries, or for neglecting yourself while caring for others. Empathy is precious, but you do not need to carry everyone’s pain for them.',
+        reading_upright: `The Queen of Cups upright represents empathy, intuition, gentleness, emotional wisdom, and healing ability. It suggests that you are understanding yourself and others in a subtle, spacious, and deeply feeling way. It may also point to a gentle, dependable, and receptive female benefactor entering your life.
+
+In a spread, the Queen of Cups asks you to trust your inner feelings. She does not light others through outward charisma like the Queen of Wands, nor care for others mainly through material resources like the Queen of Pentacles. Her power comes through water: emotion, intuition, empathy, and deep inner knowing. She is like a mirror that reflects what others truly feel, while also helping people see themselves with new clarity.`,
+        reading_reversed: `The Queen of Cups reversed represents emotional overload, weak boundaries, overgiving, avoidance of reality, or being carried away by other people’s feelings. You may be so sensitive to another person’s pain that you forget your own needs, or so emotionally full that your judgment becomes unclear.
+
+In a spread, the reversed Queen of Cups asks you to bring your attention back to yourself. You may be gentle, but not boundaryless. You may understand others, but you cannot live their lives for them. It can also point to emotional manipulation, a victim stance, or using fragility as a form of control. The task now is to distinguish compassion from over-responsibility, and intuition from reactions created by emotional flooding.`,
+        detail: `The Queen of Cups is the mature, deep, and quiet water of the suit of Cups. She rules the realms of emotion, intuition, the unconscious, and inner feeling. She is not like the Page of Cups just beginning to encounter emotion, nor like the Knight of Cups carrying feeling outward in motion. She can sit by the water, watch the tides within, understand the flow of emotion, and recognize that feeling itself holds power.
+
+In the image, the Queen of Cups sits on a throne at the edge of the sea. Water usually symbolizes the unconscious, emotion, and the subconscious, while land symbolizes reality, consciousness, and reason. She sits between sea and shore, which means she stands between feeling and thought, intuition and reality. She can touch the water, but her feet are not fully submerged. This is important: she understands emotion without necessarily being consumed by it; she approaches the unconscious while still retaining the ability to observe herself.
+
+Her cup is different from the other cups in the deck. It is often closed and decorated with angelic forms. This sealed cup symbolizes the inner world, thoughts from the subconscious, feelings not yet fully spoken, and secrets belonging only to the depths of the soul. The Queen of Cups does not always speak every emotion immediately. She is more like a guardian of a complex and hidden inner chamber.
+
+When upright, the Queen of Cups usually represents compassion, care, understanding, and emotional support. She may appear in your life as a mother, sister, friend, counselor, healer, or anyone who can listen quietly and make you feel held. She does not push you through commands, and she does not hurry to hand you practical solutions. She begins by understanding your feeling.
+
+This card may also represent you. You may be becoming an emotional anchor for others, someone they can lean on, confide in, and find comfort with. You may sense pain that has not been spoken and notice subtle changes in relational atmosphere. The empathy of the Queen of Cups is not surface-level politeness. It is a deep emotional link.
+
+The Queen of Cups is also like a mirror. She reflects back what lives in another person’s inner depths, helping them see themselves more clearly through being understood. People are often drawn to her not only because she is gentle, but because she gives them the feeling that their emotions are not being dismissed, their vulnerability is not being mocked, and the things they could never fully explain have finally been heard.
+
+Her intuition is extremely strong, perhaps second only to the High Priestess, yet the two are still different. The High Priestess guards mystery, silence, and spiritual depth. The Queen of Cups is closer to the emotional world: her intuition comes through empathy, dreams, feelings, relationships, and inner tides. She is not decoding the riddle of the cosmos. She is reading a heart.
+
+In relationships, the Queen of Cups represents deep affection, tenderness, compassion, and emotional safety. She may not be the most outwardly expressive figure, but she makes people feel gently understood. Her love is not the fiery pursuit of Wands, nor the practical care of Pentacles. It is emotional receiving: I hear you, I understand you, and I am willing to stay with you when you are vulnerable.
+
+In work or creative life, the Queen of Cups suits psychology, healing, counseling, art, literature, film, music, user research, narrative design, caregiving work, and any field that depends on emotional sensitivity, empathy, and subtle understanding. She reminds you that not everything can be solved by logic alone. When rational methods fail, intuition, dreams, feeling, and careful observation may still hold answers.
+
+But the Queen of Cups also has a shadow. She can absorb too much from others. Without boundaries, empathy becomes burden, gentleness becomes self-sacrifice, and understanding becomes excuse-making on behalf of others. She may neglect her own emotional well-being while caring for someone else, or keep holding another person emotionally without ever asking whether she herself is being cared for.
+
+When reversed, the Queen of Cups warns of emotional imbalance. You may be flooded by feelings and unable to see clearly. You may confuse intuition with anxiety, or take another person’s suffering on as your own duty. It can also indicate someone who appears gentle on the surface but influences others through emotion, fragility, or silence, making the relationship heavy and hard to read.
+
+The reversed Queen of Cups does not say you should become cold. It reminds you that mature gentleness must include self-protection. You may care for others, but you must also care for yourself. You may listen to others, but you must hear your own voice too. Self-love is not indifference. It is the foundation that keeps compassion from being exhausted.
+
+The core message of the Queen of Cups is this: your emotions and intuition are worthy of trust, but they also need clear boundaries. Be like a queen seated beside the sea: close to the water, understanding the water, listening to the water, but not entirely swallowed by it. Only when you tend your own inner cup first can you truly respond to the world with gentleness.`,
+      },
+      it: {
+        name: 'Regina di Coppe',
+        keywords: ['Empatia', 'Intuizione', 'Saggezza emotiva', 'Dolcezza', 'Cura', 'Guarigione', 'Voce interiore', 'Confini emotivi', 'Figura femminile favorevole'],
+        daily_upright:
+          'Oggi e un buon momento per prenderti cura delle tue emozioni e per rispondere agli altri con dolcezza e comprensione. La tua intuizione e molto acuta: puoi fidarti di quella voce silenziosa ma affidabile che senti nel profondo.',
+        daily_reversed:
+          'Oggi fai attenzione a confini emotivi confusi o al rischio di trascurare te stessa o te stesso mentre ti prendi cura degli altri. L’empatia e preziosa, ma non sei tenuta o tenuto a portare il dolore di tutti.',
+        reading_upright: `La Regina di Coppe diritta rappresenta empatia, intuizione, dolcezza, saggezza emotiva e capacita di guarigione. Indica che stai comprendendo te stessa o te stesso e gli altri in modo sottile, capiente e molto sensibile. Puo anche indicare l’arrivo nella tua vita di una figura femminile dolce, affidabile e capace di ascoltare davvero.
+
+In una stesa, la Regina di Coppe ti invita a fidarti delle tue sensazioni interiori. Non illumina gli altri con il carisma esteriore come la Regina di Bastoni, ne si prende cura di loro principalmente attraverso risorse concrete come la Regina di Denari. La sua forza viene dall’acqua: emozione, intuizione, empatia e comprensione profonda. E come uno specchio che riflette le emozioni autentiche degli altri e, allo stesso tempo, permette alle persone di vedersi con occhi nuovi.`,
+        reading_reversed: `La Regina di Coppe rovesciata rappresenta sovraccarico emotivo, confini deboli, eccesso di dedizione, fuga dalla realta o il lasciarsi trascinare dalle emozioni altrui. Potresti essere cosi sensibile al dolore di qualcun altro da dimenticare i tuoi bisogni, oppure cosi piena o pieno di emozioni da non riuscire piu a giudicare con chiarezza.
+
+In una stesa, la Regina di Coppe rovesciata ti chiede di riportare l’attenzione su di te. Puoi essere dolce, ma non senza confini. Puoi capire gli altri, ma non puoi vivere al posto loro. Puo anche indicare manipolazione emotiva, atteggiamento vittimistico o l’uso della fragilita come forma di controllo. Il compito ora e distinguere la compassione dall’eccesso di responsabilita, e l’intuizione dalle reazioni nate da un’emozione che ha traboccato.`,
+        detail: `La Regina di Coppe e l’acqua matura, profonda e silenziosa del seme di Coppe. Governa i territori dell’emozione, dell’intuizione, dell’inconscio e della sensibilita interiore. Non e come il Fante di Coppe che sta appena imparando a incontrare l’emozione, e non e nemmeno come il Cavaliere di Coppe che porta il sentimento all’esterno in movimento. Lei sa gia stare accanto all’acqua, osservare le maree interiori, comprendere il flusso delle emozioni e riconoscere che il sentire ha una sua forza.
+
+Nell’immagine, la Regina di Coppe siede su un trono al margine del mare. L’acqua di solito simboleggia inconscio, emozione e subconscio, mentre la terra rappresenta realta, coscienza e ragione. Lei siede proprio tra mare e riva, quindi tra sentimento e pensiero, intuizione e realta. Puo toccare l’acqua, ma i suoi piedi non sono completamente immersi. Questo e essenziale: comprende le emozioni senza esserne necessariamente travolta; si avvicina all’inconscio mantenendo la capacita di osservare se stessa.
+
+La sua coppa e diversa dalle altre del mazzo. Spesso e chiusa, decorata con forme angeliche. Questa coppa sigillata simboleggia il mondo interiore, i pensieri del subconscio, i sentimenti non ancora del tutto espressi e i segreti che appartengono solo alla profondita dell’anima. La Regina di Coppe non dice sempre subito tutto cio che prova. E piuttosto la custode di uno spazio interno profondo e complesso.
+
+Quando appare diritta, la Regina di Coppe rappresenta di solito compassione, cura, comprensione e sostegno emotivo. Puo presentarsi nella tua vita come madre, sorella, amica, terapeuta, figura di guarigione o chiunque sappia ascoltarti con quiete e farti sentire accolto o accolta. Non ti spinge attraverso ordini e non corre a offrirti soluzioni pratiche. Comincia invece dal capire come ti senti.
+
+Questa carta puo anche rappresentare te stessa o te stesso. Potresti diventare un’ancora emotiva per gli altri, qualcuno a cui confidarsi, appoggiarsi e da cui ricevere conforto. Puoi percepire il dolore che non viene detto e cogliere i movimenti sottili dentro le relazioni. L’empatia della Regina di Coppe non e semplice cortesia. E un legame emotivo profondo.
+
+La Regina di Coppe e anche come uno specchio. Riflette cio che vive nelle profondita interiori di un’altra persona e aiuta gli altri a vedersi meglio grazie al fatto di essere compresi. Molte persone sono attratte da lei non solo per la sua dolcezza, ma perche accanto a lei sentono che le proprie emozioni non vengono negate, che la propria vulnerabilita non viene derisa e che cio che non riuscivano a spiegare finalmente viene ascoltato.
+
+La sua intuizione e fortissima, forse seconda soltanto a quella della Papessa, ma le due carte restano diverse. La Papessa custodisce mistero, silenzio e profondita spirituale. La Regina di Coppe e piu vicina al mondo emotivo: la sua intuizione passa attraverso empatia, sogni, sentimenti, relazioni e maree interiori. Non sta decifrando l’enigma dell’universo. Sta leggendo un cuore.
+
+Nelle relazioni, la Regina di Coppe rappresenta affetto profondo, tenerezza, compassione e sicurezza emotiva. Forse non e la figura piu estroversa, ma fa sentire gli altri compresi con dolcezza. Il suo amore non e l’inseguimento ardente dei Bastoni ne la cura pratica dei Denari. E accoglienza emotiva: ti ascolto, ti capisco e resto con te quando sei vulnerabile.
+
+Nel lavoro o nella creativita, la Regina di Coppe e adatta a psicologia, guarigione, counseling, arte, letteratura, cinema, musica, ricerca utenti, narrative design, lavori di cura e ogni campo che richieda sensibilita emotiva, empatia e comprensione sottile. Ricorda che non tutto puo essere risolto con la sola logica. Quando i metodi razionali non bastano, intuizione, sogni, emozione e osservazione delicata possono ancora offrire risposte.
+
+Ma la Regina di Coppe ha anche un lato ombra. Puo assorbire troppo dagli altri. Senza confini, l’empatia diventa un peso, la dolcezza diventa sacrificio di se, e la comprensione diventa il trovare sempre scuse agli altri. Potrebbe trascurare il proprio benessere emotivo mentre si prende cura di qualcun altro, oppure continuare a reggere emotivamente una persona senza chiedersi se anche lei venga a sua volta accolta.
+
+Quando appare rovesciata, la Regina di Coppe mette in guardia dallo squilibrio emotivo. Potresti essere travolta o travolto dai sentimenti e non vedere piu con chiarezza. Potresti confondere intuizione e ansia, o prendere la sofferenza altrui come se fosse un tuo dovere personale. Puo anche indicare una persona che appare dolce in superficie ma influenza gli altri attraverso emozione, fragilita o silenzio, rendendo la relazione pesante e difficile da leggere.
+
+La Regina di Coppe rovesciata non dice che dovresti diventare fredda o freddo. Ricorda invece che la dolcezza matura deve includere protezione di se. Puoi prenderti cura degli altri, ma devi prenderti cura anche di te. Puoi ascoltare gli altri, ma devi ascoltare anche la tua voce. L’amore per se non e indifferenza: e la base che impedisce alla compassione di esaurirsi.
+
+Il messaggio centrale della Regina di Coppe e questo: le tue emozioni e la tua intuizione meritano fiducia, ma hanno anche bisogno di confini limpidi. Sii come una regina seduta vicino al mare: vicina all’acqua, capace di comprenderla e ascoltarla, ma non del tutto inghiottita da essa. Solo quando ti prendi cura prima della tua coppa interiore puoi davvero rispondere al mondo con autentica dolcezza.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.catalogId, card]));
