@@ -3731,6 +3731,124 @@ Il messaggio centrale della Regina di Coppe e questo: le tue emozioni e la tua i
       },
     },
   }),
+  createMeaningCard({
+    id: 'king-of-cups',
+    number: 49,
+    name_cn: '圣杯国王',
+    name_en: 'King of Cups',
+    arcana: 'minor',
+    suit: 'cups',
+    keywords: ['情绪平衡', '成熟', '克制', '慈悲', '外交', '理解力', '创造力', '自我掌控', '男性贵人'],
+    daily_upright:
+      '今天适合用成熟稳定的方式处理情绪。不要被一时的愤怒或失落带走，先看清自己的内在状态，再做决定。',
+    daily_reversed:
+      '今天要小心情绪失控、压抑感受，或表面冷静但内在翻涌。真正的成熟不是假装没事，而是诚实面对情绪并妥善处理它。',
+    reading_upright: `圣杯国王正位代表情绪成熟、内在平衡、慈悲、理解力与自我掌控。它说明你正在学习不被情绪吞没，也不压抑自己的感受，而是以更稳定、更清醒的方式与内心相处。
+
+在牌阵中出现时，圣杯国王提醒你平衡理智与情感。它不像权杖国王那样通过行动和野心领导局面，也不像宝剑国王那样依靠规则和判断掌控问题。圣杯国王的力量来自水元素的成熟：他能理解复杂情绪，也能在情绪的浪潮中保持稳定。它也可能象征一位成熟、温和、懂得照顾他人情绪的男性贵人或领导型人物。`,
+    reading_reversed: `圣杯国王逆位代表情绪失衡、压抑感受、情感操控、逃避责任，或表面平静但内在混乱。你可能看似成熟，实际上正在把情绪压到深处；也可能因为无法处理负面感受，而用冷漠、沉默、讨好或操控来维持表面和谐。
+
+在牌阵中出现时，圣杯国王逆位提醒你重新面对自己的情绪管理方式。你是真的稳定，还是只是习惯不表达？你是在照顾他人的感受，还是在用温柔和理性包装逃避？此时需要诚实地看见内心的波动，避免让未处理的情绪在关系和现实中制造暗流。`,
+    detail: `圣杯国王是圣杯牌组中最成熟、最有掌控力的水。他代表情感、直觉、创造力和无意识，但他的重点不是被这些感受带走，而是能够理解它们、容纳它们，并以平衡的方式处理它们。如果圣杯王后像坐在水边的一面情绪之镜，那么圣杯国王更像坐在海上的治理者：他知道海会起浪，但他不会因为浪来就失去方向。
+
+牌面中，圣杯国王坐在宝座上，周围是广阔的水域。他佩戴着鱼形护身符，鱼象征创造力、精神性、潜意识和情感世界中流动的生命力。背景中，一边有鱼跃出海面，一边有船行驶在水上，分别象征情感世界与物质世界。它们都存在，但并没有吞没国王。这说明他已经学会在有意识和无意识、现实与情绪之间取得稳定平衡。
+
+圣杯国王最重要的能力，是不压抑情绪，也不被情绪支配。他并不是没有愤怒、悲伤、欲望或脆弱，而是能够看见这些感受，并用成熟的方式处理它们。他不会因为一时的情绪立刻爆发，也不会在痛苦面前直接沉入绝望。他会先理解自己的内在状态，再决定如何行动。
+
+当圣杯国王正位出现时，它通常表示情绪上的成熟和自我认知。你可能正在学会更稳定地处理压力、关系、创伤或复杂的人际局面。过去会让你失衡的事情，现在也许仍然会触动你，但你已经不再完全被它控制。你开始知道：感受需要被承认，但行动需要被选择。
+
+这张牌也代表理智与情感之间的平衡。它不是要求你只靠理性，也不是要求你完全跟着感觉走，而是提醒你：真正成熟的人能够同时理解和感受。理解让情绪不至于失控，感受让理性不至于冷酷。圣杯国王的智慧就在这里：他用心感知世界，也用成熟的意识管理自己的回应。
+
+在人际关系中，圣杯国王代表稳定、包容、体贴和情绪上的可靠。他可能不会像圣杯骑士那样浪漫外放，也不会像圣杯侍从那样天真敏感，但他能给人一种深沉的安全感。他会倾听，会理解，也愿意对自己的行为负责。无论性别如何，这张牌都可以指向一个情绪成熟、温和、有包容力的人。
+
+在事业和现实层面，圣杯国王适合心理、咨询、教育、艺术、创意管理、医疗照护、外交、公关、团队协调等需要情绪智慧的领域。他倾向于政治性和外交性的处理方式，能够平衡不同人的需求，缓和冲突，增强关系中的和谐。他不是靠命令压住别人，而是通过理解人心来稳定局面。
+
+圣杯国王也可以代表一种成熟的领导力。和权杖国王的开拓型领导不同，圣杯国王更像情绪上的锚。他知道团队里每个人都有感受，也知道负面情绪如果不被处理，就会慢慢影响整体。他会谨慎回应他人的情感需求，也会在处理负能量时保持成熟，而不是被带着一起失控。
+
+但圣杯国王的阴影在于，成熟有时会变成压抑。他可能太擅长控制自己，以至于不允许真实情绪流露；也可能为了维持和谐，长期把自己的痛苦和不满藏起来。表面上他很平静，内在却可能积累了许多没有被表达的东西。
+
+当圣杯国王逆位出现时，它提醒你留意情绪管理的失衡。一种情况是情绪失控：被愤怒、悲伤、依赖、嫉妒或恐惧牵着走，无法做出稳定判断。另一种情况是情绪压抑：外表理智、温和、懂事，实际上却一直回避真正的感受。压抑并不等于成熟，长期不处理情绪，只会让水面下的暗流变得更深。
+
+圣杯国王逆位也可能代表情感操控。某些人看似温柔、成熟、包容，实际却通过沉默、内疚、情绪压力或模糊态度影响他人。此时需要小心那些披着理解外衣的控制，也要检查自己是否正在用“我很冷静”来逃避诚实表达。
+
+圣杯国王的核心信息是：情绪不是敌人，失控才是。真正的成熟不是压住所有感受，而是理解它们、安顿它们，并选择一种不伤害自己也不伤害他人的回应方式。像坐在海上的国王一样，让海继续流动，但不要让浪决定你的方向。`,
+    translations: {
+      en: {
+        name: 'King of Cups',
+        keywords: ['Emotional Balance', 'Maturity', 'Restraint', 'Compassion', 'Diplomacy', 'Understanding', 'Creativity', 'Self-Mastery', 'Male Benefactor'],
+        daily_upright:
+          'Today favors handling emotion in a mature and steady way. Do not let a passing wave of anger or sadness carry you away. Understand your inner state first, then decide.',
+        daily_reversed:
+          'Watch out today for emotional instability, suppressed feelings, or an outward calm that hides inner turbulence. Real maturity is not pretending nothing is wrong. It is facing emotion honestly and handling it well.',
+        reading_upright: `The King of Cups upright represents emotional maturity, inner balance, compassion, understanding, and self-command. It suggests that you are learning not to be swallowed by emotion and not to suppress feeling either, but to live with your inner world in a steadier and clearer way.
+
+In a spread, the King of Cups asks you to balance reason and feeling. He does not lead through ambition and action like the King of Wands, nor through rules and judgment like the King of Swords. His strength comes from the maturity of water: he can understand complicated emotion and still remain steady in the middle of emotional tides. He can also symbolize a mature, gentle, and emotionally aware male benefactor or leader.`,
+        reading_reversed: `The King of Cups reversed represents emotional imbalance, suppressed feeling, emotional manipulation, avoidance of responsibility, or an outward calm covering inner disorder. You may appear mature while pushing emotion down into the depths, or you may use coldness, silence, pleasing behavior, or control to maintain surface harmony because you do not know how to process darker feelings.
+
+In a spread, the reversed King of Cups asks you to examine how you manage emotion. Are you truly stable, or merely accustomed to not expressing yourself? Are you caring for other people’s feelings, or using gentleness and reason to disguise avoidance? The task now is to look honestly at your inner waves, so that unprocessed emotion does not create hidden currents in relationships and practical life.`,
+        detail: `The King of Cups is the most mature and self-possessed water in the suit of Cups. He represents emotion, intuition, creativity, and the unconscious, but his central quality is not being swept away by these forces. It is the ability to understand them, contain them, and respond to them with balance. If the Queen of Cups is like a mirror seated beside the water, then the King of Cups is more like a ruler seated upon the sea: he knows the ocean will rise, but he does not lose direction when the waves come.
+
+In the image, the King of Cups sits upon a throne surrounded by broad waters. He wears a fish-shaped charm, and the fish symbolizes creativity, spirituality, the subconscious, and the flowing life force inside the emotional world. In the background, one side shows a fish leaping from the sea and the other a ship moving across the water. These symbolize the emotional world and the material world. Both are present, yet neither overwhelms the king. This suggests that he has learned to hold a stable balance between the conscious and the unconscious, between reality and emotion.
+
+His most important ability is this: he neither suppresses feeling nor lets feeling rule him. He is not free of anger, sorrow, desire, or vulnerability. Instead, he can see these states and handle them in a mature way. He does not erupt immediately because of a passing emotion, nor collapse straight into despair when pain arrives. He first understands his own inner condition and then decides how to act.
+
+When upright, the King of Cups usually points to emotional maturity and self-knowledge. You may be learning to handle pressure, relationships, wounds, or complicated interpersonal situations in a steadier way. Things that once would have destabilized you may still touch you now, but they no longer control you completely. You begin to understand that feelings must be acknowledged, yet actions must still be chosen.
+
+This card also speaks of balance between reason and feeling. It does not demand pure rationality, nor does it ask you to follow feeling blindly. Instead, it reminds you that a mature person can understand and feel at the same time. Understanding prevents emotion from becoming chaos, and feeling prevents reason from becoming cold. This is the wisdom of the King of Cups: he perceives the world with heart, yet manages his responses with mature awareness.
+
+In relationships, the King of Cups represents stability, compassion, care, and emotional reliability. He may not be as openly romantic as the Knight of Cups or as innocent and sensitive as the Page of Cups, but he can offer a deep sense of safety. He listens, he understands, and he takes responsibility for his behavior. Regardless of gender, this card can indicate someone emotionally mature, gentle, and spacious enough to hold complexity.
+
+In career and practical life, the King of Cups suits psychology, counseling, education, art, creative management, healthcare, diplomacy, public relations, and team coordination, all fields that require emotional wisdom. He tends toward political and diplomatic handling, balancing different needs, easing conflict, and strengthening harmony in relationships. He does not force stability through command. He stabilizes situations by understanding people.
+
+The King of Cups can also symbolize a mature form of leadership. Unlike the pioneering leadership of the King of Wands, he is more like an emotional anchor. He knows that everyone in a group carries feelings, and he knows that unprocessed negativity will eventually affect the whole. He responds carefully to emotional needs and handles tension without being swept into the same instability.
+
+But the shadow of the King of Cups is that maturity can become suppression. He may become so skilled at controlling himself that he no longer allows real feeling to show. Or he may hide pain and dissatisfaction for the sake of keeping peace. On the surface he appears calm, but inside he may be carrying much that has never been spoken.
+
+When reversed, the King of Cups warns of emotional imbalance. One version is emotional loss of control: being led by anger, grief, dependence, jealousy, or fear and no longer making steady judgments. Another is emotional suppression: looking rational, gentle, and composed while avoiding what is truly felt. Suppression is not the same as maturity. Over time, it only deepens the currents beneath the waterline.
+
+The reversed King of Cups can also point to emotional manipulation. Someone may seem gentle, mature, and understanding, while actually influencing others through silence, guilt, pressure, or ambiguity. Be careful of control wearing the clothes of compassion, and also ask whether you yourself are hiding behind calmness instead of speaking honestly.
+
+The core message of the King of Cups is this: emotion is not the enemy; lack of mastery is. True maturity is not crushing every feeling, but understanding it, settling it, and choosing a response that does not harm you or others. Like a king seated upon the sea, let the waters keep moving, but do not let the waves decide your direction.`,
+      },
+      it: {
+        name: 'Re di Coppe',
+        keywords: ['Equilibrio emotivo', 'Maturita', 'Contenimento', 'Compassione', 'Diplomazia', 'Comprensione', 'Creativita', 'Padronanza di se', 'Figura maschile favorevole'],
+        daily_upright:
+          'Oggi e il momento di gestire le emozioni in modo maturo e stabile. Non lasciarti trascinare da rabbia o tristezza passeggere. Prima comprendi il tuo stato interiore, poi decidi.',
+        daily_reversed:
+          'Oggi fai attenzione a instabilita emotiva, sentimenti repressi o una calma esteriore che nasconde un’agitazione interiore. La vera maturita non e fingere che vada tutto bene, ma affrontare onestamente cio che senti e gestirlo con cura.',
+        reading_upright: `Il Re di Coppe diritto rappresenta maturita emotiva, equilibrio interiore, compassione, comprensione e padronanza di se. Indica che stai imparando a non essere travolta o travolto dalle emozioni, ma anche a non reprimerle, scegliendo invece un modo piu stabile e lucido di stare con il tuo mondo interiore.
+
+In una stesa, il Re di Coppe ti invita a bilanciare ragione e sentimento. Non guida attraverso ambizione e azione come il Re di Bastoni, ne attraverso regole e giudizio come il Re di Spade. La sua forza viene dalla maturita dell’acqua: sa comprendere emozioni complesse e restare comunque saldo dentro le loro maree. Puo anche simboleggiare un uomo maturo, gentile e capace di prendersi cura delle emozioni altrui, oppure una figura di guida affidabile.`,
+        reading_reversed: `Il Re di Coppe rovesciato rappresenta squilibrio emotivo, sentimenti repressi, manipolazione affettiva, fuga dalle responsabilita o una calma apparente che copre un disordine interiore. Potresti sembrare maturo, mentre in realta stai spingendo le emozioni sempre piu in profondita; oppure potresti usare freddezza, silenzio, compiacenza o controllo per mantenere una pace di facciata.
+
+In una stesa, il Re di Coppe rovesciato ti chiede di osservare il tuo modo di gestire le emozioni. Sei davvero stabile, oppure sei soltanto abituata o abituato a non esprimerti? Ti stai prendendo cura dei sentimenti altrui, oppure stai usando dolcezza e razionalita per evitare cio che non vuoi affrontare? Il compito ora e guardare con onesta le onde interiori, per impedire che emozioni non elaborate creino correnti sotterranee nella vita pratica e nelle relazioni.`,
+        detail: `Il Re di Coppe e l’acqua piu matura e piu padrona di se nel seme di Coppe. Rappresenta emozione, intuizione, creativita e inconscio, ma il suo tratto centrale non e lasciarsi portare via da queste forze. E invece la capacita di comprenderle, contenerle e rispondere ad esse in equilibrio. Se la Regina di Coppe e come uno specchio seduto accanto all’acqua, il Re di Coppe assomiglia di piu a un sovrano seduto sul mare: sa che il mare si muovera, ma non perde direzione quando arrivano le onde.
+
+Nell’immagine, il Re di Coppe siede su un trono circondato da ampie acque. Indossa un amuleto a forma di pesce, e il pesce simboleggia creativita, spiritualita, subconscio e la forza vitale che scorre nel mondo emotivo. Sullo sfondo, da un lato un pesce emerge dal mare e dall’altro una nave lo attraversa. Questi elementi rappresentano il mondo emotivo e quello materiale. Entrambi esistono, ma nessuno dei due travolge il re. Questo suggerisce che egli ha imparato a mantenere un equilibrio stabile tra conscio e inconscio, realta ed emozione.
+
+La sua qualita piu importante e questa: non reprime i sentimenti e non lascia che i sentimenti comandino. Non e privo di rabbia, tristezza, desiderio o vulnerabilita. Al contrario, vede questi stati e li gestisce in modo maturo. Non esplode subito per un’emozione momentanea e non sprofonda immediatamente nella disperazione quando prova dolore. Prima comprende il proprio stato interiore, poi decide come agire.
+
+Quando appare diritto, il Re di Coppe indica spesso maturita emotiva e conoscenza di se. Potresti star imparando a gestire in modo piu stabile pressioni, relazioni, ferite o situazioni interpersonali complesse. Cio che una volta ti avrebbe destabilizzato forse continua ancora a toccarti, ma non ti controlla piu completamente. Cominci a sapere che i sentimenti devono essere riconosciuti, ma le azioni devono comunque essere scelte.
+
+Questa carta parla anche di equilibrio tra ragione e sentimento. Non ti chiede di essere soltanto razionale, ne di seguire il cuore alla cieca. Ricorda piuttosto che una persona matura sa comprendere e sentire nello stesso tempo. La comprensione impedisce all’emozione di trasformarsi in caos; il sentire impedisce alla ragione di diventare fredda. Questa e la saggezza del Re di Coppe: percepisce il mondo con il cuore, ma governa le sue risposte con consapevolezza matura.
+
+Nelle relazioni, il Re di Coppe rappresenta stabilita, compassione, attenzione e affidabilita emotiva. Forse non e romantico in modo esplicito come il Cavaliere di Coppe, ne innocente e sensibile come il Fante di Coppe, ma offre un senso di sicurezza profonda. Ascolta, comprende e si assume la responsabilita del proprio comportamento. A prescindere dal genere, questa carta puo indicare una persona emotivamente matura, gentile e capace di contenere la complessita.
+
+Nel lavoro e nella vita pratica, il Re di Coppe e adatto a psicologia, counseling, educazione, arte, gestione creativa, cura medica, diplomazia, pubbliche relazioni e coordinamento di team, tutti campi che richiedono intelligenza emotiva. Tende a una gestione politica e diplomatica, capace di bilanciare bisogni diversi, attenuare i conflitti e rafforzare l’armonia nelle relazioni. Non stabilizza attraverso il comando rigido: stabilizza comprendendo gli esseri umani.
+
+Il Re di Coppe puo anche simboleggiare una forma matura di leadership. Diversamente dal Re di Bastoni, piu pionieristico, lui funziona come ancora emotiva. Sa che in un gruppo tutti provano qualcosa, e sa che le emozioni negative non elaborate prima o poi influenzano l’insieme. Risponde con attenzione ai bisogni emotivi e affronta le tensioni senza farsi trascinare nella stessa instabilita.
+
+Ma l’ombra del Re di Coppe e che la maturita puo trasformarsi in repressione. Potrebbe diventare cosi abile nel controllarsi da non permettere piu alle emozioni autentiche di emergere. Oppure potrebbe nascondere dolore e insoddisfazione per mantenere la pace. In superficie appare calmo, ma dentro potrebbe accumulare molto di cio che non e mai stato espresso.
+
+Quando appare rovesciato, il Re di Coppe mette in guardia dallo squilibrio emotivo. Una forma e la perdita di controllo: lasciarsi guidare da rabbia, dolore, dipendenza, gelosia o paura, senza riuscire a formulare giudizi stabili. L’altra e la repressione: apparire razionale, gentile e composto, mentre si evita di sentire davvero. La repressione non equivale alla maturita. Col tempo rende soltanto piu profonde le correnti sotto la superficie.
+
+Il Re di Coppe rovesciato puo indicare anche manipolazione emotiva. Qualcuno puo sembrare gentile, maturo e comprensivo, ma in realta influenzare gli altri attraverso silenzio, senso di colpa, pressione emotiva o ambiguita. Occorre fare attenzione al controllo che indossa i vestiti della comprensione, e anche chiedersi se tu stessa o tu stesso non stia usando la calma per evitare un’espressione sincera.
+
+Il messaggio centrale del Re di Coppe e questo: le emozioni non sono il nemico, lo e il loro mancato governo. La vera maturita non consiste nello schiacciare tutto cio che si prova, ma nel capire i sentimenti, dare loro un posto e scegliere una risposta che non faccia male ne a te ne agli altri. Come un re seduto sul mare, lascia che l’acqua continui a muoversi, ma non permettere alle onde di decidere la tua direzione.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.catalogId, card]));
