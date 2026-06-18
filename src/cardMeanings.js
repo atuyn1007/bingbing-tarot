@@ -3495,6 +3495,118 @@ Il messaggio centrale del Fante di Coppe e questo: prendi sul serio il piccolo p
       },
     },
   }),
+  createMeaningCard({
+    id: 'knight-of-cups',
+    number: 47,
+    name_cn: '圣杯骑士',
+    name_en: 'Knight of Cups',
+    arcana: 'minor',
+    suit: 'cups',
+    keywords: ['浪漫', '邀约', '情感表达', '直觉行动', '温柔追求', '艺术气质', '理想主义', '心之信使'],
+    daily_upright:
+      '今天适合顺着心里的感受行动。你可以表达情绪、发出邀约，或认真对待一个对你有情感价值的灵感。',
+    daily_reversed:
+      '今天要小心过度浪漫化现实，或用漂亮的表达回避真正的承担。情感很重要，但它也需要落在真实行动里。',
+    reading_upright: `圣杯骑士正位代表浪漫追求、情感表达、直觉行动与心之所向。它说明某种情感、邀请、创意项目或温柔的机会正在靠近你，也可能是你自己准备把内心的感受带到现实世界中。
+
+在牌阵中出现时，圣杯骑士提醒你听从内心的召唤。它不像权杖骑士那样猛烈冲刺，也不像宝剑骑士那样用逻辑和语言开路，而是带着圣杯前进：表达感受、传递邀约、回应心动，或承接某个对你具有情感与创造价值的任务。`,
+    reading_reversed: `圣杯骑士逆位代表情感不稳定、浪漫幻想、逃避现实、承诺不足，或用温柔包装不成熟的动机。你可能被某种美好的感觉吸引，却还没有看清它是否真的能在现实中成立。
+
+在牌阵中出现时，圣杯骑士逆位提醒你分辨真诚与表演。有人可能很擅长表达情绪、制造氛围、说出动人的话，却未必愿意承担后续责任。它也可能表示你自己正在追逐一种理想化的爱、梦或创作，却忽略了现实条件。此时需要让感情回到地面，而不是只停留在想象中的浪漫。`,
+    detail: `圣杯骑士是圣杯牌组中开始把情感带向世界的一张宫廷人物牌。如果圣杯侍从是杯中浮出的鱼，代表来自潜意识的灵感和内在小孩的触动，那么圣杯骑士就是那个真正拿起圣杯、骑马出发的人。他不只是感受到情绪，而是愿意带着这份情绪去表达、去邀约、去追求，甚至去完成一个对自己具有情感价值的使命。
+
+在所有骑士牌中，圣杯骑士是最柔和、最感性、也最接近女性化能量的一位。这里的女性化并不是指性别，而是指他与情感、直觉、想象力和内在感受保持着紧密连接。他不是靠强势征服世界，也不是靠锋利逻辑压倒他人。他的力量来自感受：他知道自己心里有什么，也愿意把这只杯子带到别人面前。
+
+圣杯骑士常常以信使的形式出现。他可能带来邀请、告白、和解、约会、艺术灵感、创意合作，或某个让你情感上受益的消息。他带来的东西不一定是现实层面最稳定的承诺，却往往能触动你的心。它像是一封情书、一首歌、一场邀约、一段温柔的对话，或一个让你觉得“这件事对我有意义”的机会。
+
+当圣杯骑士正位出现时，它通常意味着你正在面对一个需要听从内心的选择。面对实际决定时，圣杯骑士会优先听心，而不是只看逻辑上是否最划算、最安全、最有效率。他会问：这是否让我心动？是否让我感到美？是否符合我真正的情感需要？是否能把我内在珍视的东西带到世界上？
+
+这张牌在爱情中非常明显。它可能代表一个浪漫、温柔、有吸引力、懂得表达情感的人。无论性别如何，这个人都可能带有一种柔软而迷人的气质：会写消息，会制造氛围，会用语言和行动让人感到被珍惜。它也可能代表一段关系中出现邀约、告白、靠近，或你开始用更温柔、更理想化的眼光看待爱情。
+
+但圣杯骑士不只属于爱情。它也可以代表创作和艺术任务的承办者。作为骑士，他负责把圣杯牌组的礼物带入世界。也就是说，他可以象征一个对你具有情感意义或创造价值的项目：一篇文章、一首歌、一段影像、一个角色、一次展演、一个游戏叙事，或任何需要用情感和想象力完成的作品。它提醒你，创意不只是脑中的灵感，也需要被带出来、被表达、被交付给世界。
+
+在事业中，圣杯骑士适合艺术、内容、设计、音乐、影视、文学、心理、疗愈、品牌叙事、用户体验等需要感受力和共情能力的领域。它不是那种只追求效率和结果的事业能量，而是强调“我是否能把内在的美、感受和价值传递出去”。
+
+圣杯骑士的阴影在于，他可能太相信感觉。因为他会听从心，所以有时也会忽略现实。他可能选择一条并不合逻辑的道路，只因为它看起来浪漫；也可能沉迷于暧昧、追求、氛围和想象，却不擅长承担长期关系中的细节。他可以非常动人，但未必总是稳定。
+
+当圣杯骑士逆位出现时，它提醒你留意不成熟的浪漫和情绪化的选择。你可能被一个人的温柔表达吸引，却没有看见他的行动是否一致；也可能你自己正在用梦、艺术、爱情或理想逃避现实压力。漂亮的表达如果没有真实行动支撑，就容易变成空中的情话。
+
+圣杯骑士逆位也可能表示情感操纵或自我陶醉。有些人看起来很深情，其实只是沉迷于自己扮演的浪漫角色；有些人说自己跟随内心，其实只是不想承担责任。此时需要问清楚：这份情感是否真实？这份邀请是否可靠？这份梦想是否有落地的可能？
+
+圣杯骑士的核心信息是：情感需要被表达，灵感需要被带到世界中。你可以浪漫，可以跟随直觉，可以选择心之所向；但真正成熟的圣杯骑士，不只会递出一只漂亮的杯子，也会对杯中承载的感情、梦想和承诺负责。`,
+    translations: {
+      en: {
+        name: 'Knight of Cups',
+        keywords: ['Romance', 'Invitation', 'Emotional Expression', 'Intuitive Action', 'Gentle Pursuit', 'Artistic Temperament', 'Idealism', 'Messenger of the Heart'],
+        daily_upright:
+          'Today favors acting in line with what you truly feel. You can express emotion, make an invitation, or take seriously an inspiration that carries emotional value for you.',
+        daily_reversed:
+          'Watch out today for romanticizing reality too much, or using beautiful words to avoid real responsibility. Emotion matters, but it still needs real action beneath it.',
+        reading_upright: `The Knight of Cups upright represents romantic pursuit, emotional expression, intuitive action, and following the call of the heart. It suggests that a feeling, an invitation, a creative project, or a gentle opportunity is approaching you, or that you are ready to bring your inner feelings into the world.
+
+In a spread, the Knight of Cups asks you to listen to the call inside you. Unlike the Knight of Wands, who charges forward with force, or the Knight of Swords, who cuts a path with logic and language, this knight moves with a cup in hand: expressing feeling, extending invitations, answering desire, or carrying a task that holds emotional and creative value for you.`,
+        reading_reversed: `The Knight of Cups reversed represents emotional instability, romantic fantasy, avoidance of reality, lack of real commitment, or immature motives wrapped in tenderness. You may be drawn toward a beautiful feeling without yet seeing whether it can truly stand in real life.
+
+In a spread, the reversed Knight of Cups asks you to distinguish sincerity from performance. Someone may be highly skilled at expressing emotion, creating atmosphere, and saying moving things, while still avoiding the responsibility that follows. It can also show that you are chasing an idealized love, dream, or creative vision while ignoring real-world conditions. The task now is to bring feeling back down to earth rather than living only in imagined romance.`,
+        detail: `The Knight of Cups is the court figure in the suit of Cups who begins to carry emotion into the world. If the Page of Cups is the fish rising from the cup, symbolizing a spark from the subconscious and the stirring of the inner child, then the Knight of Cups is the one who actually lifts the cup, mounts the horse, and sets out. He does not only feel emotion. He is willing to take that emotion with him to express, invite, pursue, and even complete a mission that has personal emotional meaning.
+
+Among all the knights, the Knight of Cups is the softest, most feeling-based, and the one most closely associated with feminine energy. This does not refer to gender. It refers to his close relationship with emotion, intuition, imagination, and inner experience. He does not conquer the world through force, nor does he dominate others through cutting logic. His power comes through feeling: he knows what is in his heart, and he is willing to place that cup before another person.
+
+The Knight of Cups often appears as a messenger. He may bring invitations, confessions, reconciliation, dates, artistic inspiration, creative collaboration, or some message that benefits you emotionally. What he brings is not always the most stable promise in practical terms, but it is often something that touches the heart. It may look like a love letter, a song, an invitation, a gentle conversation, or an opportunity that makes you feel this matters to me.
+
+When upright, the Knight of Cups usually means you are facing a choice that asks you to listen to your heart. In practical decisions, he prioritizes feeling rather than asking only what is most logical, most secure, or most efficient. He asks: does this move me? does this feel beautiful? does this meet a true emotional need? can it bring something I deeply value into the world?
+
+This card is especially obvious in love. It may represent someone romantic, gentle, attractive, and emotionally expressive. Whatever the gender, this person often carries a soft and magnetic quality: they can write, set a mood, and use words and actions that make another person feel cherished. It can also indicate invitations, confession, closeness, or the beginning of seeing love through a gentler and more idealized lens.
+
+But the Knight of Cups does not belong only to romance. He can also represent the one who carries creative and artistic work into reality. As a knight, he is responsible for bringing the gifts of the Cups suit into the world. That means he can symbolize a project with emotional meaning or creative value: an essay, a song, a film fragment, a character, a performance, a game narrative, or any work that must be completed through feeling and imagination. He reminds you that inspiration is not only something in the mind. It needs to be carried outward, expressed, and delivered into the world.
+
+In work, the Knight of Cups suits fields such as art, content creation, design, music, film, literature, psychology, healing, brand storytelling, and user experience, all of which require sensitivity and empathy. This is not career energy obsessed only with efficiency and output. It asks whether you can carry inner beauty, feeling, and meaning outward.
+
+The shadow side of the Knight of Cups is that he may trust feeling too much. Because he follows the heart, he may ignore reality. He may choose a path that makes little practical sense simply because it looks romantic. He may become absorbed in attraction, pursuit, atmosphere, and imagination while lacking the stability needed for the details of lasting relationships. He can be deeply moving, but not always steady.
+
+When reversed, the Knight of Cups warns of immature romance and emotionally driven choices. You may be captivated by someone’s gentle expression without checking whether their actions match their words. Or you may be using dreams, art, love, or ideals to avoid the weight of reality. Beautiful expression without real action behind it quickly becomes a message floating in the air.
+
+Reversed, the card can also point to emotional manipulation or self-absorption. Some people seem deeply romantic but are really attached only to the role they are performing. Some claim to follow the heart when in fact they are avoiding responsibility. Ask clearly: is this feeling real? is this invitation reliable? does this dream have any chance of becoming grounded?
+
+The core message of the Knight of Cups is this: emotion must be expressed, and inspiration must be carried into the world. You can be romantic, intuitive, and guided by the heart, but the mature Knight of Cups does not only offer a beautiful cup. He also takes responsibility for the feelings, dreams, and promises the cup contains.`,
+      },
+      it: {
+        name: 'Cavaliere di Coppe',
+        keywords: ['Romanticismo', 'Invito', 'Espressione emotiva', 'Azione intuitiva', 'Ricerca gentile', 'Temperamento artistico', 'Idealismo', 'Messaggero del cuore'],
+        daily_upright:
+          'Oggi e il momento di agire seguendo cio che senti davvero. Puoi esprimere emozioni, fare un invito o prendere sul serio un’ispirazione che per te ha un valore emotivo.',
+        daily_reversed:
+          'Oggi fai attenzione a idealizzare troppo la realta o a usare parole bellissime per evitare una vera assunzione di responsabilita. L’emozione conta, ma deve comunque appoggiarsi a gesti concreti.',
+        reading_upright: `Il Cavaliere di Coppe diritto rappresenta ricerca romantica, espressione emotiva, azione intuitiva e il seguire la direzione del cuore. Indica che un sentimento, un invito, un progetto creativo o una possibilita gentile si stanno avvicinando a te, oppure che sei pronto a portare nel mondo reale cio che provi dentro.
+
+In una stesa, il Cavaliere di Coppe ti invita ad ascoltare la chiamata interiore. Non irrompe con la forza del Cavaliere di Bastoni e non apre la strada con la logica del Cavaliere di Spade. Avanza invece con una coppa in mano: esprime sentimenti, porge inviti, risponde al desiderio o prende in carico un compito che ha per te valore emotivo e creativo.`,
+        reading_reversed: `Il Cavaliere di Coppe rovesciato rappresenta instabilita emotiva, fantasia romantica, fuga dalla realta, scarsita di vero impegno o motivazioni immature rivestite di dolcezza. Potresti sentirti attratto da qualcosa di bello senza aver ancora capito se possa davvero reggersi nella vita concreta.
+
+In una stesa, il Cavaliere di Coppe rovesciato ti chiede di distinguere sincerita e messa in scena. Qualcuno potrebbe essere molto abile nell’esprimere emozioni, creare atmosfera e dire parole toccanti, senza pero volersi assumere la responsabilita che segue. Oppure potresti essere tu a inseguire un amore, un sogno o una visione creativa idealizzati, ignorando le condizioni reali. Il compito ora e riportare i sentimenti a terra invece di vivere soltanto in un romanticismo immaginato.`,
+        detail: `Il Cavaliere di Coppe e la figura di corte del seme di Coppe che comincia a portare l’emozione nel mondo. Se il Fante di Coppe e il pesce che emerge dalla coppa, simbolo di un lampo dal subconscio e del risveglio del bambino interiore, allora il Cavaliere di Coppe e colui che solleva davvero la coppa, sale a cavallo e parte. Non si limita a sentire: e disposto a portare con se quel sentimento per esprimerlo, invitare, inseguire e perfino compiere una missione che per lui ha un valore emotivo personale.
+
+Tra tutti i cavalieri, il Cavaliere di Coppe e il piu morbido, il piu sensibile e quello piu vicino all’energia femminile. Questo non riguarda il genere, ma il suo legame stretto con emozione, intuizione, immaginazione e mondo interiore. Non conquista il mondo con la forza, e non domina gli altri con una logica tagliente. La sua forza viene dal sentire: sa che cosa ha nel cuore ed e disposto a porgere quella coppa a qualcun altro.
+
+Il Cavaliere di Coppe appare spesso come messaggero. Puo portare inviti, confessioni, riconciliazioni, appuntamenti, ispirazioni artistiche, collaborazioni creative o un messaggio che ti tocca sul piano emotivo. Cio che porta non e sempre la promessa piu stabile sul piano pratico, ma e spesso qualcosa che colpisce il cuore. Puo assumere la forma di una lettera d’amore, di una canzone, di un invito, di una conversazione gentile o di un’occasione che ti fa pensare: questa cosa per me ha significato.
+
+Quando appare diritto, il Cavaliere di Coppe suggerisce che stai affrontando una scelta che richiede di ascoltare il cuore. Di fronte a decisioni pratiche, questa figura da priorita al sentire piu che alla sola domanda su cosa sia piu logico, sicuro o efficiente. Chiede: questo mi emoziona? questo mi sembra bello? questo risponde a un mio bisogno emotivo autentico? questo puo portare nel mondo qualcosa che custodisco dentro?
+
+In amore, la carta e particolarmente chiara. Puo rappresentare una persona romantica, gentile, affascinante e capace di esprimere i propri sentimenti. Qualunque sia il genere, questa persona puo avere una qualita morbida e magnetica: sa scrivere, creare atmosfera e usare parole e gesti che fanno sentire l’altro prezioso. Puo anche indicare un invito, una confessione, un avvicinamento o il guardare l’amore con occhi piu dolci e piu idealizzati.
+
+Ma il Cavaliere di Coppe non appartiene solo al romanticismo. Puo rappresentare anche chi porta nel mondo opere creative e artistiche. In quanto cavaliere, ha il compito di consegnare i doni del seme di Coppe alla realta. Puo quindi simboleggiare un progetto con valore emotivo o creativo: un testo, una canzone, un frammento visivo, un personaggio, una performance, una narrazione per un gioco o qualsiasi opera che richieda immaginazione e sentimento per essere completata. Ricorda che l’ispirazione non deve restare solo nella mente: va portata fuori, espressa e offerta al mondo.
+
+Nel lavoro, il Cavaliere di Coppe si adatta ad arte, contenuti, design, musica, cinema, letteratura, psicologia, percorsi di cura, narrazione di brand e user experience, tutti ambiti che richiedono sensibilita ed empatia. Non e un’energia professionale che pensa solo a efficienza e risultato. Chiede piuttosto se sei in grado di trasmettere verso l’esterno bellezza, sentimento e senso.
+
+Il lato ombra del Cavaliere di Coppe e che puo fidarsi troppo delle sensazioni. Proprio perche segue il cuore, a volte puo dimenticare la realta. Puo scegliere una strada poco logica solo perche appare romantica. Puo perdersi in attrazione, inseguimento, atmosfera e immaginazione, senza saper reggere i dettagli di una relazione duratura. Sa commuovere, ma non sempre sa restare stabile.
+
+Quando appare rovesciato, il Cavaliere di Coppe avverte rispetto a un romanticismo immaturo e a scelte guidate dall’emozione. Potresti lasciarti affascinare dalle parole dolci di qualcuno senza verificare se le azioni siano coerenti. Oppure potresti usare sogni, arte, amore o ideali per evitare il peso della realta. Una bella espressione senza gesti veri dietro diventa presto una promessa sospesa nell’aria.
+
+Rovesciato, puo indicare anche manipolazione emotiva o auto-compiacimento. Alcune persone sembrano molto romantiche, ma in realta sono innamorate soprattutto del ruolo che interpretano. Altre dicono di seguire il cuore, quando in realta stanno solo sfuggendo alla responsabilita. Chiediti con chiarezza: questo sentimento e autentico? questo invito e affidabile? questo sogno ha davvero la possibilita di diventare concreto?
+
+Il messaggio centrale del Cavaliere di Coppe e questo: i sentimenti devono essere espressi e l’ispirazione va portata nel mondo. Puoi essere romantico, seguire l’intuizione e muoverti verso cio che il cuore desidera; ma il Cavaliere di Coppe maturo non offre solo una coppa bella da guardare. Si assume anche la responsabilita dei sentimenti, dei sogni e delle promesse che quella coppa contiene.`,
+      },
+    },
+  }),
 ];
 
 const customMeanings = new Map(meaningCards.map((card) => [card.catalogId, card]));
