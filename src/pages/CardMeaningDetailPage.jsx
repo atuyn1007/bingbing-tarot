@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { getLocalizedMeaningCard } from '../cardMeanings.js';
+import { getLocalizedMeaningCard, getTarotMeaningCard } from '../cardMeanings.js';
 
 const zhCNLabels = {
   backToList: '返回列表',
@@ -15,7 +15,7 @@ const zhCNLabels = {
   missingTitle: '未找到这张牌',
 };
 
-function CardMeaningDetailPage({ theme, t, language, card, onBack }) {
+function CardMeaningDetailPage({ theme, t, language, cardId, onBack }) {
   const text = language === 'zh-CN'
     ? zhCNLabels
     : {
@@ -31,6 +31,7 @@ function CardMeaningDetailPage({ theme, t, language, card, onBack }) {
         missingTitle: t('meanings.missingTitle'),
       };
 
+  const card = getTarotMeaningCard(cardId);
   const localizedCard = getLocalizedMeaningCard(card, language);
   const title = localizedCard?.displayName || text.missingTitle;
   const subtitle = localizedCard?.secondaryName || '';

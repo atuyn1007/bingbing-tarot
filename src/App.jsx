@@ -1,6 +1,5 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
-import { findTarotMeaningCard, getLocalizedMeaningCard, getLocalizedMeaningDaily, getTarotMeaningCard } from './cardMeanings.js';
 import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
@@ -422,6 +421,7 @@ function App() {
   const [selectedMeaningCardId, setSelectedMeaningCardId] = useState(null);
   const [meaningSearchTerm, setMeaningSearchTerm] = useState('');
   const [meaningCategoryFilter, setMeaningCategoryFilter] = useState('all');
+  const [cardMeaningsModule, setCardMeaningsModule] = useState(null);
   const [showRedeemCodeModal, setShowRedeemCodeModal] = useState(false);
   const [redeemCodeValue, setRedeemCodeValue] = useState('');
   const [isRedeemingCode, setIsRedeemingCode] = useState(false);
@@ -445,7 +445,6 @@ function App() {
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
   const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
   const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
-  const selectedMeaningCard = getTarotMeaningCard(selectedMeaningCardId);
   const monthLabel = getMonthLabel(intlLocale, calendarDate);
   const suspenseFallback = <AppLoading theme={theme} />;
   const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
@@ -456,6 +455,23 @@ function App() {
   useEffect(() => {
     localStorage.setItem('tarot_card_style', cardStyle);
   }, [cardStyle]);
+
+  useEffect(() => {
+    if (!activeDailyCard || cardMeaningsModule) return undefined;
+
+    let cancelled = false;
+    import('./cardMeanings.js')
+      .then((module) => {
+        if (!cancelled) setCardMeaningsModule(module);
+      })
+      .catch((error) => {
+        console.warn('Failed to load detailed daily tarot meanings:', error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeDailyCard, cardMeaningsModule]);
 
   const markSessionStarted = () => {
     localStorage.setItem(SESSION_STARTED_AT_KEY, `${Date.now()}`);
@@ -1114,7 +1130,9 @@ function App() {
   };
 
   const getDailyFortuneKeywords = (card) => {
-    const meaningCard = getLocalizedMeaningCard(findTarotMeaningCard(card), language);
+    const meaningCard = cardMeaningsModule
+      ? cardMeaningsModule.getLocalizedMeaningCard(cardMeaningsModule.findTarotMeaningCard(card), language)
+      : null;
     if (meaningCard?.displayKeywords?.length) {
       return meaningCard.displayKeywords;
     }
@@ -1128,7 +1146,9 @@ function App() {
   const getDailyFortuneSummary = (card) => {
     if (!card) return '';
 
-    const meaningDaily = getLocalizedMeaningDaily(card, Boolean(card?.isReversed), language);
+    const meaningDaily = cardMeaningsModule
+      ? cardMeaningsModule.getLocalizedMeaningDaily(card, Boolean(card?.isReversed), language)
+      : '';
     if (meaningDaily) {
       return meaningDaily;
     }
@@ -1619,7 +1639,7 @@ function App() {
         theme={theme}
         t={t}
         language={language}
-        card={selectedMeaningCard}
+        cardId={selectedMeaningCardId}
         onBack={() => setCurrentPage('card-meanings')}
       />
     );

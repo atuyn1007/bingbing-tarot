@@ -24,6 +24,12 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks(id) {
+            const normalizedId = id.replace(/\\/g, '/')
+
+            if (normalizedId.endsWith('/src/cupsNumberMeanings.js')) {
+              return 'meanings-cups'
+            }
+
             if (!id.includes('node_modules')) {
               return undefined
             }
