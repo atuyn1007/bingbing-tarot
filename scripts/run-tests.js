@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
+import { getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 
 const tests = [
   {
@@ -58,6 +59,50 @@ const tests = [
       assert.equal(getCardArtwork({ name: '圣杯侍从' }), '/cards/waite-cn/圣杯侍卫.jpg');
       assert.equal(getCardArtwork({ name: '圣杯侍卫' }), '/cards/waite-cn/圣杯侍卫.jpg');
       assert.equal(getCardArtwork({ name: '圣杯皇后' }), '/cards/waite-cn/圣杯王后.jpg');
+    },
+  },
+  {
+    name: 'cups number meanings map to catalog ids 36 through 45',
+    run() {
+      const expectedNames = [
+        'Ace of Cups',
+        'Two of Cups',
+        'Three of Cups',
+        'Four of Cups',
+        'Five of Cups',
+        'Six of Cups',
+        'Seven of Cups',
+        'Eight of Cups',
+        'Nine of Cups',
+        'Ten of Cups',
+      ];
+
+      expectedNames.forEach((name, index) => {
+        const card = getTarotMeaningCard(36 + index);
+        assert.equal(card?.name_en, name);
+        assert.equal(card?.catalogId, 36 + index);
+        assert.ok(card?.daily_upright);
+        assert.ok(card?.daily_reversed);
+        assert.match(card?.image || '', /^\/cards\/waite-cn\/圣杯/);
+      });
+    },
+  },
+  {
+    name: 'cups number meanings include complete English and Italian text',
+    run() {
+      for (let catalogId = 36; catalogId <= 45; catalogId += 1) {
+        const card = getTarotMeaningCard(catalogId);
+        for (const language of ['en', 'it']) {
+          const localized = getLocalizedMeaningCard(card, language);
+          assert.ok(localized?.displayName);
+          assert.ok(localized?.displayKeywords?.length);
+          assert.ok(localized?.displayDailyUpright);
+          assert.ok(localized?.displayDailyReversed);
+          assert.ok(localized?.displayReadingUpright);
+          assert.ok(localized?.displayReadingReversed);
+          assert.ok(localized?.displayDetail);
+        }
+      }
     },
   },
 ];
