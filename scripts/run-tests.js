@@ -105,6 +105,41 @@ const tests = [
       }
     },
   },
+  {
+    name: 'all 78 cards include complete multilingual meaning fields',
+    run() {
+      for (let catalogId = 0; catalogId < 78; catalogId += 1) {
+        const card = getTarotMeaningCard(catalogId);
+        assert.ok(card?.keywords?.length, `missing Chinese keywords for ${catalogId}`);
+        assert.ok(card?.daily_upright, `missing Chinese upright daily for ${catalogId}`);
+        assert.ok(card?.daily_reversed, `missing Chinese reversed daily for ${catalogId}`);
+        assert.ok(card?.reading_upright, `missing Chinese upright reading for ${catalogId}`);
+        assert.ok(card?.reading_reversed, `missing Chinese reversed reading for ${catalogId}`);
+        assert.ok(card?.detail, `missing Chinese detail for ${catalogId}`);
+
+        for (const language of ['en', 'it']) {
+          const localized = getLocalizedMeaningCard(card, language);
+          assert.ok(localized?.displayKeywords?.length, `missing ${language} keywords for ${catalogId}`);
+          assert.ok(localized?.displayDailyUpright, `missing ${language} upright daily for ${catalogId}`);
+          assert.ok(localized?.displayDailyReversed, `missing ${language} reversed daily for ${catalogId}`);
+          assert.ok(localized?.displayReadingUpright, `missing ${language} upright reading for ${catalogId}`);
+          assert.ok(localized?.displayReadingReversed, `missing ${language} reversed reading for ${catalogId}`);
+          assert.ok(localized?.displayDetail, `missing ${language} detail for ${catalogId}`);
+        }
+      }
+    },
+  },
+  {
+    name: 'swords and pentacles retain their own artwork mappings',
+    run() {
+      for (let catalogId = 50; catalogId <= 63; catalogId += 1) {
+        assert.match(getTarotMeaningCard(catalogId)?.image || '', /^\/cards\/waite-cn\/宝剑/);
+      }
+      for (let catalogId = 64; catalogId <= 77; catalogId += 1) {
+        assert.match(getTarotMeaningCard(catalogId)?.image || '', /^\/cards\/waite-cn\/星币/);
+      }
+    },
+  },
 ];
 
 let failed = 0;

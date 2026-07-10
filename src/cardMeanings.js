@@ -1,6 +1,7 @@
 import { allTarotCards } from './data.js';
 import { getCardArtwork } from './cardArtwork.js';
 import { cupsNumberMeanings } from './cupsNumberMeanings.js';
+import { remainingMinorMeanings } from './remainingMinorMeanings.js';
 
 const chineseNameOverrides = {
   死亡: '死神',
@@ -131,6 +132,7 @@ function createPlaceholderMeaning(card) {
 
 const meaningCards = [
   ...cupsNumberMeanings.map(createMeaningCard),
+  ...remainingMinorMeanings.map(createMeaningCard),
   createMeaningCard({
     id: 'fool',
     number: 0,
