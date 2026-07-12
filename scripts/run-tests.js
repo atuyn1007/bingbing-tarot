@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
@@ -60,6 +61,18 @@ const tests = [
     run() {
       const date = new Date(2026, 3, 21);
       assert.equal(getDisplaySignInDate(date), '2026-04-21');
+    },
+  },
+  {
+    name: 'daily claim migration keeps authentication, locking, and coin update atomic',
+    run() {
+      const sql = readFileSync(new URL('../supabase-secure-daily.sql', import.meta.url), 'utf8');
+      assert.match(sql, /security definer/i);
+      assert.match(sql, /auth\.uid\(\)/i);
+      assert.match(sql, /for update/i);
+      assert.match(sql, /Asia\/Shanghai/i);
+      assert.match(sql, /coin_balance\s*=\s*p\.coin_balance\s*\+\s*1/i);
+      assert.match(sql, /grant execute on function public\.claim_daily_tarot\(jsonb\) to authenticated/i);
     },
   },
   {
