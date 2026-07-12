@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build output and reports
+dist/
+bundle-report.html
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Runtime data and logs
+server/data.json
+*.log
+vite-dev.log
+
+# Temporary and generated working files
+extracted_meanings.txt
+src/tarotMeanings.generated.js
+*.bak
+~$*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
