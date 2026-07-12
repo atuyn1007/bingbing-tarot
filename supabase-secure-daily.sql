@@ -1,11 +1,9 @@
-alter table public.profiles
-add column if not exists timezone_name text;
-
 drop function if exists public.claim_daily_tarot(jsonb);
+drop function if exists public.claim_daily_tarot(jsonb, text);
 
 create or replace function public.claim_daily_tarot(
   p_today_card jsonb,
-  p_timezone text
+  p_date_key text
 )
 returns table (
   id uuid,
@@ -15,7 +13,6 @@ returns table (
   today_card jsonb,
   daily_history jsonb,
   created_at timestamptz,
-  timezone_name text,
   already_claimed boolean
 )
 language plpgsql
@@ -24,9 +21,7 @@ set search_path = public
 as $$
 declare
   current_user_id uuid := auth.uid();
-  requested_timezone text := nullif(trim(coalesce(p_timezone, '')), '');
-  effective_timezone text;
-  today_key text;
+  today_key text := trim(coalesce(p_date_key, ''));
   profile_row public.profiles%rowtype;
   was_already_claimed boolean := false;
 begin
@@ -37,12 +32,10 @@ begin
     raise exception 'Please sign in first.';
   end if;
 
-  if requested_timezone is null or not exists (
-    select 1
-    from pg_catalog.pg_timezone_names
-    where name = requested_timezone
-  ) then
-    raise exception 'Invalid timezone.';
+  if today_key !~ '^\d{4}-\d{2}-\d{2}$'
+    or to_char(to_date(today_key, 'YYYY-MM-DD'), 'YYYY-MM-DD') <> today_key
+  then
+    raise exception 'Invalid local date.';
   end if;
 
   if p_today_card is null
@@ -63,16 +56,6 @@ begin
 
   if not found then
     raise exception 'Profile not found.';
-  end if;
-
-  effective_timezone := coalesce(profile_row.timezone_name, requested_timezone);
-  today_key := ((now() at time zone effective_timezone)::date)::text;
-
-  if profile_row.timezone_name is null then
-    update public.profiles p
-    set timezone_name = effective_timezone
-    where p.id = current_user_id
-    returning p.* into profile_row;
   end if;
 
   was_already_claimed := profile_row.last_sign_in_date = today_key;
@@ -98,7 +81,6 @@ begin
     profile_row.today_card,
     profile_row.daily_history,
     profile_row.created_at,
-    profile_row.timezone_name,
     was_already_claimed;
 end;
 $$;
