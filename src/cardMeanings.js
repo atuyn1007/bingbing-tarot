@@ -3868,7 +3868,18 @@ export function findTarotMeaningCard(input) {
 
   if (typeof input === 'string') {
     const normalized = normalizeChineseName(input);
-    return tarotMeaningCards.find((card) => card.id === input || card.name_cn === normalized || card.name_en === input) || null;
+    const catalogCard = allTarotCards.find(
+      (card) => normalizeChineseName(card.name) === normalized || card.englishName === input,
+    );
+    return (
+      tarotMeaningCards.find(
+        (card) =>
+          card.id === input ||
+          card.catalogId === catalogCard?.id ||
+          card.name_cn === normalized ||
+          card.name_en === input,
+      ) || null
+    );
   }
 
   if (typeof input.id === 'number') {
@@ -3876,9 +3887,19 @@ export function findTarotMeaningCard(input) {
   }
 
   const normalizedName = normalizeChineseName(input.name);
+  const catalogCard = allTarotCards.find(
+    (card) =>
+      normalizeChineseName(card.name) === normalizedName ||
+      card.englishName === input.englishName ||
+      card.englishName === input.name,
+  );
   return (
     tarotMeaningCards.find(
-      (card) => card.name_cn === normalizedName || card.name_en === input.englishName || card.name_en === input.name,
+      (card) =>
+        card.catalogId === catalogCard?.id ||
+        card.name_cn === normalizedName ||
+        card.name_en === input.englishName ||
+        card.name_en === input.name,
     ) || null
   );
 }

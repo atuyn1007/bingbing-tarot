@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
-import { getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
+import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 
 const tests = [
   {
@@ -137,6 +137,26 @@ const tests = [
       }
       for (let catalogId = 64; catalogId <= 77; catalogId += 1) {
         assert.match(getTarotMeaningCard(catalogId)?.image || '', /^\/cards\/waite-cn\/星币/);
+      }
+    },
+  },
+  {
+    name: 'legacy daily cards resolve meanings by catalog Chinese name',
+    run() {
+      const legacyDailyCards = [
+        { name: '权杖一', expectedId: 22 },
+        { name: '圣杯一', expectedId: 36 },
+        { name: '圣杯皇后', expectedId: 48 },
+        { name: '宝剑一', expectedId: 50 },
+        { name: '星币一', expectedId: 64 },
+      ];
+
+      for (const { name, expectedId } of legacyDailyCards) {
+        const card = findTarotMeaningCard({ name });
+        assert.equal(card?.catalogId, expectedId);
+        assert.ok(getLocalizedMeaningCard(card, 'zh-CN')?.displayDailyUpright);
+        assert.ok(getLocalizedMeaningCard(card, 'en')?.displayDailyReversed);
+        assert.ok(getLocalizedMeaningCard(card, 'it')?.displayDailyUpright);
       }
     },
   },

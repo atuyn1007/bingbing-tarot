@@ -1077,8 +1077,10 @@ function App() {
         return;
       }
 
+      const selectedDailyCard = allTarotCards[Math.floor(Math.random() * allTarotCards.length)];
       const todayCard = {
-        name: allTarotCards[Math.floor(Math.random() * allTarotCards.length)].name,
+        id: selectedDailyCard.id,
+        name: selectedDailyCard.name,
         isReversed: Math.random() < 0.5,
       };
 
