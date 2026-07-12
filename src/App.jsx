@@ -1047,42 +1047,11 @@ function App() {
     }
 
     try {
-      const [{ getProfileById, getLocalDateKey, updateDailyProfile }, { saveTarotHistory }] = await Promise.all([
+      const [{ claimDailyTarot, getLocalDateKey }, { saveTarotHistory }] = await Promise.all([
         getSupabaseApp(),
         getSupabaseTarot(),
       ]);
-      const profile = await getProfileById(liveUser.id);
-      if (!profile) {
-        clearSession();
-        alert(t('alerts.profileMissing'));
-        return;
-      }
-
       const todayKey = getLocalDateKey();
-      const currentHistory = profile.daily_history || {};
-
-      if (profile.last_sign_in_date === todayKey) {
-        setIsSignedIn(true);
-        setCoinBalance(profile.coin_balance || 0);
-        setLastSignInDate(profile.last_sign_in_date || todayKey);
-        setDailyHistory(currentHistory);
-        if (profile.today_card) {
-          setSavedDailyTarot(profile.today_card);
-          setDailyCard(profile.today_card);
-          setShowDailyResult(true);
-        }
-
-        persistProfileSnapshot({
-          coinBalance: profile.coin_balance || 0,
-          lastSignInDate: profile.last_sign_in_date || todayKey,
-          isSignedIn: true,
-          savedDailyTarot: profile.today_card || null,
-          dailyHistory: currentHistory,
-        });
-
-        return;
-      }
-
       const selectedDailyCard = allTarotCards[Math.floor(Math.random() * allTarotCards.length)];
       const todayCard = {
         id: selectedDailyCard.id,
@@ -1090,27 +1059,19 @@ function App() {
         isReversed: Math.random() < 0.5,
       };
 
-      const nextHistory = {
-        ...currentHistory,
-        [todayKey]: todayCard,
-      };
-
-      const updatedProfile = await updateDailyProfile(liveUser.id, {
-        last_sign_in_date: todayKey,
-        today_card: todayCard,
-        daily_history: nextHistory,
-        coin_balance: (profile.coin_balance || 0) + 1,
-      });
+      const updatedProfile = await claimDailyTarot(todayCard, todayKey);
 
       setIsSignedIn(true);
       setCoinBalance(updatedProfile.coin_balance || coinBalance);
       setLastSignInDate(updatedProfile.last_sign_in_date || todayKey);
-      setDailyHistory(updatedProfile.daily_history || nextHistory);
+      setDailyHistory(updatedProfile.daily_history || {});
       if (updatedProfile.today_card) {
-        try {
-          await saveTarotHistory(updatedProfile.today_card.name, !updatedProfile.today_card.isReversed);
-        } catch (syncError) {
-          console.warn('Failed to sync daily tarot to Supabase:', syncError);
+        if (!updatedProfile.already_claimed) {
+          try {
+            await saveTarotHistory(updatedProfile.today_card.name, !updatedProfile.today_card.isReversed);
+          } catch (syncError) {
+            console.warn('Failed to sync daily tarot to Supabase:', syncError);
+          }
         }
 
         setSavedDailyTarot(updatedProfile.today_card);
@@ -1123,7 +1084,7 @@ function App() {
         lastSignInDate: updatedProfile.last_sign_in_date || todayKey,
         isSignedIn: true,
         savedDailyTarot: updatedProfile.today_card || null,
-        dailyHistory: updatedProfile.daily_history || nextHistory,
+        dailyHistory: updatedProfile.daily_history || {},
       });
     } catch (error) {
       console.error(error);

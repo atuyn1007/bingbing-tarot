@@ -80,6 +80,17 @@ const tests = [
     },
   },
   {
+    name: 'daily sign-in uses the atomic RPC with the browser local date',
+    run() {
+      const supabaseAppSource = readFileSync(new URL('../src/supabaseApp.js', import.meta.url), 'utf8');
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      assert.match(supabaseAppSource, /rpc\('claim_daily_tarot'/);
+      assert.match(supabaseAppSource, /p_date_key:\s*dateKey/);
+      assert.match(appSource, /claimDailyTarot\(todayCard, todayKey\)/);
+      assert.doesNotMatch(appSource, /updateDailyProfile/);
+    },
+  },
+  {
     name: 'card artwork resolves chinese numeral aliases',
     run() {
       assert.equal(getCardArtwork({ name: '圣杯四' }), '/cards/waite-cn/圣杯4.jpg');

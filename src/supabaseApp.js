@@ -216,12 +216,12 @@ export async function signInDaily(profile) {
   return null;
 }
 
-export async function updateDailyProfile(profileId, payload) {
+export async function claimDailyTarot(todayCard, dateKey = getLocalDateKey()) {
   const { data, error } = await supabase
-    .from('profiles')
-    .update(payload)
-    .eq('id', profileId)
-    .select()
+    .rpc('claim_daily_tarot', {
+      p_today_card: todayCard,
+      p_date_key: dateKey,
+    })
     .single();
 
   if (error) throw error;
