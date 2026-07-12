@@ -70,9 +70,11 @@ const tests = [
       assert.match(sql, /security definer/i);
       assert.match(sql, /auth\.uid\(\)/i);
       assert.match(sql, /for update/i);
-      assert.match(sql, /Asia\/Shanghai/i);
+      assert.match(sql, /pg_catalog\.pg_timezone_names/i);
+      assert.match(sql, /timezone_name\s*=\s*effective_timezone/i);
+      assert.doesNotMatch(sql, /Asia\/Shanghai/i);
       assert.match(sql, /coin_balance\s*=\s*p\.coin_balance\s*\+\s*1/i);
-      assert.match(sql, /grant execute on function public\.claim_daily_tarot\(jsonb\) to authenticated/i);
+      assert.match(sql, /grant execute on function public\.claim_daily_tarot\(jsonb, text\) to authenticated/i);
     },
   },
   {
