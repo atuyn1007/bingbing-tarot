@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-import { isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
+import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
@@ -28,6 +28,24 @@ const tests = [
       const startedAt = 1000;
       const now = startedAt + SESSION_MAX_AGE_MS + 1;
       assert.equal(isSessionExpiredAt(startedAt, now), true);
+    },
+  },
+  {
+    name: 'isDefinitiveAuthFailure recognizes invalid sessions and tokens',
+    run() {
+      assert.equal(isDefinitiveAuthFailure({ name: 'AuthSessionMissingError' }), true);
+      assert.equal(isDefinitiveAuthFailure({ status: 401 }), true);
+      assert.equal(isDefinitiveAuthFailure({ code: 'refresh_token_not_found' }), true);
+      assert.equal(isDefinitiveAuthFailure(new Error('Invalid Refresh Token: Refresh Token Not Found')), true);
+    },
+  },
+  {
+    name: 'isDefinitiveAuthFailure preserves sessions during transient failures',
+    run() {
+      assert.equal(isDefinitiveAuthFailure(new TypeError('Failed to fetch')), false);
+      assert.equal(isDefinitiveAuthFailure(new Error('Request timed out')), false);
+      assert.equal(isDefinitiveAuthFailure({ status: 503, message: 'Service unavailable' }), false);
+      assert.equal(isDefinitiveAuthFailure(null), false);
     },
   },
   {

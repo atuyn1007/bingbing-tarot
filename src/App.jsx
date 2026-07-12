@@ -5,7 +5,7 @@ import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
-import { isSessionExpiredAt } from './sessionUtils';
+import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -643,8 +643,12 @@ function App() {
       return authUser;
     } catch (error) {
       console.error(error);
-      clearSession();
-      alert(t('alerts.sessionError'));
+      if (isDefinitiveAuthFailure(error)) {
+        clearSession();
+        alert(t('alerts.sessionInvalid'));
+      } else {
+        alert(t('alerts.sessionError'));
+      }
       return null;
     }
   };
@@ -814,7 +818,9 @@ function App() {
       } catch (error) {
         console.error(error);
         if (mounted) {
-          clearSession();
+          if (isDefinitiveAuthFailure(error)) {
+            clearSession();
+          }
           setIsAuthReady(true);
           setIsSessionSyncing(false);
         }
