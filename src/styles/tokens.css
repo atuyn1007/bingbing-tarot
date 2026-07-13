@@ -1,0 +1,173 @@
+:root {
+  color-scheme: dark;
+
+  /* Celestial neutrals */
+  --color-void-950: #080908;
+  --color-void-900: #0d0e0c;
+  --color-void-850: #12130f;
+  --color-void-800: #181812;
+
+  /* Ivory and aged paper */
+  --color-ivory-100: #f6efdf;
+  --color-ivory-200: #eee4d1;
+  --color-paper-300: #e4d3b5;
+  --color-paper-400: #ceb990;
+
+  /* Printed ink */
+  --color-ink-900: #201c15;
+  --color-ink-700: #51483a;
+  --color-ink-500: #786e5d;
+
+  /* Restrained celestial gold */
+  --color-gold-300: #f1c62b;
+  --color-gold-400: #e5bb28;
+  --color-gold-500: #d5a91e;
+  --color-gold-700: #927019;
+
+  /* Semantic surfaces and text */
+  --surface-canvas: var(--color-void-900);
+  --surface-canvas-raised: var(--color-void-850);
+  --surface-paper: var(--color-ivory-200);
+  --surface-paper-bright: var(--color-ivory-100);
+  --text-on-dark: var(--color-ivory-100);
+  --text-on-dark-muted: rgba(238, 228, 209, 0.62);
+  --text-on-paper: var(--color-ink-900);
+  --text-on-paper-muted: var(--color-ink-500);
+  --text-accent: var(--color-gold-400);
+  --line-on-dark: rgba(213, 169, 30, 0.24);
+  --line-on-dark-strong: rgba(229, 187, 40, 0.52);
+  --line-on-paper: rgba(63, 49, 27, 0.22);
+  --line-on-paper-soft: rgba(63, 49, 27, 0.12);
+  --state-focus: var(--color-gold-300);
+  --state-disabled: rgba(120, 110, 93, 0.38);
+  --state-danger: #8a4435;
+
+  /* Font families: webfont files can be self-hosted without changing consumers. */
+  --font-display: "Cormorant Garamond", "Bodoni 72", Didot,
+    "Noto Serif SC", "Source Han Serif SC", "Songti SC", STSong, serif;
+  --font-reading: "Source Serif 4", "Noto Serif SC", "Source Han Serif SC",
+    "Songti SC", STSong, Georgia, serif;
+  --font-ui: Inter, "Noto Sans SC", "Source Han Sans SC", "PingFang SC",
+    "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Fluid editorial type scale */
+  --type-display-xl: clamp(4.5rem, 7.4vw, 8.5rem);
+  --type-display-lg: clamp(3.5rem, 5.5vw, 6rem);
+  --type-display-md: clamp(2.5rem, 4vw, 4.5rem);
+  --type-heading-lg: clamp(2rem, 2.8vw, 3.25rem);
+  --type-heading-md: clamp(1.5rem, 2vw, 2rem);
+  --type-heading-sm: 1.25rem;
+  --type-body-lg: 1.125rem;
+  --type-body-md: 1rem;
+  --type-body-sm: 0.875rem;
+  --type-caption: 0.75rem;
+  --type-micro: 0.6875rem;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --line-display-tight: 0.92;
+  --line-display: 1.02;
+  --line-heading: 1.2;
+  --line-body-latin: 1.65;
+  --line-body-cjk: 1.75;
+  --line-caption: 1.4;
+  --tracking-display-latin: -0.035em;
+  --tracking-display-cjk: -0.02em;
+  --tracking-heading: -0.01em;
+  --tracking-body-cjk: 0.015em;
+  --tracking-ui-latin: 0.1em;
+  --tracking-ui-cjk: 0.06em;
+  --tracking-eyebrow-latin: 0.18em;
+  --tracking-eyebrow-cjk: 0.08em;
+
+  /* Layout and spacing */
+  --page-max: 1600px;
+  --content-max: 1440px;
+  --reading-max: 1120px;
+  --prose-max: 720px;
+  --page-gutter: clamp(20px, 3vw, 48px);
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-18: 72px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Borders and radii */
+  --border-hairline: 1px;
+  --border-dark: var(--border-hairline) solid var(--line-on-dark);
+  --border-dark-strong: var(--border-hairline) solid var(--line-on-dark-strong);
+  --border-paper: var(--border-hairline) solid var(--line-on-paper);
+  --border-paper-soft: var(--border-hairline) solid var(--line-on-paper-soft);
+  --radius-none: 0;
+  --radius-paper: 2px;
+  --radius-control: 3px;
+  --radius-card: 5px;
+  --radius-pill: 999px;
+
+  /* Material shadows */
+  --shadow-paper-rest: 0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 2px 3px rgba(0, 0, 0, 0.2), 0 18px 42px rgba(0, 0, 0, 0.24);
+  --shadow-paper-lift: 0 2px 0 rgba(255, 255, 255, 0.3) inset,
+    0 8px 14px rgba(0, 0, 0, 0.24), 0 28px 56px rgba(0, 0, 0, 0.32);
+  --shadow-tarot-rest: 0 5px 8px rgba(0, 0, 0, 0.28),
+    0 28px 54px rgba(0, 0, 0, 0.34);
+  --shadow-tarot-hover: 0 10px 14px rgba(0, 0, 0, 0.3),
+    0 40px 72px rgba(0, 0, 0, 0.42);
+  --shadow-focus: 0 0 0 3px rgba(241, 198, 43, 0.2);
+  --shadow-star: 0 0 12px rgba(241, 198, 43, 0.45);
+
+  /* Motion */
+  --ease-out-editorial: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease-in-out-orbit: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-instant: 1ms;
+  --duration-fast: 160ms;
+  --duration-base: 220ms;
+  --duration-enter: 520ms;
+  --duration-slow: 900ms;
+  --transition-interactive: color var(--duration-fast) var(--ease-out-editorial),
+    background-color var(--duration-fast) var(--ease-out-editorial),
+    border-color var(--duration-fast) var(--ease-out-editorial),
+    box-shadow var(--duration-base) var(--ease-out-editorial),
+    transform var(--duration-base) var(--ease-out-editorial),
+    opacity var(--duration-fast) var(--ease-out-editorial);
+
+  /* Compatibility aliases for existing CSS during the visual migration. */
+  --app-font-serif: var(--font-display);
+  --app-font-ui: var(--font-ui);
+  --app-ink: var(--surface-canvas-raised);
+  --app-paper: var(--surface-paper);
+  --app-paper-bright: var(--surface-paper-bright);
+  --app-solar: var(--color-gold-300);
+  --app-solar-deep: var(--color-gold-700);
+  --app-text: var(--text-on-paper);
+  --app-muted: var(--text-on-paper-muted);
+  --app-border: var(--line-on-paper-soft);
+  --app-panel: rgba(238, 228, 209, 0.97);
+  --app-panel-strong: rgba(246, 239, 223, 0.98);
+  --app-panel-soft: rgba(246, 239, 223, 0.92);
+  --app-chip: rgba(213, 169, 30, 0.13);
+  --app-shadow: var(--shadow-paper-rest);
+  --app-shadow-hover: var(--shadow-paper-lift);
+  --app-card-shadow: var(--shadow-paper-rest);
+  --app-button: var(--color-gold-300);
+  --app-button-text: var(--color-ink-900);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --page-gutter: max(16px, 5vw);
+    --type-display-xl: clamp(3rem, 14vw, 4.5rem);
+    --type-display-lg: clamp(2.75rem, 12vw, 4rem);
+    --type-display-md: clamp(2.25rem, 10vw, 3.25rem);
+  }
+}

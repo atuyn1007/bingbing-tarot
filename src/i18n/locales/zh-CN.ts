@@ -81,6 +81,7 @@ const zhCN = {
   home: {
     eyebrow: 'Bingbing Tarot',
     heroKicker: 'Welcome!',
+    heroHeadline: '对发生的一切保持思考',
     lastSignIn: '上次签到',
     noLastSignIn: '还没有记录',
     calendarLabel: '日运日历',

@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import './solar.css'
 import App from './App.jsx'
 import { preloadInitialLanguage } from './i18n'
 

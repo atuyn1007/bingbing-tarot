@@ -91,6 +91,34 @@ const tests = [
     },
   },
   {
+    name: 'homepage redesign preserves every existing product action',
+    run() {
+      const homeSource = readFileSync(new URL('../src/pages/HomePage.jsx', import.meta.url), 'utf8');
+      [
+        'onOpenMessages',
+        'onOpenRedeemModal',
+        'onLogout',
+        'onOpenCalendar',
+        'onOpenHistory',
+        'onDeleteHistory',
+        'onDailyAction',
+        'onStartFreeReading',
+        'onOpenCardMeanings',
+        'onOpenHumanRequest',
+      ].forEach((handler) => assert.match(homeSource, new RegExp(`\\b${handler}\\b`)));
+      assert.match(homeSource, /getCardArtwork\(savedDailyTarot\)/);
+      assert.match(homeSource, /className="mystery-card/);
+    },
+  },
+  {
+    name: 'localized history effect depends on stable language state',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      assert.match(appSource, /\}, \[activeNickname, language\]\);/);
+      assert.doesNotMatch(appSource, /\}, \[activeNickname, t\]\);/);
+    },
+  },
+  {
     name: 'card artwork resolves chinese numeral aliases',
     run() {
       assert.equal(getCardArtwork({ name: '圣杯四' }), '/cards/waite-cn/圣杯4.jpg');

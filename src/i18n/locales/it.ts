@@ -81,6 +81,7 @@ const it = {
   home: {
     eyebrow: 'Bingbing Tarot',
     heroKicker: 'Welcome!',
+    heroHeadline: 'Rifletti su tutto ciò che accade',
     lastSignIn: 'Ultimo check-in',
     noLastSignIn: 'Nessun record',
     calendarLabel: 'Calendario fortuna',
