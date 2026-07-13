@@ -22,7 +22,7 @@ function ResultPage({
   onOpenHumanRequest,
 }) {
   return (
-    <div className={`screen-shell page-shell theme-${theme}`}>
+    <div className={`screen-shell page-shell archive-page result-archive-page theme-${theme}`}>
       <header className="page-header">
         <button type="button" onClick={goHome} className="icon-button">
           <X className="w-5 h-5" />

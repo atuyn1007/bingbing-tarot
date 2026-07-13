@@ -1,0 +1,75 @@
+html {
+  font-family: var(--font-reading);
+  font-size: 100%;
+  font-synthesis: none;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-reading);
+  font-size: var(--type-body-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--line-body-latin);
+}
+
+html[lang='zh-CN'] body {
+  line-height: var(--line-body-cjk);
+  letter-spacing: var(--tracking-body-cjk);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-heading);
+  letter-spacing: var(--tracking-heading);
+  text-wrap: balance;
+}
+
+html:not([lang='zh-CN']) h1,
+html:not([lang='zh-CN']) h2 {
+  letter-spacing: var(--tracking-display-latin);
+}
+
+html[lang='zh-CN'] h1,
+html[lang='zh-CN'] h2 {
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-display-cjk);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+nav,
+label,
+[role='button'] {
+  font-family: var(--font-ui);
+}
+
+small,
+time,
+.eyebrow {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: var(--type-micro);
+  font-weight: var(--weight-medium);
+  line-height: var(--line-caption);
+  letter-spacing: var(--tracking-eyebrow-latin);
+}
+
+html[lang='zh-CN'] .eyebrow {
+  letter-spacing: var(--tracking-eyebrow-cjk);
+}

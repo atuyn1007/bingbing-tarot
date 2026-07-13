@@ -919,7 +919,7 @@ function App() {
     } catch {
       setRecentReadings([]);
     }
-  }, [activeNickname, t]);
+  }, [activeNickname, language]);
 
   const handleRegister = async () => {
     if (!email.trim() || !nickname.trim() || !password.trim()) {
@@ -1610,6 +1610,7 @@ function App() {
         language={language}
         cardId={selectedMeaningCardId}
         onBack={() => setCurrentPage('card-meanings')}
+        onOpenCard={setSelectedMeaningCardId}
       />
     );
   } else if (currentPage === 'drawing-input') {

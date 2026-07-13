@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <filter id="fiber" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012 0.095" numOctaves="5" seed="47" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0.46 0 0 0 0.34  0 0.36 0 0 0.25  0 0 0.22 0 0.14  0 0 0 0.24 0"/>
+    </filter>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="0.7"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="#7c5d32" opacity="0.28" filter="url(#fiber)"/>
+  <g fill="none" stroke-linecap="round">
+    <g stroke="#6e512b" stroke-opacity="0.16" stroke-width="0.55">
+      <path d="M-20 42C76 31 126 52 215 40s172 12 319-3"/>
+      <path d="M-12 121c83 13 146-11 232 1s170-12 308 0"/>
+      <path d="M-18 238c109-9 170 13 277 0s154 9 278-2"/>
+      <path d="M-14 399c84 11 167-12 263 0s177-10 287 0"/>
+      <path d="M84-18c-9 92 12 163 0 258s10 170-2 290"/>
+      <path d="M347-16c11 93-9 173 1 268s-10 165 2 279"/>
+    </g>
+    <g stroke="#fff8e3" stroke-opacity="0.2" stroke-width="0.6">
+      <path d="M-15 45C76 34 130 55 218 43s171 11 315-3"/>
+      <path d="M-9 241c108-8 169 14 276 1s156 9 273-1"/>
+      <path d="M87-16c-9 91 12 162 0 257s10 171-2 289"/>
+    </g>
+    <g filter="url(#soft)">
+      <path d="M-15 311c104-24 177 30 280 2s170 22 270-7" stroke="#71491c" stroke-opacity="0.07" stroke-width="3"/>
+      <path d="M-15 307c104-24 177 30 280 2s170 22 270-7" stroke="#fff9e5" stroke-opacity="0.1" stroke-width="2"/>
+    </g>
+  </g>
+  <g fill="#875b25">
+    <circle cx="31" cy="58" r="1.1" opacity="0.22"/><circle cx="461" cy="74" r="2.2" opacity="0.1"/>
+    <circle cx="397" cy="433" r="1.3" opacity="0.17"/><circle cx="102" cy="387" r="3.2" opacity="0.07"/>
+    <circle cx="274" cy="26" r="0.8" opacity="0.25"/><circle cx="226" cy="304" r="1.5" opacity="0.13"/>
+    <circle cx="481" cy="276" r="0.7" opacity="0.24"/><circle cx="58" cy="222" r="1.8" opacity="0.11"/>
+  </g>
+</svg>

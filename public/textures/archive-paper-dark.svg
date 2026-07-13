@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <filter id="fiber" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.014 0.09" numOctaves="5" seed="23" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="0.32 0 0 0 0.24  0 0.28 0 0 0.18  0 0 0.14 0 0.07  0 0 0 0.18 0"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" fill="#b8943e" opacity="0.22" filter="url(#fiber)"/>
+  <g fill="none" stroke="#d2ad4f" stroke-opacity="0.075" stroke-width="0.55" stroke-linecap="round">
+    <path d="M-20 47c98-9 157 10 248 0s173 9 306-2"/><path d="M-9 159c83 11 151-9 238 1s175-11 306 0"/>
+    <path d="M-14 343c102-8 175 11 274 0s168 10 276-1"/><path d="M107-18c-8 96 9 176 0 269s9 171-2 280"/>
+    <path d="M392-19c9 91-7 176 1 266s-9 176 1 285"/>
+  </g>
+  <g fill="#d3ae50">
+    <circle cx="38" cy="84" r="1" opacity="0.12"/><circle cx="449" cy="116" r="1.8" opacity="0.08"/>
+    <circle cx="317" cy="461" r="0.9" opacity="0.13"/><circle cx="143" cy="366" r="2.2" opacity="0.055"/>
+  </g>
+</svg>

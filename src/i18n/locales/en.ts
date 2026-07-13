@@ -81,6 +81,7 @@ const en = {
   home: {
     eyebrow: 'Bingbing Tarot',
     heroKicker: 'Welcome!',
+    heroHeadline: 'Think of everything that happens',
     lastSignIn: 'Last check-in',
     noLastSignIn: 'No record yet',
     calendarLabel: 'Fortune calendar',
