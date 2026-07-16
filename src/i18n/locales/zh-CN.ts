@@ -135,9 +135,21 @@ const zhCN = {
   spreads: {
     chooseEyebrow: 'Choose a Spread',
     chooseTitle: '选择牌阵',
+    archiveLabel: 'ARCHIVE 03',
+    chooseSubtitle: 'Choose Your Ritual',
+    chooseDescription: '请选择一种适合你的占卜方式。',
+    chooseDescriptionSecondary: 'Each spread reveals a different perspective.',
+    metaTime: '解读时长',
+    metaCards: '牌数',
+    metaDifficulty: '难度',
+    metaRecommended: '适合情境',
     three: {
       name: '三张牌阵',
       shortName: '三张牌阵',
+      englishTitle: 'The Open Thread',
+      readingTime: '3–5 分钟',
+      difficulty: '入门',
+      recommended: '快速梳理、日常提问与当下指引',
       description: '没有固定位置限制，适合快速梳理当前问题的整体线索。',
       summary: '这组三张牌会把问题的主要线索摊开，帮助你先看见核心，再决定下一步。',
       positions: [
@@ -149,6 +161,10 @@ const zhCN = {
     triangle: {
       name: '圣三角牌阵',
       shortName: '圣三角',
+      englishTitle: 'The Sacred Triangle',
+      readingTime: '5–8 分钟',
+      difficulty: '进阶',
+      recommended: '厘清表象、现实与下一步建议',
       description: '适合看见自己以为的状况、真实的情况，以及当下最需要的建议。',
       summary:
         '圣三角会把表层判断、真实状态和建议拆开来看，适合处理“我到底有没有看清局面”这类问题。',
@@ -161,6 +177,10 @@ const zhCN = {
     choice: {
       name: '二选一牌阵',
       shortName: '二选一',
+      englishTitle: 'The Forked Path',
+      readingTime: '8–12 分钟',
+      difficulty: '深入',
+      recommended: '比较方向、关系选择与重要决策',
       description: '适合面对两个方向、两个选项或两种可能性时，比较它们的状态与结果。',
       summary: '二选一牌阵会把两个选项并排展开，再把你的真实位置放进来，适合做方向判断。',
       positions: [

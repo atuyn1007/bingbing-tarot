@@ -28,6 +28,7 @@ function HomePage({
   onOpenHumanRequest,
 }) {
   const dailyArtwork = savedDailyTarot ? getCardArtwork(savedDailyTarot) : '';
+  const heroHeadline = t('home.heroHeadline');
 
   return (
     <div className={`screen-shell home-screen theme-${theme}`}>
@@ -78,7 +79,14 @@ function HomePage({
                 <span>CELESTIAL ARCHIVE / 太阳典藏</span>
               </div>
               <p className="hero-kicker">{t('home.heroKicker')} · {activeNickname}</p>
-              <h2 className="home-hero-title">{t('home.heroHeadline')}</h2>
+              <h2 className="home-hero-title">
+                {heroHeadline === '对发生的一切保持思考' ? (
+                  <>
+                    <span className="home-hero-title-line">对发生的一切</span>
+                    <span className="home-hero-title-line home-hero-title-line-mobile-break">保持思考</span>
+                  </>
+                ) : heroHeadline}
+              </h2>
               <p className="home-hero-quote">
                 <span className="hero-quote-star" aria-hidden="true" />
                 {dailyLine.text}

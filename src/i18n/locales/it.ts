@@ -136,9 +136,21 @@ const it = {
   spreads: {
     chooseEyebrow: 'Choose a Spread',
     chooseTitle: 'Scegli uno schema',
+    archiveLabel: 'ARCHIVE 03',
+    chooseSubtitle: 'Choose Your Ritual',
+    chooseDescription: 'Scegli la forma di divinazione più adatta alla tua domanda.',
+    chooseDescriptionSecondary: 'Each spread reveals a different perspective.',
+    metaTime: 'Durata',
+    metaCards: 'Carte',
+    metaDifficulty: 'Difficoltà',
+    metaRecommended: 'Ideale per',
     three: {
       name: 'Schema a tre carte',
       shortName: 'Tre carte',
+      englishTitle: 'The Open Thread',
+      readingTime: '3–5 min',
+      difficulty: 'Introduttivo',
+      recommended: 'Chiarezza rapida, domande quotidiane, guida presente',
       description: 'Uno schema flessibile, adatto a mettere in ordine i fili principali della domanda.',
       summary:
         'Queste tre carte aprono i nodi principali della domanda, così puoi vedere il cuore della situazione prima di scegliere il passo successivo.',
@@ -151,6 +163,10 @@ const it = {
     triangle: {
       name: 'Schema del triangolo sacro',
       shortName: 'Triangolo',
+      englishTitle: 'The Sacred Triangle',
+      readingTime: '5–8 min',
+      difficulty: 'Intermedio',
+      recommended: 'Distinguere percezione, realtà e consiglio',
       description:
         'Ideale per confrontare ciò che pensi stia accadendo, ciò che sta accadendo davvero e il consiglio più utile del momento.',
       summary:
@@ -164,6 +180,10 @@ const it = {
     choice: {
       name: 'Schema due opzioni',
       shortName: 'Scelta',
+      englishTitle: 'The Forked Path',
+      readingTime: '8–12 min',
+      difficulty: 'Approfondito',
+      recommended: 'Confrontare direzioni, relazioni e decisioni',
       description: 'Utile quando devi confrontare due direzioni, due opzioni o due futuri possibili.',
       summary:
         'Questo schema mette le due opzioni una accanto all’altra e poi aggiunge la tua posizione reale, così diventa più facile scegliere una direzione.',

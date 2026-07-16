@@ -7,6 +7,11 @@ textarea,
   transition: var(--transition-interactive);
 }
 
+button:active:not(:disabled),
+[role='button']:active {
+  transition-duration: var(--duration-fast);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html:focus-within {
     scroll-behavior: auto;

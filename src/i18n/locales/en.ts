@@ -135,9 +135,21 @@ const en = {
   spreads: {
     chooseEyebrow: 'Choose a Spread',
     chooseTitle: 'Choose a spread',
+    archiveLabel: 'ARCHIVE 03',
+    chooseSubtitle: 'Choose Your Ritual',
+    chooseDescription: 'Choose the form of divination that best meets your question.',
+    chooseDescriptionSecondary: 'Each spread reveals a different perspective.',
+    metaTime: 'Reading time',
+    metaCards: 'Cards',
+    metaDifficulty: 'Difficulty',
+    metaRecommended: 'Recommended for',
     three: {
       name: 'Three-card spread',
       shortName: 'Three cards',
+      englishTitle: 'The Open Thread',
+      readingTime: '3–5 min',
+      difficulty: 'Introductory',
+      recommended: 'Quick clarity, daily questions, present guidance',
       description: 'A flexible spread for quickly sorting through the main threads of your current question.',
       summary:
         'These three cards lay out the main clues of the question so you can see the core clearly before choosing your next move.',
@@ -150,6 +162,10 @@ const en = {
     triangle: {
       name: 'Sacred triangle spread',
       shortName: 'Triangle',
+      englishTitle: 'The Sacred Triangle',
+      readingTime: '5–8 min',
+      difficulty: 'Intermediate',
+      recommended: 'Separating perception, reality, and advice',
       description:
         'Helpful for comparing what you think is happening, what is actually happening, and what advice matters most right now.',
       summary:
@@ -163,6 +179,10 @@ const en = {
     choice: {
       name: 'Either-or spread',
       shortName: 'Choice',
+      englishTitle: 'The Forked Path',
+      readingTime: '8–12 min',
+      difficulty: 'In-depth',
+      recommended: 'Comparing directions, relationships, decisions',
       description: 'Best when you are comparing two directions, two options, or two possible futures.',
       summary:
         'This spread lays both options side by side and places your true position beside them, making it useful for choosing a direction.',

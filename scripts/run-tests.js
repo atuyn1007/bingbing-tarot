@@ -5,6 +5,7 @@ import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from 
 import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
+import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
 
 const tests = [
   {
@@ -108,6 +109,8 @@ const tests = [
       ].forEach((handler) => assert.match(homeSource, new RegExp(`\\b${handler}\\b`)));
       assert.match(homeSource, /getCardArtwork\(savedDailyTarot\)/);
       assert.match(homeSource, /className="mystery-card/);
+      assert.match(homeSource, /home-hero-title-line/);
+      assert.match(homeSource, /t\('home\.heroHeadline'\)/);
     },
   },
   {
@@ -201,6 +204,24 @@ const tests = [
           assert.ok(localized?.displayDetail, `missing ${language} detail for ${catalogId}`);
         }
       }
+    },
+  },
+  {
+    name: 'spread readings use the completed meaning archive for upright and reversed cards',
+    run() {
+      const meaningArchive = { findTarotMeaningCard, getLocalizedMeaningCard };
+      const card = { id: 77, isReversed: true };
+      const expectedCard = getLocalizedMeaningCard(getTarotMeaningCard(77), 'zh-CN');
+
+      assert.equal(
+        getReadingFromMeaningArchive(card, true, 'zh-CN', meaningArchive, 'fallback'),
+        expectedCard.displayReadingReversed,
+      );
+      assert.equal(
+        getReadingFromMeaningArchive(card, false, 'zh-CN', meaningArchive, 'fallback'),
+        expectedCard.displayReadingUpright,
+      );
+      assert.equal(getReadingFromMeaningArchive(card, true, 'zh-CN', null, 'fallback'), 'fallback');
     },
   },
   {

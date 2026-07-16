@@ -18,11 +18,13 @@
   --color-ink-700: #51483a;
   --color-ink-500: #786e5d;
 
-  /* Restrained celestial gold */
-  --color-gold-300: #f1c62b;
-  --color-gold-400: #e5bb28;
-  --color-gold-500: #d5a91e;
-  --color-gold-700: #927019;
+  /* Restrained celestial gold: leaf, antique brass, and engraved shadow. */
+  --color-gold-200: #f0d98d;
+  --color-gold-300: #e3c461;
+  --color-gold-400: #d0a943;
+  --color-gold-500: #b78b2f;
+  --color-gold-700: #795820;
+  --color-gold-800: #56401f;
 
   /* Semantic surfaces and text */
   --surface-canvas: var(--color-void-900);
@@ -34,8 +36,8 @@
   --text-on-paper: var(--color-ink-900);
   --text-on-paper-muted: var(--color-ink-500);
   --text-accent: var(--color-gold-400);
-  --line-on-dark: rgba(213, 169, 30, 0.24);
-  --line-on-dark-strong: rgba(229, 187, 40, 0.52);
+  --line-on-dark: rgba(208, 169, 67, 0.22);
+  --line-on-dark-strong: rgba(227, 196, 97, 0.48);
   --line-on-paper: rgba(63, 49, 27, 0.22);
   --line-on-paper-soft: rgba(63, 49, 27, 0.12);
   --state-focus: var(--color-gold-300);
@@ -115,23 +117,23 @@
   --radius-pill: 999px;
 
   /* Material shadows */
-  --shadow-paper-rest: 0 1px 0 rgba(255, 255, 255, 0.28) inset,
-    0 2px 3px rgba(0, 0, 0, 0.2), 0 18px 42px rgba(0, 0, 0, 0.24);
-  --shadow-paper-lift: 0 2px 0 rgba(255, 255, 255, 0.3) inset,
-    0 8px 14px rgba(0, 0, 0, 0.24), 0 28px 56px rgba(0, 0, 0, 0.32);
-  --shadow-tarot-rest: 0 5px 8px rgba(0, 0, 0, 0.28),
-    0 28px 54px rgba(0, 0, 0, 0.34);
-  --shadow-tarot-hover: 0 10px 14px rgba(0, 0, 0, 0.3),
-    0 40px 72px rgba(0, 0, 0, 0.42);
-  --shadow-focus: 0 0 0 3px rgba(241, 198, 43, 0.2);
-  --shadow-star: 0 0 12px rgba(241, 198, 43, 0.45);
+  --shadow-paper-rest: 0 1px 0 rgba(255, 252, 235, 0.46) inset,
+    0 2px 0 rgba(91, 61, 24, 0.16), 0 12px 28px rgba(0, 0, 0, 0.18);
+  --shadow-paper-lift: 0 1px 0 rgba(255, 252, 235, 0.52) inset,
+    0 3px 0 rgba(91, 61, 24, 0.18), 0 18px 38px rgba(0, 0, 0, 0.24);
+  --shadow-tarot-rest: 0 4px 7px rgba(0, 0, 0, 0.25),
+    0 22px 44px rgba(0, 0, 0, 0.3);
+  --shadow-tarot-hover: 0 7px 10px rgba(0, 0, 0, 0.28),
+    0 30px 56px rgba(0, 0, 0, 0.36);
+  --shadow-focus: 0 0 0 3px rgba(227, 196, 97, 0.18);
+  --shadow-star: 0 0 12px rgba(227, 196, 97, 0.36);
 
   /* Motion */
-  --ease-out-editorial: cubic-bezier(0.22, 0.8, 0.2, 1);
+  --ease-out-editorial: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out-orbit: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-instant: 1ms;
-  --duration-fast: 160ms;
-  --duration-base: 220ms;
+  --duration-fast: 180ms;
+  --duration-base: 260ms;
   --duration-enter: 520ms;
   --duration-slow: 900ms;
   --transition-interactive: color var(--duration-fast) var(--ease-out-editorial),

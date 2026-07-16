@@ -5,6 +5,7 @@ import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
+import { getReadingFromMeaningArchive } from './readingMeanings';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
@@ -27,6 +28,19 @@ const OFFICIAL_READER = {
   nickname: OFFICIAL_READER_NICKNAME,
   englishLabel: 'ask bb!',
 };
+
+let cardMeaningsModulePromise = null;
+
+function loadCardMeaningsModule() {
+  if (!cardMeaningsModulePromise) {
+    cardMeaningsModulePromise = import('./cardMeanings.js').catch((error) => {
+      cardMeaningsModulePromise = null;
+      throw error;
+    });
+  }
+
+  return cardMeaningsModulePromise;
+}
 
 function getRecentReadingsKey(nickname) {
   return `tarot_recent_readings_${nickname || 'guest'}`;
@@ -322,17 +336,23 @@ function shouldAppendFortuneReading(text, keywords) {
   return overlapCount < 2;
 }
 
-function buildSpreadReading(cards, question, spread, t, language) {
+function buildSpreadReading(cards, question, spread, t, language, meaningArchive) {
   const lead = t('drawing.readingLead', { spread: spread.name });
   const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
   const positionLines = cards.map((card, index) => {
     const position = spread.positions[index];
     const label = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
     const data = resolveCardData(card);
+    const fallbackReading = getLocalizedTarotReading(
+      data,
+      card?.isReversed,
+      language,
+      getCardReading({ ...card, id: data.id }),
+    );
     return t('drawing.positionLine', {
       label,
       card: formatSpreadCardName(card, t),
-      reading: getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id })),
+      reading: getReadingFromMeaningArchive(card, card?.isReversed, language, meaningArchive, fallbackReading),
     });
   });
 
@@ -346,14 +366,20 @@ function buildSpreadReading(cards, question, spread, t, language) {
   return [lead, t('drawing.cardsAre', { cards: cardNames }), ...positionLines, closing].join('\n\n');
 }
 
-function buildHumanReading(cards, question, t, language) {
+function buildHumanReading(cards, question, t, language, meaningArchive) {
   const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
   const lines = cards.map((card, index) => {
     const data = resolveCardData(card);
+    const fallbackReading = getLocalizedTarotReading(
+      data,
+      card?.isReversed,
+      language,
+      getCardReading({ ...card, id: data.id }),
+    );
     return t('drawing.humanCardLine', {
       index: index + 1,
       card: formatSpreadCardName(card, t),
-      reading: getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id })),
+      reading: getReadingFromMeaningArchive(card, card?.isReversed, language, meaningArchive, fallbackReading),
     });
   });
 
@@ -460,7 +486,7 @@ function App() {
     if (!activeDailyCard || cardMeaningsModule) return undefined;
 
     let cancelled = false;
-    import('./cardMeanings.js')
+    loadCardMeaningsModule()
       .then((module) => {
         if (!cancelled) setCardMeaningsModule(module);
       })
@@ -1161,6 +1187,18 @@ function App() {
 
     if (!trimmedQuestion) return;
 
+    const meaningArchivePromise = cardMeaningsModule
+      ? Promise.resolve(cardMeaningsModule)
+      : loadCardMeaningsModule()
+          .then((module) => {
+            setCardMeaningsModule(module);
+            return module;
+          })
+          .catch((error) => {
+            console.warn('Failed to load detailed tarot meanings:', error);
+            return null;
+          });
+
     setCurrentPage('drawing');
 
     setTimeout(() => {
@@ -1174,9 +1212,14 @@ function App() {
       setTimeout(() => {
         setIsRevealing(true);
 
-        setTimeout(() => {
+        setTimeout(async () => {
+          const meaningArchive = await meaningArchivePromise;
           setReadingComplete(true);
-          setAiReading(isHumanMode ? buildHumanReading(cards, trimmedQuestion, t, language) : buildSpreadReading(cards, trimmedQuestion, spread, t, language));
+          setAiReading(
+            isHumanMode
+              ? buildHumanReading(cards, trimmedQuestion, t, language, meaningArchive)
+              : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive),
+          );
         }, 1100);
       }, 260);
     }, 420);
@@ -1482,13 +1525,13 @@ function App() {
     if (!readingComplete || drawnCards.length === 0) return;
 
     const nextReading = isHumanMode
-      ? buildHumanReading(drawnCards, userQuestion.trim(), t, language)
-      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language);
+      ? buildHumanReading(drawnCards, userQuestion.trim(), t, language, cardMeaningsModule)
+      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language, cardMeaningsModule);
 
     if (nextReading !== aiReading) {
       setAiReading(nextReading);
     }
-  }, [aiReading, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
+  }, [aiReading, cardMeaningsModule, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
 
   useEffect(() => {
     if (!user?.id) return undefined;
