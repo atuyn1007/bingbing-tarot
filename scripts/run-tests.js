@@ -2,7 +2,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
-import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
+import {
+  getCalendarDayState,
+  getDisplaySignInDate,
+  getLocalDateKey,
+  getMonthCalendarDays,
+  isSameCalendarMonth,
+} from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
@@ -62,6 +68,34 @@ const tests = [
     run() {
       const date = new Date(2026, 3, 21);
       assert.equal(getDisplaySignInDate(date), '2026-04-21');
+    },
+  },
+  {
+    name: 'monthly tarot calendar builds a Monday-first real month grid',
+    run() {
+      const days = getMonthCalendarDays(new Date(2026, 6, 16));
+      assert.equal(days.filter((item) => item.type === 'blank').length, 2);
+      assert.equal(days.filter((item) => item.type === 'day').length, 31);
+      assert.equal(days.find((item) => item.day === 1)?.dateKey, '2026-07-01');
+      assert.equal(days.find((item) => item.day === 31)?.dateKey, '2026-07-31');
+    },
+  },
+  {
+    name: 'monthly tarot calendar classifies completed future missed and today',
+    run() {
+      const today = new Date(2026, 6, 16);
+      const history = { '2026-07-14': { name: 'The Sun' } };
+      assert.equal(getCalendarDayState('2026-07-14', history, today), 'completed');
+      assert.equal(getCalendarDayState('2026-07-15', history, today), 'missed');
+      assert.equal(getCalendarDayState('2026-07-16', history, today), 'today-empty');
+      assert.equal(getCalendarDayState('2026-07-17', history, today), 'future');
+    },
+  },
+  {
+    name: 'month comparison uses local calendar year and month',
+    run() {
+      assert.equal(isSameCalendarMonth(new Date(2026, 6, 1), new Date(2026, 6, 31)), true);
+      assert.equal(isSameCalendarMonth(new Date(2026, 6, 31), new Date(2026, 7, 1)), false);
     },
   },
   {
