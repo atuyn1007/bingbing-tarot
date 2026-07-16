@@ -133,7 +133,6 @@ const tests = [
         'onOpenMessages',
         'onOpenRedeemModal',
         'onLogout',
-        'onOpenCalendar',
         'onOpenHistory',
         'onDeleteHistory',
         'onDailyAction',
@@ -145,6 +144,20 @@ const tests = [
       assert.match(homeSource, /className="mystery-card/);
       assert.match(homeSource, /home-hero-title-line/);
       assert.match(homeSource, /t\('home\.heroHeadline'\)/);
+    },
+  },
+  {
+    name: 'homepage separates monthly Daily Cards from Recent Readings',
+    run() {
+      const homeSource = readFileSync(new URL('../src/pages/HomePage.jsx', import.meta.url), 'utf8');
+      const calendarSource = readFileSync(new URL('../src/components/MonthlyTarotCalendar.jsx', import.meta.url), 'utf8');
+      assert.match(homeSource, /<MonthlyTarotCalendar/);
+      assert.doesNotMatch(homeSource, /onOpenCalendar/);
+      assert.doesNotMatch(homeSource, /className="home-stats"/);
+      assert.match(calendarSource, /role="gridcell"/);
+      assert.match(calendarSource, /getCardArtwork\(card\)/);
+      assert.match(calendarSource, /getCalendarDayState/);
+      assert.doesNotMatch(calendarSource, /setCurrentPage|navigate\(/);
     },
   },
   {
