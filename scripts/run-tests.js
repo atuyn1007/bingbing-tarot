@@ -48,6 +48,20 @@ const tests = [
     },
   },
   {
+    name: 'choice reading state keeps labels locally without changing Supabase history API',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const drawingSource = readFileSync(new URL('../src/pages/DrawingPage.jsx', import.meta.url), 'utf8');
+      assert.match(appSource, /const \[choiceA, setChoiceA\] = useState\(''\)/);
+      assert.match(appSource, /const \[choiceB, setChoiceB\] = useState\(''\)/);
+      assert.match(appSource, /choiceA: sanitizeHistoryText\(entry\.choiceA \|\| ''\)/);
+      assert.match(appSource, /choiceB: sanitizeHistoryText\(entry\.choiceB \|\| ''\)/);
+      assert.match(drawingSource, /isChoiceSpread && \(/);
+      assert.match(drawingSource, /disabled=\{!canConfirmQuestion\}/);
+      assert.doesNotMatch(appSource, /saveSpreadHistoryRecord\([^)]*choiceA/);
+    },
+  },
+  {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {
       assert.equal(isSessionExpiredAt(null, 1000), false);
