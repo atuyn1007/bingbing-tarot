@@ -13,6 +13,7 @@ function ResultPage({
   isHumanMode,
   activeSpread,
   userQuestion,
+  choiceOptions,
   drawnCards,
   spreadForCards,
   isRevealing,
@@ -46,6 +47,7 @@ function ResultPage({
             spread={spreadForCards}
             cardStyle={cardStyle}
             isRevealed={isRevealing}
+            choiceOptions={choiceOptions}
             t={t}
           />
 

@@ -1179,6 +1179,11 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 
 .drawing-archive-page .question-panel::after { content: '☉'; font-size: 5rem; opacity: .14; right: 34px; bottom: 20px; }
 .drawing-archive-page .question-input { min-height: 170px; border-radius: 2px; background: rgba(255, 250, 236, .48); }
+.drawing-archive-page .choice-option-inputs { display: grid; gap: 12px; margin: 22px 0; }
+.drawing-archive-page .choice-option-inputs-title { margin: 0; color: rgba(63, 54, 40, .72); font-family: var(--app-font-serif); font-size: 1.08rem; }
+.drawing-archive-page .choice-option-field { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; gap: 10px; color: #6e5218; font-family: var(--app-font-ui); font-size: .75rem; letter-spacing: .14em; }
+.drawing-archive-page .choice-option-field input { min-width: 0; min-height: 46px; padding: 10px 12px; color: #2f271d; border: 1px solid rgba(104, 75, 27, .32); border-radius: 2px; outline: none; background: rgba(255, 250, 236, .56); box-shadow: inset 0 1px 3px rgba(90, 60, 20, .08); font: inherit; letter-spacing: 0; }
+.drawing-archive-page .choice-option-field input:focus { border-color: rgba(167, 124, 24, .78); box-shadow: 0 0 0 2px rgba(193, 148, 41, .16), inset 0 1px 3px rgba(90, 60, 20, .08); }
 
 .result-archive-page .reading-question-card { transform: rotate(-.35deg); }
 .result-archive-page .reading-result-card { padding: clamp(28px, 5vw, 58px); border-radius: 2px 30px 3px 20px; }

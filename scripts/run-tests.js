@@ -62,6 +62,19 @@ const tests = [
     },
   },
   {
+    name: 'choice result cards render saved A and B labels in fixed groups',
+    run() {
+      const spreadCardsSource = readFileSync(new URL('../src/components/SpreadCards.jsx', import.meta.url), 'utf8');
+      const resultSource = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const cssSource = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
+      assert.match(spreadCardsSource, /getChoiceDisplayGroups/);
+      assert.match(spreadCardsSource, /choiceOptions/);
+      assert.match(resultSource, /choiceOptions=\{choiceOptions\}/);
+      assert.match(cssSource, /\.choice-spread-group/);
+      assert.match(cssSource, /overflow-wrap: anywhere/);
+    },
+  },
+  {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {
       assert.equal(isSessionExpiredAt(null, 1000), false);

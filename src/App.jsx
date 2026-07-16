@@ -1674,6 +1674,7 @@ function App() {
         isHumanMode={isHumanMode}
         activeSpread={activeSpread}
         userQuestion={userQuestion}
+        choiceOptions={{ choiceA, choiceB }}
         drawnCards={drawnCards}
         spreadForCards={spreadForCards}
         isRevealing={isRevealing}

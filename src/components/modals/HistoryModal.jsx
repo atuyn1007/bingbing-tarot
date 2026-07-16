@@ -36,6 +36,7 @@ function HistoryModal({ reading, cardStyle, spread, onClose, t }) {
             cardStyle={cardStyle}
             isRevealed
             className="history-preview-spread"
+            choiceOptions={{ choiceA: reading.choiceA, choiceB: reading.choiceB }}
             t={t}
           />
         </m.div>
