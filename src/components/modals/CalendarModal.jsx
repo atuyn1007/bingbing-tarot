@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { LazyMotion, domAnimation, m } from 'framer-motion';
+import { LazyMotion, domAnimation, m, useReducedMotion } from 'framer-motion';
 import { BookOpen, X } from 'lucide-react';
 import { getCardArtwork } from '../../cardArtwork';
 
 function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames, onClose, t }) {
   const [meaning, setMeaning] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     let cancelled = false;
@@ -67,10 +68,10 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
           role="dialog"
           aria-modal="true"
           aria-labelledby="calendar-archive-title"
-          initial={{ opacity: 0, y: 24, scale: 0.97, clipPath: 'inset(7% 3% 7% 3%)' }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 24, scale: 0.97, clipPath: 'inset(7% 3% 7% 3%)' }}
           animate={{ opacity: 1, y: 0, scale: 1, clipPath: 'inset(0% 0% 0% 0%)' }}
           exit={{ opacity: 0, y: 14, scale: 0.98 }}
-          transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
           onClick={(event) => event.stopPropagation()}
         >
           <span className="calendar-archive-fold" aria-hidden="true" />
@@ -116,9 +117,9 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
               {isExpanded && fullMeaning ? (
                 <m.section
                   className="calendar-archive-meaning"
-                  initial={{ opacity: 0, height: 0 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.28 }}
+                  transition={{ duration: prefersReducedMotion ? 0 : 0.28 }}
                 >
                   {fullMeaning.split('\n').filter(Boolean).map((paragraph, index) => (
                     <p key={`${index}-${paragraph.slice(0, 18)}`}>{paragraph}</p>
