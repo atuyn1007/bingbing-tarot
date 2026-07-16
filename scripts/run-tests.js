@@ -12,11 +12,41 @@ import {
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import {
+  getChoiceDisplayGroups,
+  hasCompleteChoiceOptions,
+  normalizeChoiceOptions,
+} from '../src/choiceSpreadUtils.js';
 import zhCN from '../src/i18n/locales/zh-CN.ts';
 import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
 
 const tests = [
+  {
+    name: 'choice options require two non-empty trimmed values',
+    run() {
+      assert.deepEqual(normalizeChoiceOptions('  联系  ', ' 暂停 '), {
+        choiceA: '联系',
+        choiceB: '暂停',
+      });
+      assert.equal(hasCompleteChoiceOptions('联系', '暂停'), true);
+      assert.equal(hasCompleteChoiceOptions('联系', '   '), false);
+    },
+  },
+  {
+    name: 'choice groups preserve A/B cards and presentation order',
+    run() {
+      const cards = ['a-now', 'b-now', 'a-future', 'b-future', 'self'];
+      assert.deepEqual(
+        getChoiceDisplayGroups(cards, '继续联系', '暂时不联系', '选项 A', '选项 B', '我的状态'),
+        [
+          { key: 'choice-a', label: 'A｜继续联系', cardIndexes: [2, 0] },
+          { key: 'choice-b', label: 'B｜暂时不联系', cardIndexes: [3, 1] },
+          { key: 'choice-self', label: '我的状态', cardIndexes: [4] },
+        ],
+      );
+    },
+  },
   {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {
