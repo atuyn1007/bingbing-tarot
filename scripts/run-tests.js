@@ -12,6 +12,9 @@ import {
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import zhCN from '../src/i18n/locales/zh-CN.ts';
+import en from '../src/i18n/locales/en.ts';
+import it from '../src/i18n/locales/it.ts';
 
 const tests = [
   {
@@ -170,6 +173,21 @@ const tests = [
       assert.match(modalSource, /displayDetail/);
       assert.match(modalSource, /setIsExpanded/);
       assert.doesNotMatch(modalSource, /setCurrentPage|onOpenCard|navigate\(/);
+    },
+  },
+  {
+    name: 'monthly tarot calendar copy exists in every locale',
+    run() {
+      const required = [
+        'archiveLabel', 'title', 'englishTitle', 'description', 'today',
+        'previousMonth', 'nextMonth', 'completedDayAria', 'futureDayAria',
+        'missedDayAria', 'dailyOracle', 'viewFullMeaning', 'hideFullMeaning',
+        'close', 'upright', 'reversed',
+      ];
+      for (const locale of [zhCN, en, it]) {
+        required.forEach((key) => assert.ok(locale.calendar[key], `missing calendar.${key}`));
+        assert.equal(locale.calendar.weekdays.length, 7);
+      }
     },
   },
   {
