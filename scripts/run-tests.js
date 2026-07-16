@@ -161,6 +161,18 @@ const tests = [
     },
   },
   {
+    name: 'daily archive popup expands meanings without routing',
+    run() {
+      const modalSource = readFileSync(new URL('../src/components/modals/CalendarModal.jsx', import.meta.url), 'utf8');
+      assert.match(modalSource, /import\('\.\.\/\.\.\/cardMeanings\.js'\)/);
+      assert.match(modalSource, /getLocalizedMeaningCard/);
+      assert.match(modalSource, /displayDailyUpright|displayDailyReversed/);
+      assert.match(modalSource, /displayDetail/);
+      assert.match(modalSource, /setIsExpanded/);
+      assert.doesNotMatch(modalSource, /setCurrentPage|onOpenCard|navigate\(/);
+    },
+  },
+  {
     name: 'localized history effect depends on stable language state',
     run() {
       const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
