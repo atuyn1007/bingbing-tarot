@@ -1,6 +1,7 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
-import { ArrowRight, Bell, BookOpen, CalendarDays, Coins, Gift, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Bell, BookOpen, Coins, Gift, Sparkles, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import MonthlyTarotCalendar from '../components/MonthlyTarotCalendar';
 import { getCardArtwork } from '../cardArtwork';
 
 function HomePage({
@@ -13,8 +14,9 @@ function HomePage({
   onOpenRedeemModal,
   onLogout,
   dailyLine,
-  lastSignInDate,
-  onOpenCalendar,
+  dailyHistory,
+  intlLocale,
+  language,
   recentReadings,
   onOpenHistory,
   onDeleteHistory,
@@ -196,12 +198,16 @@ function HomePage({
               <span className="feature-arrow"><ArrowRight /></span>
             </button>
 
+            <MonthlyTarotCalendar
+              dailyHistory={dailyHistory}
+              intlLocale={intlLocale}
+              language={language}
+              t={t}
+              getCardDisplayNames={getCardDisplayNames}
+            />
+
             <aside className="home-utility-rail">
               <div className="utility-caption" aria-hidden="true"><span>RECENT READINGS</span><small>最近抽牌 · ARCHIVE LOG</small></div>
-              <div className="home-stats">
-                <div><span>{t('home.lastSignIn')}</span><strong>{lastSignInDate || t('home.noLastSignIn')}</strong></div>
-                <button type="button" onClick={onOpenCalendar}><CalendarDays /><span>{t('home.calendarAction')}</span></button>
-              </div>
               <div className="history-card">
                 <div className="history-card-head">
                   <div><p className="eyebrow">History</p><strong>{t('history.title')}</strong></div>

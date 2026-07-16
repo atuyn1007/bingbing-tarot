@@ -2,10 +2,19 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
-import { getDisplaySignInDate, getLocalDateKey } from '../src/dateUtils.js';
+import {
+  getCalendarDayState,
+  getDisplaySignInDate,
+  getLocalDateKey,
+  getMonthCalendarDays,
+  isSameCalendarMonth,
+} from '../src/dateUtils.js';
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import zhCN from '../src/i18n/locales/zh-CN.ts';
+import en from '../src/i18n/locales/en.ts';
+import it from '../src/i18n/locales/it.ts';
 
 const tests = [
   {
@@ -65,6 +74,34 @@ const tests = [
     },
   },
   {
+    name: 'monthly tarot calendar builds a Monday-first real month grid',
+    run() {
+      const days = getMonthCalendarDays(new Date(2026, 6, 16));
+      assert.equal(days.filter((item) => item.type === 'blank').length, 2);
+      assert.equal(days.filter((item) => item.type === 'day').length, 31);
+      assert.equal(days.find((item) => item.day === 1)?.dateKey, '2026-07-01');
+      assert.equal(days.find((item) => item.day === 31)?.dateKey, '2026-07-31');
+    },
+  },
+  {
+    name: 'monthly tarot calendar classifies completed future missed and today',
+    run() {
+      const today = new Date(2026, 6, 16);
+      const history = { '2026-07-14': { name: 'The Sun' } };
+      assert.equal(getCalendarDayState('2026-07-14', history, today), 'completed');
+      assert.equal(getCalendarDayState('2026-07-15', history, today), 'missed');
+      assert.equal(getCalendarDayState('2026-07-16', history, today), 'today-empty');
+      assert.equal(getCalendarDayState('2026-07-17', history, today), 'future');
+    },
+  },
+  {
+    name: 'month comparison uses local calendar year and month',
+    run() {
+      assert.equal(isSameCalendarMonth(new Date(2026, 6, 1), new Date(2026, 6, 31)), true);
+      assert.equal(isSameCalendarMonth(new Date(2026, 6, 31), new Date(2026, 7, 1)), false);
+    },
+  },
+  {
     name: 'daily claim migration keeps authentication, locking, and coin update atomic',
     run() {
       const sql = readFileSync(new URL('../supabase-secure-daily.sql', import.meta.url), 'utf8');
@@ -99,7 +136,6 @@ const tests = [
         'onOpenMessages',
         'onOpenRedeemModal',
         'onLogout',
-        'onOpenCalendar',
         'onOpenHistory',
         'onDeleteHistory',
         'onDailyAction',
@@ -111,6 +147,47 @@ const tests = [
       assert.match(homeSource, /className="mystery-card/);
       assert.match(homeSource, /home-hero-title-line/);
       assert.match(homeSource, /t\('home\.heroHeadline'\)/);
+    },
+  },
+  {
+    name: 'homepage separates monthly Daily Cards from Recent Readings',
+    run() {
+      const homeSource = readFileSync(new URL('../src/pages/HomePage.jsx', import.meta.url), 'utf8');
+      const calendarSource = readFileSync(new URL('../src/components/MonthlyTarotCalendar.jsx', import.meta.url), 'utf8');
+      assert.match(homeSource, /<MonthlyTarotCalendar/);
+      assert.doesNotMatch(homeSource, /onOpenCalendar/);
+      assert.doesNotMatch(homeSource, /className="home-stats"/);
+      assert.match(calendarSource, /role="gridcell"/);
+      assert.match(calendarSource, /getCardArtwork\(card\)/);
+      assert.match(calendarSource, /getCalendarDayState/);
+      assert.doesNotMatch(calendarSource, /setCurrentPage|navigate\(/);
+    },
+  },
+  {
+    name: 'daily archive popup expands meanings without routing',
+    run() {
+      const modalSource = readFileSync(new URL('../src/components/modals/CalendarModal.jsx', import.meta.url), 'utf8');
+      assert.match(modalSource, /import\('\.\.\/\.\.\/cardMeanings\.js'\)/);
+      assert.match(modalSource, /getLocalizedMeaningCard/);
+      assert.match(modalSource, /displayDailyUpright|displayDailyReversed/);
+      assert.match(modalSource, /displayDetail/);
+      assert.match(modalSource, /setIsExpanded/);
+      assert.doesNotMatch(modalSource, /setCurrentPage|onOpenCard|navigate\(/);
+    },
+  },
+  {
+    name: 'monthly tarot calendar copy exists in every locale',
+    run() {
+      const required = [
+        'archiveLabel', 'title', 'englishTitle', 'description', 'today',
+        'previousMonth', 'nextMonth', 'completedDayAria', 'futureDayAria',
+        'missedDayAria', 'dailyOracle', 'viewFullMeaning', 'hideFullMeaning',
+        'close', 'upright', 'reversed',
+      ];
+      for (const locale of [zhCN, en, it]) {
+        required.forEach((key) => assert.ok(locale.calendar[key], `missing calendar.${key}`));
+        assert.equal(locale.calendar.weekdays.length, 7);
+      }
     },
   },
   {

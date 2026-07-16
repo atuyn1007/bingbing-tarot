@@ -18,7 +18,6 @@ const CardMeaningsPage = lazy(() => import('./pages/CardMeaningsPage.jsx'));
 const CardMeaningDetailPage = lazy(() => import('./pages/CardMeaningDetailPage.jsx'));
 const HistoryModal = lazy(() => import('./components/modals/HistoryModal.jsx'));
 const DailyModal = lazy(() => import('./components/modals/DailyModal.jsx'));
-const CalendarModal = lazy(() => import('./components/modals/CalendarModal.jsx'));
 const HumanRequestModal = lazy(() => import('./components/modals/HumanRequestModal.jsx'));
 const ForgotPasswordModal = lazy(() => import('./components/modals/ForgotPasswordModal.jsx'));
 const SpreadModal = lazy(() => import('./components/modals/SpreadModal.jsx'));
@@ -86,20 +85,6 @@ function stripLeadSentence(text) {
   return normalized.slice(firstStop + 1).trim();
 }
 
-function getMonthLabel(locale, date = new Date()) {
-  return new Intl.DateTimeFormat(locale, {
-    year: 'numeric',
-    month: 'long',
-  }).format(date);
-}
-
-function getDateKey(date) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
 function hasRecoveryParams() {
   if (typeof window === 'undefined') return false;
   const search = new URLSearchParams(window.location.search);
@@ -112,31 +97,6 @@ function sanitizeHistoryText(value) {
     .replace(/^[·•\-—–\s]+/u, '')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-function buildCalendarDays(date = new Date()) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-  const leadingBlankDays = (firstDay.getDay() + 6) % 7;
-  const days = [];
-
-  for (let index = 0; index < leadingBlankDays; index += 1) {
-    days.push({ type: 'blank', key: `blank-${index}` });
-  }
-
-  for (let day = 1; day <= lastDay.getDate(); day += 1) {
-    const currentDate = new Date(year, month, day);
-    days.push({
-      type: 'day',
-      key: getDateKey(currentDate),
-      day,
-      dateKey: getDateKey(currentDate),
-    });
-  }
-
-  return days;
 }
 
 const SPREAD_OPTIONS = [
@@ -435,7 +395,6 @@ function App() {
   const [savedDailyTarot, setSavedDailyTarot] = useState(storedProfile.savedDailyTarot || null);
   const [isSignedIn, setIsSignedIn] = useState(Boolean(storedProfile.isSignedIn));
   const [dailyHistory, setDailyHistory] = useState(storedProfile.dailyHistory || {});
-  const [showCalendarModal, setShowCalendarModal] = useState(false);
   const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
   const [selectedSpreadKey, setSelectedSpreadKey] = useState('three');
@@ -462,8 +421,6 @@ function App() {
   const activeNickname = user?.nickname || nickname;
   const dailyLine = getDailyLine(t('quotes'));
   const activeDailyCard = savedDailyTarot || dailyCard;
-  const calendarDate = new Date();
-  const calendarDays = buildCalendarDays(calendarDate);
   const activeSpread = getSpreadConfig(selectedSpreadKey, t);
   const spreadOptions = SPREAD_OPTIONS.map((spread) => getSpreadConfig(spread.key, t));
   const hasAuthDraft =
@@ -471,7 +428,6 @@ function App() {
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
   const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
   const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
-  const monthLabel = getMonthLabel(intlLocale, calendarDate);
   const suspenseFallback = <AppLoading theme={theme} />;
   const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
   const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
@@ -1613,8 +1569,9 @@ function App() {
         onOpenRedeemModal={() => setShowRedeemCodeModal(true)}
         onLogout={handleLogout}
         dailyLine={dailyLine}
-        lastSignInDate={lastSignInDate}
-        onOpenCalendar={() => setShowCalendarModal(true)}
+        dailyHistory={dailyHistory}
+        intlLocale={intlLocale}
+        language={language}
         recentReadings={recentReadings}
         onOpenHistory={openHistoryModal}
         onDeleteHistory={deleteRecentReading}
@@ -1821,17 +1778,6 @@ function App() {
         </Suspense>
       ) : null}
 
-      {showCalendarModal ? (
-        <Suspense fallback={null}>
-          <CalendarModal
-            monthLabel={monthLabel}
-            calendarDays={calendarDays}
-            dailyHistory={dailyHistory}
-            onClose={() => setShowCalendarModal(false)}
-            t={t}
-          />
-        </Suspense>
-      ) : null}
     </Suspense>
   );
 }
