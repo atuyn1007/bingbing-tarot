@@ -214,6 +214,8 @@ const en = {
     choiceSelfLabel: 'Your state',
     confirmAndDraw: 'Confirm and draw',
     resultTitle: 'Your reading',
+    cardsSectionTitle: 'Drawn Cards',
+    summarySectionTitle: 'Reading Summary',
     questionEyebrow: 'Question',
     sendToReader: 'Send to Bingbing (10 coins)',
     backHome: 'Back home',

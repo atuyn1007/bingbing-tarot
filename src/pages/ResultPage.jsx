@@ -22,6 +22,23 @@ function ResultPage({
   readingBody,
   onOpenHumanRequest,
 }) {
+  const readingParagraphs = readingBody.split('\n\n').filter(Boolean);
+  const expectedPositionCount = spreadForCards.positions.length;
+  const readingCards = readingParagraphs[0] || '';
+  const readingPositions = readingParagraphs.slice(1, expectedPositionCount + 1);
+  const readingSummary = readingParagraphs.length > expectedPositionCount + 1 ? readingParagraphs.at(-1) : '';
+  const readingCursor = <span className="reading-cursor">|</span>;
+  const getReadingSectionTitle = (index) => {
+    const isChoiceA = index === 0 || index === 2;
+    const isChoiceB = index === 1 || index === 3;
+    if (spreadForCards.key === 'choice' && (isChoiceA || isChoiceB)) {
+      const option = isChoiceA ? choiceOptions.choiceA : choiceOptions.choiceB;
+      return `${isChoiceA ? 'A' : 'B'}｜${option || t(isChoiceA ? 'drawing.choiceOptionAFallback' : 'drawing.choiceOptionBFallback')}`;
+    }
+
+    return spreadForCards.positions[index]?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
+  };
+
   return (
     <div className={`screen-shell page-shell archive-page result-archive-page theme-${theme}`}>
       <header className="page-header">
@@ -55,10 +72,38 @@ function ResultPage({
             <LazyMotion features={domAnimation}>
               <m.section className="reading-result-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                 <p className="reading-result-lead">{readingLead}</p>
-                <p className="reading-result-text">
-                  {readingBody}
-                  <span className="reading-cursor">|</span>
-                </p>
+                <div className="reading-paper-stack">
+                  {readingCards && (
+                    <section className="reading-paper-section reading-paper-section-cards">
+                      <h2 className="reading-paper-title">{t('drawing.cardsSectionTitle')}</h2>
+                      <div className="reading-paper-divider" aria-hidden="true" />
+                      <p className="reading-paper-copy">
+                        {readingCards}
+                        {readingPositions.length === 0 && !readingSummary && readingCursor}
+                      </p>
+                    </section>
+                  )}
+                  {readingPositions.map((paragraph, index) => (
+                    <section key={`${getReadingSectionTitle(index)}-${index}`} className="reading-paper-section">
+                      <h2 className="reading-paper-title">{getReadingSectionTitle(index)}</h2>
+                      <div className="reading-paper-divider" aria-hidden="true" />
+                      <p className="reading-paper-copy">
+                        {paragraph}
+                        {index === readingPositions.length - 1 && !readingSummary && readingCursor}
+                      </p>
+                    </section>
+                  ))}
+                  {readingSummary && (
+                    <section className="reading-paper-section reading-paper-section-summary">
+                      <h2 className="reading-paper-title">{t('drawing.summarySectionTitle')}</h2>
+                      <div className="reading-paper-divider" aria-hidden="true" />
+                      <p className="reading-paper-copy">
+                        {readingSummary}
+                        {readingCursor}
+                      </p>
+                    </section>
+                  )}
+                </div>
 
                 <div className="reading-actions">
                   <button type="button" onClick={onOpenHumanRequest} className="primary-button">

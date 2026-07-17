@@ -211,6 +211,8 @@ const zhCN = {
     choiceSelfLabel: '我的状态',
     confirmAndDraw: '确定并抽牌',
     resultTitle: '抽牌结果',
+    cardsSectionTitle: '抽到的牌',
+    summarySectionTitle: '解读总结',
     questionEyebrow: 'Question',
     sendToReader: '发送给饼饼解读（10 饼币）',
     backHome: '返回首页',
