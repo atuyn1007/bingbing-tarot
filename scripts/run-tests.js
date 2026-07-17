@@ -78,10 +78,33 @@ const tests = [
     name: 'choice spread keeps two outer columns and vertical card stacks at every viewport',
     run() {
       const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
-      assert.match(css, /\.choice-spread-group-cards\s*\{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)/);
-      assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.reading-spread-choice\s*\{[\s\S]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
-      assert.match(css, /\.choice-spread-group-title\s*\{[\s\S]*color:\s*rgba\(255, 248, 230/);
-      assert.match(css, /\.reading-spread-choice \.reading-spread-label\s*\{[\s\S]*color:\s*rgba\(241, 224, 183/);
+      const getRuleBody = (source, selector) => {
+        const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return source.match(new RegExp(`^\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, 'm'))?.[1] || '';
+      };
+      const getBlockBody = (source, header) => {
+        const start = source.indexOf(header);
+        const openingBrace = source.indexOf('{', start);
+        if (start === -1 || openingBrace === -1) return '';
+
+        let depth = 0;
+        for (let index = openingBrace; index < source.length; index += 1) {
+          if (source[index] === '{') depth += 1;
+          if (source[index] === '}') depth -= 1;
+          if (depth === 0) return source.slice(openingBrace + 1, index);
+        }
+        return '';
+      };
+      const assertTwoColumnChoiceLayout = (ruleBody) => {
+        assert.match(ruleBody, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
+        assert.match(ruleBody, /grid-template-areas:\s*"choice-a choice-b"\s*"choice-self choice-self"\s*;/);
+      };
+
+      assert.match(getRuleBody(css, '.choice-spread-group-cards'), /grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/);
+      assertTwoColumnChoiceLayout(getRuleBody(css, '.reading-spread-choice'));
+      assertTwoColumnChoiceLayout(getRuleBody(getBlockBody(css, '@media (max-width: 640px)'), '.reading-spread-choice'));
+      assert.match(getRuleBody(css, '.choice-spread-group-title'), /color:\s*rgba\(255, 248, 230/);
+      assert.match(getRuleBody(css, '.reading-spread-choice .reading-spread-label'), /color:\s*rgba\(241, 224, 183/);
     },
   },
   {
