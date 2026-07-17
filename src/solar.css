@@ -3095,7 +3095,7 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 
 .spread-option-metadata {
   display: grid;
-  grid-template-columns: 1.25fr .65fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   margin: 13px 0 0;
   padding: 10px 0 9px;

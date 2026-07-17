@@ -93,10 +93,6 @@ function SpreadModal({ spreadOptions, onClose, onSelect, t }) {
                     <dt>{t('spreads.metaCards')}</dt>
                     <dd>{spread.cardCount}</dd>
                   </div>
-                  <div>
-                    <dt>{t('spreads.metaDifficulty')}</dt>
-                    <dd>{spread.difficulty}</dd>
-                  </div>
                 </dl>
                 <p className="spread-option-recommended">
                   <span>{t('spreads.metaRecommended')}</span>
