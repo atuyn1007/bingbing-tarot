@@ -75,6 +75,16 @@ const tests = [
     },
   },
   {
+    name: 'choice spread keeps two outer columns and vertical card stacks at every viewport',
+    run() {
+      const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
+      assert.match(css, /\.choice-spread-group-cards\s*\{[\s\S]*grid-template-columns:\s*minmax\(0, 1fr\)/);
+      assert.match(css, /@media \(max-width: 640px\)[\s\S]*\.reading-spread-choice\s*\{[\s\S]*grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+      assert.match(css, /\.choice-spread-group-title\s*\{[\s\S]*color:\s*rgba\(255, 248, 230/);
+      assert.match(css, /\.reading-spread-choice \.reading-spread-label\s*\{[\s\S]*color:\s*rgba\(241, 224, 183/);
+    },
+  },
+  {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {
       assert.equal(isSessionExpiredAt(null, 1000), false);

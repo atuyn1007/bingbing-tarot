@@ -4336,6 +4336,34 @@ button.monthly-calendar-cell {
 }
 
 @media (max-width: 768px) {
+  /* Choice Spread keeps its divination geometry: A/B stay side by side and each path reads downward. */
+  .reading-spread-choice {
+    gap: 18px 10px;
+  }
+
+  .reading-spread-choice .choice-spread-group {
+    gap: 10px;
+  }
+
+  .reading-spread-choice .choice-spread-group-cards {
+    gap: 14px;
+  }
+
+  .reading-spread-choice .choice-spread-group-title {
+    font-size: .96rem;
+    line-height: 1.42;
+  }
+
+  .reading-spread-choice .reading-spread-label {
+    font-size: .78rem;
+    line-height: 1.32;
+  }
+
+  .reading-spread-choice .tarot-card-frame-small {
+    width: 4.7rem;
+    height: 7rem;
+  }
+
   .home-dashboard { grid-template-columns: minmax(0, 1fr); }
 
   .monthly-tarot-calendar {
