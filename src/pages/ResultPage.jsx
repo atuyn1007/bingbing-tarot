@@ -23,12 +23,15 @@ function ResultPage({
   onOpenHumanRequest,
 }) {
   const readingParagraphs = readingBody.split('\n\n').filter(Boolean);
+  const expectedPositionCount = spreadForCards.positions.length;
   const readingCards = readingParagraphs[0] || '';
-  const readingPositions = readingParagraphs.slice(1, -1);
-  const readingSummary = readingParagraphs.at(-1) || '';
+  const readingPositions = readingParagraphs.slice(1, expectedPositionCount + 1);
+  const readingSummary = readingParagraphs.length > expectedPositionCount + 1 ? readingParagraphs.at(-1) : '';
+  const readingCursor = <span className="reading-cursor">|</span>;
   const getReadingSectionTitle = (index) => {
-    if (spreadForCards.key === 'choice' && index < 4) {
-      const isChoiceA = index === 0 || index === 2;
+    const isChoiceA = index === 0 || index === 2;
+    const isChoiceB = index === 1 || index === 3;
+    if (spreadForCards.key === 'choice' && (isChoiceA || isChoiceB)) {
       const option = isChoiceA ? choiceOptions.choiceA : choiceOptions.choiceB;
       return `${isChoiceA ? 'A' : 'B'}｜${option || t(isChoiceA ? 'drawing.choiceOptionAFallback' : 'drawing.choiceOptionBFallback')}`;
     }
@@ -70,26 +73,36 @@ function ResultPage({
               <m.section className="reading-result-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
                 <p className="reading-result-lead">{readingLead}</p>
                 <div className="reading-paper-stack">
-                  <section className="reading-paper-section reading-paper-section-cards">
-                    <h2 className="reading-paper-title">{t('drawing.cardsSectionTitle')}</h2>
-                    <div className="reading-paper-divider" aria-hidden="true" />
-                    <p className="reading-paper-copy">{readingCards}</p>
-                  </section>
+                  {readingCards && (
+                    <section className="reading-paper-section reading-paper-section-cards">
+                      <h2 className="reading-paper-title">{t('drawing.cardsSectionTitle')}</h2>
+                      <div className="reading-paper-divider" aria-hidden="true" />
+                      <p className="reading-paper-copy">
+                        {readingCards}
+                        {readingPositions.length === 0 && !readingSummary && readingCursor}
+                      </p>
+                    </section>
+                  )}
                   {readingPositions.map((paragraph, index) => (
                     <section key={`${getReadingSectionTitle(index)}-${index}`} className="reading-paper-section">
                       <h2 className="reading-paper-title">{getReadingSectionTitle(index)}</h2>
                       <div className="reading-paper-divider" aria-hidden="true" />
-                      <p className="reading-paper-copy">{paragraph}</p>
+                      <p className="reading-paper-copy">
+                        {paragraph}
+                        {index === readingPositions.length - 1 && !readingSummary && readingCursor}
+                      </p>
                     </section>
                   ))}
-                  <section className="reading-paper-section reading-paper-section-summary">
-                    <h2 className="reading-paper-title">{t('drawing.summarySectionTitle')}</h2>
-                    <div className="reading-paper-divider" aria-hidden="true" />
-                    <p className="reading-paper-copy">
-                      {readingSummary}
-                      <span className="reading-cursor">|</span>
-                    </p>
-                  </section>
+                  {readingSummary && (
+                    <section className="reading-paper-section reading-paper-section-summary">
+                      <h2 className="reading-paper-title">{t('drawing.summarySectionTitle')}</h2>
+                      <div className="reading-paper-divider" aria-hidden="true" />
+                      <p className="reading-paper-copy">
+                        {readingSummary}
+                        {readingCursor}
+                      </p>
+                    </section>
+                  )}
                 </div>
 
                 <div className="reading-actions">

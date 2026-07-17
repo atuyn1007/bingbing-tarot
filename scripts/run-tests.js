@@ -113,20 +113,51 @@ const tests = [
       const resultPage = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
       const spreadModal = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
       const solarCss = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
+      const localeSources = [
+        readFileSync(new URL('../src/i18n/locales/zh-CN.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/en.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/it.ts', import.meta.url), 'utf8'),
+      ];
       const getRuleBody = (source, selector) => {
         const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         return source.match(new RegExp(`^\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, 'm'))?.[1] || '';
       };
 
       assert.match(resultPage, /readingBody\.split\('\\n\\n'\)/);
-      assert.match(resultPage, /reading-paper-section/);
-      assert.match(resultPage, /reading-paper-title/);
+      assert.match(resultPage, /const expectedPositionCount = spreadForCards\.positions\.length;/);
+      assert.match(resultPage, /const readingPositions = readingParagraphs\.slice\(1, expectedPositionCount \+ 1\);/);
+      assert.match(
+        resultPage,
+        /const readingSummary =\s*readingParagraphs\.length > expectedPositionCount \+ 1\s*\?\s*readingParagraphs\.at\(-1\)\s*:\s*'';/,
+      );
+      assert.match(resultPage, /const isChoiceA = index === 0 \|\| index === 2;/);
+      assert.match(resultPage, /const isChoiceB = index === 1 \|\| index === 3;/);
+      assert.match(resultPage, /const option = isChoiceA \? choiceOptions\.choiceA : choiceOptions\.choiceB;/);
+      assert.match(resultPage, /\{readingCards && \(\s*<section className="reading-paper-section reading-paper-section-cards">/);
+      assert.match(resultPage, /\{readingPositions\.map\(\(paragraph, index\) => \(\s*<section/);
+      assert.match(resultPage, /\{readingSummary && \(\s*<section className="reading-paper-section reading-paper-section-summary">/);
+      assert.ok(
+        resultPage.indexOf('reading-paper-section-cards') < resultPage.indexOf('readingPositions.map')
+          && resultPage.indexOf('readingPositions.map') < resultPage.indexOf('reading-paper-section-summary'),
+      );
+      assert.match(resultPage, /readingPositions\.length === 0 && !readingSummary && readingCursor/);
+      assert.match(resultPage, /index === readingPositions\.length - 1 && !readingSummary && readingCursor/);
+      assert.match(resultPage, /\{readingSummary\}\s*\{readingCursor\}/);
       assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /max-width:\s*min\(100%,\s*960px\)\s*;/);
       assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /margin:\s*0\s+auto\s*;/);
       assert.match(getRuleBody(solarCss, '.reading-paper-stack'), /gap:\s*clamp\(64px,\s*8vw,\s*96px\)\s*;/);
+      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-copy'), /max-width:\s*68ch\s*;/);
+      assert.match(spreadModal, /t\('spreads\.metaTime'\)/);
+      assert.match(spreadModal, /t\('spreads\.metaCards'\)/);
+      assert.match(spreadModal, /t\('spreads\.metaRecommended'\)/);
+      assert.match(spreadModal, /\{spread\.recommended\}/);
       assert.doesNotMatch(spreadModal, /metaDifficulty/);
       assert.doesNotMatch(spreadModal, /spread\.difficulty/);
       assert.match(getRuleBody(solarCss, '.spread-option-metadata'), /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
+      localeSources.forEach((localeSource) => {
+        assert.match(localeSource, /cardsSectionTitle:\s*['"]/);
+        assert.match(localeSource, /summarySectionTitle:\s*['"]/);
+      });
     },
   },
   {
