@@ -146,6 +146,8 @@ const tests = [
       assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /max-width:\s*min\(100%,\s*960px\)\s*;/);
       assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /margin:\s*0\s+auto\s*;/);
       assert.match(getRuleBody(solarCss, '.reading-paper-stack'), /gap:\s*clamp\(64px,\s*8vw,\s*96px\)\s*;/);
+      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-section'), /width:\s*min\(100%,\s*900px\)\s*;/);
+      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-section'), /margin-inline:\s*auto\s*;/);
       assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-copy'), /max-width:\s*68ch\s*;/);
       assert.match(spreadModal, /t\('spreads\.metaTime'\)/);
       assert.match(spreadModal, /t\('spreads\.metaCards'\)/);

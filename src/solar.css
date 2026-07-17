@@ -1217,6 +1217,8 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 }
 
 .result-archive-page .reading-paper-section {
+  width: min(100%, 900px);
+  margin-inline: auto;
   padding: clamp(28px, 5vw, 52px);
   color: var(--app-text);
   border: 1px solid rgba(92, 68, 31, .42);
