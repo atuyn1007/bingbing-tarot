@@ -1189,6 +1189,67 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .result-archive-page .reading-result-card { padding: clamp(28px, 5vw, 58px); border-radius: 2px 30px 3px 20px; }
 .result-archive-page .reading-result-text { color: #3f3628; line-height: 1.95; }
 
+/* Result reading papers */
+.result-archive-page .reading-layout {
+  width: min(100%, 960px);
+  max-width: min(100%, 960px);
+  margin: 0 auto;
+  margin-inline: auto;
+}
+
+.result-archive-page .reading-result-card {
+  width: 100%;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.result-archive-page .reading-result-card::before,
+.result-archive-page .reading-result-card::after {
+  display: none;
+}
+
+.reading-paper-stack {
+  display: grid;
+  gap: clamp(64px, 8vw, 96px);
+}
+
+.result-archive-page .reading-paper-section {
+  padding: clamp(28px, 5vw, 52px);
+  color: var(--app-text);
+  border: 1px solid rgba(92, 68, 31, .42);
+  border-radius: 2px 18px 3px 12px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.28), transparent 32%),
+    var(--app-paper);
+  box-shadow: 0 18px 42px rgba(49, 33, 12, .16);
+}
+
+.result-archive-page .reading-paper-title {
+  margin: 0;
+  color: #3f3628;
+  font-family: var(--app-font-serif);
+  font-size: clamp(1.25rem, 2.4vw, 1.85rem);
+  font-weight: 400;
+  letter-spacing: .02em;
+}
+
+.result-archive-page .reading-paper-divider {
+  height: 1px;
+  margin: 18px 0 26px;
+  background: rgba(193, 148, 41, .72);
+}
+
+.result-archive-page .reading-paper-copy {
+  max-width: 68ch;
+  margin: 0;
+  color: #3f3628;
+  font-family: var(--font-reading);
+  line-height: 1.86;
+}
+
 .meanings-archive-page .meanings-hero-card {
   padding: clamp(28px, 4vw, 50px);
   border-radius: 2px 38px 3px 20px;

@@ -215,6 +215,8 @@ const it = {
     choiceSelfLabel: 'Il tuo stato',
     confirmAndDraw: 'Conferma e pesca',
     resultTitle: 'Risultato della lettura',
+    cardsSectionTitle: 'Carte estratte',
+    summarySectionTitle: 'Riepilogo della lettura',
     questionEyebrow: 'Question',
     sendToReader: 'Invia a Bingbing (10 monete)',
     backHome: 'Torna alla home',
