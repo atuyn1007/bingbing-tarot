@@ -8,6 +8,12 @@ function DrawingPage({
   activeSpread,
   userQuestion,
   setUserQuestion,
+  choiceA,
+  choiceB,
+  setChoiceA,
+  setChoiceB,
+  isChoiceSpread,
+  canConfirmQuestion,
   handleConfirmQuestion,
   t,
 }) {
@@ -51,7 +57,32 @@ function DrawingPage({
               rows={5}
               autoFocus
             />
-            <button type="button" onClick={handleConfirmQuestion} disabled={!userQuestion.trim()} className="primary-button">
+            {isChoiceSpread && (
+              <div className="choice-option-inputs">
+                <p className="choice-option-inputs-title">{t('drawing.choiceOptionsTitle')}</p>
+                <label className="choice-option-field" htmlFor="choice-option-a">
+                  <span>{t('drawing.choiceOptionALabel')}</span>
+                  <input
+                    id="choice-option-a"
+                    value={choiceA}
+                    onChange={(event) => setChoiceA(event.target.value)}
+                    placeholder={t('drawing.choiceOptionAPlaceholder')}
+                    required
+                  />
+                </label>
+                <label className="choice-option-field" htmlFor="choice-option-b">
+                  <span>{t('drawing.choiceOptionBLabel')}</span>
+                  <input
+                    id="choice-option-b"
+                    value={choiceB}
+                    onChange={(event) => setChoiceB(event.target.value)}
+                    placeholder={t('drawing.choiceOptionBPlaceholder')}
+                    required
+                  />
+                </label>
+              </div>
+            )}
+            <button type="button" onClick={handleConfirmQuestion} disabled={!canConfirmQuestion} className="primary-button">
               {t('drawing.confirmAndDraw')}
             </button>
           </div>

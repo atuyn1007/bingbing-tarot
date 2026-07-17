@@ -1198,22 +1198,73 @@ html[lang='zh-CN'] .eyebrow {
 }
 
 .reading-spread-choice {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-areas:
-    ". result-a result-b ."
-    ". state-a state-b ."
-    ". self self .";
+    "choice-a choice-b"
+    "choice-self choice-self";
   max-width: 920px;
 }
 
+.choice-spread-group {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+
+.choice-spread-group-choice-a {
+  grid-area: choice-a;
+}
+
+.choice-spread-group-choice-b {
+  grid-area: choice-b;
+}
+
+.choice-spread-group-choice-self {
+  grid-area: choice-self;
+  justify-items: center;
+}
+
+.choice-spread-group-title {
+  margin: 0;
+  color: rgba(255, 248, 230, 0.94);
+  font-family: var(--app-font-serif);
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.choice-spread-group-cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  justify-items: center;
+}
+
+.choice-spread-group-choice-self .choice-spread-group-cards {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .reading-spread-choice .tarot-card-name span {
+  color: rgba(255, 248, 230, 0.9);
   font-size: 1.06rem;
   line-height: 1.28;
 }
 
 .reading-spread-choice .tarot-card-name small {
+  color: rgba(241, 224, 183, 0.72);
   font-size: 0.76rem;
   line-height: 1.35;
+}
+
+.reading-spread-choice .reading-spread-label {
+  color: rgba(241, 224, 183, 0.9);
+}
+
+.reading-spread-choice .reading-spread-subtitle,
+.reading-spread-choice .reading-spread-card-name {
+  color: rgba(255, 248, 230, 0.76);
 }
 
 .reading-spread-slot {
@@ -2135,13 +2186,20 @@ html[lang='zh-CN'] .eyebrow {
   }
 
   .reading-spread-choice {
-    grid-template-columns: repeat(2, 5rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      "result-a result-b"
-      "state-a state-b"
-      "self self";
+      "choice-a choice-b"
+      "choice-self choice-self";
     justify-content: center;
     max-width: 100%;
+  }
+
+  .choice-spread-group {
+    width: 100%;
+  }
+
+  .choice-spread-group-cards {
+    gap: 12px;
   }
 
   .reading-spread-slot {

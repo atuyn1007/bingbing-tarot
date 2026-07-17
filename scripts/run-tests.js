@@ -12,11 +12,101 @@ import {
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import {
+  getChoiceDisplayGroups,
+  hasCompleteChoiceOptions,
+  normalizeChoiceOptions,
+} from '../src/choiceSpreadUtils.js';
 import zhCN from '../src/i18n/locales/zh-CN.ts';
 import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
 
 const tests = [
+  {
+    name: 'choice options require two non-empty trimmed values',
+    run() {
+      assert.deepEqual(normalizeChoiceOptions('  联系  ', ' 暂停 '), {
+        choiceA: '联系',
+        choiceB: '暂停',
+      });
+      assert.equal(hasCompleteChoiceOptions('联系', '暂停'), true);
+      assert.equal(hasCompleteChoiceOptions('联系', '   '), false);
+    },
+  },
+  {
+    name: 'choice groups preserve A/B cards and presentation order',
+    run() {
+      const cards = ['a-now', 'b-now', 'a-future', 'b-future', 'self'];
+      assert.deepEqual(
+        getChoiceDisplayGroups(cards, '继续联系', '暂时不联系', '选项 A', '选项 B', '我的状态'),
+        [
+          { key: 'choice-a', label: 'A｜继续联系', cardIndexes: [2, 0] },
+          { key: 'choice-b', label: 'B｜暂时不联系', cardIndexes: [3, 1] },
+          { key: 'choice-self', label: '我的状态', cardIndexes: [4] },
+        ],
+      );
+    },
+  },
+  {
+    name: 'choice reading state keeps labels locally without changing Supabase history API',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const drawingSource = readFileSync(new URL('../src/pages/DrawingPage.jsx', import.meta.url), 'utf8');
+      assert.match(appSource, /const \[choiceA, setChoiceA\] = useState\(''\)/);
+      assert.match(appSource, /const \[choiceB, setChoiceB\] = useState\(''\)/);
+      assert.match(appSource, /choiceA: sanitizeHistoryText\(entry\.choiceA \|\| ''\)/);
+      assert.match(appSource, /choiceB: sanitizeHistoryText\(entry\.choiceB \|\| ''\)/);
+      assert.match(drawingSource, /isChoiceSpread && \(/);
+      assert.match(drawingSource, /disabled=\{!canConfirmQuestion\}/);
+      assert.doesNotMatch(appSource, /saveSpreadHistoryRecord\([^)]*choiceA/);
+    },
+  },
+  {
+    name: 'choice result cards render saved A and B labels in fixed groups',
+    run() {
+      const spreadCardsSource = readFileSync(new URL('../src/components/SpreadCards.jsx', import.meta.url), 'utf8');
+      const resultSource = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const cssSource = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
+      assert.match(spreadCardsSource, /getChoiceDisplayGroups/);
+      assert.match(spreadCardsSource, /choiceOptions/);
+      assert.match(resultSource, /choiceOptions=\{choiceOptions\}/);
+      assert.match(cssSource, /\.choice-spread-group/);
+      assert.match(cssSource, /overflow-wrap: anywhere/);
+    },
+  },
+  {
+    name: 'choice spread keeps two outer columns and vertical card stacks at every viewport',
+    run() {
+      const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
+      const getRuleBody = (source, selector) => {
+        const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return source.match(new RegExp(`^\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, 'm'))?.[1] || '';
+      };
+      const getBlockBody = (source, header) => {
+        const start = source.indexOf(header);
+        const openingBrace = source.indexOf('{', start);
+        if (start === -1 || openingBrace === -1) return '';
+
+        let depth = 0;
+        for (let index = openingBrace; index < source.length; index += 1) {
+          if (source[index] === '{') depth += 1;
+          if (source[index] === '}') depth -= 1;
+          if (depth === 0) return source.slice(openingBrace + 1, index);
+        }
+        return '';
+      };
+      const assertTwoColumnChoiceLayout = (ruleBody) => {
+        assert.match(ruleBody, /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
+        assert.match(ruleBody, /grid-template-areas:\s*"choice-a choice-b"\s*"choice-self choice-self"\s*;/);
+      };
+
+      assert.match(getRuleBody(css, '.choice-spread-group-cards'), /grid-template-columns:\s*minmax\(0,\s*1fr\)\s*;/);
+      assertTwoColumnChoiceLayout(getRuleBody(css, '.reading-spread-choice'));
+      assertTwoColumnChoiceLayout(getRuleBody(getBlockBody(css, '@media (max-width: 640px)'), '.reading-spread-choice'));
+      assert.match(getRuleBody(css, '.choice-spread-group-title'), /color:\s*rgba\(255, 248, 230/);
+      assert.match(getRuleBody(css, '.reading-spread-choice .reading-spread-label'), /color:\s*rgba\(241, 224, 183/);
+    },
+  },
   {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {

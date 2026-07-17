@@ -7,6 +7,7 @@ import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModul
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
 import { getReadingFromMeaningArchive } from './readingMeanings';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
+import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -201,6 +202,8 @@ function normalizeRecentReadingEntry(entry, t) {
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey,
     spreadName: sanitizeHistoryText(entry.spreadName || spread.name),
+    choiceA: sanitizeHistoryText(entry.choiceA || ''),
+    choiceB: sanitizeHistoryText(entry.choiceB || ''),
     cardsData,
     cardSummary: cardsData.map((card) => formatPlainCardName(card)),
     createdAt: entry.createdAt || new Date().toISOString(),
@@ -258,6 +261,8 @@ function buildRecordSnapshot(entry, t) {
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey: entry.spreadKey || 'three',
     spreadName: sanitizeHistoryText(entry.spreadName || getSpreadConfig(entry.spreadKey || 'three', t).name),
+    choiceA: sanitizeHistoryText(entry.choiceA || ''),
+    choiceB: sanitizeHistoryText(entry.choiceB || ''),
     cardsData: Array.isArray(entry.cardsData)
       ? entry.cardsData.map((card) => ({
           id: typeof card?.id === 'number' ? card.id : resolveCardData(card).id,
@@ -296,12 +301,18 @@ function shouldAppendFortuneReading(text, keywords) {
   return overlapCount < 2;
 }
 
-function buildSpreadReading(cards, question, spread, t, language, meaningArchive) {
+function buildSpreadReading(cards, question, spread, t, language, meaningArchive, choiceOptions = {}) {
   const lead = t('drawing.readingLead', { spread: spread.name });
   const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
   const positionLines = cards.map((card, index) => {
     const position = spread.positions[index];
-    const label = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
+    const choiceLabel =
+      spread.key === 'choice' && index < 4
+        ? `${index === 0 || index === 2 ? 'A' : 'B'}｜${
+            index === 0 || index === 2 ? choiceOptions.choiceA || t('drawing.choiceOptionAFallback') : choiceOptions.choiceB || t('drawing.choiceOptionBFallback')
+          }`
+        : null;
+    const label = choiceLabel || position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
     const data = resolveCardData(card);
     const fallbackReading = getLocalizedTarotReading(
       data,
@@ -371,6 +382,8 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isHumanMode, setIsHumanMode] = useState(false);
   const [userQuestion, setUserQuestion] = useState('');
+  const [choiceA, setChoiceA] = useState('');
+  const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
   const [isRevealing, setIsRevealing] = useState(false);
   const [readingComplete, setReadingComplete] = useState(false);
@@ -428,6 +441,9 @@ function App() {
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
   const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
   const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
+  const isChoiceSpread = !isHumanMode && activeSpread.key === 'choice';
+  const canConfirmQuestion =
+    Boolean(userQuestion.trim()) && (!isChoiceSpread || hasCompleteChoiceOptions(choiceA, choiceB));
   const suspenseFallback = <AppLoading theme={theme} />;
   const formatHistorySummaryLabel = (entry) => formatHistorySummary(entry, t);
   const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
@@ -486,6 +502,8 @@ function App() {
     setCurrentPage('home');
     setIsHumanMode(false);
     setUserQuestion('');
+    setChoiceA('');
+    setChoiceB('');
     setDrawnCards([]);
     setIsRevealing(false);
     setReadingComplete(false);
@@ -531,6 +549,8 @@ function App() {
     setAiReading('');
     setDisplayedText('');
     setUserQuestion('');
+    setChoiceA('');
+    setChoiceB('');
   };
 
   const syncAuthInputValues = () => {
@@ -639,7 +659,7 @@ function App() {
     localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(items));
   };
 
-  const saveRecentReading = async (question, cards, spreadKey) => {
+  const saveRecentReading = async (question, cards, spreadKey, choiceOptions = {}) => {
     const spread = getSpreadConfig(spreadKey, t);
     let syncedRecordId = null;
 
@@ -657,6 +677,8 @@ function App() {
       question,
       spreadKey: spread.key,
       spreadName: spread.name,
+      choiceA: sanitizeHistoryText(choiceOptions.choiceA || ''),
+      choiceB: sanitizeHistoryText(choiceOptions.choiceB || ''),
       cardsData: cards.map((card) => ({
         id: card.id,
         name: card.name,
@@ -1140,8 +1162,14 @@ function App() {
 
   const handleConfirmQuestion = () => {
     const trimmedQuestion = userQuestion.trim();
+    const choiceOptions = normalizeChoiceOptions(choiceA, choiceB);
 
-    if (!trimmedQuestion) return;
+    if (!trimmedQuestion || (isChoiceSpread && !hasCompleteChoiceOptions(choiceOptions.choiceA, choiceOptions.choiceB))) return;
+
+    if (isChoiceSpread) {
+      setChoiceA(choiceOptions.choiceA);
+      setChoiceB(choiceOptions.choiceB);
+    }
 
     const meaningArchivePromise = cardMeaningsModule
       ? Promise.resolve(cardMeaningsModule)
@@ -1161,7 +1189,7 @@ function App() {
       const spread = getSpreadConfig(selectedSpreadKey, t);
       const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
       setDrawnCards(cards);
-      void saveRecentReading(trimmedQuestion, cards, spread.key).catch((error) => {
+      void saveRecentReading(trimmedQuestion, cards, spread.key, choiceOptions).catch((error) => {
         console.warn('Failed to persist recent reading:', error);
       });
 
@@ -1174,7 +1202,7 @@ function App() {
           setAiReading(
             isHumanMode
               ? buildHumanReading(cards, trimmedQuestion, t, language, meaningArchive)
-              : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive),
+              : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive, choiceOptions),
           );
         }, 1100);
       }, 260);
@@ -1482,12 +1510,15 @@ function App() {
 
     const nextReading = isHumanMode
       ? buildHumanReading(drawnCards, userQuestion.trim(), t, language, cardMeaningsModule)
-      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language, cardMeaningsModule);
+      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language, cardMeaningsModule, {
+          choiceA,
+          choiceB,
+        });
 
     if (nextReading !== aiReading) {
       setAiReading(nextReading);
     }
-  }, [aiReading, cardMeaningsModule, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
+  }, [aiReading, cardMeaningsModule, choiceA, choiceB, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
 
   useEffect(() => {
     if (!user?.id) return undefined;
@@ -1622,6 +1653,12 @@ function App() {
         activeSpread={activeSpread}
         userQuestion={userQuestion}
         setUserQuestion={setUserQuestion}
+        choiceA={choiceA}
+        choiceB={choiceB}
+        setChoiceA={setChoiceA}
+        setChoiceB={setChoiceB}
+        isChoiceSpread={isChoiceSpread}
+        canConfirmQuestion={canConfirmQuestion}
         handleConfirmQuestion={handleConfirmQuestion}
         t={t}
       />
@@ -1637,6 +1674,7 @@ function App() {
         isHumanMode={isHumanMode}
         activeSpread={activeSpread}
         userQuestion={userQuestion}
+        choiceOptions={{ choiceA, choiceB }}
         drawnCards={drawnCards}
         spreadForCards={spreadForCards}
         isRevealing={isRevealing}
