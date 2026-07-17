@@ -108,6 +108,28 @@ const tests = [
     },
   },
   {
+    name: 'reading presentation uses centered manuscript sections and removes spread difficulty',
+    run() {
+      const resultPage = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const spreadModal = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
+      const solarCss = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
+      const getRuleBody = (source, selector) => {
+        const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return source.match(new RegExp(`^\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, 'm'))?.[1] || '';
+      };
+
+      assert.match(resultPage, /readingBody\.split\('\\n\\n'\)/);
+      assert.match(resultPage, /reading-paper-section/);
+      assert.match(resultPage, /reading-paper-title/);
+      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /max-width:\s*min\(100%,\s*960px\)\s*;/);
+      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /margin:\s*0\s+auto\s*;/);
+      assert.match(getRuleBody(solarCss, '.reading-paper-stack'), /gap:\s*clamp\(64px,\s*8vw,\s*96px\)\s*;/);
+      assert.doesNotMatch(spreadModal, /metaDifficulty/);
+      assert.doesNotMatch(spreadModal, /spread\.difficulty/);
+      assert.match(getRuleBody(solarCss, '.spread-option-metadata'), /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
+    },
+  },
+  {
     name: 'isSessionExpiredAt returns false when timestamp is missing',
     run() {
       assert.equal(isSessionExpiredAt(null, 1000), false);
