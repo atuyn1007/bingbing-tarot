@@ -12,6 +12,16 @@ import {
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import { calculateUnityReading } from '../src/unitySpread.js';
+import {
+  appendUnityHistory,
+  clearUnityHistory,
+  createUnityHistoryEntry,
+  filterUnityHistory,
+  getUnityHistoryKey,
+  readUnityHistory,
+  removeUnityHistoryEntry,
+} from '../src/unityHistoryStore.js';
 import {
   getChoiceDisplayGroups,
   hasCompleteChoiceOptions,
@@ -22,6 +32,71 @@ import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
 
 const tests = [
+  {
+    name: 'unity history creates an immutable versioned snapshot with the full casting result',
+    run() {
+      const cards = Array.from({ length: 18 }, (_, index) => ({
+        id: index,
+        name: `Card ${index + 1}`,
+        englishName: `Card ${index + 1}`,
+        isReversed: index % 3 === 0,
+      }));
+      const reading = calculateUnityReading(cards, { question: 'History snapshot', now: '2026-07-19T08:00:00.000Z' });
+      const entry = createUnityHistoryEntry(reading, '2026-07-19T09:00:00.000Z');
+
+      assert.match(entry.id, /^[0-9a-f]{8}-[0-9a-f-]{27}$/i);
+      assert.equal(entry.version, '1.0.0');
+      assert.equal(entry.createdAt, '2026-07-19T09:00:00.000Z');
+      assert.equal(entry.primaryHexagramNumber, reading.primaryHexagram.number);
+      assert.equal(entry.changedHexagramNumber, reading.changedHexagram.number);
+      assert.deepEqual(entry.movingLineIndexes, reading.movingLineIndexes);
+      assert.deepEqual(entry.result, reading);
+      assert.notEqual(entry.result, reading);
+      assert.equal(entry.result.rounds.length, 6);
+      assert.equal(entry.result.rounds.every((round) => round.tarotCards.length === 3), true);
+    },
+  },
+  {
+    name: 'unity history persists per nickname in newest-first order and keeps accounts isolated',
+    run() {
+      const storage = new Map();
+      const memoryStorage = {
+        getItem: (key) => storage.get(key) || null,
+        setItem: (key, value) => storage.set(key, value),
+        removeItem: (key) => storage.delete(key),
+      };
+      const reading = {
+        primaryHexagram: { number: 40 }, changedHexagram: { number: 60 }, movingLineIndexes: [1, 4],
+        rounds: Array.from({ length: 6 }, () => ({ tarotCards: Array.from({ length: 3 }, () => ({})) })),
+      };
+      appendUnityHistory(reading, 'bing', memoryStorage, '2026-07-19T08:00:00.000Z');
+      appendUnityHistory({ ...reading, primaryHexagram: { number: 1 } }, 'bing', memoryStorage, '2026-07-19T10:00:00.000Z');
+      appendUnityHistory(reading, 'other', memoryStorage, '2026-07-19T11:00:00.000Z');
+
+      const bingEntries = readUnityHistory('bing', memoryStorage);
+      assert.equal(getUnityHistoryKey('bing'), 'tarot_unity_history_bing');
+      assert.equal(bingEntries.length, 2);
+      assert.equal(bingEntries[0].primaryHexagramNumber, 1);
+      assert.equal(readUnityHistory('other', memoryStorage).length, 1);
+    },
+  },
+  {
+    name: 'unity history filters by hexagram number and date and only deletes its current namespace',
+    run() {
+      const storage = new Map();
+      const memoryStorage = { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value), removeItem: (key) => storage.delete(key) };
+      const reading = { primaryHexagram: { number: 40 }, changedHexagram: { number: 60 }, movingLineIndexes: [2], rounds: Array.from({ length: 6 }, () => ({ tarotCards: Array.from({ length: 3 }, () => ({})) })) };
+      const entries = appendUnityHistory(reading, 'bing', memoryStorage, '2026-07-19T10:00:00.000Z');
+      appendUnityHistory(reading, 'other', memoryStorage, '2026-07-19T11:00:00.000Z');
+
+      assert.equal(filterUnityHistory(entries, '60', 'en-US').length, 1);
+      assert.equal(filterUnityHistory(entries, '2026-07-19', 'en-US').length, 1);
+      assert.equal(removeUnityHistoryEntry(entries[0].id, 'bing', memoryStorage).length, 0);
+      assert.equal(readUnityHistory('other', memoryStorage).length, 1);
+      clearUnityHistory('other', memoryStorage);
+      assert.equal(readUnityHistory('other', memoryStorage).length, 0);
+    },
+  },
   {
     name: 'choice options require two non-empty trimmed values',
     run() {
