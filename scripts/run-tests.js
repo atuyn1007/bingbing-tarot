@@ -98,6 +98,24 @@ const tests = [
     },
   },
   {
+    name: 'unity history page renders searchable snapshot records with confirmed destructive actions only',
+    run() {
+      const historySource = readFileSync(new URL('../src/pages/UnityHistoryPage.jsx', import.meta.url), 'utf8');
+      const solarCss = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
+
+      assert.match(historySource, /filterUnityHistory/);
+      assert.match(historySource, /onOpenEntry/);
+      assert.match(historySource, /onDeleteEntry/);
+      assert.match(historySource, /onClearAll/);
+      assert.match(historySource, /window\.confirm/);
+      assert.match(historySource, /primaryHexagramNumber/);
+      assert.match(historySource, /changedHexagramNumber/);
+      assert.match(historySource, /movingLineIndexes\.length/);
+      assert.doesNotMatch(historySource, /calculateUnityReading/);
+      assert.match(solarCss, /\.unity-history-page/);
+    },
+  },
+  {
     name: 'choice options require two non-empty trimmed values',
     run() {
       assert.deepEqual(normalizeChoiceOptions('  联系  ', ' 暂停 '), {
