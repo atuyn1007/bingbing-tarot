@@ -49,6 +49,8 @@ const tests = [
       assert.equal(entry.createdAt, '2026-07-19T09:00:00.000Z');
       assert.equal(entry.primaryHexagramNumber, reading.primaryHexagram.number);
       assert.equal(entry.changedHexagramNumber, reading.changedHexagram.number);
+      assert.equal(entry.primaryHexagramName, '乾');
+      assert.equal(entry.changedHexagramName, '乾');
       assert.deepEqual(entry.movingLineIndexes, reading.movingLineIndexes);
       assert.deepEqual(entry.result, reading);
       assert.notEqual(entry.result, reading);
@@ -90,6 +92,7 @@ const tests = [
       appendUnityHistory(reading, 'other', memoryStorage, '2026-07-19T11:00:00.000Z');
 
       assert.equal(filterUnityHistory(entries, '60', 'en-US').length, 1);
+      assert.equal(filterUnityHistory(entries, '解', 'zh-CN').length, 1);
       assert.equal(filterUnityHistory(entries, '2026-07-19', 'en-US').length, 1);
       assert.equal(removeUnityHistoryEntry(entries[0].id, 'bing', memoryStorage).length, 0);
       assert.equal(readUnityHistory('other', memoryStorage).length, 1);

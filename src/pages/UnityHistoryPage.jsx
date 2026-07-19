@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowUpRight, Search, Trash2 } from 'lucide-react';
-import { filterUnityHistory } from '../unityHistoryStore';
+import { filterUnityHistory, getUnityHexagramName } from '../unityHistoryStore';
 
 function formatArchiveTimestamp(value, locale) {
   const date = new Date(value);
@@ -68,8 +68,8 @@ function UnityHistoryPage({ theme, entries, intlLocale, onBack, onOpenEntry, onD
                 <div className="unity-history-record-index"><span>ARCHIVE</span><strong>{entry.id.slice(0, 8).toUpperCase()}</strong></div>
                 <time dateTime={entry.createdAt}>{formatArchiveTimestamp(entry.createdAt, intlLocale)}</time>
                 <div className="unity-history-hexagrams">
-                  <div><span>本卦</span><strong>{String(entry.primaryHexagramNumber).padStart(2, '0')}</strong></div>
-                  {hasMovingLines && <div className="unity-history-change"><span>变卦</span><strong>{String(entry.changedHexagramNumber).padStart(2, '0')}</strong></div>}
+                  <div><span>本卦</span><strong>{getUnityHexagramName(entry.primaryHexagramNumber)} · {String(entry.primaryHexagramNumber).padStart(2, '0')}</strong></div>
+                  {hasMovingLines && <div className="unity-history-change"><span>变卦</span><strong>{getUnityHexagramName(entry.changedHexagramNumber)} · {String(entry.changedHexagramNumber).padStart(2, '0')}</strong></div>}
                 </div>
                 <p className="unity-history-moving">动爻 {entry.movingLineIndexes.length}</p>
                 <div className="unity-history-record-actions">

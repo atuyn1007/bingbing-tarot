@@ -1,4 +1,10 @@
 const UNITY_HISTORY_VERSION = '1.0.0';
+const HEXAGRAM_NAMES = [
+  '', '乾', '坤', '屯', '蒙', '需', '讼', '师', '比', '小畜', '履', '泰', '否', '同人', '大有', '谦', '豫',
+  '随', '蛊', '临', '观', '噬嗑', '贲', '剥', '复', '无妄', '大畜', '颐', '大过', '坎', '离', '咸', '恒', '遁',
+  '大壮', '晋', '明夷', '家人', '睽', '蹇', '解', '损', '益', '夬', '姤', '萃', '升', '困', '井', '革', '鼎', '震',
+  '艮', '渐', '归妹', '丰', '旅', '巽', '兑', '涣', '节', '中孚', '小过', '既济', '未济',
+];
 
 function cloneSnapshot(value) {
   return JSON.parse(JSON.stringify(value));
@@ -62,6 +68,10 @@ export function getUnityHistoryKey(nickname) {
   return `tarot_unity_history_${normalizeNickname(nickname)}`;
 }
 
+export function getUnityHexagramName(number) {
+  return HEXAGRAM_NAMES[Number(number)] || '';
+}
+
 export function createUnityHistoryEntry(reading, now = new Date().toISOString()) {
   if (!reading?.primaryHexagram || !Array.isArray(reading?.rounds)) {
     throw new Error('A complete Unity Spread result is required for history.');
@@ -74,6 +84,8 @@ export function createUnityHistoryEntry(reading, now = new Date().toISOString())
     createdAt: now,
     primaryHexagramNumber: result.primaryHexagram.number,
     changedHexagramNumber: result.changedHexagram?.number ?? result.primaryHexagram.number,
+    primaryHexagramName: getUnityHexagramName(result.primaryHexagram.number),
+    changedHexagramName: getUnityHexagramName(result.changedHexagram?.number ?? result.primaryHexagram.number),
     movingLineIndexes: [...(result.movingLineIndexes || [])],
     result,
   };
@@ -127,6 +139,8 @@ export function filterUnityHistory(entries, query, locale = 'zh-CN') {
       entry.changedHexagramNumber,
       entry.primaryHexagramName,
       entry.changedHexagramName,
+      getUnityHexagramName(entry.primaryHexagramNumber),
+      getUnityHexagramName(entry.changedHexagramNumber),
       entry.createdAt,
       dateText,
     ].join(' ').toLocaleLowerCase(locale);
