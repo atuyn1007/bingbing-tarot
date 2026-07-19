@@ -116,6 +116,23 @@ const tests = [
     },
   },
   {
+    name: 'unity history saves completed casts and replays stored snapshots without recalculating',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const resultSource = readFileSync(new URL('../src/pages/UnityResultPage.jsx', import.meta.url), 'utf8');
+
+      assert.match(appSource, /from '\.\/unityHistoryStore'/);
+      assert.match(appSource, /const UnityHistoryPage = lazy\(\(\) => import\('\.\/pages\/UnityHistoryPage\.jsx'\)\)/);
+      assert.match(appSource, /const \[unityHistory, setUnityHistory\] = useState\(\[\]\)/);
+      assert.match(appSource, /appendUnityHistory\(nextUnityReading, activeNickname\)/);
+      assert.match(appSource, /setUnityReading\(entry\.result\)/);
+      assert.match(appSource, /currentPage === 'unity-history'/);
+      assert.match(appSource, /<UnityHistoryPage/);
+      assert.doesNotMatch(appSource, /calculateUnityReading\(entry\.result/);
+      assert.match(resultSource, /onOpenHistory/);
+    },
+  },
+  {
     name: 'choice options require two non-empty trimmed values',
     run() {
       assert.deepEqual(normalizeChoiceOptions('  联系  ', ' 暂停 '), {

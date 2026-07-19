@@ -8,11 +8,15 @@ import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeyw
 import { getReadingFromMeaningArchive } from './readingMeanings';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
+import { calculateUnityReading } from './unitySpread';
+import { appendUnityHistory, clearUnityHistory, readUnityHistory, removeUnityHistoryEntry } from './unityHistoryStore';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
 const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
+const UnityResultPage = lazy(() => import('./pages/UnityResultPage.jsx'));
+const UnityHistoryPage = lazy(() => import('./pages/UnityHistoryPage.jsx'));
 const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
 const MessagesPage = lazy(() => import('./pages/MessagesPage.jsx'));
 const CardMeaningsPage = lazy(() => import('./pages/CardMeaningsPage.jsx'));
@@ -121,6 +125,13 @@ const SPREAD_OPTIONS = [
     canonicalName: 'choice spread',
     cardCount: 5,
     preview: ['A', 'B', 'A+', 'B+', 'You'],
+  },
+  {
+    key: 'unity',
+    localeKey: 'spreads.unity',
+    canonicalName: 'unity of all things spread',
+    cardCount: 18,
+    preview: ['I', 'II', 'III'],
   },
 ];
 
@@ -389,6 +400,8 @@ function App() {
   const [readingComplete, setReadingComplete] = useState(false);
   const [aiReading, setAiReading] = useState('');
   const [displayedText, setDisplayedText] = useState('');
+  const [unityReading, setUnityReading] = useState(null);
+  const [unityHistory, setUnityHistory] = useState([]);
 
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -455,6 +468,10 @@ function App() {
   }, [cardStyle]);
 
   useEffect(() => {
+    setUnityHistory(readUnityHistory(activeNickname));
+  }, [activeNickname]);
+
+  useEffect(() => {
     if (!activeDailyCard || cardMeaningsModule) return undefined;
 
     let cancelled = false;
@@ -509,6 +526,7 @@ function App() {
     setReadingComplete(false);
     setAiReading('');
     setDisplayedText('');
+    setUnityReading(null);
     setMessages([]);
     setUnreadCount(0);
     setCurrentChatId(null);
@@ -548,6 +566,7 @@ function App() {
     setReadingComplete(false);
     setAiReading('');
     setDisplayedText('');
+    setUnityReading(null);
     setUserQuestion('');
     setChoiceA('');
     setChoiceB('');
@@ -1188,7 +1207,15 @@ function App() {
     setTimeout(() => {
       const spread = getSpreadConfig(selectedSpreadKey, t);
       const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
+      const nextUnityReading =
+        !isHumanMode && spread.key === 'unity'
+          ? calculateUnityReading(cards, { question: trimmedQuestion, locale: language })
+          : null;
       setDrawnCards(cards);
+      setUnityReading(nextUnityReading);
+      if (nextUnityReading) {
+        setUnityHistory(appendUnityHistory(nextUnityReading, activeNickname));
+      }
       void saveRecentReading(trimmedQuestion, cards, spread.key, choiceOptions).catch((error) => {
         console.warn('Failed to persist recent reading:', error);
       });
@@ -1199,10 +1226,12 @@ function App() {
         setTimeout(async () => {
           const meaningArchive = await meaningArchivePromise;
           setReadingComplete(true);
-          setAiReading(
-            isHumanMode
-              ? buildHumanReading(cards, trimmedQuestion, t, language, meaningArchive)
-              : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive, choiceOptions),
+            setAiReading(
+              isHumanMode
+                ? buildHumanReading(cards, trimmedQuestion, t, language, meaningArchive)
+              : nextUnityReading
+                ? ''
+                : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive, choiceOptions),
           );
         }, 1100);
       }, 260);
@@ -1507,6 +1536,7 @@ function App() {
 
   useEffect(() => {
     if (!readingComplete || drawnCards.length === 0) return;
+    if (!isHumanMode && spreadForCards.key === 'unity') return;
 
     const nextReading = isHumanMode
       ? buildHumanReading(drawnCards, userQuestion.trim(), t, language, cardMeaningsModule)
@@ -1546,6 +1576,26 @@ function App() {
     setReadingComplete(false);
     setAiReading('');
     setDisplayedText('');
+    setUnityReading(null);
+  };
+
+  const openUnityHistory = () => {
+    setCurrentPage('unity-history');
+  };
+
+  const openUnityHistoryEntry = (entry) => {
+    setIsHumanMode(false);
+    setSelectedSpreadKey('unity');
+    setUnityReading(entry.result);
+    setCurrentPage('drawing');
+  };
+
+  const deleteUnityHistoryEntry = (entry) => {
+    setUnityHistory(removeUnityHistoryEntry(entry.id, activeNickname));
+  };
+
+  const clearUnityHistoryEntries = () => {
+    setUnityHistory(clearUnityHistory(activeNickname));
   };
   const handleBackFromChat = () => {
     setCurrentPage('home');
@@ -1664,7 +1714,9 @@ function App() {
       />
     );
   } else if (currentPage === 'drawing') {
-    currentView = (
+    currentView = !isHumanMode && spreadForCards.key === 'unity' && unityReading ? (
+      <UnityResultPage theme={theme} goHome={goHome} t={t} unityReading={unityReading} onOpenHistory={openUnityHistory} />
+    ) : (
       <ResultPage
         theme={theme}
         cardStyle={cardStyle}
@@ -1682,6 +1734,18 @@ function App() {
         readingLead={readingLead}
         readingBody={readingBody}
         onOpenHumanRequest={openHumanRequestModal}
+      />
+    );
+  } else if (currentPage === 'unity-history') {
+    currentView = (
+      <UnityHistoryPage
+        theme={theme}
+        entries={unityHistory}
+        intlLocale={intlLocale}
+        onBack={() => (unityReading ? setCurrentPage('drawing') : goHome())}
+        onOpenEntry={openUnityHistoryEntry}
+        onDeleteEntry={deleteUnityHistoryEntry}
+        onClearAll={clearUnityHistoryEntries}
       />
     );
   } else if (currentPage === 'chat') {
