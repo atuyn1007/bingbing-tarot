@@ -1,5 +1,3 @@
-const DEFAULT_VISIBLE_BACK_COUNT = 12;
-
 function shuffleCards(cards, random) {
   const deck = cards.map((card) => ({ ...card }));
 
@@ -17,13 +15,12 @@ function shuffleCards(cards, random) {
 export function createDrawSession(cards, cardCount, random = Math.random) {
   const normalizedCount = Math.max(1, Math.min(Number(cardCount) || 1, cards.length));
   const deck = shuffleCards(cards, random);
-  const visibleBackCount = Math.min(DEFAULT_VISIBLE_BACK_COUNT, deck.length);
 
   return {
     phase: 'shuffling',
     cardCount: normalizedCount,
     deck,
-    visibleBacks: Array.from({ length: visibleBackCount }, (_, index) => index),
+    visibleBacks: Array.from({ length: deck.length }, (_, index) => index),
     selectedBacks: [],
     drawnCards: [],
     revealedCards: [],
