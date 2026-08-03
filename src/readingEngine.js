@@ -158,57 +158,113 @@ function buildIntegratedTrace(cardSections, t) {
     .join(t('common.listSeparator'));
 }
 
-function buildIntegratedSummaryTrace(cardSections, t) {
-  return cardSections
-    .map((section) => t('reading.integratedCardSummaryTrace', {
-      position: section.positionTitle,
-      card: section.cardName,
-      orientation: getOrientationLabel(section, t),
-      keywords: section.keywordText || section.theme,
-    }))
-    .join(t('common.listSeparator'));
+function normalizeKeywordForComparison(keyword) {
+  return String(keyword || '').trim().toLocaleLowerCase();
 }
 
-function getIntegratedReadingBase(cardSections, t) {
-  const title = t('reading.integratedTitle');
-  const trace = buildIntegratedTrace(cardSections, t);
-  const summaryTrace = buildIntegratedSummaryTrace(cardSections, t);
-  return { title, trace, summaryTrace };
+export function analyzeCardRelation(fromSection, toSection) {
+  const toKeywords = new Set((toSection?.keywords || []).map(normalizeKeywordForComparison));
+  const sharedKeywords = (fromSection?.keywords || []).filter((keyword) => (
+    toKeywords.has(normalizeKeywordForComparison(keyword))
+  ));
+  const sameOrientation = fromSection?.orientation === toSection?.orientation;
+
+  if (sharedKeywords.length > 0) {
+    return { kind: sameOrientation ? 'echo' : 'revision', sharedKeywords };
+  }
+
+  return { kind: sameOrientation ? 'progression' : 'tension', sharedKeywords: [] };
+}
+
+function buildRelationText(fromSection, toSection, t) {
+  const relation = analyzeCardRelation(fromSection, toSection);
+  const relationKey = {
+    echo: 'reading.integratedRelationEcho',
+    revision: 'reading.integratedRelationRevision',
+    tension: 'reading.integratedRelationTension',
+    progression: 'reading.integratedRelationProgression',
+  }[relation.kind];
+
+  return t(relationKey, {
+    sharedKeywords: relation.sharedKeywords.join(t('common.listSeparator')),
+    fromCard: fromSection.cardName,
+    toCard: toSection.cardName,
+    fromKeywords: fromSection.keywordText || fromSection.theme,
+    toKeywords: toSection.keywordText || toSection.theme,
+    fromOrientation: getOrientationLabel(fromSection, t),
+    toOrientation: getOrientationLabel(toSection, t),
+  });
+}
+
+function getCompleteMeaning(section) {
+  return normalizeMeaningEvidence(section?.baseMeaning) || section?.meaningLead || section?.theme || '';
 }
 
 export function buildThreeCardIntegratedReading({ spread, cardSections = [], question, t }) {
-  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
+  const title = t('reading.integratedTitle');
   if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
 
   const [first, middle = cardSections[0], last = cardSections.at(-1)] = cardSections;
-  const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
   return {
     title,
     summary: t('reading.integratedThreeSummary', {
       question,
       spreadName: spread?.name || spread?.key || '',
-      trace: summaryTrace,
+      firstPosition: first.positionTitle,
+      firstCard: first.cardName,
+      firstOrientation: getOrientationLabel(first, t),
+      firstKeywords: first.keywordText || first.theme,
+      middlePosition: middle.positionTitle,
+      middleCard: middle.cardName,
+      middleOrientation: getOrientationLabel(middle, t),
+      middleKeywords: middle.keywordText || middle.theme,
+      lastPosition: last.positionTitle,
+      lastCard: last.cardName,
+      lastOrientation: getOrientationLabel(last, t),
+      lastKeywords: last.keywordText || last.theme,
     }),
     paragraphs: [
-      t('reading.integratedThreeFlow', {
-        firstPosition: first.positionTitle,
-        firstTheme: first.theme,
-        middlePosition: middle.positionTitle,
-        middleTheme: middle.theme,
-        lastPosition: last.positionTitle,
-        lastTheme: last.theme,
+      t('reading.integratedThreeLink', {
+        fromPosition: first.positionTitle,
+        fromCard: first.cardName,
+        fromOrientation: getOrientationLabel(first, t),
+        fromKeywords: first.keywordText || first.theme,
+        fromMeaning: getCompleteMeaning(first),
+        toPosition: middle.positionTitle,
+        toCard: middle.cardName,
+        toOrientation: getOrientationLabel(middle, t),
+        toKeywords: middle.keywordText || middle.theme,
+        toMeaning: getCompleteMeaning(middle),
+        relation: buildRelationText(first, middle, t),
       }),
-      t('reading.integratedThreeBalance', {
-        uprightCount: cardSections.length - reversedCount,
-        reversedCount,
-        trace,
+      t('reading.integratedThreeLink', {
+        fromPosition: middle.positionTitle,
+        fromCard: middle.cardName,
+        fromOrientation: getOrientationLabel(middle, t),
+        fromKeywords: middle.keywordText || middle.theme,
+        fromMeaning: getCompleteMeaning(middle),
+        toPosition: last.positionTitle,
+        toCard: last.cardName,
+        toOrientation: getOrientationLabel(last, t),
+        toKeywords: last.keywordText || last.theme,
+        toMeaning: getCompleteMeaning(last),
+        relation: buildRelationText(middle, last, t),
+      }),
+      t('reading.integratedThreePractical', {
+        question,
+        middlePosition: middle.positionTitle,
+        middleCard: middle.cardName,
+        middleKeywords: middle.keywordText || middle.theme,
+        lastPosition: last.positionTitle,
+        lastCard: last.cardName,
+        lastKeywords: last.keywordText || last.theme,
       }),
     ],
   };
 }
 
 export function buildTriangleIntegratedReading({ spread, cardSections = [], question, t }) {
-  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
+  const title = t('reading.integratedTitle');
   if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
 
   const [perception, reality = cardSections[0], guidance = cardSections.at(-1)] = cardSections;
@@ -218,39 +274,74 @@ export function buildTriangleIntegratedReading({ spread, cardSections = [], ques
       question,
       spreadName: spread?.name || spread?.key || '',
       perceptionPosition: perception.positionTitle,
+      perceptionCard: perception.cardName,
+      perceptionOrientation: getOrientationLabel(perception, t),
       perceptionTheme: perception.theme,
       realityPosition: reality.positionTitle,
+      realityCard: reality.cardName,
+      realityOrientation: getOrientationLabel(reality, t),
       realityTheme: reality.theme,
       guidancePosition: guidance.positionTitle,
+      guidanceCard: guidance.cardName,
+      guidanceOrientation: getOrientationLabel(guidance, t),
       guidanceTheme: guidance.theme,
-      trace: summaryTrace,
     }),
     paragraphs: [
-      t('reading.integratedTriangleContrast', {
+      t('reading.integratedTriangleReality', {
         perceptionPosition: perception.positionTitle,
+        perceptionCard: perception.cardName,
         perceptionTheme: perception.theme,
+        perceptionMeaning: getCompleteMeaning(perception),
         perceptionOrientation: getOrientationLabel(perception, t),
         realityPosition: reality.positionTitle,
+        realityCard: reality.cardName,
         realityTheme: reality.theme,
+        realityMeaning: getCompleteMeaning(reality),
         realityOrientation: getOrientationLabel(reality, t),
+        relation: buildRelationText(perception, reality, t),
       }),
-      t('reading.integratedTriangleGuidance', {
+      t('reading.integratedTriangleExit', {
         guidancePosition: guidance.positionTitle,
+        guidanceCard: guidance.cardName,
         guidanceTheme: guidance.theme,
+        guidanceMeaning: getCompleteMeaning(guidance),
         guidanceOrientation: getOrientationLabel(guidance, t),
-        perceptionTheme: perception.theme,
-        realityTheme: reality.theme,
-        trace,
+        perceptionKeywords: perception.keywordText || perception.theme,
+        realityKeywords: reality.keywordText || reality.theme,
+        perceptionRelation: buildRelationText(perception, guidance, t),
+        realityRelation: buildRelationText(reality, guidance, t),
+      }),
+      t('reading.integratedTrianglePractical', {
+        question,
+        perceptionPosition: perception.positionTitle,
+        perceptionKeywords: perception.keywordText || perception.theme,
+        realityPosition: reality.positionTitle,
+        realityKeywords: reality.keywordText || reality.theme,
+        guidancePosition: guidance.positionTitle,
+        guidanceCard: guidance.cardName,
+        guidanceKeywords: guidance.keywordText || guidance.theme,
       }),
     ],
   };
 }
 
 export function buildChoiceIntegratedReading({ spread, cardSections = [], question, choiceComparison, t }) {
-  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
+  const title = t('reading.integratedTitle');
   if (cardSections.length === 0 || !choiceComparison) return { title, summary: '', paragraphs: [] };
 
   const { optionA, optionB, self } = choiceComparison;
+  const optionACondition = t('reading.integratedChoiceCondition', {
+    position: optionA.development.positionTitle,
+    card: optionA.development.cardName,
+    orientation: getOrientationLabel(optionA.development, t),
+    keywords: optionA.development.keywordText || optionA.development.theme,
+  });
+  const optionBCondition = t('reading.integratedChoiceCondition', {
+    position: optionB.development.positionTitle,
+    card: optionB.development.cardName,
+    orientation: getOrientationLabel(optionB.development, t),
+    keywords: optionB.development.keywordText || optionB.development.theme,
+  });
   return {
     title,
     summary: t('reading.integratedChoiceSummary', {
@@ -258,29 +349,59 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
       spreadName: spread?.name || spread?.key || '',
       optionA: optionA.label,
       optionB: optionB.label,
-      trace: summaryTrace,
+      aCurrentCard: optionA.current.cardName,
+      aCurrentOrientation: getOrientationLabel(optionA.current, t),
+      aDevelopmentCard: optionA.development.cardName,
+      aDevelopmentOrientation: getOrientationLabel(optionA.development, t),
+      bCurrentCard: optionB.current.cardName,
+      bCurrentOrientation: getOrientationLabel(optionB.current, t),
+      bDevelopmentCard: optionB.development.cardName,
+      bDevelopmentOrientation: getOrientationLabel(optionB.development, t),
+      selfCard: self.cardName,
+      selfOrientation: getOrientationLabel(self, t),
     }),
     paragraphs: [
       t('reading.integratedChoicePath', {
         label: optionA.label,
         currentPosition: optionA.current.positionTitle,
-        currentTheme: optionA.current.theme,
+        currentCard: optionA.current.cardName,
+        currentOrientation: getOrientationLabel(optionA.current, t),
+        currentKeywords: optionA.current.keywordText || optionA.current.theme,
+        currentMeaning: getCompleteMeaning(optionA.current),
         developmentPosition: optionA.development.positionTitle,
-        developmentTheme: optionA.development.theme,
+        developmentCard: optionA.development.cardName,
+        developmentOrientation: getOrientationLabel(optionA.development, t),
+        developmentKeywords: optionA.development.keywordText || optionA.development.theme,
+        developmentMeaning: getCompleteMeaning(optionA.development),
+        relation: buildRelationText(optionA.current, optionA.development, t),
       }),
       t('reading.integratedChoicePath', {
         label: optionB.label,
         currentPosition: optionB.current.positionTitle,
-        currentTheme: optionB.current.theme,
+        currentCard: optionB.current.cardName,
+        currentOrientation: getOrientationLabel(optionB.current, t),
+        currentKeywords: optionB.current.keywordText || optionB.current.theme,
+        currentMeaning: getCompleteMeaning(optionB.current),
         developmentPosition: optionB.development.positionTitle,
-        developmentTheme: optionB.development.theme,
+        developmentCard: optionB.development.cardName,
+        developmentOrientation: getOrientationLabel(optionB.development, t),
+        developmentKeywords: optionB.development.keywordText || optionB.development.theme,
+        developmentMeaning: getCompleteMeaning(optionB.development),
+        relation: buildRelationText(optionB.current, optionB.development, t),
       }),
       t('reading.integratedChoiceTradeoff', {
+        question,
         selfPosition: self.positionTitle,
-        selfTheme: self.theme,
+        selfCard: self.cardName,
+        selfOrientation: getOrientationLabel(self, t),
+        selfKeywords: self.keywordText || self.theme,
+        selfMeaning: getCompleteMeaning(self),
         optionA: optionA.label,
         optionB: optionB.label,
-        trace,
+        optionACondition,
+        optionBCondition,
+        optionASelfRelation: buildRelationText(self, optionA.development, t),
+        optionBSelfRelation: buildRelationText(self, optionB.development, t),
       }),
     ],
   };

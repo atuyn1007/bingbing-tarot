@@ -43,17 +43,22 @@ function createTranslator(locale = 'en') {
     'reading.overviewReversed': '{count} reversed cards need adjustment.',
     'reading.overviewUpright': 'All cards are upright.',
     'reading.integratedTitle': 'Integrated Reading',
-    'reading.integratedCardSummaryTrace': '{position} / {card} / {orientation}: {keywords}',
     'reading.integratedCardTrace': '{position} / {card} / {orientation} / {keywords}: {meaning}',
-    'reading.integratedThreeSummary': '{question}: the complete three-card sequence is {trace}.',
-    'reading.integratedThreeFlow': '{firstPosition} begins with {firstTheme}; {middlePosition} tests it through {middleTheme}; {lastPosition} carries it toward {lastTheme}.',
-    'reading.integratedThreeBalance': '{uprightCount} upright and {reversedCount} reversed cards combine as {trace}.',
-    'reading.integratedTriangleSummary': '{question}: {perceptionPosition} shows {perceptionTheme}, {realityPosition} shows {realityTheme}, and {guidancePosition} shows {guidanceTheme}.',
-    'reading.integratedTriangleContrast': '{perceptionPosition} and {realityPosition} contrast {perceptionTheme} with {realityTheme}.',
-    'reading.integratedTriangleGuidance': '{guidancePosition} brings {guidanceTheme} back to both {perceptionTheme} and {realityTheme}: {trace}.',
-    'reading.integratedChoiceSummary': '{question}: compare {optionA} and {optionB} through all five positions: {trace}.',
-    'reading.integratedChoicePath': '{label} moves from {currentPosition} / {currentTheme} to {developmentPosition} / {developmentTheme}.',
-    'reading.integratedChoiceTradeoff': '{selfPosition} / {selfTheme} is the decision point between {optionA} and {optionB}: {trace}.',
+    'reading.integratedRelationEcho': 'RELATION_ECHO {sharedKeywords}',
+    'reading.integratedRelationRevision': 'RELATION_REVISION {sharedKeywords}',
+    'reading.integratedRelationTension': 'RELATION_TENSION {fromOrientation} {toOrientation}',
+    'reading.integratedRelationProgression': 'RELATION_PROGRESSION {fromOrientation} {toOrientation}',
+    'reading.integratedThreeSummary': 'THREE_SUMMARY {question}: {firstPosition}/{firstCard}, {middlePosition}/{middleCard}, {lastPosition}/{lastCard}.',
+    'reading.integratedThreeLink': 'THREE_LINK {fromPosition}/{fromCard}/{fromOrientation}/{fromKeywords}: {fromMeaning}; {toPosition}/{toCard}/{toOrientation}/{toKeywords}: {toMeaning}; {relation}',
+    'reading.integratedThreePractical': 'THREE_PRACTICAL {question}: verify {middleKeywords} at {middlePosition}, then use {lastKeywords} at {lastPosition}.',
+    'reading.integratedTriangleSummary': 'TRIANGLE_SUMMARY {question}: {perceptionPosition}/{perceptionCard}, {realityPosition}/{realityCard}, {guidancePosition}/{guidanceCard}.',
+    'reading.integratedTriangleReality': 'TRIANGLE_REALITY {perceptionMeaning}; {realityMeaning}; {relation}',
+    'reading.integratedTriangleExit': 'TRIANGLE_EXIT {guidancePosition}/{guidanceCard}: {guidanceMeaning}; {perceptionKeywords}; {realityKeywords}.',
+    'reading.integratedTrianglePractical': 'TRIANGLE_PRACTICAL {question}: compare {perceptionKeywords} with {realityKeywords}, then test {guidanceKeywords}.',
+    'reading.integratedChoiceSummary': 'CHOICE_SUMMARY {question}: {optionA} uses {aCurrentCard}/{aDevelopmentCard}; {optionB} uses {bCurrentCard}/{bDevelopmentCard}; self is {selfCard}.',
+    'reading.integratedChoicePath': 'CHOICE_PATH {label}: {currentPosition}/{currentCard}/{currentOrientation}/{currentKeywords}/{currentMeaning}; {developmentPosition}/{developmentCard}/{developmentOrientation}/{developmentKeywords}/{developmentMeaning}; {relation}',
+    'reading.integratedChoiceCondition': '{position}/{card}/{orientation}/{keywords}',
+    'reading.integratedChoiceTradeoff': 'CHOICE_TRADEOFF {question}: {selfPosition}/{selfCard}/{selfOrientation}/{selfKeywords}/{selfMeaning}; {optionA} requires {optionACondition} ({optionASelfRelation}); {optionB} requires {optionBCondition} ({optionBSelfRelation}).',
     'reading.disclaimer': 'Reflection only.',
     'reading.choiceAdvantage': '{label} may connect {currentTheme} with {developmentTheme}.',
     'reading.choiceRisk': '{label} must weigh {currentTheme} against {developmentTheme}.',
@@ -67,6 +72,14 @@ function createTranslator(locale = 'en') {
     const rendered = (templates[key] || key)
       .replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? `{${token}}`));
     return locale === 'en' || key === 'common.listSeparator' ? rendered : `[${locale}] ${rendered}`;
+  };
+}
+
+function createLocaleTranslator(locale) {
+  return (key, values = {}) => {
+    const template = key.split('.').reduce((current, segment) => current?.[segment], locale);
+    return String(template || key)
+      .replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? `{${token}}`));
   };
 }
 
@@ -252,15 +265,43 @@ const tests = [
       assert.equal(result.cards[1].baseMeaning, 'reversed archive 2');
       assert.deepEqual(Object.keys(result.integratedReading).sort(), ['paragraphs', 'summary', 'title']);
       assert.equal(result.integratedReading.title, 'Integrated Reading');
-      assert.equal(result.integratedReading.paragraphs.length, 2);
+      assert.equal(result.integratedReading.paragraphs.length, 3);
       ['One', 'Two', 'Three', 'Signal', 'Tension', 'Action']
         .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
       ['upright archive 1', 'reversed archive 2', 'upright archive 3']
         .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
       assert.doesNotMatch(result.integratedReading.summary, /archive/);
       assert.match(result.integratedReading.paragraphs.join(' '), /upright archive 1/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /Should I move\?/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /THREE_LINK/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /THREE_PRACTICAL/);
+      assert.doesNotMatch(getIntegratedText(result), /\{\w+\}/);
       ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
       ['overview', 'integratedReading', 'disclaimer'].forEach((key) => assert.ok(result[key]));
+    },
+  },
+  {
+    name: 'card relation analysis distinguishes echo revision tension and progression from evidence',
+    run() {
+      assert.equal(typeof readingEngine.analyzeCardRelation, 'function');
+      const section = (keywords, orientation) => ({ keywords, orientation });
+
+      assert.deepEqual(
+        readingEngine.analyzeCardRelation(section(['boundary', 'pace'], 'upright'), section(['pace', 'dialogue'], 'upright')),
+        { kind: 'echo', sharedKeywords: ['pace'] },
+      );
+      assert.deepEqual(
+        readingEngine.analyzeCardRelation(section(['boundary', 'pace'], 'upright'), section(['pace', 'dialogue'], 'reversed')),
+        { kind: 'revision', sharedKeywords: ['pace'] },
+      );
+      assert.deepEqual(
+        readingEngine.analyzeCardRelation(section(['boundary'], 'upright'), section(['dialogue'], 'reversed')),
+        { kind: 'tension', sharedKeywords: [] },
+      );
+      assert.deepEqual(
+        readingEngine.analyzeCardRelation(section(['boundary'], 'upright'), section(['dialogue'], 'upright')),
+        { kind: 'progression', sharedKeywords: [] },
+      );
     },
   },
   {
@@ -360,7 +401,14 @@ const tests = [
       assert.deepEqual(result.cards.map((card) => card.positionTitle), ['Perception', 'Reality', 'Advice']);
       ['Perception', 'Reality', 'Advice', 'perception-theme', 'reality-theme', 'advice-theme']
         .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
-      assert.equal(result.integratedReading.paragraphs.length, 2);
+      assert.equal(result.integratedReading.paragraphs.length, 3);
+      assert.match(result.integratedReading.paragraphs.join(' '), /TRIANGLE_REALITY/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /TRIANGLE_EXIT/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /TRIANGLE_PRACTICAL/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /What should I do next\?/);
+      ['reversed archive 1', 'upright archive 2', 'reversed archive 3']
+        .forEach((value) => assert.match(result.integratedReading.paragraphs.join(' '), new RegExp(value)));
+      assert.doesNotMatch(getIntegratedText(result), /\{\w+\}/);
     },
   },
   {
@@ -411,6 +459,10 @@ const tests = [
       });
       assert.doesNotMatch(result.integratedReading.summary, /archive/);
       assert.equal(result.integratedReading.paragraphs.length, 3);
+      assert.equal(result.integratedReading.paragraphs.filter((paragraph) => paragraph.includes('CHOICE_PATH')).length, 2);
+      assert.match(result.integratedReading.paragraphs.join(' '), /CHOICE_TRADEOFF/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /What should I do next\?/);
+      assert.doesNotMatch(getIntegratedText(result), /\{\w+\}/);
       ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
       assert.deepEqual(getChoiceGroupSlots(cards, positions, [2, 0]).map((slot) => slot.position.title), ['A later', 'A now']);
     },
@@ -440,6 +492,58 @@ const tests = [
         english.cards.map(({ cardId, orientation }) => ({ cardId, orientation })),
       );
       assert.notEqual(getIntegratedText(italian), getIntegratedText(english));
+    },
+  },
+  {
+    name: 'localized integrated readings fill every relation token without generic filler',
+    run() {
+      const threeCards = [
+        { id: 61, name: 'Boundary Card', isReversed: false, keywords: ['boundary', 'pace'] },
+        { id: 62, name: 'Dialogue Card', isReversed: true, keywords: ['dialogue', 'evidence'] },
+        { id: 63, name: 'Step Card', isReversed: false, keywords: ['small step', 'verification'] },
+      ];
+      const choiceCards = [
+        ...threeCards,
+        { id: 64, name: 'Resource Card', isReversed: true, keywords: ['resources', 'cost'] },
+        { id: 65, name: 'Self Card', isReversed: false, keywords: ['capacity', 'boundary'] },
+      ];
+      const cases = [
+        {
+          spread: { key: 'three', name: 'Three Cards', positions: [{ title: 'Start' }, { title: 'Pivot' }, { title: 'Next' }] },
+          cards: threeCards,
+        },
+        {
+          spread: { key: 'triangle', name: 'Triangle', positions: [{ title: 'Perception' }, { title: 'Reality' }, { title: 'Exit' }] },
+          cards: threeCards,
+        },
+        {
+          spread: { key: 'choice', name: 'Choice', positions: [{ title: 'A now' }, { title: 'B now' }, { title: 'A later' }, { title: 'B later' }, { title: 'Self' }] },
+          cards: choiceCards,
+          choiceOptions: { choiceA: 'Stay', choiceB: 'Move' },
+        },
+      ];
+      const localeEntries = [['zh-CN', zhCN], ['en', en], ['it', it]];
+      const localizedResults = localeEntries.flatMap(([language, locale]) => cases.map((testCase) => ({
+        language,
+        cards: testCase.cards,
+        result: buildStructuredReading({
+          ...readingOptions(testCase.spread, testCase.cards, 'Should I continue?'),
+          language,
+          t: createLocaleTranslator(locale),
+          choiceOptions: testCase.choiceOptions,
+        }),
+      })));
+
+      localizedResults.forEach(({ cards, result }) => {
+        assert.doesNotMatch(getIntegratedText(result), /\{\w+\}/);
+        cards.forEach((card) => assert.match(getIntegratedText(result), new RegExp(card.name)));
+      });
+      const chineseText = localizedResults
+        .filter(({ language }) => language === 'zh-CN')
+        .map(({ result }) => getIntegratedText(result))
+        .join(' ');
+      assert.doesNotMatch(chineseText, /清晰|觉察|调整|提醒/);
+      assert.doesNotMatch(chineseText, /命中注定|一定会|绝对不会/);
     },
   },
   {
