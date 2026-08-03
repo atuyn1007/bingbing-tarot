@@ -40,18 +40,17 @@ function createTranslator() {
     'reading.overviewReversedOne': 'One reversed card needs adjustment.',
     'reading.overviewReversed': '{count} reversed cards need adjustment.',
     'reading.overviewUpright': 'All cards are upright.',
-    'reading.relationshipRepeated': '{theme} repeats at {positions}.',
-    'reading.relationshipMixed': 'The spread shows {trace}.',
-    'reading.relationshipUpright': 'Upright themes are more visible.',
-    'reading.relationshipReversed': 'Internal adjustment matters.',
-    'reading.relationshipFlow': 'Read the full sequence as {trace}.',
-    'reading.choiceRelationship': '{optionA}: {optionATrace}; {optionB}: {optionBTrace}; {selfPosition}: {selfTheme}.',
-    'reading.adviceVerify': 'Verify {theme} at {position}.',
-    'reading.adviceAdjust': 'Adjust {theme} at {position}.',
-    'reading.adviceStep': 'Take one observable step around {theme} at {position}.',
-    'reading.reflectionMixed': 'What concern sits behind {theme}?',
-    'reading.reflectionRepeated': 'Why does {theme} repeat?',
-    'reading.reflectionChoice': 'Compare {optionA} and {optionB} through {theme}.',
+    'reading.integratedTitle': 'Integrated Reading',
+    'reading.integratedCardTrace': '{position} / {card} / {orientation}: {theme}',
+    'reading.integratedThreeSummary': '{question}: the complete three-card sequence is {trace}.',
+    'reading.integratedThreeFlow': '{firstPosition} begins with {firstTheme}; {middlePosition} tests it through {middleTheme}; {lastPosition} carries it toward {lastTheme}.',
+    'reading.integratedThreeBalance': '{uprightCount} upright and {reversedCount} reversed cards combine as {trace}.',
+    'reading.integratedTriangleSummary': '{question}: {perceptionPosition} shows {perceptionTheme}, {realityPosition} shows {realityTheme}, and {guidancePosition} shows {guidanceTheme}.',
+    'reading.integratedTriangleContrast': '{perceptionPosition} and {realityPosition} contrast {perceptionTheme} with {realityTheme}.',
+    'reading.integratedTriangleGuidance': '{guidancePosition} brings {guidanceTheme} back to both {perceptionTheme} and {realityTheme}: {trace}.',
+    'reading.integratedChoiceSummary': '{question}: compare {optionA} and {optionB} through all five positions: {trace}.',
+    'reading.integratedChoicePath': '{label} moves from {currentPosition} / {currentTheme} to {developmentPosition} / {developmentTheme}.',
+    'reading.integratedChoiceTradeoff': '{selfPosition} / {selfTheme} is the decision point between {optionA} and {optionB}: {trace}.',
     'reading.disclaimer': 'Reflection only.',
     'reading.choiceAdvantage': '{label} may connect {currentTheme} with {developmentTheme}.',
     'reading.choiceRisk': '{label} must weigh {currentTheme} against {developmentTheme}.',
@@ -88,6 +87,14 @@ function readingOptions(spread, cards, question = 'What should I do next?') {
     getFallbackReading: (card) => `fallback ${card.id}`,
     getKeywords: (card) => card.keywords || (card.isReversed ? ['delay', 'priority'] : ['clarity', 'priority']),
   };
+}
+
+function getIntegratedText(result) {
+  return [
+    result.integratedReading.title,
+    result.integratedReading.summary,
+    ...result.integratedReading.paragraphs,
+  ].join(' ');
 }
 
 const tests = [
@@ -237,8 +244,13 @@ const tests = [
       assert.deepEqual(result.cards.map((card) => card.positionTitle), ['Signal', 'Tension', 'Action']);
       assert.deepEqual(result.cards.map((card) => card.orientation), ['upright', 'reversed', 'upright']);
       assert.equal(result.cards[1].baseMeaning, 'reversed archive 2');
-      assert.equal(result.advice.length, 3);
-      ['overview', 'relationship', 'reflectionQuestion', 'disclaimer'].forEach((key) => assert.ok(result[key]));
+      assert.deepEqual(Object.keys(result.integratedReading).sort(), ['paragraphs', 'summary', 'title']);
+      assert.equal(result.integratedReading.title, 'Integrated Reading');
+      assert.equal(result.integratedReading.paragraphs.length, 2);
+      ['One', 'Two', 'Three', 'Signal', 'Tension', 'Action']
+        .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
+      ['overview', 'integratedReading', 'disclaimer'].forEach((key) => assert.ok(result[key]));
     },
   },
   {
@@ -292,7 +304,8 @@ const tests = [
       const result = buildStructuredReading(readingOptions(spread, cards));
       assert.deepEqual(result.cards.map((card) => card.positionTitle), ['Perception', 'Reality', 'Advice']);
       ['Perception', 'Reality', 'Advice', 'perception-theme', 'reality-theme', 'advice-theme']
-        .forEach((value) => assert.match(result.relationship, new RegExp(value)));
+        .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      assert.equal(result.integratedReading.paragraphs.length, 2);
     },
   },
   {
@@ -328,7 +341,10 @@ const tests = [
         assert.match(result.choiceComparison.optionB.advantage, new RegExp(value));
         assert.match(result.choiceComparison.optionB.risk, new RegExp(value));
       });
-      ['Stay', 'Move', 'Self', 'self-theme'].forEach((value) => assert.match(result.relationship, new RegExp(value)));
+      ['Stay', 'Move', 'A now', 'B now', 'A later', 'B later', 'Self', 'a-current', 'b-current', 'a-development', 'b-development', 'self-theme']
+        .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      assert.equal(result.integratedReading.paragraphs.length, 3);
+      ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
       assert.deepEqual(getChoiceGroupSlots(cards, positions, [2, 0]).map((slot) => slot.position.title), ['A later', 'A now']);
     },
   },
@@ -356,6 +372,9 @@ const tests = [
         drawingKeys.forEach((key) => assert.ok(locale.drawing[key], `missing drawing.${key}`));
         assert.deepEqual(Object.keys(locale.reading).sort(), readingKeys);
       }
+      assert.equal(zhCN.reading.integratedTitle, '综合解读');
+      assert.equal(en.reading.integratedTitle, 'Integrated Reading');
+      assert.equal(it.reading.integratedTitle, 'Lettura integrata');
     },
   },
 ];

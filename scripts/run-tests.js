@@ -123,9 +123,12 @@ const tests = [
       assert.match(resultPage, /<ReadingOverview overview=\{reading\.overview\}/);
       assert.match(resultPage, /<ReadingCardSection/);
       assert.match(resultPage, /reading\.cards\.map/);
-      assert.match(resultPage, /\{reading\.relationship\}/);
-      assert.match(resultPage, /reading\.advice\.map/);
-      assert.match(resultPage, /\{reading\.reflectionQuestion\}/);
+      assert.match(resultPage, /reading\.integratedReading\.title/);
+      assert.match(resultPage, /reading\.integratedReading\.summary/);
+      assert.match(resultPage, /reading\.integratedReading\.paragraphs\.map/);
+      assert.doesNotMatch(resultPage, /reading\.relationship/);
+      assert.doesNotMatch(resultPage, /reading\.advice\.map/);
+      assert.doesNotMatch(resultPage, /reading\.reflectionQuestion/);
       assert.match(solarCss, /\.structured-reading-layout/);
       assert.match(solarCss, /\.reading-card-files-list/);
       assert.match(solarCss, /\.archive-reading-sheet/);

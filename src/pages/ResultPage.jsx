@@ -125,25 +125,15 @@ function ResultPage({
               </div>
             </m.section>
 
-            <section className="reading-synthesis-grid">
-              <article className="archive-reading-sheet reading-relationship">
-                <p className="eyebrow">{t('reading.relationshipEyebrow')}</p>
-                <h2>{t('reading.relationshipTitle')}</h2>
-                <p>{reading.relationship}</p>
-              </article>
-              <article className="archive-reading-sheet reading-advice">
-                <p className="eyebrow">{t('reading.adviceEyebrow')}</p>
-                <h2>{t('reading.adviceTitle')}</h2>
-                <ol>
-                  {reading.advice.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}
-                </ol>
-              </article>
-            </section>
-
-            <section className="reading-reflection archive-reading-sheet">
-              <p className="eyebrow">{t('reading.reflectionEyebrow')}</p>
-              <h2>{t('reading.reflectionTitle')}</h2>
-              <blockquote>{reading.reflectionQuestion}</blockquote>
+            <section className="reading-integrated archive-reading-sheet" aria-labelledby="integrated-reading-title">
+              <p className="eyebrow">{t('reading.integratedEyebrow')}</p>
+              <h2 id="integrated-reading-title">{reading.integratedReading.title}</h2>
+              <p className="reading-integrated-summary">{reading.integratedReading.summary}</p>
+              <div className="reading-integrated-paragraphs">
+                {reading.integratedReading.paragraphs.map((paragraph, index) => (
+                  <p key={`${index}-${paragraph}`}>{paragraph}</p>
+                ))}
+              </div>
             </section>
           </LazyMotion>
 
