@@ -4627,12 +4627,10 @@ button.monthly-calendar-cell {
 .reading-card-base-meaning { padding: 14px 15px; border-left: 2px solid #b48b2d; background: rgba(177, 130, 31, .06); }
 .reading-card-attention { color: #43351f; font-weight: 600; }
 .reading-card-boundary { color: rgba(63, 52, 39, .62); font-size: .78rem !important; }
-.reading-synthesis-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 18px; margin-top: 18px; }
-.reading-synthesis-grid p,
-.reading-advice li { line-height: 1.85; }
-.reading-advice ol { display: grid; gap: 12px; margin: 0; padding-left: 1.3rem; }
-.reading-reflection { margin-top: 18px; text-align: center; }
-.reading-reflection blockquote { max-width: 780px; margin: 0 auto; color: #47371f; font: italic clamp(1.14rem, 2.5vw, 1.55rem)/1.7 var(--app-font-serif); }
+.reading-integrated { width: min(980px, 100%); margin: 20px auto 0; }
+.reading-integrated-summary { margin: 0; color: #493a25; font: 500 clamp(1.05rem, 2vw, 1.28rem)/1.85 var(--app-font-serif); }
+.reading-integrated-paragraphs { display: grid; gap: 14px; margin-top: 22px; padding-top: 20px; border-top: 1px solid rgba(123, 91, 35, .2); }
+.reading-integrated-paragraphs p { margin: 0; line-height: 1.85; }
 .reading-disclaimer { max-width: 900px; margin: 28px auto 0; color: rgba(239, 224, 190, .62); font: .76rem/1.7 var(--app-font-ui); text-align: center; }
 .structured-reading-actions { flex-wrap: wrap; justify-content: center; }
 
@@ -4641,8 +4639,7 @@ button.monthly-calendar-cell {
   .drawing-position-record { grid-template-columns: 26px minmax(0, 1fr); }
   .card-selection-stage { width: calc(100% - 14px); padding-inline: 12px; }
   .card-back-ribbon { padding-inline: 54px; }
-  .reading-card-files-list,
-  .reading-synthesis-grid { grid-template-columns: 1fr; }
+  .reading-card-files-list { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {

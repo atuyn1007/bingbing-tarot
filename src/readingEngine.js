@@ -96,81 +96,6 @@ function buildPositionTrace(cardSections, t) {
     .join(t('common.listSeparator'));
 }
 
-function getRepeatedTheme(cardSections) {
-  const occurrences = new Map();
-
-  cardSections.forEach((section) => {
-    section.keywords.forEach((keyword) => {
-      const key = keyword.toLocaleLowerCase();
-      const current = occurrences.get(key) || { keyword, positions: [] };
-      current.positions.push(section.positionTitle);
-      occurrences.set(key, current);
-    });
-  });
-
-  return Array.from(occurrences.values())
-    .filter((entry) => entry.positions.length > 1)
-    .sort((left, right) => right.positions.length - left.positions.length)[0] || null;
-}
-
-function buildRelationship(cardSections, t) {
-  const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
-  const repeatedTheme = getRepeatedTheme(cardSections);
-  const firstPosition = cardSections[0]?.positionTitle || '';
-  const lastPosition = cardSections.at(-1)?.positionTitle || '';
-  const trace = buildPositionTrace(cardSections, t);
-  let themeSentence;
-
-  if (repeatedTheme) {
-    themeSentence = t('reading.relationshipRepeated', {
-      theme: repeatedTheme.keyword,
-      positions: repeatedTheme.positions.join(' · '),
-      trace,
-    });
-  } else {
-    themeSentence = t('reading.relationshipMixed', { trace });
-  }
-
-  const orientationSentence = reversedCount > cardSections.length / 2
-    ? t('reading.relationshipReversed')
-    : t('reading.relationshipUpright');
-  const flowSentence = t('reading.relationshipFlow', { firstPosition, lastPosition, trace });
-
-  return [themeSentence, orientationSentence, flowSentence].filter(Boolean).join(' ');
-}
-
-function buildAdvice(cardSections, t, choiceComparison) {
-  if (cardSections.length === 0) return [];
-
-  if (choiceComparison) {
-    const { optionA, optionB, self } = choiceComparison;
-    return [
-      t('reading.adviceVerify', {
-        position: `${optionA.current.positionTitle} / ${optionB.current.positionTitle}`,
-        theme: `${optionA.current.theme} / ${optionB.current.theme}`,
-      }),
-      t('reading.adviceBoundary', {
-        position: self.positionTitle,
-        theme: self.theme,
-      }),
-      t('reading.adviceStep', {
-        position: `${optionA.development.positionTitle} / ${optionB.development.positionTitle}`,
-        theme: `${optionA.development.theme} / ${optionB.development.theme}`,
-      }),
-    ];
-  }
-
-  const sections = cardSections.slice(0, 3);
-  return sections.map((section, index) => {
-    const key = section.orientation === 'reversed'
-      ? 'reading.adviceAdjust'
-      : index === sections.length - 1
-        ? 'reading.adviceStep'
-        : 'reading.adviceVerify';
-    return t(key, { position: section.positionTitle, theme: section.theme });
-  });
-}
-
 function getOrientationLabel(section, t) {
   return t(section.orientation === 'reversed' ? 'common.orientationReversed' : 'common.orientationUpright');
 }
@@ -215,15 +140,114 @@ function buildChoiceComparison(cardSections, choiceOptions, t) {
   };
 }
 
-function buildChoiceRelationship(comparison, t) {
-  return t('reading.choiceRelationship', {
-    optionA: comparison.optionA.label,
-    optionATrace: comparison.optionA.trace,
-    optionB: comparison.optionB.label,
-    optionBTrace: comparison.optionB.trace,
-    selfPosition: comparison.self.positionTitle,
-    selfTheme: comparison.self.theme,
-  });
+function buildIntegratedTrace(cardSections, t) {
+  return cardSections
+    .map((section) => t('reading.integratedCardTrace', {
+      position: section.positionTitle,
+      card: section.cardName,
+      orientation: getOrientationLabel(section, t),
+      theme: section.theme,
+    }))
+    .join(t('common.listSeparator'));
+}
+
+function buildIntegratedReading({ spread, cardSections, question, choiceComparison, t }) {
+  const title = t('reading.integratedTitle');
+  if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
+
+  const trace = buildIntegratedTrace(cardSections, t);
+
+  if (spread?.key === 'choice' && choiceComparison) {
+    const { optionA, optionB, self } = choiceComparison;
+    return {
+      title,
+      summary: t('reading.integratedChoiceSummary', {
+        question,
+        optionA: optionA.label,
+        optionB: optionB.label,
+        trace,
+      }),
+      paragraphs: [
+        t('reading.integratedChoicePath', {
+          label: optionA.label,
+          currentPosition: optionA.current.positionTitle,
+          currentTheme: optionA.current.theme,
+          developmentPosition: optionA.development.positionTitle,
+          developmentTheme: optionA.development.theme,
+        }),
+        t('reading.integratedChoicePath', {
+          label: optionB.label,
+          currentPosition: optionB.current.positionTitle,
+          currentTheme: optionB.current.theme,
+          developmentPosition: optionB.development.positionTitle,
+          developmentTheme: optionB.development.theme,
+        }),
+        t('reading.integratedChoiceTradeoff', {
+          selfPosition: self.positionTitle,
+          selfTheme: self.theme,
+          optionA: optionA.label,
+          optionB: optionB.label,
+          trace,
+        }),
+      ],
+    };
+  }
+
+  const [first, middle = cardSections[0], last = cardSections.at(-1)] = cardSections;
+
+  if (spread?.key === 'triangle') {
+    return {
+      title,
+      summary: t('reading.integratedTriangleSummary', {
+        question,
+        perceptionPosition: first.positionTitle,
+        perceptionTheme: first.theme,
+        realityPosition: middle.positionTitle,
+        realityTheme: middle.theme,
+        guidancePosition: last.positionTitle,
+        guidanceTheme: last.theme,
+      }),
+      paragraphs: [
+        t('reading.integratedTriangleContrast', {
+          perceptionPosition: first.positionTitle,
+          perceptionTheme: first.theme,
+          perceptionOrientation: getOrientationLabel(first, t),
+          realityPosition: middle.positionTitle,
+          realityTheme: middle.theme,
+          realityOrientation: getOrientationLabel(middle, t),
+        }),
+        t('reading.integratedTriangleGuidance', {
+          guidancePosition: last.positionTitle,
+          guidanceTheme: last.theme,
+          guidanceOrientation: getOrientationLabel(last, t),
+          perceptionTheme: first.theme,
+          realityTheme: middle.theme,
+          trace,
+        }),
+      ],
+    };
+  }
+
+  const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
+  return {
+    title,
+    summary: t('reading.integratedThreeSummary', { question, trace }),
+    paragraphs: [
+      t('reading.integratedThreeFlow', {
+        firstPosition: first.positionTitle,
+        firstTheme: first.theme,
+        middlePosition: middle.positionTitle,
+        middleTheme: middle.theme,
+        lastPosition: last.positionTitle,
+        lastTheme: last.theme,
+      }),
+      t('reading.integratedThreeBalance', {
+        uprightCount: cardSections.length - reversedCount,
+        reversedCount,
+        trace,
+      }),
+    ],
+  };
 }
 
 export function buildStructuredReading({
@@ -251,7 +275,6 @@ export function buildStructuredReading({
     getKeywords,
   }));
   const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
-  const repeatedTheme = getRepeatedTheme(cardSections);
   const trace = buildPositionTrace(cardSections, t);
   const choiceComparison = spread?.key === 'choice'
     ? buildChoiceComparison(cardSections, choiceOptions, t)
@@ -269,24 +292,19 @@ export function buildStructuredReading({
       ? t(reversedCount === 1 ? 'reading.overviewReversedOne' : 'reading.overviewReversed', { count: reversedCount })
       : t('reading.overviewUpright'),
   ].join(' ');
+  const integratedReading = buildIntegratedReading({
+    spread,
+    cardSections,
+    question: questionContext,
+    choiceComparison,
+    t,
+  });
 
   return {
     normalizedQuestion,
     overview,
     cards: cardSections,
-    relationship: choiceComparison
-      ? buildChoiceRelationship(choiceComparison, t)
-      : buildRelationship(cardSections, t),
-    advice: buildAdvice(cardSections, t, choiceComparison),
-    reflectionQuestion: repeatedTheme
-      ? t('reading.reflectionRepeated', { theme: repeatedTheme.keyword })
-      : choiceComparison
-        ? t('reading.reflectionChoice', {
-            optionA: choiceComparison.optionA.label,
-            optionB: choiceComparison.optionB.label,
-            theme: choiceComparison.self.theme,
-          })
-        : t('reading.reflectionMixed', { trace }),
+    integratedReading,
     disclaimer: t('reading.disclaimer'),
     choiceComparison,
   };
