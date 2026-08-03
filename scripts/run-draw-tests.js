@@ -16,12 +16,14 @@ import {
 } from '../src/cardRibbon.js';
 import { getShuffleRitualTimeline } from '../src/shuffleRitual.js';
 import { getChoiceGroupSlots } from '../src/choiceSpreadUtils.js';
-import { buildStructuredReading } from '../src/readingEngine.js';
+import * as readingEngine from '../src/readingEngine.js';
 import zhCN from '../src/i18n/locales/zh-CN.ts';
 import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
 
-function createTranslator() {
+const { buildStructuredReading } = readingEngine;
+
+function createTranslator(locale = 'en') {
   const templates = {
     'common.listSeparator': ', ',
     'common.orientationUpright': 'upright',
@@ -41,7 +43,8 @@ function createTranslator() {
     'reading.overviewReversed': '{count} reversed cards need adjustment.',
     'reading.overviewUpright': 'All cards are upright.',
     'reading.integratedTitle': 'Integrated Reading',
-    'reading.integratedCardTrace': '{position} / {card} / {orientation}: {theme}',
+    'reading.integratedCardSummaryTrace': '{position} / {card} / {orientation}: {keywords}',
+    'reading.integratedCardTrace': '{position} / {card} / {orientation} / {keywords}: {meaning}',
     'reading.integratedThreeSummary': '{question}: the complete three-card sequence is {trace}.',
     'reading.integratedThreeFlow': '{firstPosition} begins with {firstTheme}; {middlePosition} tests it through {middleTheme}; {lastPosition} carries it toward {lastTheme}.',
     'reading.integratedThreeBalance': '{uprightCount} upright and {reversedCount} reversed cards combine as {trace}.',
@@ -60,8 +63,11 @@ function createTranslator() {
     'drawing.spreadLabelFallback': 'Card {index}',
   };
 
-  return (key, values = {}) => (templates[key] || key)
-    .replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? `{${token}}`));
+  return (key, values = {}) => {
+    const rendered = (templates[key] || key)
+      .replace(/\{(\w+)\}/g, (_, token) => String(values[token] ?? `{${token}}`));
+    return locale === 'en' || key === 'common.listSeparator' ? rendered : `[${locale}] ${rendered}`;
+  };
 }
 
 const meaningArchive = {
@@ -249,8 +255,57 @@ const tests = [
       assert.equal(result.integratedReading.paragraphs.length, 2);
       ['One', 'Two', 'Three', 'Signal', 'Tension', 'Action']
         .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      ['upright archive 1', 'reversed archive 2', 'upright archive 3']
+        .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      assert.doesNotMatch(result.integratedReading.summary, /archive/);
+      assert.match(result.integratedReading.paragraphs.join(' '), /upright archive 1/);
       ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
       ['overview', 'integratedReading', 'disclaimer'].forEach((key) => assert.ok(result[key]));
+    },
+  },
+  {
+    name: 'three triangle and choice spreads expose separate integrated reading generators',
+    run() {
+      assert.equal(typeof readingEngine.buildThreeCardIntegratedReading, 'function');
+      assert.equal(typeof readingEngine.buildTriangleIntegratedReading, 'function');
+      assert.equal(typeof readingEngine.buildChoiceIntegratedReading, 'function');
+
+      const cards = [
+        { id: 21, name: 'First card', isReversed: false, keywords: ['first-one', 'first-two'] },
+        { id: 22, name: 'Middle card', isReversed: true, keywords: ['middle-one', 'middle-two'] },
+        { id: 23, name: 'Last card', isReversed: false, keywords: ['last-one', 'last-two'] },
+      ];
+      const threeSpread = {
+        key: 'three',
+        name: 'Three Card Spread',
+        positions: [{ title: 'Opening' }, { title: 'Crossroads' }, { title: 'Direction' }],
+      };
+      const triangleSpread = {
+        key: 'triangle',
+        name: 'Holy Triangle',
+        positions: [{ title: 'Perception' }, { title: 'Reality' }, { title: 'Guidance' }],
+      };
+      const threeResult = buildStructuredReading(readingOptions(threeSpread, cards));
+      const triangleResult = buildStructuredReading(readingOptions(triangleSpread, cards));
+
+      const directThree = readingEngine.buildThreeCardIntegratedReading({
+        spread: threeSpread,
+        cardSections: threeResult.cards,
+        question: threeResult.normalizedQuestion,
+        t: createTranslator(),
+      });
+      const directTriangle = readingEngine.buildTriangleIntegratedReading({
+        spread: triangleSpread,
+        cardSections: triangleResult.cards,
+        question: triangleResult.normalizedQuestion,
+        t: createTranslator(),
+      });
+
+      assert.deepEqual(threeResult.integratedReading, directThree);
+      assert.deepEqual(triangleResult.integratedReading, directTriangle);
+      assert.notDeepEqual(directThree, directTriangle);
+      ['first-one', 'first-two', 'middle-one', 'middle-two', 'last-one', 'last-two']
+        .forEach((value) => assert.match(getIntegratedText(threeResult), new RegExp(value)));
     },
   },
   {
@@ -327,11 +382,19 @@ const tests = [
         ...readingOptions(spread, cards),
         choiceOptions: { choiceA: 'Stay', choiceB: 'Move' },
       });
+      const directChoice = readingEngine.buildChoiceIntegratedReading({
+        spread,
+        cardSections: result.cards,
+        question: result.normalizedQuestion,
+        choiceComparison: result.choiceComparison,
+        t: createTranslator(),
+      });
       assert.equal(result.choiceComparison.optionA.current.cardId, 0);
       assert.equal(result.choiceComparison.optionA.development.cardId, 2);
       assert.equal(result.choiceComparison.optionB.current.cardId, 1);
       assert.equal(result.choiceComparison.optionB.development.cardId, 3);
       assert.equal(result.choiceComparison.self.cardId, 4);
+      assert.deepEqual(result.integratedReading, directChoice);
       assert.equal('winner' in result.choiceComparison, false);
       ['a-current', 'a-development'].forEach((value) => {
         assert.match(result.choiceComparison.optionA.advantage, new RegExp(value));
@@ -343,9 +406,68 @@ const tests = [
       });
       ['Stay', 'Move', 'A now', 'B now', 'A later', 'B later', 'Self', 'a-current', 'b-current', 'a-development', 'b-development', 'self-theme']
         .forEach((value) => assert.match(getIntegratedText(result), new RegExp(value)));
+      cards.forEach((card) => {
+        assert.match(getIntegratedText(result), new RegExp(`${card.isReversed ? 'reversed' : 'upright'} archive ${card.id}`));
+      });
+      assert.doesNotMatch(result.integratedReading.summary, /archive/);
       assert.equal(result.integratedReading.paragraphs.length, 3);
       ['relationship', 'advice', 'reflectionQuestion'].forEach((key) => assert.equal(key in result, false));
       assert.deepEqual(getChoiceGroupSlots(cards, positions, [2, 0]).map((slot) => slot.position.title), ['A later', 'A now']);
+    },
+  },
+  {
+    name: 'language changes rebuild prose without changing cards or orientations',
+    run() {
+      const spread = {
+        key: 'three',
+        name: 'Three Cards',
+        positions: [{ title: 'Start' }, { title: 'Middle' }, { title: 'End' }],
+      };
+      const cards = [
+        { id: 31, name: 'Alpha', isReversed: false, keywords: ['alpha-one', 'alpha-two'] },
+        { id: 32, name: 'Beta', isReversed: true, keywords: ['beta-one', 'beta-two'] },
+        { id: 33, name: 'Gamma', isReversed: false, keywords: ['gamma-one', 'gamma-two'] },
+      ];
+      const english = buildStructuredReading(readingOptions(spread, cards));
+      const italian = buildStructuredReading({
+        ...readingOptions(spread, cards),
+        language: 'it',
+        t: createTranslator('it'),
+      });
+
+      assert.deepEqual(
+        italian.cards.map(({ cardId, orientation }) => ({ cardId, orientation })),
+        english.cards.map(({ cardId, orientation }) => ({ cardId, orientation })),
+      );
+      assert.notEqual(getIntegratedText(italian), getIntegratedText(english));
+    },
+  },
+  {
+    name: 'legacy reading without integratedReading resolves to a safe structured module',
+    run() {
+      assert.equal(typeof readingEngine.resolveIntegratedReading, 'function');
+      const spread = {
+        key: 'three',
+        name: 'Three Cards',
+        positions: [{ title: 'One' }, { title: 'Two' }, { title: 'Three' }],
+      };
+      const cards = [0, 1, 2].map((id) => ({
+        id: id + 41,
+        name: `Legacy ${id + 1}`,
+        isReversed: id === 1,
+        keywords: [`legacy-${id + 1}-one`, `legacy-${id + 1}-two`],
+      }));
+      const current = buildStructuredReading(readingOptions(spread, cards, 'Legacy question'));
+      const legacy = { overview: current.overview, cards: current.cards, disclaimer: current.disclaimer };
+      const resolved = readingEngine.resolveIntegratedReading(legacy, createTranslator());
+      const emptyResolved = readingEngine.resolveIntegratedReading(null, createTranslator());
+
+      assert.deepEqual(Object.keys(resolved).sort(), ['paragraphs', 'summary', 'title']);
+      assert.ok(resolved.summary);
+      assert.ok(resolved.paragraphs.length > 0);
+      assert.ok(resolved.paragraphs.every((paragraph) => typeof paragraph === 'string' && paragraph.trim()));
+      cards.forEach((card) => assert.match([resolved.summary, ...resolved.paragraphs].join(' '), new RegExp(card.name)));
+      assert.deepEqual(emptyResolved, { title: 'Integrated Reading', summary: '', paragraphs: [] });
     },
   },
   {

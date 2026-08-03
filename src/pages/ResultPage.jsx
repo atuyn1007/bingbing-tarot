@@ -5,6 +5,7 @@ import CardStyleToggle from '../components/CardStyleToggle';
 import SpreadCards from '../components/SpreadCards';
 import ReadingOverview from '../components/ReadingOverview';
 import ReadingCardSection from '../components/ReadingCardSection';
+import IntegratedReadingSection from '../components/IntegratedReadingSection';
 
 function ChoiceComparison({ comparison, t }) {
   if (!comparison) return null;
@@ -66,7 +67,8 @@ function ResultPage({
   onRedraw,
 }) {
   const shouldReduceMotion = useReducedMotion();
-  const keywordsByCardId = new Map(reading.cards.map((section) => [section.cardId, section.keywords]));
+  const readingCards = Array.isArray(reading?.cards) ? reading.cards : [];
+  const keywordsByCardId = new Map(readingCards.map((section) => [section.cardId, section.keywords]));
 
   return (
     <div className={`screen-shell page-shell archive-page result-archive-page theme-${theme}`}>
@@ -119,22 +121,13 @@ function ResultPage({
               <p className="eyebrow">{t('reading.cardsEyebrow')}</p>
               <h2 id="reading-card-files-title">{t('reading.cardsTitle')}</h2>
               <div className="reading-card-files-list">
-                {reading.cards.map((section) => (
+                {readingCards.map((section) => (
                   <ReadingCardSection key={`${section.cardId}-${section.positionIndex}`} section={section} t={t} />
                 ))}
               </div>
             </m.section>
 
-            <section className="reading-integrated archive-reading-sheet" aria-labelledby="integrated-reading-title">
-              <p className="eyebrow">{t('reading.integratedEyebrow')}</p>
-              <h2 id="integrated-reading-title">{reading.integratedReading.title}</h2>
-              <p className="reading-integrated-summary">{reading.integratedReading.summary}</p>
-              <div className="reading-integrated-paragraphs">
-                {reading.integratedReading.paragraphs.map((paragraph, index) => (
-                  <p key={`${index}-${paragraph}`}>{paragraph}</p>
-                ))}
-              </div>
-            </section>
+            <IntegratedReadingSection reading={reading} t={t} />
           </LazyMotion>
 
           <p className="reading-disclaimer">{reading.disclaimer}</p>

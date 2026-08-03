@@ -698,6 +698,11 @@ function App() {
   };
 
   const openHistoryModal = (entry) => {
+    if (!cardMeaningsModule) {
+      loadCardMeaningsModule()
+        .then((module) => setCardMeaningsModule(module))
+        .catch((error) => console.warn('Failed to load detailed history meanings:', error));
+    }
     setSelectedHistoryReading(entry);
     setShowHistoryModal(true);
   };
@@ -1119,6 +1124,23 @@ function App() {
         getFallbackReading: getReadingFallback,
         getKeywords: getReadingCardKeywords,
         choiceOptions: { choiceA, choiceB },
+      })
+    : null;
+
+  const selectedHistoryStructuredReading = selectedHistoryReading && selectedHistorySpread
+    ? buildStructuredReading({
+        cards: selectedHistoryReading.cardsData,
+        question: selectedHistoryReading.question,
+        spread: selectedHistorySpread,
+        language,
+        t,
+        meaningArchive: cardMeaningsModule,
+        getFallbackReading: getReadingFallback,
+        getKeywords: getReadingCardKeywords,
+        choiceOptions: {
+          choiceA: selectedHistoryReading.choiceA,
+          choiceB: selectedHistoryReading.choiceB,
+        },
       })
     : null;
 
@@ -1736,6 +1758,7 @@ function App() {
         <Suspense fallback={null}>
           <HistoryModal
             reading={selectedHistoryReading}
+            structuredReading={selectedHistoryStructuredReading}
             spread={selectedHistorySpread}
             cardStyle={cardStyle}
             onClose={() => setShowHistoryModal(false)}
