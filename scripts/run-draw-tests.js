@@ -305,6 +305,52 @@ const tests = [
     },
   },
   {
+    name: "structured reading prefers each card's archive keywords over shared catalog fallbacks",
+    run() {
+      const spread = {
+        key: 'three',
+        positions: [{ title: 'Opening' }, { title: 'Center' }, { title: 'Direction' }],
+      };
+      const cards = [
+        { id: 0, name: 'The Fool', isReversed: false },
+        { id: 13, name: 'Death', isReversed: true },
+        { id: 19, name: 'The Sun', isReversed: false },
+      ];
+      const archiveKeywords = {
+        0: ['new beginning', 'freedom', 'exploration'],
+        13: ['ending', 'transformation', 'release'],
+        19: ['joy', 'success', 'vitality'],
+      };
+      const cardArchive = {
+        findTarotMeaningCard(card) {
+          return { catalogId: card.id };
+        },
+        getLocalizedMeaningCard(card) {
+          return {
+            displayKeywords: archiveKeywords[card.catalogId],
+            displayReadingUpright: `upright archive ${card.catalogId}`,
+            displayReadingReversed: `reversed archive ${card.catalogId}`,
+          };
+        },
+      };
+
+      const result = buildStructuredReading({
+        ...readingOptions(spread, cards),
+        meaningArchive: cardArchive,
+        getKeywords: () => ['generic clarity', 'generic adjustment'],
+      });
+
+      assert.deepEqual(result.cards.map((card) => card.keywords), [
+        archiveKeywords[0],
+        archiveKeywords[13],
+        archiveKeywords[19],
+      ]);
+      const integratedText = getIntegratedText(result);
+      Object.values(archiveKeywords).flat().forEach((keyword) => assert.match(integratedText, new RegExp(keyword)));
+      assert.doesNotMatch(integratedText, /generic clarity|generic adjustment/);
+    },
+  },
+  {
     name: 'three triangle and choice spreads expose separate integrated reading generators',
     run() {
       assert.equal(typeof readingEngine.buildThreeCardIntegratedReading, 'function');
