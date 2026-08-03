@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import SpreadCards from '../SpreadCards';
 import IntegratedReadingSection from '../IntegratedReadingSection';
 
-function HistoryModal({ reading, structuredReading, cardStyle, spread, onClose, t }) {
+function HistoryModal({ reading, structuredReading, spread, onClose, t }) {
   if (!reading) return null;
 
   return (
@@ -34,7 +34,6 @@ function HistoryModal({ reading, structuredReading, cardStyle, spread, onClose, 
           <SpreadCards
             cards={reading.cardsData}
             spread={spread}
-            cardStyle={cardStyle}
             isRevealed
             className="history-preview-spread"
             choiceOptions={{ choiceA: reading.choiceA, choiceB: reading.choiceB }}

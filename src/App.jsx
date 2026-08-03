@@ -342,7 +342,6 @@ function App() {
   const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
   const [selectedSpreadKey, setSelectedSpreadKey] = useState('three');
-  const [cardStyle, setCardStyle] = useState(() => localStorage.getItem('tarot_card_style') || 'minimal');
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
   const [showHumanRequestModal, setShowHumanRequestModal] = useState(false);
@@ -385,10 +384,6 @@ function App() {
   const mailboxStatusLabel = (status) => getMailboxStatusLabel(status, t);
   const mailboxStatusHint = (status) => getMailboxStatusHint(status, t);
   const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
-
-  useEffect(() => {
-    localStorage.setItem('tarot_card_style', cardStyle);
-  }, [cardStyle]);
 
   useEffect(() => {
     if (!activeDailyCard || cardMeaningsModule) return undefined;
@@ -1650,8 +1645,6 @@ function App() {
       currentView = (
       <ResultPage
         theme={theme}
-        cardStyle={cardStyle}
-        setCardStyle={setCardStyle}
         goHome={goHome}
         t={t}
         isHumanMode={isHumanMode}
@@ -1668,8 +1661,6 @@ function App() {
       currentView = (
         <CardDrawStage
           theme={theme}
-          cardStyle={cardStyle}
-          setCardStyle={setCardStyle}
           goHome={goHome}
           spread={spreadForCards}
           session={drawSession}
@@ -1719,7 +1710,6 @@ function App() {
         getMailboxStatusHint={mailboxStatusHint}
         handleOpenMailboxItem={handleOpenMailboxItem}
         handleClaimSystemNotification={handleClaimSystemNotification}
-        cardStyle={cardStyle}
         getSpreadConfig={spreadConfigByKey}
         adminRejectReason={adminRejectReason}
         setAdminRejectReason={setAdminRejectReason}
@@ -1760,7 +1750,6 @@ function App() {
             reading={selectedHistoryReading}
             structuredReading={selectedHistoryStructuredReading}
             spread={selectedHistorySpread}
-            cardStyle={cardStyle}
             onClose={() => setShowHistoryModal(false)}
             t={t}
           />

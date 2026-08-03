@@ -36,10 +36,6 @@ const en = {
     noirAria: 'Switch to monochrome minimal theme',
     noirTitle: 'Monochrome minimal theme',
   },
-  cardStyle: {
-    minimal: 'Minimal',
-    artwork: 'Artwork',
-  },
   quotes: [
     { text: 'Try new fire with fresh tea; enjoy poems and wine while young.', source: 'Su Shi, "Wang Jiang Nan"' },
     { text: 'Idle osmanthus falls; in the quiet night the spring mountain is empty.', source: 'Wang Wei, "Birdsong Brook"' },

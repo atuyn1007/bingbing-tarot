@@ -24,7 +24,6 @@ function DailyModal({ card, intlLocale, keywords, summary, onClose, t, getCardDi
                 isRevealed
                 size="normal"
                 showOrientation={false}
-                variant="artwork"
                 rotateReversed
               />
             </div>
