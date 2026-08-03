@@ -1,4 +1,4 @@
-import { getReadingFromMeaningArchive } from './readingMeanings.js';
+import { getKeywordsFromMeaningArchive, getReadingFromMeaningArchive } from './readingMeanings.js';
 
 export function normalizeReadingQuestion(question) {
   return String(question || '').replace(/\s+/g, ' ').trim();
@@ -41,7 +41,8 @@ function getPosition(spread, index, t) {
 
 function buildCardSection({ card, index, spread, question, language, t, meaningArchive, getFallbackReading, getKeywords }) {
   const position = getPosition(spread, index, t);
-  const keywords = normalizeKeywords(getKeywords?.(card) || []);
+  const archiveKeywords = getKeywordsFromMeaningArchive(card, language, meaningArchive);
+  const keywords = normalizeKeywords(archiveKeywords.length > 0 ? archiveKeywords : getKeywords?.(card) || []);
   const keywordText = keywords.join(t('common.listSeparator')) || card.name;
   const fallbackReading = String(getFallbackReading?.(card) || '').trim();
   const baseMeaning = getReadingFromMeaningArchive(
