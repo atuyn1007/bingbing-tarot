@@ -9,7 +9,6 @@ import {
 } from 'framer-motion';
 import { BookOpen, Check, Eye, MoveHorizontal, SkipForward, X } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
-import CardStyleToggle from './CardStyleToggle';
 import SpreadCards from './SpreadCards';
 import { clampRibbonOffset, getRibbonBounds, getWheelRibbonOffset } from '../cardRibbon';
 import { getShuffleRitualTimeline } from '../shuffleRitual';
@@ -78,8 +77,6 @@ function getCardRibbonPose(index) {
 
 function CardDrawStage({
   theme,
-  cardStyle,
-  setCardStyle,
   goHome,
   spread,
   session,
@@ -218,7 +215,6 @@ function CardDrawStage({
         <h1 className="page-title">{spread.name}</h1>
         <div className="page-header-controls">
           <LanguageSwitcher />
-          <CardStyleToggle cardStyle={cardStyle} onChange={setCardStyle} t={t} />
         </div>
       </header>
 
@@ -391,7 +387,6 @@ function CardDrawStage({
               <SpreadCards
                 cards={session.drawnCards}
                 spread={spread}
-                cardStyle={cardStyle}
                 isRevealed={false}
                 revealedIndexes={session.revealedCards}
                 onRevealCard={onRevealCard}

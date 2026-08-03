@@ -36,10 +36,6 @@ const zhCN = {
     noirAria: '切换到黑白极简主题',
     noirTitle: '黑白极简主题',
   },
-  cardStyle: {
-    minimal: '极简',
-    artwork: '原画',
-  },
   quotes: [
     { text: '且将新火试新茶，诗酒趁年华。', source: '苏轼《望江南》' },
     { text: '人闲桂花落，夜静春山空。', source: '王维《鸟鸣涧》' },

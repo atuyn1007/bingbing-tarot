@@ -36,10 +36,6 @@ const it = {
     noirAria: 'Passa al tema monocromatico minimale',
     noirTitle: 'Tema monocromatico minimale',
   },
-  cardStyle: {
-    minimal: 'Minimal',
-    artwork: 'Illustrazioni',
-  },
   quotes: [
     { text: 'Prova il fuoco nuovo con il tè fresco; goditi poesia e vino finché sei giovane.', source: 'Su Shi' },
     { text: "Cadono i fiori d'osmanto; nella quiete notturna il monte di primavera è vuoto.", source: 'Wang Wei' },

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import {
@@ -72,6 +72,35 @@ const tests = [
       assert.match(resultSource, /choiceOptions=\{choiceOptions\}/);
       assert.match(cssSource, /\.choice-spread-group/);
       assert.match(cssSource, /overflow-wrap: anywhere/);
+    },
+  },
+  {
+    name: 'artwork is the only selectable tarot card face',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const drawStageSource = readFileSync(new URL('../src/components/CardDrawStage.jsx', import.meta.url), 'utf8');
+      const resultSource = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const spreadCardsSource = readFileSync(new URL('../src/components/SpreadCards.jsx', import.meta.url), 'utf8');
+      const dailyModalSource = readFileSync(new URL('../src/components/modals/DailyModal.jsx', import.meta.url), 'utf8');
+      const tarotCardSource = readFileSync(new URL('../src/TarotCard.jsx', import.meta.url), 'utf8');
+      const styleSources = [
+        readFileSync(new URL('../src/index.css', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8'),
+      ];
+      const localeSources = [
+        readFileSync(new URL('../src/i18n/locales/zh-CN.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/en.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/it.ts', import.meta.url), 'utf8'),
+      ];
+
+      [appSource, drawStageSource, resultSource, spreadCardsSource]
+        .forEach((source) => assert.doesNotMatch(source, /\bcardStyle\b|CardStyleToggle|tarot_card_style/));
+      styleSources.forEach((source) => assert.doesNotMatch(source, /card-style-/));
+      localeSources.forEach((source) => assert.doesNotMatch(source, /^\s*cardStyle:\s*\{/m));
+      assert.equal(existsSync(new URL('../src/components/CardStyleToggle.jsx', import.meta.url)), false);
+      assert.doesNotMatch(`${spreadCardsSource}\n${dailyModalSource}`, /\bvariant=/);
+      assert.doesNotMatch(tarotCardSource, /\bvariant\b/);
+      assert.match(tarotCardSource, /const shouldShowArtwork = Boolean\(artworkSrc\) && !artworkFailed;/);
     },
   },
   {

@@ -4,18 +4,18 @@ import { getCardDisplayNames } from './data';
 import { getCardArtwork } from './cardArtwork';
 import { useI18n } from './i18n';
 
-const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, variant = 'minimal', rotateReversed = true }) => {
+const TarotCard = ({ card, isRevealed, size = 'normal', showOrientation = true, rotateReversed = true }) => {
   const sizeClasses = size === 'small' ? 'w-24 h-36' : 'w-24 h-36 sm:w-32 sm:h-48 lg:w-36 lg:h-56';
   const { chineseName, englishName } = getCardDisplayNames(card);
   const artworkSrc = getCardArtwork(card);
   const [artworkFailed, setArtworkFailed] = useState(false);
-  const shouldShowArtwork = variant === 'artwork' && artworkSrc && !artworkFailed;
+  const shouldShowArtwork = Boolean(artworkSrc) && !artworkFailed;
   const shouldReduceMotion = useReducedMotion();
   const { t } = useI18n();
 
   useEffect(() => {
     setArtworkFailed(false);
-  }, [artworkSrc, variant, card?.id, card?.name]);
+  }, [artworkSrc, card?.id, card?.name]);
 
   return (
     <div className={`${sizeClasses} relative tarot-card-frame tarot-card-frame-${size} tarot-card-surface ${shouldShowArtwork ? 'tarot-card-surface-artwork' : ''}`}>

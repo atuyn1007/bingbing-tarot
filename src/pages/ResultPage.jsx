@@ -1,7 +1,6 @@
 import { LazyMotion, domAnimation, m, useReducedMotion } from 'framer-motion';
 import { Home, MessageCircle, RotateCcw, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import CardStyleToggle from '../components/CardStyleToggle';
 import SpreadCards from '../components/SpreadCards';
 import ReadingOverview from '../components/ReadingOverview';
 import ReadingCardSection from '../components/ReadingCardSection';
@@ -53,8 +52,6 @@ function ChoiceComparison({ comparison, t }) {
 
 function ResultPage({
   theme,
-  cardStyle,
-  setCardStyle,
   goHome,
   t,
   isHumanMode,
@@ -79,7 +76,6 @@ function ResultPage({
         <h1 className="page-title">{t('drawing.resultTitle')}</h1>
         <div className="page-header-controls">
           <LanguageSwitcher />
-          <CardStyleToggle cardStyle={cardStyle} onChange={setCardStyle} t={t} />
         </div>
       </header>
 
@@ -97,7 +93,6 @@ function ResultPage({
             <SpreadCards
               cards={drawnCards}
               spread={spreadForCards}
-              cardStyle={cardStyle}
               isRevealed
               showOrientation
               getCardKeywords={(card) => keywordsByCardId.get(card.id) || []}

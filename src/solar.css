@@ -117,27 +117,23 @@
   box-shadow: 0 0 0 3px rgba(255, 210, 28, 0.16);
 }
 
-.language-switcher,
-.card-style-toggle {
+.language-switcher {
   border-color: rgba(255, 210, 28, 0.2);
   background: rgba(255, 255, 255, 0.045);
   backdrop-filter: none;
 }
 
-.language-switcher-button,
-.card-style-button {
+.language-switcher-button {
   color: rgba(241, 234, 220, 0.72);
 }
 
-.language-switcher-button-active,
-.card-style-button-active {
+.language-switcher-button-active {
   color: #16130a;
   background: var(--app-solar);
   box-shadow: none;
 }
 
 .auth-card .language-switcher,
-.auth-card .card-style-toggle,
 .meaning-detail-card .language-switcher,
 .meanings-hero-card .language-switcher {
   border-color: rgba(32, 29, 23, 0.16);
@@ -145,7 +141,6 @@
 }
 
 .auth-card .language-switcher-button,
-.auth-card .card-style-button,
 .meaning-detail-card .language-switcher-button,
 .meanings-hero-card .language-switcher-button {
   color: var(--app-muted);
@@ -3311,7 +3306,6 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .icon-button,
 .coin-pill,
 .language-switcher,
-.card-style-toggle,
 .field-shell,
 .question-input,
 .chat-input,
@@ -3408,8 +3402,7 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   stroke-width: 1.35;
 }
 
-.language-switcher,
-.card-style-toggle {
+.language-switcher {
   gap: 0;
   padding: 3px;
   border-radius: 2px 10px 2px 7px;
@@ -3417,8 +3410,7 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   background: rgba(255, 255, 255, .025);
 }
 
-.language-switcher-button,
-.card-style-button {
+.language-switcher-button {
   min-height: 31px;
   border-radius: 1px 7px 1px 5px;
   font-size: .72rem;
@@ -3426,15 +3418,13 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   transition: var(--transition-interactive);
 }
 
-.language-switcher-button-active,
-.card-style-button-active {
+.language-switcher-button-active {
   color: var(--color-ink-900);
   background: var(--archive-gold-leaf);
   box-shadow: inset 0 1px rgba(255, 246, 205, .52);
 }
 
 .auth-card .language-switcher-button-active,
-.auth-card .card-style-button-active,
 .meaning-detail-card .language-switcher-button-active,
 .meanings-hero-card .language-switcher-button-active {
   color: var(--color-ink-900);

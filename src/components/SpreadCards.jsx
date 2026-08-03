@@ -5,7 +5,6 @@ import { getCardDisplayNames } from '../data';
 function SpreadCards({
   cards,
   spread,
-  cardStyle,
   isRevealed,
   revealedIndexes,
   onRevealCard,
@@ -29,7 +28,6 @@ function SpreadCards({
         isRevealed={isCardRevealed}
         size={cardSize}
         showOrientation={showOrientation}
-        variant={cardStyle}
         rotateReversed={rotateReversed}
       />
     );
