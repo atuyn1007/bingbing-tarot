@@ -17,32 +17,39 @@ import it from '../src/i18n/locales/it.ts';
 
 function createTranslator() {
   const templates = {
+    'common.listSeparator': ', ',
+    'common.orientationUpright': 'upright',
+    'common.orientationReversed': 'reversed',
     'reading.fallbackQuestion': 'your question',
     'reading.positionResponsibility': '{position} examines {subtitle}.',
     'reading.positionResponsibilityNoSubtitle': '{position} has a defined role.',
-    'reading.orientationUpright': 'Upright {card}: {keywords}.',
-    'reading.orientationReversed': 'Reversed {card}: {keywords}.',
-    'reading.contextualMeaning': 'For {question}, read {position}.',
-    'reading.attention': 'Notice {keywords}.',
+    'reading.orientationUpright': 'Upright {card} uses {keywords}.',
+    'reading.orientationReversed': 'Reversed {card} uses {keywords}.',
+    'reading.contextualMeaning': 'For {question}, {card} at {position} applies {keywords}.',
+    'reading.attention': 'At {position}, notice {keywords}.',
     'reading.boundary': 'Not a fixed prediction.',
-    'reading.overview': '{question}: {firstTheme} and {lastTheme}.',
+    'reading.positionThemeTrace': '{position}: {theme}',
+    'reading.overview': '{question}: {trace}.',
+    'reading.choiceOverview': '{question}: compare {optionA} and {optionB} through {trace}.',
     'reading.overviewReversedOne': 'One reversed card needs adjustment.',
     'reading.overviewReversed': '{count} reversed cards need adjustment.',
     'reading.overviewUpright': 'All cards are upright.',
     'reading.relationshipRepeated': '{theme} repeats at {positions}.',
-    'reading.relationshipMixed': 'The spread holds more than one direction.',
+    'reading.relationshipMixed': 'The spread shows {trace}.',
     'reading.relationshipUpright': 'Upright themes are more visible.',
     'reading.relationshipReversed': 'Internal adjustment matters.',
-    'reading.relationshipFlow': '{firstPosition} develops toward {lastPosition}.',
+    'reading.relationshipFlow': 'Read the full sequence as {trace}.',
+    'reading.choiceRelationship': '{optionA}: {optionATrace}; {optionB}: {optionBTrace}; {selfPosition}: {selfTheme}.',
     'reading.adviceVerify': 'Verify {theme} at {position}.',
-    'reading.adviceBoundary': 'Set a boundary around {theme}.',
-    'reading.adviceStep': 'Take one step around {theme} at {position}.',
+    'reading.adviceAdjust': 'Adjust {theme} at {position}.',
+    'reading.adviceStep': 'Take one observable step around {theme} at {position}.',
     'reading.reflectionMixed': 'What concern sits behind {theme}?',
     'reading.reflectionRepeated': 'Why does {theme} repeat?',
+    'reading.reflectionChoice': 'Compare {optionA} and {optionB} through {theme}.',
     'reading.disclaimer': 'Reflection only.',
-    'reading.choiceAdvantage': '{label} may offer {theme}.',
-    'reading.choiceRisk': '{label} may cost {theme}.',
-    'reading.choiceConcern': 'Your concern centers on {theme}.',
+    'reading.choiceAdvantage': '{label} may connect {currentTheme} with {developmentTheme}.',
+    'reading.choiceRisk': '{label} must weigh {currentTheme} against {developmentTheme}.',
+    'reading.choiceConcern': 'At {position}, your concern centers on {theme}: {meaningLead}',
     'drawing.choiceOptionAFallback': 'Option A',
     'drawing.choiceOptionBFallback': 'Option B',
     'drawing.spreadLabelFallback': 'Card {index}',
@@ -73,7 +80,7 @@ function readingOptions(spread, cards, question = 'What should I do next?') {
     t: createTranslator(),
     meaningArchive,
     getFallbackReading: (card) => `fallback ${card.id}`,
-    getKeywords: (card) => (card.isReversed ? ['delay', 'priority'] : ['clarity', 'priority']),
+    getKeywords: (card) => card.keywords || (card.isReversed ? ['delay', 'priority'] : ['clarity', 'priority']),
   };
 }
 
@@ -179,15 +186,57 @@ const tests = [
     },
   },
   {
-    name: 'triangle reading preserves its supplied perception reality and advice positions',
+    name: 'multiline archive meanings stay bound to their own card and orientation',
+    run() {
+      const spread = {
+        key: 'three',
+        positions: [{ title: 'First' }, { title: 'Second' }, { title: 'Third' }],
+      };
+      const cards = [
+        { id: 10, name: 'Sun', isReversed: false, keywords: ['success', 'clarity'] },
+        { id: 11, name: 'Moon', isReversed: true, keywords: ['uncertainty', 'disclosure'] },
+        { id: 12, name: 'Star', isReversed: false, keywords: ['hope', 'repair'] },
+      ];
+      const multilineArchive = {
+        findTarotMeaningCard(card) {
+          return { catalogId: card.id };
+        },
+        getLocalizedMeaningCard(card) {
+          return {
+            displayReadingUpright: `upright lead ${card.catalogId}.\n\nfollow-up upright ${card.catalogId}.`,
+            displayReadingReversed: `reversed lead ${card.catalogId}.\n\nfollow-up reversed ${card.catalogId}.`,
+          };
+        },
+      };
+      const result = buildStructuredReading({
+        ...readingOptions(spread, cards),
+        meaningArchive: multilineArchive,
+      });
+
+      assert.equal(result.cards[0].baseMeaning, 'upright lead 10.\n\nfollow-up upright 10.');
+      assert.equal(result.cards[1].baseMeaning, 'reversed lead 11.\n\nfollow-up reversed 11.');
+      assert.match(result.cards[0].contextualMeaning, /Sun.*success/);
+      assert.doesNotMatch(result.cards[1].contextualMeaning, /Sun|success/);
+      assert.match(result.cards[1].contextualMeaning, /Moon.*uncertainty/);
+      assert.match(result.cards[1].orientationMeaning, /Moon.*uncertainty/);
+    },
+  },
+  {
+    name: 'triangle reading synthesizes every supplied position and card theme',
     run() {
       const spread = {
         key: 'triangle',
         positions: [{ title: 'Perception' }, { title: 'Reality' }, { title: 'Advice' }],
       };
-      const cards = [1, 2, 3].map((id) => ({ id, name: `Card ${id}`, isReversed: id !== 2 }));
+      const cards = [
+        { id: 1, name: 'Card 1', isReversed: true, keywords: ['perception-theme'] },
+        { id: 2, name: 'Card 2', isReversed: false, keywords: ['reality-theme'] },
+        { id: 3, name: 'Card 3', isReversed: true, keywords: ['advice-theme'] },
+      ];
       const result = buildStructuredReading(readingOptions(spread, cards));
       assert.deepEqual(result.cards.map((card) => card.positionTitle), ['Perception', 'Reality', 'Advice']);
+      ['Perception', 'Reality', 'Advice', 'perception-theme', 'reality-theme', 'advice-theme']
+        .forEach((value) => assert.match(result.relationship, new RegExp(value)));
     },
   },
   {
@@ -198,7 +247,13 @@ const tests = [
         { title: 'B later' }, { title: 'Self' },
       ];
       const spread = { key: 'choice', positions };
-      const cards = [0, 1, 2, 3, 4].map((id) => ({ id, name: `Card ${id}`, isReversed: id % 2 === 1 }));
+      const cards = [
+        { id: 0, name: 'Card 0', isReversed: false, keywords: ['a-current'] },
+        { id: 1, name: 'Card 1', isReversed: true, keywords: ['b-current'] },
+        { id: 2, name: 'Card 2', isReversed: true, keywords: ['a-development'] },
+        { id: 3, name: 'Card 3', isReversed: false, keywords: ['b-development'] },
+        { id: 4, name: 'Card 4', isReversed: true, keywords: ['self-theme'] },
+      ];
       const result = buildStructuredReading({
         ...readingOptions(spread, cards),
         choiceOptions: { choiceA: 'Stay', choiceB: 'Move' },
@@ -209,6 +264,15 @@ const tests = [
       assert.equal(result.choiceComparison.optionB.development.cardId, 3);
       assert.equal(result.choiceComparison.self.cardId, 4);
       assert.equal('winner' in result.choiceComparison, false);
+      ['a-current', 'a-development'].forEach((value) => {
+        assert.match(result.choiceComparison.optionA.advantage, new RegExp(value));
+        assert.match(result.choiceComparison.optionA.risk, new RegExp(value));
+      });
+      ['b-current', 'b-development'].forEach((value) => {
+        assert.match(result.choiceComparison.optionB.advantage, new RegExp(value));
+        assert.match(result.choiceComparison.optionB.risk, new RegExp(value));
+      });
+      ['Stay', 'Move', 'Self', 'self-theme'].forEach((value) => assert.match(result.relationship, new RegExp(value)));
       assert.deepEqual(getChoiceGroupSlots(cards, positions, [2, 0]).map((slot) => slot.position.title), ['A later', 'A now']);
     },
   },
