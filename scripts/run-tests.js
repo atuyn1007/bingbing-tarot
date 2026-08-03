@@ -111,6 +111,7 @@ const tests = [
     name: 'reading presentation renders structured archive sections and removes spread difficulty',
     run() {
       const resultPage = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const integratedSection = readFileSync(new URL('../src/components/IntegratedReadingSection.jsx', import.meta.url), 'utf8');
       const spreadModal = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
       const solarCss = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
       const localeSources = [
@@ -122,10 +123,12 @@ const tests = [
       assert.doesNotMatch(resultPage, /readingBody\.split/);
       assert.match(resultPage, /<ReadingOverview overview=\{reading\.overview\}/);
       assert.match(resultPage, /<ReadingCardSection/);
-      assert.match(resultPage, /reading\.cards\.map/);
-      assert.match(resultPage, /reading\.integratedReading\.title/);
-      assert.match(resultPage, /reading\.integratedReading\.summary/);
-      assert.match(resultPage, /reading\.integratedReading\.paragraphs\.map/);
+      assert.match(resultPage, /readingCards\.map/);
+      assert.match(resultPage, /<IntegratedReadingSection reading=\{reading\}/);
+      assert.match(integratedSection, /resolveIntegratedReading/);
+      assert.match(integratedSection, /integratedReading\.title/);
+      assert.match(integratedSection, /integratedReading\.summary/);
+      assert.match(integratedSection, /integratedReading\.paragraphs\.map/);
       assert.doesNotMatch(resultPage, /reading\.relationship/);
       assert.doesNotMatch(resultPage, /reading\.advice\.map/);
       assert.doesNotMatch(resultPage, /reading\.reflectionQuestion/);

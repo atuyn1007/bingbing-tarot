@@ -24,7 +24,11 @@ function getMeaningLead(meaning) {
 }
 
 function getTheme(keywords, cardName, t) {
-  return keywords.slice(0, 2).join(t('common.listSeparator')) || cardName || '';
+  return keywords.join(t('common.listSeparator')) || cardName || '';
+}
+
+function normalizeMeaningEvidence(meaning) {
+  return String(meaning || '').replace(/\s+/gu, ' ').trim();
 }
 
 function getPosition(spread, index, t) {
@@ -59,6 +63,7 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
     positionTitle: position.title,
     positionSubtitle: position.subtitle,
     keywords,
+    keywordText,
     theme,
     baseMeaning,
     meaningLead,
@@ -147,91 +152,43 @@ function buildIntegratedTrace(cardSections, t) {
       card: section.cardName,
       orientation: getOrientationLabel(section, t),
       theme: section.theme,
+      keywords: section.keywordText || section.theme,
+      meaning: normalizeMeaningEvidence(section.baseMeaning),
     }))
     .join(t('common.listSeparator'));
 }
 
-function buildIntegratedReading({ spread, cardSections, question, choiceComparison, t }) {
+function buildIntegratedSummaryTrace(cardSections, t) {
+  return cardSections
+    .map((section) => t('reading.integratedCardSummaryTrace', {
+      position: section.positionTitle,
+      card: section.cardName,
+      orientation: getOrientationLabel(section, t),
+      keywords: section.keywordText || section.theme,
+    }))
+    .join(t('common.listSeparator'));
+}
+
+function getIntegratedReadingBase(cardSections, t) {
   const title = t('reading.integratedTitle');
+  const trace = buildIntegratedTrace(cardSections, t);
+  const summaryTrace = buildIntegratedSummaryTrace(cardSections, t);
+  return { title, trace, summaryTrace };
+}
+
+export function buildThreeCardIntegratedReading({ spread, cardSections = [], question, t }) {
+  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
   if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
 
-  const trace = buildIntegratedTrace(cardSections, t);
-
-  if (spread?.key === 'choice' && choiceComparison) {
-    const { optionA, optionB, self } = choiceComparison;
-    return {
-      title,
-      summary: t('reading.integratedChoiceSummary', {
-        question,
-        optionA: optionA.label,
-        optionB: optionB.label,
-        trace,
-      }),
-      paragraphs: [
-        t('reading.integratedChoicePath', {
-          label: optionA.label,
-          currentPosition: optionA.current.positionTitle,
-          currentTheme: optionA.current.theme,
-          developmentPosition: optionA.development.positionTitle,
-          developmentTheme: optionA.development.theme,
-        }),
-        t('reading.integratedChoicePath', {
-          label: optionB.label,
-          currentPosition: optionB.current.positionTitle,
-          currentTheme: optionB.current.theme,
-          developmentPosition: optionB.development.positionTitle,
-          developmentTheme: optionB.development.theme,
-        }),
-        t('reading.integratedChoiceTradeoff', {
-          selfPosition: self.positionTitle,
-          selfTheme: self.theme,
-          optionA: optionA.label,
-          optionB: optionB.label,
-          trace,
-        }),
-      ],
-    };
-  }
-
   const [first, middle = cardSections[0], last = cardSections.at(-1)] = cardSections;
-
-  if (spread?.key === 'triangle') {
-    return {
-      title,
-      summary: t('reading.integratedTriangleSummary', {
-        question,
-        perceptionPosition: first.positionTitle,
-        perceptionTheme: first.theme,
-        realityPosition: middle.positionTitle,
-        realityTheme: middle.theme,
-        guidancePosition: last.positionTitle,
-        guidanceTheme: last.theme,
-      }),
-      paragraphs: [
-        t('reading.integratedTriangleContrast', {
-          perceptionPosition: first.positionTitle,
-          perceptionTheme: first.theme,
-          perceptionOrientation: getOrientationLabel(first, t),
-          realityPosition: middle.positionTitle,
-          realityTheme: middle.theme,
-          realityOrientation: getOrientationLabel(middle, t),
-        }),
-        t('reading.integratedTriangleGuidance', {
-          guidancePosition: last.positionTitle,
-          guidanceTheme: last.theme,
-          guidanceOrientation: getOrientationLabel(last, t),
-          perceptionTheme: first.theme,
-          realityTheme: middle.theme,
-          trace,
-        }),
-      ],
-    };
-  }
-
   const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
   return {
     title,
-    summary: t('reading.integratedThreeSummary', { question, trace }),
+    summary: t('reading.integratedThreeSummary', {
+      question,
+      spreadName: spread?.name || spread?.key || '',
+      trace: summaryTrace,
+    }),
     paragraphs: [
       t('reading.integratedThreeFlow', {
         firstPosition: first.positionTitle,
@@ -247,6 +204,110 @@ function buildIntegratedReading({ spread, cardSections, question, choiceComparis
         trace,
       }),
     ],
+  };
+}
+
+export function buildTriangleIntegratedReading({ spread, cardSections = [], question, t }) {
+  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
+  if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
+
+  const [perception, reality = cardSections[0], guidance = cardSections.at(-1)] = cardSections;
+  return {
+    title,
+    summary: t('reading.integratedTriangleSummary', {
+      question,
+      spreadName: spread?.name || spread?.key || '',
+      perceptionPosition: perception.positionTitle,
+      perceptionTheme: perception.theme,
+      realityPosition: reality.positionTitle,
+      realityTheme: reality.theme,
+      guidancePosition: guidance.positionTitle,
+      guidanceTheme: guidance.theme,
+      trace: summaryTrace,
+    }),
+    paragraphs: [
+      t('reading.integratedTriangleContrast', {
+        perceptionPosition: perception.positionTitle,
+        perceptionTheme: perception.theme,
+        perceptionOrientation: getOrientationLabel(perception, t),
+        realityPosition: reality.positionTitle,
+        realityTheme: reality.theme,
+        realityOrientation: getOrientationLabel(reality, t),
+      }),
+      t('reading.integratedTriangleGuidance', {
+        guidancePosition: guidance.positionTitle,
+        guidanceTheme: guidance.theme,
+        guidanceOrientation: getOrientationLabel(guidance, t),
+        perceptionTheme: perception.theme,
+        realityTheme: reality.theme,
+        trace,
+      }),
+    ],
+  };
+}
+
+export function buildChoiceIntegratedReading({ spread, cardSections = [], question, choiceComparison, t }) {
+  const { title, trace, summaryTrace } = getIntegratedReadingBase(cardSections, t);
+  if (cardSections.length === 0 || !choiceComparison) return { title, summary: '', paragraphs: [] };
+
+  const { optionA, optionB, self } = choiceComparison;
+  return {
+    title,
+    summary: t('reading.integratedChoiceSummary', {
+      question,
+      spreadName: spread?.name || spread?.key || '',
+      optionA: optionA.label,
+      optionB: optionB.label,
+      trace: summaryTrace,
+    }),
+    paragraphs: [
+      t('reading.integratedChoicePath', {
+        label: optionA.label,
+        currentPosition: optionA.current.positionTitle,
+        currentTheme: optionA.current.theme,
+        developmentPosition: optionA.development.positionTitle,
+        developmentTheme: optionA.development.theme,
+      }),
+      t('reading.integratedChoicePath', {
+        label: optionB.label,
+        currentPosition: optionB.current.positionTitle,
+        currentTheme: optionB.current.theme,
+        developmentPosition: optionB.development.positionTitle,
+        developmentTheme: optionB.development.theme,
+      }),
+      t('reading.integratedChoiceTradeoff', {
+        selfPosition: self.positionTitle,
+        selfTheme: self.theme,
+        optionA: optionA.label,
+        optionB: optionB.label,
+        trace,
+      }),
+    ],
+  };
+}
+
+function buildIntegratedReading(options) {
+  if (options.spread?.key === 'choice') return buildChoiceIntegratedReading(options);
+  if (options.spread?.key === 'triangle') return buildTriangleIntegratedReading(options);
+  return buildThreeCardIntegratedReading(options);
+}
+
+export function resolveIntegratedReading(reading, t) {
+  const current = reading?.integratedReading;
+  const title = String(current?.title || t('reading.integratedTitle')).trim();
+  const summary = String(current?.summary || '').trim();
+  const paragraphs = Array.isArray(current?.paragraphs)
+    ? current.paragraphs.map((paragraph) => String(paragraph || '').trim()).filter(Boolean)
+    : [];
+
+  if (summary || paragraphs.length > 0) return { title, summary, paragraphs };
+
+  const cardSections = Array.isArray(reading?.cards) ? reading.cards : [];
+  const trace = buildIntegratedTrace(cardSections, t);
+  return {
+    title,
+    summary: String(reading?.overview || '').trim(),
+    paragraphs: trace ? [trace] : [],
   };
 }
 
