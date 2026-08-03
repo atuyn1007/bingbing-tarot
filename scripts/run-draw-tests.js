@@ -9,6 +9,12 @@ import {
   revealSelectedCard,
   toggleBackSelection,
 } from '../src/cardDrawFlow.js';
+import {
+  clampRibbonOffset,
+  getRibbonBounds,
+  getWheelRibbonOffset,
+} from '../src/cardRibbon.js';
+import { getShuffleRitualTimeline } from '../src/shuffleRitual.js';
 import { getChoiceGroupSlots } from '../src/choiceSpreadUtils.js';
 import { buildStructuredReading } from '../src/readingEngine.js';
 import zhCN from '../src/i18n/locales/zh-CN.ts';
@@ -95,6 +101,26 @@ const tests = [
     },
   },
   {
+    name: 'draw session exposes the complete shuffled deck as stable selectable backs',
+    run() {
+      const cards = Array.from({ length: 78 }, (_, id) => ({ id, name: `Card ${id}` }));
+      let randomCalls = 0;
+      const session = createDrawSession(cards, 3, () => {
+        randomCalls += 1;
+        return 0.42;
+      });
+      const callsAfterShuffle = randomCalls;
+      const selecting = { ...session, phase: 'selecting' };
+      const selected = toggleBackSelection(toggleBackSelection(selecting, 31), 67);
+
+      assert.equal(session.visibleBacks.length, 78);
+      assert.deepEqual(session.visibleBacks, Array.from({ length: 78 }, (_, index) => index));
+      assert.equal(new Set(session.deck.map((card) => card.id)).size, 78);
+      assert.equal(randomCalls, callsAfterShuffle);
+      assert.deepEqual(selected.selectedBacks, [31, 67]);
+    },
+  },
+  {
     name: 'three-card selection can be cancelled and confirmed without duplicates',
     run() {
       const cards = Array.from({ length: 78 }, (_, id) => ({ id, name: `Card ${id}` }));
@@ -114,9 +140,39 @@ const tests = [
       const cards = Array.from({ length: 78 }, (_, id) => ({ id, name: `Card ${id}` }));
       let session = { ...createDrawSession(cards, 5, () => 0.75), phase: 'selecting' };
       [8, 1, 10, 4, 6].forEach((index) => { session = toggleBackSelection(session, index); });
+      session = toggleBackSelection(session, 10);
+      assert.deepEqual(session.selectedBacks, [8, 1, 4, 6]);
+      session = toggleBackSelection(session, 12);
       session = confirmBackSelection(session);
       assert.deepEqual(session.drawnCards, session.selectedBacks.map((index) => session.deck[index]));
       assert.equal(new Set(session.drawnCards.map((card) => card.id)).size, 5);
+    },
+  },
+  {
+    name: 'card ribbon clamps drag and wheel movement to natural deck boundaries',
+    run() {
+      const bounds = getRibbonBounds(360, 2400, 24);
+      assert.deepEqual(bounds, { min: -2064, max: 24 });
+      assert.equal(clampRibbonOffset(-900, bounds), -900);
+      assert.equal(clampRibbonOffset(80, bounds), 24);
+      assert.equal(clampRibbonOffset(-3000, bounds), -2064);
+      assert.equal(getWheelRibbonOffset(-500, { deltaX: 0, deltaY: 120 }, bounds), -620);
+      assert.equal(getWheelRibbonOffset(-500, { deltaX: -160, deltaY: 20 }, bounds), -340);
+    },
+  },
+  {
+    name: 'shuffle ritual has visible riffle cut and gather phases before selection',
+    run() {
+      const standard = getShuffleRitualTimeline(false);
+      const reduced = getShuffleRitualTimeline(true);
+
+      assert.deepEqual(standard.steps.map((step) => step.phase), ['riffle', 'cut', 'gather', 'complete']);
+      assert.ok(standard.totalDuration >= 2800 && standard.totalDuration <= 4000);
+      assert.ok(standard.steps[1].at > standard.steps[0].at);
+      assert.ok(standard.steps[2].at > standard.steps[1].at);
+      assert.equal(standard.steps[3].at, standard.totalDuration);
+      assert.deepEqual(reduced.steps.map((step) => step.phase), ['gather', 'complete']);
+      assert.ok(reduced.totalDuration > 0 && reduced.totalDuration < standard.totalDuration);
     },
   },
   {
@@ -291,6 +347,8 @@ const tests = [
       const drawingKeys = [
         'questionGuidance', 'questionInputLabel', 'questionExamples', 'positionsTitle',
         'startShuffle', 'shuffleTitle', 'skipShuffle', 'selectionTitle', 'selectionProgress',
+        'shufflePhaseRiffle', 'shufflePhaseCut', 'shufflePhaseGather', 'ribbonDragHint',
+        'selectedCountLabel', 'requiredCountLabel', 'remainingCountLabel',
         'cardBackAria', 'confirmSelectedCards', 'revealTitle', 'revealAll', 'viewFullReading', 'redraw',
       ];
       const readingKeys = Object.keys(zhCN.reading).sort();
