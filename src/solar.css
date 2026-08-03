@@ -4497,3 +4497,152 @@ button.monthly-calendar-cell {
 
   .monthly-calendar-cell[data-state='completed']:hover { transform: none; }
 }
+
+/* Participatory Tarot draw ritual */
+.drawing-field-kicker,
+.drawing-character-count { color: rgba(95, 70, 28, .72); font-family: var(--app-font-ui); font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; }
+.drawing-spread-positions { margin: 26px 0 20px; }
+.drawing-position-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-top: 10px; }
+.drawing-position-record { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 9px; min-width: 0; padding: 10px; border-top: 1px solid rgba(111, 81, 29, .34); background: rgba(255, 250, 237, .26); }
+.drawing-position-record > span { color: #a67b1e; font: 600 .68rem/1 var(--app-font-ui); }
+.drawing-position-record strong,
+.drawing-position-record small { display: block; overflow-wrap: anywhere; }
+.drawing-position-record strong { color: #342b20; font: 600 .82rem/1.35 var(--app-font-serif); }
+.drawing-position-record small { margin-top: 4px; color: rgba(63, 52, 38, .66); font: .68rem/1.4 var(--app-font-ui); }
+.drawing-question-guidance { margin: 0 0 9px; color: #544735; font: .9rem/1.65 var(--app-font-serif); }
+.drawing-question-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin: 10px 0 20px; }
+.drawing-question-examples { display: flex; flex-wrap: wrap; gap: 7px; }
+.drawing-question-examples button { min-height: 44px; padding: 8px 11px; color: #66501e; border: 1px solid rgba(141, 103, 29, .32); border-radius: 1px 11px 1px 8px; background: rgba(253, 246, 225, .4); font: .72rem/1.35 var(--app-font-ui); text-align: left; }
+.drawing-question-examples button:hover { border-color: rgba(174, 130, 32, .7); background: rgba(255, 248, 223, .76); }
+.drawing-character-count { flex: 0 0 auto; padding-top: 12px; white-space: nowrap; }
+.drawing-disclaimer { margin: 14px 0 0; color: rgba(61, 51, 38, .62); font: .72rem/1.6 var(--app-font-ui); }
+
+.card-draw-page .page-content { min-height: calc(100vh - 90px); align-items: center; }
+.card-draw-content { padding-block: clamp(24px, 5vw, 64px); }
+.card-draw-stage { position: relative; width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: clamp(30px, 5vw, 64px); color: rgba(247, 235, 203, .9); border: 1px solid rgba(206, 161, 50, .28); border-radius: 2px 34px 2px 24px; background: linear-gradient(rgba(8, 25, 21, .9), rgba(6, 19, 17, .94)), url('/textures/archive-paper-dark.svg'); box-shadow: 0 38px 90px rgba(0, 0, 0, .32), inset 0 0 0 1px rgba(255, 218, 120, .04); text-align: center; overflow: hidden; }
+.card-draw-stage::before { content: 'SOL · ARCANA · 03'; position: absolute; top: 18px; right: 20px; color: rgba(217, 177, 78, .42); font: .58rem/1 var(--app-font-ui); letter-spacing: .2em; }
+.card-draw-stage h2 { margin: 7px 0 12px; color: #f1dfaf; font: 400 clamp(2rem, 5vw, 4rem)/1.05 var(--app-font-serif); }
+.card-draw-stage > p:not(.eyebrow):not(.card-selection-progress) { max-width: 650px; margin-inline: auto; color: rgba(235, 221, 186, .7); line-height: 1.75; }
+.shuffle-deck { position: relative; width: 190px; height: 236px; margin: 38px auto 30px; }
+.shuffle-card-back { position: absolute; inset: 12px 30px; border: 1px solid rgba(236, 202, 113, .52); border-radius: 3px 16px 3px 12px; background: radial-gradient(circle at 50% 44%, rgba(217, 170, 58, .2), transparent 34%), repeating-radial-gradient(circle at center, transparent 0 18px, rgba(215, 176, 76, .12) 19px 20px), #102c25; box-shadow: 0 18px 38px rgba(0, 0, 0, .26); }
+.shuffle-deck-sigil { position: absolute; inset: 0; display: grid; place-items: center; color: #d9b24e; font-size: 2.2rem; }
+.card-draw-skip { margin-inline: auto; }
+.card-selection-progress { margin: 24px auto 16px; color: #e4c66e; font: 600 .78rem/1 var(--app-font-ui); letter-spacing: .12em; text-transform: uppercase; }
+.card-back-rail { display: flex; justify-content: center; gap: clamp(6px, 1vw, 12px); width: 100%; padding: 30px 4px 28px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-color: rgba(200, 158, 52, .5) transparent; }
+.selectable-card-back { position: relative; flex: 0 0 clamp(62px, 6.4vw, 82px); width: clamp(62px, 6.4vw, 82px); height: clamp(104px, 10vw, 132px); min-width: 44px; min-height: 44px; color: rgba(242, 217, 147, .76); border: 1px solid rgba(211, 172, 72, .32); border-radius: 2px 13px 2px 10px; background: radial-gradient(circle at center, rgba(211, 166, 53, .2) 0 5%, transparent 6% 24%, rgba(211, 166, 53, .12) 25% 26%, transparent 27%), linear-gradient(145deg, #173b31, #0a211c); box-shadow: 0 16px 28px rgba(0, 0, 0, .28), inset 0 0 0 5px rgba(220, 180, 81, .06); touch-action: manipulation; }
+.selectable-card-back.is-selected { color: #ffe59a; border-color: #d9ad3d; box-shadow: 0 18px 34px rgba(0,0,0,.35), 0 0 0 2px rgba(211, 165, 53, .24), inset 0 0 0 5px rgba(220, 180, 81, .1); }
+.selectable-card-index { position: absolute; top: 7px; left: 8px; font: .58rem/1 var(--app-font-ui); letter-spacing: .1em; }
+.selectable-card-sigil { display: grid; place-items: center; height: 100%; font-size: 1.25rem; }
+.selectable-card-order { position: absolute; right: -7px; bottom: -7px; display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 28px; height: 28px; padding: 0 5px; color: #14271e; border-radius: 50%; background: #dcb64e; font: 700 .65rem/1 var(--app-font-ui); }
+.selectable-card-back:focus-visible,
+.reading-spread-reveal-button:focus-visible,
+.drawing-question-examples button:focus-visible { outline: 3px solid #f0c85d; outline-offset: 4px; }
+.card-selection-confirm { margin: 4px auto 0; }
+.card-reveal-stage { width: min(1240px, calc(100% - 28px)); }
+.card-draw-reveal-spread { margin-top: 28px; }
+.card-reveal-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 30px; }
+.card-reveal-actions .primary-button:disabled { opacity: .45; }
+
+.tarot-card-frame { perspective: 1000px; }
+.tarot-card-flipper { position: absolute; inset: 0; transform-style: preserve-3d; }
+.tarot-card-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.tarot-card-front-face { transform: rotateY(180deg); }
+.tarot-card-artwork.is-reversed { transform: rotate(180deg); }
+.reading-spread-reveal-button { display: block; min-width: 44px; min-height: 44px; padding: 0; border: 0; border-radius: 18px; background: transparent; }
+.reading-spread-reveal-button:disabled { cursor: default; opacity: 1; }
+.reading-spread-card-identity { display: grid; justify-items: center; gap: 2px; max-width: 170px; margin: 11px auto 0; text-align: center; }
+.reading-spread-card-identity p { margin: 0; color: inherit; }
+.reading-spread-card-identity small { color: currentColor; font-family: var(--app-font-ui); font-size: .62rem; opacity: .7; }
+.reading-spread-card-identity > span { color: #b28b31; font: 600 .58rem/1.4 var(--app-font-ui); letter-spacing: .12em; }
+.reading-spread-keywords { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 180px; margin-top: 7px; }
+.reading-spread-keywords span { padding: 3px 6px; color: inherit; border: 1px solid currentColor; border-radius: 999px; font: .56rem/1.2 var(--app-font-ui); opacity: .72; }
+.card-draw-page .reading-spread-card-identity,
+.card-draw-page .reading-spread-meta { color: rgba(242, 227, 190, .86); }
+
+/* Structured reading archive */
+.structured-reading-layout { width: min(1180px, 100%); }
+.reading-question-card h2,
+.reading-full-spread h2,
+.archive-reading-sheet h2,
+.reading-card-files > h2,
+.choice-reading-comparison > h2 { margin: 5px 0 15px; color: #3d3122; font: 400 clamp(1.65rem, 3vw, 2.8rem)/1.12 var(--app-font-serif); }
+.reading-full-spread { padding: clamp(24px, 5vw, 52px); border: 1px solid rgba(208, 164, 65, .18); background: rgba(5, 22, 18, .58); }
+.reading-full-spread > h2,
+.reading-full-spread > .eyebrow { color: rgba(240, 222, 177, .9); text-align: center; }
+.archive-reading-sheet { position: relative; min-width: 0; padding: clamp(24px, 4vw, 44px); color: #3f3528; border: 1px solid rgba(123, 90, 32, .2); border-radius: 2px 22px 2px 15px; background: linear-gradient(rgba(252, 246, 228, .92), rgba(245, 235, 208, .93)), url('/textures/archive-paper-light.svg'); box-shadow: 0 22px 48px rgba(0, 0, 0, .12); overflow: hidden; }
+.reading-overview { margin-top: 24px; }
+.reading-overview > p:last-child { max-width: 850px; margin: 0; color: #493b29; font: clamp(1.04rem, 2vw, 1.3rem)/1.85 var(--app-font-serif); }
+.reading-card-files,
+.choice-reading-comparison { margin-top: clamp(42px, 7vw, 76px); }
+.reading-card-files > .eyebrow,
+.reading-card-files > h2,
+.choice-reading-comparison > .eyebrow,
+.choice-reading-comparison > h2,
+.choice-reading-intro { text-align: center; }
+.choice-reading-intro { max-width: 720px; margin: -4px auto 22px; color: rgba(238, 222, 184, .72); line-height: 1.75; }
+.choice-reading-comparison > h2 { color: #f0dfb5; }
+.choice-reading-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.choice-reading-option h3,
+.choice-reading-self h3 { margin: 0 0 20px; color: #473820; font: 400 1.55rem/1.2 var(--app-font-serif); overflow-wrap: anywhere; }
+.choice-reading-option dl { display: grid; gap: 16px; margin: 0; }
+.choice-reading-option dl > div { padding-top: 12px; border-top: 1px solid rgba(123, 91, 35, .2); }
+.choice-reading-option dt { color: #9a741d; font: 700 .62rem/1.2 var(--app-font-ui); letter-spacing: .14em; text-transform: uppercase; }
+.choice-reading-option dd { margin: 6px 0 0; line-height: 1.7; }
+.choice-reading-self { width: min(760px, 100%); margin: 18px auto 0; }
+.reading-card-files-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.reading-card-file-header { display: flex; align-items: flex-start; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid rgba(118, 86, 29, .2); }
+.reading-card-position-number { color: #a57b1c; font: 400 2rem/1 var(--app-font-serif); }
+.reading-card-file-header h3 { margin: 2px 0 0; color: #3b3023; font: 400 1.45rem/1.2 var(--app-font-serif); }
+.reading-card-name-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin: 20px 0 12px; }
+.reading-card-name-row strong,
+.reading-card-name-row small { display: block; }
+.reading-card-name-row strong { color: #2f281f; font: 600 1.15rem/1.3 var(--app-font-serif); }
+.reading-card-name-row small { margin-top: 3px; color: rgba(59, 48, 35, .62); font: .68rem/1.3 var(--app-font-ui); }
+.reading-card-name-row > span { flex: 0 0 auto; padding: 5px 8px; color: #805f18; border: 1px solid rgba(141, 105, 27, .3); font: 700 .58rem/1 var(--app-font-ui); letter-spacing: .12em; }
+.reading-keyword-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.reading-keyword-tags span { padding: 5px 8px; color: #6f541d; border: 1px solid rgba(139, 103, 31, .26); border-radius: 999px; background: rgba(185, 137, 33, .06); font: .65rem/1.2 var(--app-font-ui); }
+.reading-card-copy { display: grid; gap: 12px; margin-top: 20px; }
+.reading-card-copy p { margin: 0; font-size: .94rem; line-height: 1.8; }
+.reading-card-base-meaning { padding: 14px 15px; border-left: 2px solid #b48b2d; background: rgba(177, 130, 31, .06); }
+.reading-card-attention { color: #43351f; font-weight: 600; }
+.reading-card-boundary { color: rgba(63, 52, 39, .62); font-size: .78rem !important; }
+.reading-synthesis-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 18px; margin-top: 18px; }
+.reading-synthesis-grid p,
+.reading-advice li { line-height: 1.85; }
+.reading-advice ol { display: grid; gap: 12px; margin: 0; padding-left: 1.3rem; }
+.reading-reflection { margin-top: 18px; text-align: center; }
+.reading-reflection blockquote { max-width: 780px; margin: 0 auto; color: #47371f; font: italic clamp(1.14rem, 2.5vw, 1.55rem)/1.7 var(--app-font-serif); }
+.reading-disclaimer { max-width: 900px; margin: 28px auto 0; color: rgba(239, 224, 190, .62); font: .76rem/1.7 var(--app-font-ui); text-align: center; }
+.structured-reading-actions { flex-wrap: wrap; justify-content: center; }
+
+@media (max-width: 900px) {
+  .drawing-position-list { grid-template-columns: 1fr; }
+  .drawing-position-record { grid-template-columns: 26px minmax(0, 1fr); }
+  .card-back-rail { justify-content: flex-start; margin-inline: -8px; padding-inline: 8px; }
+  .reading-card-files-list,
+  .reading-synthesis-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .drawing-question-meta { display: grid; }
+  .drawing-question-examples { display: grid; grid-template-columns: 1fr; }
+  .drawing-character-count { padding-top: 0; }
+  .card-draw-stage { width: min(100% - 20px, 1120px); padding: 34px 14px 28px; }
+  .card-draw-stage h2 { font-size: 2rem; }
+  .selectable-card-back { flex-basis: 70px; width: 70px; height: 116px; }
+  .card-reveal-stage { width: calc(100% - 12px); }
+  .choice-reading-columns { grid-template-columns: 1fr; }
+  .archive-reading-sheet { padding: 24px 18px; }
+  .reading-full-spread { padding: 24px 8px; }
+  .reading-card-name-row { align-items: flex-start; }
+  .structured-reading-actions { display: grid; grid-template-columns: 1fr; width: 100%; }
+  .structured-reading-actions button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selectable-card-back,
+  .tarot-card-flipper,
+  .shuffle-card-back,
+  .archive-reading-sheet { transition: none !important; animation: none !important; }
+  .selectable-card-back { transform: none !important; }
+}

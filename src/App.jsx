@@ -1,17 +1,29 @@
 import { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { allTarotCards, drawThreeCards, getCardData, getCardDisplayNames, getCardReading } from './data';
+import { allTarotCards, getCardData, getCardDisplayNames, getCardReading } from './data';
 import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
 import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/readers';
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
-import { getReadingFromMeaningArchive } from './readingMeanings';
+import { buildStructuredReading } from './readingEngine';
+import {
+  completeShuffle,
+  confirmBackSelection,
+  createDrawPersistenceCoordinator,
+  createDrawSession,
+  getConfirmedDrawForPersistence,
+  openStructuredReading,
+  revealAllSelectedCards,
+  revealSelectedCard,
+  toggleBackSelection,
+} from './cardDrawFlow';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
+const CardDrawStage = lazy(() => import('./components/CardDrawStage.jsx'));
 const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
 const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
 const MessagesPage = lazy(() => import('./pages/MessagesPage.jsx'));
@@ -210,28 +222,6 @@ function normalizeRecentReadingEntry(entry, t) {
   };
 }
 
-function drawCardsForSpread(cardCount) {
-  const cards = [];
-  const usedIndices = new Set();
-
-  while (cards.length < cardCount) {
-    const randomIndex = Math.floor(Math.random() * allTarotCards.length);
-    if (usedIndices.has(randomIndex)) continue;
-
-    usedIndices.add(randomIndex);
-    const card = allTarotCards[randomIndex];
-    const isReversed = Math.random() < 0.5;
-
-    cards.push({
-      ...card,
-      isReversed,
-      displayName: isReversed ? `${card.name}\uFF08\u9006\u4F4D\uFF09` : card.name,
-    });
-  }
-
-  return cards;
-}
-
 function formatSpreadCardName(card, t) {
   if (!card) return '';
   return card.isReversed
@@ -301,62 +291,6 @@ function shouldAppendFortuneReading(text, keywords) {
   return overlapCount < 2;
 }
 
-function buildSpreadReading(cards, question, spread, t, language, meaningArchive, choiceOptions = {}) {
-  const lead = t('drawing.readingLead', { spread: spread.name });
-  const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
-  const positionLines = cards.map((card, index) => {
-    const position = spread.positions[index];
-    const choiceLabel =
-      spread.key === 'choice' && index < 4
-        ? `${index === 0 || index === 2 ? 'A' : 'B'}｜${
-            index === 0 || index === 2 ? choiceOptions.choiceA || t('drawing.choiceOptionAFallback') : choiceOptions.choiceB || t('drawing.choiceOptionBFallback')
-          }`
-        : null;
-    const label = choiceLabel || position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
-    const data = resolveCardData(card);
-    const fallbackReading = getLocalizedTarotReading(
-      data,
-      card?.isReversed,
-      language,
-      getCardReading({ ...card, id: data.id }),
-    );
-    return t('drawing.positionLine', {
-      label,
-      card: formatSpreadCardName(card, t),
-      reading: getReadingFromMeaningArchive(card, card?.isReversed, language, meaningArchive, fallbackReading),
-    });
-  });
-
-  const closing =
-    spread.key === 'triangle'
-      ? t('drawing.triangleClosing', { question })
-      : spread.key === 'choice'
-        ? t('drawing.choiceClosing', { question })
-        : t('drawing.generalClosing', { question });
-
-  return [lead, t('drawing.cardsAre', { cards: cardNames }), ...positionLines, closing].join('\n\n');
-}
-
-function buildHumanReading(cards, question, t, language, meaningArchive) {
-  const cardNames = cards.map((card) => formatSpreadCardName(card, t)).join(t('common.listSeparator'));
-  const lines = cards.map((card, index) => {
-    const data = resolveCardData(card);
-    const fallbackReading = getLocalizedTarotReading(
-      data,
-      card?.isReversed,
-      language,
-      getCardReading({ ...card, id: data.id }),
-    );
-    return t('drawing.humanCardLine', {
-      index: index + 1,
-      card: formatSpreadCardName(card, t),
-      reading: getReadingFromMeaningArchive(card, card?.isReversed, language, meaningArchive, fallbackReading),
-    });
-  });
-
-  return [t('drawing.humanFirst', { cards: cardNames }), ...lines, t('drawing.humanClosing', { question })].join('\n\n');
-}
-
 function App() {
   const { language, t } = useI18n();
   const intlLocale = getIntlLocale(language);
@@ -385,10 +319,7 @@ function App() {
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
-  const [isRevealing, setIsRevealing] = useState(false);
-  const [readingComplete, setReadingComplete] = useState(false);
-  const [aiReading, setAiReading] = useState('');
-  const [displayedText, setDisplayedText] = useState('');
+  const [drawSession, setDrawSession] = useState(null);
 
   const [messages, setMessages] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -425,12 +356,17 @@ function App() {
   const [isRedeemingCode, setIsRedeemingCode] = useState(false);
   const hasRecoveryLink = hasRecoveryParams();
 
-  const typingRef = useRef(null);
   const authReadyTimeoutRef = useRef(null);
   const autofillSyncTimeoutRef = useRef(null);
   const authInteractionRef = useRef(false);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
+  const persistedDrawCardsRef = useRef(null);
+  const currentReadingEntryRef = useRef(null);
+  const drawPersistenceCoordinatorRef = useRef(null);
+  if (!drawPersistenceCoordinatorRef.current) {
+    drawPersistenceCoordinatorRef.current = createDrawPersistenceCoordinator();
+  }
   const activeNickname = user?.nickname || nickname;
   const dailyLine = getDailyLine(t('quotes'));
   const activeDailyCard = savedDailyTarot || dailyCard;
@@ -509,6 +445,8 @@ function App() {
     setReadingComplete(false);
     setAiReading('');
     setDisplayedText('');
+    setChoiceReadingSections([]);
+    setChoiceReadingSummary('');
     setMessages([]);
     setUnreadCount(0);
     setCurrentChatId(null);
@@ -543,11 +481,10 @@ function App() {
   };
 
   const resetReadingState = () => {
+    persistedDrawCardsRef.current = null;
+    currentReadingEntryRef.current = null;
     setDrawnCards([]);
-    setIsRevealing(false);
-    setReadingComplete(false);
-    setAiReading('');
-    setDisplayedText('');
+    setDrawSession(null);
     setUserQuestion('');
     setChoiceA('');
     setChoiceB('');
@@ -661,19 +598,9 @@ function App() {
 
   const saveRecentReading = async (question, cards, spreadKey, choiceOptions = {}) => {
     const spread = getSpreadConfig(spreadKey, t);
-    let syncedRecordId = null;
-
-    try {
-      const { saveSpreadHistoryRecord } = await getSupabaseTarot();
-      const synced = await saveSpreadHistoryRecord(question, spread.name, cards);
-      syncedRecordId = synced?.id ?? null;
-    } catch (error) {
-      console.warn('Failed to sync spread history to Supabase:', error);
-    }
-
     const entry = normalizeRecentReadingEntry({
       id: `${Date.now()}`,
-      recordId: syncedRecordId,
+      recordId: null,
       question,
       spreadKey: spread.key,
       spreadName: spread.name,
@@ -688,41 +615,78 @@ function App() {
       createdAt: new Date().toISOString(),
     }, t);
 
+    currentReadingEntryRef.current = entry;
     setRecentReadings((current) => {
       const next = [entry, ...current].slice(0, 3);
       persistRecentReadings(next);
       return next;
     });
 
-    return entry;
+    return drawPersistenceCoordinatorRef.current.run(entry.id, async () => {
+      try {
+        const { saveSpreadHistoryRecord } = await getSupabaseTarot();
+        const synced = await saveSpreadHistoryRecord(question, spread.name, cards);
+        if (!synced?.id) return entry;
+
+        const syncedEntry = normalizeRecentReadingEntry({ ...entry, recordId: synced.id }, t);
+        if (currentReadingEntryRef.current?.id === entry.id) {
+          currentReadingEntryRef.current = syncedEntry;
+        }
+        setRecentReadings((current) => {
+          const next = current.map((item) => (item.id === entry.id ? syncedEntry : item));
+          persistRecentReadings(next);
+          return next;
+        });
+        return syncedEntry;
+      } catch (error) {
+        console.warn('Failed to sync spread history to Supabase:', error);
+        return entry;
+      }
+    });
   };
+
+  useEffect(() => {
+    const confirmedCards = getConfirmedDrawForPersistence(drawSession, persistedDrawCardsRef.current);
+    if (!confirmedCards) return;
+
+    persistedDrawCardsRef.current = confirmedCards;
+    setDrawnCards(confirmedCards);
+    void saveRecentReading(userQuestion.trim(), confirmedCards, spreadForCards.key, {
+      choiceA,
+      choiceB,
+    }).catch((error) => {
+      console.warn('Failed to persist recent reading:', error);
+    });
+  }, [drawSession]);
 
   const syncRecentReadingRecord = async (entry) => {
     if (!entry || entry.recordId || entry.record_id) return entry;
 
-    try {
-      const { saveSpreadHistoryRecord } = await getSupabaseTarot();
-      const synced = await saveSpreadHistoryRecord(entry.question, entry.spreadName, entry.cardsData || []);
-      const nextEntry = normalizeRecentReadingEntry({
-        ...entry,
-        recordId: synced?.id ?? null,
-      }, t);
+    return drawPersistenceCoordinatorRef.current.run(entry.id, async () => {
+      try {
+        const { saveSpreadHistoryRecord } = await getSupabaseTarot();
+        const synced = await saveSpreadHistoryRecord(entry.question, entry.spreadName, entry.cardsData || []);
+        const nextEntry = normalizeRecentReadingEntry({
+          ...entry,
+          recordId: synced?.id ?? null,
+        }, t);
 
-      setRecentReadings((current) => {
-        const next = current.map((item) => (item.id === entry.id ? nextEntry : item));
-        persistRecentReadings(next);
-        return next;
-      });
+        setRecentReadings((current) => {
+          const next = current.map((item) => (item.id === entry.id ? nextEntry : item));
+          persistRecentReadings(next);
+          return next;
+        });
 
-      if (selectedHistoryReading?.id === entry.id) {
-        setSelectedHistoryReading(nextEntry);
+        if (selectedHistoryReading?.id === entry.id) {
+          setSelectedHistoryReading(nextEntry);
+        }
+
+        return nextEntry;
+      } catch (error) {
+        console.warn('Failed to backfill record_id for recent reading:', error);
+        return entry;
       }
-
-      return nextEntry;
-    } catch (error) {
-      console.warn('Failed to backfill record_id for recent reading:', error);
-      return entry;
-    }
+    });
   };
 
   const deleteRecentReading = (entryId) => {
@@ -739,12 +703,13 @@ function App() {
   };
 
   const openHumanRequestModal = () => {
-    if (recentReadings.length === 0) {
+    const currentEntry = currentReadingEntryRef.current || recentReadings[0];
+    if (!currentEntry) {
       alert(t('alerts.historyNeedsReading'));
       return;
     }
 
-    setSelectedHumanReadingId(recentReadings[0]?.id || null);
+    setSelectedHumanReadingId(currentEntry.id);
     setShowHumanRequestModal(true);
   };
 
@@ -1132,9 +1097,30 @@ function App() {
 
   const dailyFortuneKeywords = activeDailyCard ? getDailyFortuneKeywords(activeDailyCard) : [];
 
-  const readingTextParts = displayedText.split('\n\n');
-  const readingLead = readingTextParts[0] || '';
-  const readingBody = readingTextParts.slice(1).join('\n\n');
+  const getReadingCardKeywords = (card) => {
+    const data = resolveCardData(card);
+    const keywords = card?.isReversed ? data.reversedKeywords : data.uprightKeywords;
+    return getLocalizedTarotKeywords(data.id, Boolean(card?.isReversed), language, keywords);
+  };
+
+  const getReadingFallback = (card) => {
+    const data = resolveCardData(card);
+    return getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id }));
+  };
+
+  const structuredReading = drawSession?.phase === 'reading' && drawnCards.length > 0
+    ? buildStructuredReading({
+        cards: drawnCards,
+        question: userQuestion,
+        spread: spreadForCards,
+        language,
+        t,
+        meaningArchive: cardMeaningsModule,
+        getFallbackReading: getReadingFallback,
+        getKeywords: getReadingCardKeywords,
+        choiceOptions: { choiceA, choiceB },
+      })
+    : null;
 
   const handleStartFreeReading = () => {
     setIsHumanMode(false);
@@ -1171,42 +1157,48 @@ function App() {
       setChoiceB(choiceOptions.choiceB);
     }
 
-    const meaningArchivePromise = cardMeaningsModule
-      ? Promise.resolve(cardMeaningsModule)
-      : loadCardMeaningsModule()
-          .then((module) => {
-            setCardMeaningsModule(module);
-            return module;
-          })
-          .catch((error) => {
-            console.warn('Failed to load detailed tarot meanings:', error);
-            return null;
-          });
 
+    if (!cardMeaningsModule) {
+      loadCardMeaningsModule()
+        .then((module) => setCardMeaningsModule(module))
+        .catch((error) => console.warn('Failed to load detailed tarot meanings:', error));
+    }
+
+    setDrawnCards([]);
+    setDrawSession(createDrawSession(allTarotCards, spreadForCards.cardCount));
     setCurrentPage('drawing');
+  };
 
-    setTimeout(() => {
-      const spread = getSpreadConfig(selectedSpreadKey, t);
-      const cards = spread.key === 'three' && isHumanMode ? drawThreeCards() : drawCardsForSpread(spread.cardCount);
-      setDrawnCards(cards);
-      void saveRecentReading(trimmedQuestion, cards, spread.key, choiceOptions).catch((error) => {
-        console.warn('Failed to persist recent reading:', error);
-      });
+  const handleShuffleComplete = () => {
+    setDrawSession((current) => completeShuffle(current));
+  };
 
-      setTimeout(() => {
-        setIsRevealing(true);
+  const handleToggleBack = (backIndex) => {
+    setDrawSession((current) => toggleBackSelection(current, backIndex));
+  };
 
-        setTimeout(async () => {
-          const meaningArchive = await meaningArchivePromise;
-          setReadingComplete(true);
-          setAiReading(
-            isHumanMode
-              ? buildHumanReading(cards, trimmedQuestion, t, language, meaningArchive)
-              : buildSpreadReading(cards, trimmedQuestion, spread, t, language, meaningArchive, choiceOptions),
-          );
-        }, 1100);
-      }, 260);
-    }, 420);
+  const handleConfirmBackSelection = () => {
+    setDrawSession((current) => confirmBackSelection(current));
+  };
+
+  const handleRevealCard = (cardIndex) => {
+    setDrawSession((current) => revealSelectedCard(current, cardIndex));
+  };
+
+  const handleRevealAll = () => {
+    setDrawSession((current) => revealAllSelectedCards(current));
+  };
+
+  const handleOpenStructuredReading = () => {
+    setDrawSession((current) => openStructuredReading(current));
+  };
+
+  const handleRedraw = () => {
+    persistedDrawCardsRef.current = null;
+    currentReadingEntryRef.current = null;
+    setDrawnCards([]);
+    setDrawSession(null);
+    setCurrentPage('drawing-input');
   };
 
   const startPollingReply = (chatId) => {
@@ -1276,7 +1268,10 @@ function App() {
   };
 
   const handleSubmitHumanRequest = async () => {
-    const readingEntry = recentReadings.find((entry) => entry.id === selectedHumanReadingId) || recentReadings[0];
+    const currentEntry = currentReadingEntryRef.current;
+    const readingEntry = recentReadings.find((entry) => entry.id === selectedHumanReadingId)
+      || (currentEntry?.id === selectedHumanReadingId ? currentEntry : null)
+      || recentReadings[0];
     if (!readingEntry) return;
     await submitHumanReadingRequest(readingEntry);
   };
@@ -1487,40 +1482,6 @@ function App() {
   };
 
   useEffect(() => {
-    if (!aiReading || !readingComplete) return undefined;
-
-    setDisplayedText('');
-    let index = 0;
-    typingRef.current = setInterval(() => {
-      if (index < aiReading.length) {
-        setDisplayedText(aiReading.slice(0, index + 1));
-        index += 1;
-      } else {
-        clearInterval(typingRef.current);
-      }
-    }, 22);
-
-    return () => {
-      if (typingRef.current) clearInterval(typingRef.current);
-    };
-  }, [aiReading, readingComplete]);
-
-  useEffect(() => {
-    if (!readingComplete || drawnCards.length === 0) return;
-
-    const nextReading = isHumanMode
-      ? buildHumanReading(drawnCards, userQuestion.trim(), t, language, cardMeaningsModule)
-      : buildSpreadReading(drawnCards, userQuestion.trim(), spreadForCards, t, language, cardMeaningsModule, {
-          choiceA,
-          choiceB,
-        });
-
-    if (nextReading !== aiReading) {
-      setAiReading(nextReading);
-    }
-  }, [aiReading, cardMeaningsModule, choiceA, choiceB, drawnCards, isHumanMode, language, readingComplete, spreadForCards, t, userQuestion]);
-
-  useEffect(() => {
     if (!user?.id) return undefined;
 
     const fetchMailbox = async () => {
@@ -1537,15 +1498,14 @@ function App() {
   }, [user]);
 
   const goHome = () => {
+    persistedDrawCardsRef.current = null;
+    currentReadingEntryRef.current = null;
     setCurrentPage('home');
     setIsHumanMode(false);
     setSelectedMeaningCardId(null);
     setUserQuestion('');
     setDrawnCards([]);
-    setIsRevealing(false);
-    setReadingComplete(false);
-    setAiReading('');
-    setDisplayedText('');
+    setDrawSession(null);
   };
   const handleBackFromChat = () => {
     setCurrentPage('home');
@@ -1664,7 +1624,8 @@ function App() {
       />
     );
   } else if (currentPage === 'drawing') {
-    currentView = (
+    if (drawSession?.phase === 'reading' && structuredReading) {
+      currentView = (
       <ResultPage
         theme={theme}
         cardStyle={cardStyle}
@@ -1672,18 +1633,38 @@ function App() {
         goHome={goHome}
         t={t}
         isHumanMode={isHumanMode}
-        activeSpread={activeSpread}
         userQuestion={userQuestion}
         choiceOptions={{ choiceA, choiceB }}
         drawnCards={drawnCards}
         spreadForCards={spreadForCards}
-        isRevealing={isRevealing}
-        readingComplete={readingComplete}
-        readingLead={readingLead}
-        readingBody={readingBody}
+        reading={structuredReading}
         onOpenHumanRequest={openHumanRequestModal}
+        onRedraw={handleRedraw}
       />
-    );
+      );
+    } else if (drawSession) {
+      currentView = (
+        <CardDrawStage
+          theme={theme}
+          cardStyle={cardStyle}
+          setCardStyle={setCardStyle}
+          goHome={goHome}
+          spread={spreadForCards}
+          session={drawSession}
+          choiceOptions={{ choiceA, choiceB }}
+          getCardKeywords={getReadingCardKeywords}
+          onShuffleComplete={handleShuffleComplete}
+          onToggleBack={handleToggleBack}
+          onConfirmSelection={handleConfirmBackSelection}
+          onRevealCard={handleRevealCard}
+          onRevealAll={handleRevealAll}
+          onOpenReading={handleOpenStructuredReading}
+          t={t}
+        />
+      );
+    } else {
+      currentView = suspenseFallback;
+    }
   } else if (currentPage === 'chat') {
     currentView = (
       <ChatPage
