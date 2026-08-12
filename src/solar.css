@@ -4167,14 +4167,14 @@ button.monthly-calendar-cell {
   z-index: 1;
   display: grid;
   place-items: center;
-  min-width: 25px;
-  min-height: 42px;
+  min-width: 40px;
+  min-height: 64px;
 }
 
 .monthly-calendar-miniature img {
   display: block;
   width: auto;
-  height: clamp(32px, 3.2vw, 40px);
+  height: clamp(54px, 4.8vw, 64px);
   max-width: 100%;
   object-fit: contain;
   border: 2px solid #c6b590;
@@ -4188,8 +4188,8 @@ button.monthly-calendar-cell {
 
 .monthly-calendar-empty-paper,
 .monthly-calendar-paper-back {
-  width: 26px;
-  height: 40px;
+  width: 40px;
+  height: 62px;
   color: rgba(105, 77, 31, .48);
   border: 1px solid rgba(105, 77, 31, .3);
   background: linear-gradient(95deg, rgba(95, 62, 18, .08), transparent 25% 72%, rgba(95, 62, 18, .07)), #ede3cc;
@@ -4438,10 +4438,10 @@ button.monthly-calendar-cell {
   .monthly-calendar-cell { padding: 21px 2px 5px; }
   .monthly-calendar-day-number { top: 5px; left: 5px; font-size: .62rem; }
   .monthly-calendar-today { top: 5px; right: 3px; padding: 1px 2px; font-size: .31rem; letter-spacing: 0; }
-  .monthly-calendar-miniature { min-width: 20px; min-height: 32px; }
-  .monthly-calendar-miniature img { height: 28px; border-width: 1px; }
+  .monthly-calendar-miniature { min-width: 25px; min-height: 40px; }
+  .monthly-calendar-miniature img { height: 38px; border-width: 1px; }
   .monthly-calendar-empty-paper,
-  .monthly-calendar-paper-back { width: 20px; height: 30px; }
+  .monthly-calendar-paper-back { width: 25px; height: 38px; }
   .monthly-calendar-empty-paper svg,
   .monthly-calendar-paper-back svg { width: 8px; }
 
