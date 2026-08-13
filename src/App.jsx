@@ -19,10 +19,13 @@ import {
 } from './cardDrawFlow';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
+import { getSpreadConfig, SPREAD_OPTIONS } from './spreadOptions';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
+const UnityIntroPage = lazy(() => import('./pages/UnityIntroPage.jsx'));
+const UnityCastingPage = lazy(() => import('./pages/UnityCastingPage.jsx'));
 const CardDrawStage = lazy(() => import('./components/CardDrawStage.jsx'));
 const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
 const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
@@ -110,51 +113,6 @@ function sanitizeHistoryText(value) {
     .replace(/^[·•\-—–\s]+/u, '')
     .replace(/\s+/g, ' ')
     .trim();
-}
-
-const SPREAD_OPTIONS = [
-  {
-    key: 'three',
-    localeKey: 'spreads.three',
-    canonicalName: 'three-card spread',
-    cardCount: 3,
-    preview: ['1', '2', '3'],
-  },
-  {
-    key: 'triangle',
-    localeKey: 'spreads.triangle',
-    canonicalName: 'triangle spread',
-    cardCount: 3,
-    preview: ['1', '2', '3'],
-  },
-  {
-    key: 'choice',
-    localeKey: 'spreads.choice',
-    canonicalName: 'choice spread',
-    cardCount: 5,
-    preview: ['A', 'B', 'A+', 'B+', 'You'],
-  },
-];
-
-function getSpreadConfig(spreadKey, t) {
-  const spread = SPREAD_OPTIONS.find((item) => item.key === spreadKey) || SPREAD_OPTIONS[0];
-  const translation = t ? t(spread.localeKey) : null;
-
-  if (!translation || typeof translation !== 'object') {
-    return {
-      ...spread,
-      name: spread.canonicalName,
-      shortName: spread.canonicalName,
-      description: '',
-      summary: '',
-      positions: [],
-    };
-  }
-
-  return {
-    ...spread,
-    ...translation,
-  };
 }
 
 const SESSION_STARTED_AT_KEY = 'tarot_session_started_at';
@@ -316,6 +274,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isHumanMode, setIsHumanMode] = useState(false);
   const [userQuestion, setUserQuestion] = useState('');
+  const [unityQuestion, setUnityQuestion] = useState('');
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -433,6 +392,7 @@ function App() {
     setCurrentPage('home');
     setIsHumanMode(false);
     setUserQuestion('');
+    setUnityQuestion('');
     setChoiceA('');
     setChoiceB('');
     setDrawnCards([]);
@@ -1148,7 +1108,16 @@ function App() {
   const handleSelectSpread = (spreadKey) => {
     setSelectedSpreadKey(spreadKey);
     setShowSpreadModal(false);
+    if (spreadKey === 'unity') {
+      setCurrentPage('unity-intro');
+      return;
+    }
     setCurrentPage('drawing-input');
+  };
+
+  const handleStartUnityCasting = (question) => {
+    setUnityQuestion(question);
+    setCurrentPage('unity-casting');
   };
 
   const handleStartHumanReading = () => {
@@ -1521,6 +1490,7 @@ function App() {
     setIsHumanMode(false);
     setSelectedMeaningCardId(null);
     setUserQuestion('');
+    setUnityQuestion('');
     setDrawnCards([]);
     setDrawSession(null);
   };
@@ -1619,6 +1589,26 @@ function App() {
         cardId={selectedMeaningCardId}
         onBack={() => setCurrentPage('card-meanings')}
         onOpenCard={setSelectedMeaningCardId}
+      />
+    );
+  } else if (currentPage === 'unity-intro') {
+    currentView = (
+      <UnityIntroPage
+        theme={theme}
+        question={unityQuestion}
+        setQuestion={setUnityQuestion}
+        onStart={handleStartUnityCasting}
+        goHome={goHome}
+        t={t}
+      />
+    );
+  } else if (currentPage === 'unity-casting') {
+    currentView = (
+      <UnityCastingPage
+        theme={theme}
+        question={unityQuestion}
+        goHome={goHome}
+        t={t}
       />
     );
   } else if (currentPage === 'drawing-input') {

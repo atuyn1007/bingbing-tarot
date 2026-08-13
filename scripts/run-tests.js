@@ -20,8 +20,80 @@ import {
 import zhCN from '../src/i18n/locales/zh-CN.ts';
 import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
+import { SPREAD_OPTIONS } from '../src/spreadOptions.js';
+import { canStartUnityCasting, normalizeUnityQuestion } from '../src/unityEntryFlow.js';
 
 const tests = [
+  {
+    name: 'spread catalogue includes Unity metadata and no difficulty labels',
+    run() {
+      const spreadModalSource = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
+      const localeSources = [zhCN, en, it];
+
+      assert.equal(SPREAD_OPTIONS.length, 4);
+      assert.deepEqual(SPREAD_OPTIONS.find((spread) => spread.key === 'unity'), {
+        key: 'unity',
+        localeKey: 'spreads.unity',
+        canonicalName: 'unity of all things spread',
+        cardCount: 18,
+        preview: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      });
+      assert.match(spreadModalSource, /unity:/);
+      assert.match(spreadModalSource, /spread\.key === 'unity' && spread\.summary/);
+      assert.doesNotMatch(spreadModalSource, /metaDifficulty|spread\.difficulty/);
+
+      for (const locale of localeSources) {
+        assert.equal(locale.spreads.unity.cardCount, '18');
+        assert.ok(locale.spreads.unity.name);
+        assert.ok(locale.spreads.unity.englishTitle);
+        assert.ok(locale.spreads.unity.description);
+        assert.ok(locale.spreads.unity.readingTime);
+        assert.ok(locale.spreads.unity.recommended);
+        assert.equal('metaDifficulty' in locale.spreads, false);
+        for (const spreadKey of ['three', 'triangle', 'choice', 'unity']) {
+          assert.equal('difficulty' in locale.spreads[spreadKey], false);
+        }
+      }
+    },
+  },
+  {
+    name: 'Unity introduction requires a non-empty question and bypasses the ordinary draw route',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
+
+      assert.equal(normalizeUnityQuestion('  我该如何看待未来三年的事业方向？\n'), '我该如何看待未来三年的事业方向？');
+      assert.equal(canStartUnityCasting('   \n\t'), false);
+      assert.equal(canStartUnityCasting('这是一个值得面对的问题'), true);
+      assert.match(appSource, /spreadKey === 'unity'/);
+      assert.match(appSource, /setCurrentPage\('unity-intro'\)/);
+      assert.match(appSource, /currentPage === 'unity-intro'/);
+      assert.match(introSource, /canStartUnityCasting\(question\)/);
+      assert.match(introSource, /disabled=\{!canContinue\}/);
+      assert.match(introSource, /onStart\(normalizeUnityQuestion\(question\)\)/);
+    },
+  },
+  {
+    name: 'Unity first round renders exactly three static non-interactive card backs',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
+      const staticDeckSource = castingSource.slice(
+        castingSource.indexOf('<div className="unity-static-card-row"'),
+        castingSource.indexOf('</main>'),
+      );
+
+      assert.match(appSource, /currentPage === 'unity-casting'/);
+      assert.match(appSource, /<UnityCastingPage/);
+      assert.match(castingSource, /Array\.from\(\{ length: 3 \}/);
+      assert.match(castingSource, /className="unity-static-card-back"/);
+      assert.match(castingSource, /aria-hidden="true"/);
+      assert.doesNotMatch(castingSource, /⚊|⚋|unity-line-glyph/);
+      assert.doesNotMatch(staticDeckSource, /<button|tabIndex|onClick|onKey|role="button"/);
+      assert.doesNotMatch(castingSource, /Math\.random|createDrawSession|cardDrawFlow|allTarotCards|isReversed|cardId/);
+      assert.doesNotMatch(appSource, /handleStartUnityCasting[\s\S]{0,180}createDrawSession/);
+    },
+  },
   {
     name: 'choice options require two non-empty trimmed values',
     run() {

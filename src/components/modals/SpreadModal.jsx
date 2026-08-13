@@ -1,12 +1,13 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { X } from 'lucide-react';
 
-const ARCHIVE_NUMBERS = ['I', 'II', 'III'];
+const ARCHIVE_NUMBERS = ['I', 'II', 'III', 'IV'];
 
 const DIAGRAM_PATHS = {
   three: 'M34 74 H266',
   triangle: 'M72 54 L228 54 L150 162 Z',
   choice: 'M150 172 V138 M150 138 L84 94 M150 138 L216 94 M84 94 L84 48 M216 94 L216 48',
+  unity: 'M48 44 C94 18 206 18 252 44 M36 76 C88 45 212 45 264 76 M28 108 C84 75 216 75 272 108 M36 140 C88 109 212 109 264 140 M48 172 C94 146 206 146 252 172',
 };
 
 function SpreadDiagram({ spread }) {
@@ -23,7 +24,7 @@ function SpreadDiagram({ spread }) {
       <span className="spread-option-celestial spread-option-celestial-moon" aria-hidden="true">☾</span>
       {spread.preview.map((label, index) => (
         <span key={`${spread.key}-${index}`} className={`spread-option-chip spread-option-chip-${spread.key}-${index + 1}`}>
-          <span className="spread-option-chip-roman">{ARCHIVE_NUMBERS[index] || 'V'}</span>
+          <span className="spread-option-chip-roman">{spread.key === 'unity' ? label : ARCHIVE_NUMBERS[index] || 'V'}</span>
           <span className="spread-option-chip-star" aria-hidden="true">✦</span>
           <span className="spread-option-chip-label">{label}</span>
         </span>
@@ -84,6 +85,9 @@ function SpreadModal({ spreadOptions, onClose, onSelect, t }) {
                   <span className="spread-option-title-en">{spread.englishTitle}</span>
                 </div>
                 <p className="spread-option-copy">{spread.description}</p>
+                {spread.key === 'unity' && spread.summary ? (
+                  <p className="spread-option-unity-summary">{spread.summary}</p>
+                ) : null}
                 <dl className="spread-option-metadata">
                   <div>
                     <dt>{t('spreads.metaTime')}</dt>
@@ -91,7 +95,7 @@ function SpreadModal({ spreadOptions, onClose, onSelect, t }) {
                   </div>
                   <div>
                     <dt>{t('spreads.metaCards')}</dt>
-                    <dd>{spread.cardCount}</dd>
+                    <dd>{spread.cardCountLabel || spread.cardCount}</dd>
                   </div>
                 </dl>
                 <p className="spread-option-recommended">
