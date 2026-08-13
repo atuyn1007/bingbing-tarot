@@ -211,6 +211,7 @@ const zhCN = {
     questionPlaceholder: '例如：面对未来几年的事业方向，我真正需要看清的是什么？',
     characterCount: '已写下 {count} 字',
     startCasting: '开始起卦',
+    resumeCasting: '继续上一次起卦',
     missingQuestion: '请先写下问题',
     firstRoundEyebrow: 'ROUND ONE · LINE I',
     firstRoundTitle: '第一轮 · 初爻',

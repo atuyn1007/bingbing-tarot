@@ -87,6 +87,11 @@ export function calculateUnityResult(rounds, options = {}) {
     throw new Error('A Unity result requires six completed rounds.');
   }
   const normalizedRounds = rounds.map((round, index) => {
+    if (
+      round?.roundIndex !== index + 1
+      || (round.lineIndex != null && round.lineIndex !== index + 1)
+      || (round.linePosition != null && round.linePosition !== LINE_POSITIONS[index])
+    ) throw new Error('Unity rounds must be in strict bottom-to-top order.');
     const sourceCards = round?.tarotCards || round?.cards;
     if (!Array.isArray(sourceCards) || sourceCards.length !== 3) throw new Error('Every Unity round requires three cards.');
     const tarotCards = sourceCards.map((card, cardIndex) => serializeCard(card, cardIndex + 1));

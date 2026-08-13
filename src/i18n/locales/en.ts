@@ -214,6 +214,7 @@ const en = {
     questionPlaceholder: 'For example: What do I most need to understand about the direction of my work over the coming years?',
     characterCount: '{count} characters written',
     startCasting: 'Begin casting',
+    resumeCasting: 'Continue the previous casting',
     missingQuestion: 'Write your question first',
     firstRoundEyebrow: 'ROUND ONE · LINE I',
     firstRoundTitle: 'First round · Initial line',

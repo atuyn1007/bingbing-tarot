@@ -215,6 +215,7 @@ const it = {
     questionPlaceholder: 'Per esempio: che cosa devo comprendere davvero della mia direzione professionale nei prossimi anni?',
     characterCount: '{count} caratteri scritti',
     startCasting: 'Inizia il consulto',
+    resumeCasting: 'Continua il consulto precedente',
     missingQuestion: 'Scrivi prima la domanda',
     firstRoundEyebrow: 'PRIMO TURNO · LINEA I',
     firstRoundTitle: 'Primo turno · Linea iniziale',

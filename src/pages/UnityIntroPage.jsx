@@ -2,7 +2,7 @@ import { ArrowRight, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { canStartUnityCasting, normalizeUnityQuestion } from '../unityEntryFlow';
 
-function UnityIntroPage({ theme, question, setQuestion, onStart, goHome, t }) {
+function UnityIntroPage({ theme, question, setQuestion, onStart, onResume, hasDraft, goHome, t }) {
   const canContinue = canStartUnityCasting(question);
 
   const handleSubmit = (event) => {
@@ -62,6 +62,11 @@ function UnityIntroPage({ theme, question, setQuestion, onStart, goHome, t }) {
             <span>{canContinue ? t('unity.startCasting') : t('unity.missingQuestion')}</span>
             <ArrowRight aria-hidden="true" />
           </button>
+          {hasDraft ? (
+            <button type="button" className="unity-resume-button" onClick={onResume}>
+              {t('unity.resumeCasting')}
+            </button>
+          ) : null}
         </form>
       </main>
     </div>

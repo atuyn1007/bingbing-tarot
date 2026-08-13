@@ -1,5 +1,6 @@
 const SCHEMA_VERSION = '2.0';
 const ROUND_POSITIONS = ['initial', 'second', 'third', 'fourth', 'fifth', 'top'];
+const TAROT_CARD_IDS = new Set(Array.from({ length: 78 }, (_, index) => index));
 
 function shuffleAndOrient(cards, random) {
   const deck = cards.map((card) => ({ ...card }));
@@ -68,10 +69,26 @@ export function validateUnityCastingSession(session, ownerId) {
   if (session.ownerId !== String(ownerId || 'anonymous')) return false;
   if (!Array.isArray(session.cards) || session.cards.length !== 18) return false;
   if (new Set(session.cards.map((card) => card?.id)).size !== 18) return false;
+  if (session.cards.some((card) => !TAROT_CARD_IDS.has(card?.id) || typeof card?.isReversed !== 'boolean')) return false;
   if (!Number.isInteger(session.roundIndex) || session.roundIndex < 1 || session.roundIndex > 6) return false;
   if (!Number.isInteger(session.revealedCount) || session.revealedCount < 0 || session.revealedCount > 3) return false;
   if (!Array.isArray(session.completedRounds) || session.completedRounds.length > 6) return false;
   const expectedCompleted = session.roundIndex - 1 + (session.revealedCount === 3 ? 1 : 0);
   if (session.completedRounds.length !== expectedCompleted) return false;
+  for (let index = 0; index < session.completedRounds.length; index += 1) {
+    const round = session.completedRounds[index];
+    const expectedCards = session.cards.slice(index * 3, index * 3 + 3);
+    if (
+      round?.roundIndex !== index + 1
+      || round?.lineIndex !== index + 1
+      || round?.linePosition !== ROUND_POSITIONS[index]
+      || !Array.isArray(round?.tarotCards)
+      || round.tarotCards.length !== 3
+      || round.tarotCards.some((card, cardIndex) => (
+        card?.id !== expectedCards[cardIndex]?.id
+        || card?.isReversed !== expectedCards[cardIndex]?.isReversed
+      ))
+    ) return false;
+  }
   return session.status === 'casting' || (session.status === 'completed' && session.completedRounds.length === 6);
 }

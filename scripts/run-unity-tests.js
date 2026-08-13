@@ -135,9 +135,27 @@ test('draft persistence is owner scoped and rejects corrupt or duplicate drafts'
   storage.setItem(getUnityDraftKey('u1'), JSON.stringify(invalid));
   assert.equal(loadUnityDraft(storage, 'u1'), null);
   assert.equal(storage.getItem(getUnityDraftKey('u1')), null);
+  const wrongOrientation = { ...session, cards: session.cards.map((card, index) => index === 0 ? { ...card, isReversed: 'yes' } : card) };
+  storage.setItem(getUnityDraftKey('u1'), JSON.stringify(wrongOrientation));
+  assert.equal(loadUnityDraft(storage, 'u1'), null);
+  const unknownCard = { ...session, cards: session.cards.map((card, index) => index === 0 ? { ...card, id: 999 } : card) };
+  storage.setItem(getUnityDraftKey('u1'), JSON.stringify(unknownCard));
+  assert.equal(loadUnityDraft(storage, 'u1'), null);
+  let progressed = revealNextUnityCard(session, 0);
+  progressed = revealNextUnityCard(progressed, 1);
+  progressed = revealNextUnityCard(progressed, 2);
+  const mismatchedRound = { ...progressed, completedRounds: [{ ...progressed.completedRounds[0], tarotCards: progressed.cards.slice(3, 6) }] };
+  storage.setItem(getUnityDraftKey('u1'), JSON.stringify(mismatchedRound));
+  assert.equal(loadUnityDraft(storage, 'u1'), null);
   storage.setItem(getUnityDraftKey('u1'), '{bad');
   assert.equal(loadUnityDraft(storage, 'u1'), null);
   clearUnityDraft(storage, 'u1');
+});
+
+test('hexagram calculation rejects rounds that are not strictly ordered one through six', () => {
+  const rounds = roundsForLineValues([7, 7, 7, 7, 7, 7]);
+  rounds[1].roundIndex = 4;
+  assert.throws(() => calculateUnityResult(rounds), /order/i);
 });
 
 test('Unity casting and result copy is complete in every locale', () => {
@@ -153,13 +171,19 @@ test('Unity casting and result copy is complete in every locale', () => {
 
 test('Unity pages expose sequential casting and calculation-only result contracts', () => {
   const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
+  const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
   const resultSource = readFileSync(new URL('../src/pages/UnityResultPage.jsx', import.meta.url), 'utf8');
   assert.match(castingSource, /revealedCount === cardIndex/);
   assert.match(castingSource, /useReducedMotion/);
   assert.match(castingSource, /clearTimeout/);
+  assert.match(castingSource, /cancelAnimationFrame/);
+  assert.match(introSource, /onResume/);
+  assert.match(introSource, /hasDraft/);
+  assert.match(introSource, /resumeCasting/);
   assert.match(resultSource, /unity-result-tarot-grid/);
   assert.match(resultSource, /primaryHexagram/);
   assert.match(resultSource, /changedHexagram/);
+  assert.match(resultSource, /getLocalizedMeaningCard/);
   assert.doesNotMatch(resultSource, /interpretation|reading|advice|synthesis|Coming Soon/i);
 });
 

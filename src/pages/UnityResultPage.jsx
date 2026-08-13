@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import TarotCard from '../TarotCard';
+import { useI18n } from '../i18n';
 
 function HexagramGlyph({ pattern, label }) {
   return (
@@ -25,11 +27,31 @@ function HexagramRecord({ title, hexagram, names, t }) {
 }
 
 function UnityResultPage({ theme, result, goHome, t }) {
+  const { language } = useI18n();
+  const [nameArchive, setNameArchive] = useState(null);
   const lineLabels = t('unity.lineLabels');
   const names = t('unity.hexagramNames');
   const movingText = result.movingLineIndexes.length
     ? result.movingLineIndexes.map((index) => lineLabels[index - 1]).join(' · ')
     : t('unity.noMovingLines');
+
+  useEffect(() => {
+    let active = true;
+    import('../cardMeanings.js').then((module) => {
+      if (active) setNameArchive(module);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  const getLocalizedCardName = (card) => {
+    if (language === 'zh-CN') return card.name;
+    if (!nameArchive) return card.englishName;
+    const localized = nameArchive.getLocalizedMeaningCard(
+      nameArchive.findTarotMeaningCard({ id: card.cardId }),
+      language,
+    );
+    return localized?.displayName || card.englishName;
+  };
 
   return (
     <div className={`screen-shell page-shell archive-page unity-result-page theme-${theme}`}>
@@ -59,7 +81,7 @@ function UnityResultPage({ theme, result, goHome, t }) {
                     {round.tarotCards.map((card) => (
                       <div key={card.cardId} className="unity-result-card-record">
                         <TarotCard card={{ id: card.cardId, name: card.name, englishName: card.englishName, isReversed: card.isReversed }} isRevealed size="small" />
-                        <p>{card.name}</p>
+                        <p>{getLocalizedCardName(card)}</p>
                         <small>{card.isReversed ? t('common.orientationReversed') : t('common.orientationUpright')}</small>
                       </div>
                     ))}

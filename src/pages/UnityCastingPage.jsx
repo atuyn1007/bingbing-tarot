@@ -8,6 +8,7 @@ import { getUnityRoundCards } from '../unityCastingFlow';
 function UnityCastingPage({ theme, session, goHome, onReveal, onAdvance, onComplete, error, t }) {
   const shouldReduceMotion = useReducedMotion();
   const timerRef = useRef(null);
+  const animationFrameRef = useRef(null);
   const stageRef = useRef(null);
   const lineLabels = t('unity.lineLabels');
   const cards = getUnityRoundCards(session);
@@ -19,11 +20,12 @@ function UnityCastingPage({ theme, session, goHome, onReveal, onAdvance, onCompl
       if (session.status === 'completed') onComplete();
       else {
         onAdvance();
-        window.requestAnimationFrame(() => stageRef.current?.scrollIntoView({ behavior: shouldReduceMotion ? 'auto' : 'smooth', block: 'center' }));
+        animationFrameRef.current = window.requestAnimationFrame(() => stageRef.current?.scrollIntoView({ behavior: shouldReduceMotion ? 'auto' : 'smooth', block: 'center' }));
       }
     }, shouldReduceMotion ? 180 : 900);
     return () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (animationFrameRef.current) window.cancelAnimationFrame(animationFrameRef.current);
     };
   }, [error, onAdvance, onComplete, session.revealedCount, session.status, shouldReduceMotion]);
 

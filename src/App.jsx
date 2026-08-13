@@ -287,6 +287,7 @@ function App() {
   const [unitySession, setUnitySession] = useState(null);
   const [unityResult, setUnityResult] = useState(null);
   const [unityError, setUnityError] = useState('');
+  const [unityDraft, setUnityDraft] = useState(null);
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -408,6 +409,7 @@ function App() {
     setUnitySession(null);
     setUnityResult(null);
     setUnityError('');
+    setUnityDraft(null);
     setChoiceA('');
     setChoiceB('');
     setDrawnCards([]);
@@ -1125,15 +1127,12 @@ function App() {
     setShowSpreadModal(false);
     if (spreadKey === 'unity') {
       const draft = loadUnityDraft(window.localStorage, user?.id || 'anonymous');
-      if (draft) {
-        setUnityQuestion(draft.question);
-        setUnitySession(draft);
-        setUnityResult(null);
-        setUnityError('');
-        setCurrentPage('unity-casting');
-      } else {
-        setCurrentPage('unity-intro');
-      }
+      setUnityDraft(draft);
+      setUnityQuestion('');
+      setUnitySession(null);
+      setUnityResult(null);
+      setUnityError('');
+      setCurrentPage('unity-intro');
       return;
     }
     setCurrentPage('drawing-input');
@@ -1146,7 +1145,18 @@ function App() {
     setUnitySession(session);
     setUnityResult(null);
     setUnityError('');
+    setUnityDraft(null);
     saveUnityDraft(window.localStorage, session);
+    setCurrentPage('unity-casting');
+  };
+
+  const handleResumeUnityCasting = () => {
+    if (!unityDraft) return;
+    setUnityQuestion(unityDraft.question);
+    setUnitySession(unityDraft);
+    setUnityResult(null);
+    setUnityError('');
+    setUnityDraft(null);
     setCurrentPage('unity-casting');
   };
 
@@ -1557,6 +1567,7 @@ function App() {
     setUnitySession(null);
     setUnityResult(null);
     setUnityError('');
+    setUnityDraft(null);
     setDrawnCards([]);
     setDrawSession(null);
   };
@@ -1664,6 +1675,8 @@ function App() {
         question={unityQuestion}
         setQuestion={setUnityQuestion}
         onStart={handleStartUnityCasting}
+        onResume={handleResumeUnityCasting}
+        hasDraft={Boolean(unityDraft)}
         goHome={goHome}
         t={t}
       />

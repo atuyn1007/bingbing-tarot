@@ -1274,6 +1274,8 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .unity-casting-error { display: grid; justify-items: center; gap: 12px; margin-top: 20px; }
 .unity-casting-error p { margin: 0; color: #e8c878; font: .78rem/1.6 var(--app-font-reading); }
 .unity-casting-error button { min-height: 44px; padding: 8px 18px; border: 1px solid rgba(255, 210, 28, .45); color: var(--app-solar); background: transparent; font: .63rem/1 var(--app-font-ui); letter-spacing: .08em; }
+.unity-resume-button { min-height: 44px; margin-top: 10px; padding: 8px 14px; border: 0; color: #745b2d; background: transparent; font: .65rem/1.3 var(--app-font-ui); letter-spacing: .06em; text-decoration: underline; text-underline-offset: 4px; }
+.unity-resume-button:focus-visible { outline: 2px solid #8c682b; outline-offset: 3px; }
 
 .unity-result-page { min-height: 100vh; }
 .unity-result-main { position: relative; z-index: 1; width: min(1380px, calc(100% - 42px)); margin: 0 auto; padding: 48px 0 92px; }
