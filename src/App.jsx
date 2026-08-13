@@ -20,12 +20,21 @@ import {
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
 import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
 import { getSpreadConfig, SPREAD_OPTIONS } from './spreadOptions';
+import { calculateUnityResult } from './unityAlgorithm';
+import {
+  advanceUnityRound,
+  createUnityCastingSession,
+  isUnityCastingComplete,
+  revealNextUnityCard,
+} from './unityCastingFlow';
+import { clearUnityDraft, loadUnityDraft, saveUnityDraft } from './unityPersistence';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
 const UnityIntroPage = lazy(() => import('./pages/UnityIntroPage.jsx'));
 const UnityCastingPage = lazy(() => import('./pages/UnityCastingPage.jsx'));
+const UnityResultPage = lazy(() => import('./pages/UnityResultPage.jsx'));
 const CardDrawStage = lazy(() => import('./components/CardDrawStage.jsx'));
 const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
 const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
@@ -275,6 +284,9 @@ function App() {
   const [isHumanMode, setIsHumanMode] = useState(false);
   const [userQuestion, setUserQuestion] = useState('');
   const [unityQuestion, setUnityQuestion] = useState('');
+  const [unitySession, setUnitySession] = useState(null);
+  const [unityResult, setUnityResult] = useState(null);
+  const [unityError, setUnityError] = useState('');
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -393,6 +405,9 @@ function App() {
     setIsHumanMode(false);
     setUserQuestion('');
     setUnityQuestion('');
+    setUnitySession(null);
+    setUnityResult(null);
+    setUnityError('');
     setChoiceA('');
     setChoiceB('');
     setDrawnCards([]);
@@ -1109,15 +1124,63 @@ function App() {
     setSelectedSpreadKey(spreadKey);
     setShowSpreadModal(false);
     if (spreadKey === 'unity') {
-      setCurrentPage('unity-intro');
+      const draft = loadUnityDraft(window.localStorage, user?.id || 'anonymous');
+      if (draft) {
+        setUnityQuestion(draft.question);
+        setUnitySession(draft);
+        setUnityResult(null);
+        setUnityError('');
+        setCurrentPage('unity-casting');
+      } else {
+        setCurrentPage('unity-intro');
+      }
       return;
     }
     setCurrentPage('drawing-input');
   };
 
   const handleStartUnityCasting = (question) => {
-    setUnityQuestion(question);
+    const ownerId = user?.id || 'anonymous';
+    const session = createUnityCastingSession(allTarotCards, { ownerId, question, locale: language });
+    setUnityQuestion(session.question);
+    setUnitySession(session);
+    setUnityResult(null);
+    setUnityError('');
+    saveUnityDraft(window.localStorage, session);
     setCurrentPage('unity-casting');
+  };
+
+  const handleRevealUnityCard = (cardIndex) => {
+    setUnitySession((current) => {
+      const next = revealNextUnityCard(current, cardIndex);
+      if (next !== current) saveUnityDraft(window.localStorage, next);
+      return next;
+    });
+  };
+
+  const handleAdvanceUnityRound = () => {
+    setUnitySession((current) => {
+      const next = advanceUnityRound(current);
+      if (next !== current) saveUnityDraft(window.localStorage, next);
+      return next;
+    });
+  };
+
+  const handleCompleteUnityCasting = () => {
+    if (!isUnityCastingComplete(unitySession)) return;
+    try {
+      const result = calculateUnityResult(unitySession.completedRounds, {
+        question: unitySession.question,
+        locale: language,
+      });
+      setUnityResult(result);
+      setUnityError('');
+      clearUnityDraft(window.localStorage, unitySession.ownerId);
+      setCurrentPage('unity-result');
+    } catch (error) {
+      console.warn('Unity calculation failed:', error);
+      setUnityError(t('unity.calculationError'));
+    }
   };
 
   const handleStartHumanReading = () => {
@@ -1491,6 +1554,9 @@ function App() {
     setSelectedMeaningCardId(null);
     setUserQuestion('');
     setUnityQuestion('');
+    setUnitySession(null);
+    setUnityResult(null);
+    setUnityError('');
     setDrawnCards([]);
     setDrawSession(null);
   };
@@ -1603,14 +1669,22 @@ function App() {
       />
     );
   } else if (currentPage === 'unity-casting') {
-    currentView = (
+    currentView = unitySession ? (
       <UnityCastingPage
         theme={theme}
-        question={unityQuestion}
+        session={unitySession}
         goHome={goHome}
+        onReveal={handleRevealUnityCard}
+        onAdvance={handleAdvanceUnityRound}
+        onComplete={handleCompleteUnityCasting}
+        error={unityError}
         t={t}
       />
-    );
+    ) : suspenseFallback;
+  } else if (currentPage === 'unity-result') {
+    currentView = unityResult ? (
+      <UnityResultPage theme={theme} result={unityResult} goHome={goHome} t={t} />
+    ) : suspenseFallback;
   } else if (currentPage === 'drawing-input') {
     currentView = (
       <DrawingPage

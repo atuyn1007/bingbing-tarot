@@ -1265,6 +1265,50 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .unity-casting-heading blockquote { max-width: 52rem; margin: 28px 0 0; color: rgba(241, 234, 220, .72); font: 400 clamp(.92rem, 1.7vw, 1.18rem)/1.75 var(--app-font-reading); }
 .unity-casting-heading small { margin-top: 12px; color: rgba(241, 234, 220, .4); font: .58rem/1.55 var(--app-font-ui); letter-spacing: .08em; }
 
+.unity-casting-card-row { display: flex; align-items: flex-start; justify-content: center; gap: clamp(14px, 3.8vw, 50px); width: 100%; margin-top: clamp(38px, 6vw, 70px); perspective: 1200px; }
+.unity-casting-card-button { position: relative; display: grid; min-width: 44px; min-height: 44px; padding: 0 0 28px; border: 0; border-radius: var(--radius-card); background: transparent; cursor: default; opacity: .58; transition: opacity .25s ease, transform .25s ease, filter .25s ease; }
+.unity-casting-card-button.is-next { cursor: pointer; opacity: 1; filter: drop-shadow(0 0 18px rgba(255, 210, 28, .17)); transform: translateY(-8px); }
+.unity-casting-card-button.is-revealed { opacity: 1; }
+.unity-casting-card-button:focus-visible { outline: 2px solid var(--app-solar); outline-offset: 7px; }
+.unity-casting-card-button > span { position: absolute; right: 3px; bottom: 0; color: rgba(255, 224, 130, .54); font: .55rem/1 var(--app-font-ui); letter-spacing: .18em; }
+.unity-casting-error { display: grid; justify-items: center; gap: 12px; margin-top: 20px; }
+.unity-casting-error p { margin: 0; color: #e8c878; font: .78rem/1.6 var(--app-font-reading); }
+.unity-casting-error button { min-height: 44px; padding: 8px 18px; border: 1px solid rgba(255, 210, 28, .45); color: var(--app-solar); background: transparent; font: .63rem/1 var(--app-font-ui); letter-spacing: .08em; }
+
+.unity-result-page { min-height: 100vh; }
+.unity-result-main { position: relative; z-index: 1; width: min(1380px, calc(100% - 42px)); margin: 0 auto; padding: 48px 0 92px; }
+.unity-result-question { max-width: 760px; margin: 0 0 34px; }
+.unity-result-question > p { margin: 0 0 9px; color: rgba(255, 210, 28, .58); font: .55rem/1.4 var(--app-font-ui); letter-spacing: .2em; }
+.unity-result-question blockquote { margin: 0; color: rgba(241, 234, 220, .82); font: clamp(1.15rem, 2vw, 1.7rem)/1.55 var(--app-font-serif); }
+.unity-result-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(290px, .75fr); gap: clamp(26px, 4vw, 58px); align-items: start; }
+.unity-result-tarot-panel, .unity-result-structure-panel { min-width: 0; }
+.unity-result-section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 210, 28, .22); }
+.unity-result-section-head span { color: rgba(255, 210, 28, .5); font: .55rem/1 var(--app-font-ui); letter-spacing: .17em; }
+.unity-result-section-head h2 { margin: 0; color: var(--app-paper); font: 500 clamp(1.3rem, 2vw, 2rem)/1.15 var(--app-font-serif); }
+.unity-result-tarot-grid { display: grid; gap: 12px; }
+.unity-result-round-record { display: grid; grid-template-columns: minmax(120px, .42fr) minmax(0, 1.58fr); gap: 18px; padding: 18px; border: 1px solid rgba(127, 97, 42, .28); background: linear-gradient(145deg, rgba(237, 225, 198, .97), rgba(210, 190, 151, .92)); box-shadow: 0 14px 34px rgba(0, 0, 0, .22); }
+.unity-result-round-head { align-self: center; color: #312718; }
+.unity-result-round-head small { color: #80663c; font: .48rem/1.4 var(--app-font-ui); letter-spacing: .1em; }
+.unity-result-round-head h3 { margin: 4px 0 18px; font: 500 1.3rem/1.15 var(--app-font-serif); }
+.unity-result-round-head > strong { color: #72581f; font: 600 .72rem/1.4 var(--app-font-ui); letter-spacing: .07em; }
+.unity-result-round-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.unity-result-card-record { min-width: 0; text-align: center; }
+.unity-result-card-record .tarot-card-frame { width: min(100%, 96px); height: auto; margin: 0 auto; aspect-ratio: 2 / 3; }
+.unity-result-card-record p { overflow: hidden; margin: 8px 0 2px; color: #3b2d1c; font: .68rem/1.25 var(--app-font-reading); text-overflow: ellipsis; white-space: nowrap; }
+.unity-result-card-record small { color: #80663c; font: .48rem/1.2 var(--app-font-ui); letter-spacing: .05em; }
+.unity-result-structure-panel { position: sticky; top: 90px; display: grid; gap: 18px; padding: 22px; border: 1px solid rgba(255, 210, 28, .22); background: linear-gradient(160deg, rgba(20, 24, 17, .98), rgba(8, 15, 12, .96)); box-shadow: 0 24px 54px rgba(0, 0, 0, .32); }
+.unity-result-structure-panel .unity-result-section-head { margin-bottom: 0; }
+.unity-result-hexagram-record { display: grid; justify-items: center; padding: 18px 12px; border: 1px solid rgba(255, 210, 28, .14); text-align: center; }
+.unity-result-hexagram-record > p { margin: 0 0 16px; color: rgba(255, 224, 130, .62); font: .55rem/1.3 var(--app-font-ui); letter-spacing: .16em; }
+.unity-result-hexagram-record > strong { margin-top: 14px; color: var(--app-solar); font: 500 1.8rem/1 var(--app-font-serif); }
+.unity-result-hexagram-record h3 { margin: 7px 0 0; color: var(--app-paper); font: 500 1.1rem/1.3 var(--app-font-serif); }
+.unity-result-hexagram-glyph { display: flex; flex-direction: column; gap: 7px; width: 106px; }
+.unity-result-line { position: relative; display: block; width: 100%; height: 7px; background: #d8bb54; }
+.unity-result-line.is-yin { background: linear-gradient(to right, #d8bb54 0 42%, transparent 42% 58%, #d8bb54 58% 100%); }
+.unity-result-moving-lines { padding: 14px 12px; border-top: 1px solid rgba(255, 210, 28, .15); border-bottom: 1px solid rgba(255, 210, 28, .15); text-align: center; }
+.unity-result-moving-lines p { margin: 0 0 7px; color: rgba(255, 224, 130, .55); font: .5rem/1.2 var(--app-font-ui); letter-spacing: .16em; }
+.unity-result-moving-lines strong { color: rgba(241, 234, 220, .84); font: 500 .85rem/1.5 var(--app-font-reading); }
+
 .unity-static-card-row { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 4vw, 54px); width: 100%; margin-top: clamp(40px, 7vw, 78px); perspective: 1200px; }
 .unity-static-card-back { position: relative; flex: 0 1 210px; width: clamp(118px, 17vw, 210px); aspect-ratio: 2 / 3; overflow: hidden; border: 1px solid rgba(255, 210, 28, .58); border-radius: var(--radius-card); background: radial-gradient(circle at center, rgba(255, 210, 28, .07), transparent 38%), linear-gradient(145deg, #242116, #0e100d 66%, #211b11); box-shadow: 0 23px 42px rgba(0, 0, 0, .42), inset 0 0 0 5px rgba(255, 210, 28, .055), inset 0 0 40px rgba(255, 210, 28, .035); }
 .unity-static-card-back:nth-child(1) { transform: translateY(12px) rotate(-2.4deg); }
@@ -1286,6 +1330,23 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   .unity-static-card-back { width: min(29vw, 132px); }
   .unity-static-card-back:nth-child(1),
   .unity-static-card-back:nth-child(3) { transform: translateY(8px); }
+  .unity-casting-card-row { gap: 5px; margin-top: 38px; }
+  .unity-casting-card-button { width: min(31vw, 132px); padding-bottom: 24px; }
+  .unity-casting-card-button .tarot-card-frame { width: 100%; height: auto; aspect-ratio: 2 / 3; }
+}
+
+@media (max-width: 900px) {
+  .unity-result-main { width: min(100% - 24px, 760px); padding-top: 34px; }
+  .unity-result-layout { grid-template-columns: 1fr; }
+  .unity-result-structure-panel { position: static; grid-row: 1; }
+}
+
+@media (max-width: 560px) {
+  .unity-result-round-record { grid-template-columns: 1fr; padding: 14px; }
+  .unity-result-round-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .unity-result-round-head h3 { margin-bottom: 0; }
+  .unity-result-round-cards { gap: 7px; }
+  .unity-result-card-record p { font-size: .6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -74,23 +74,18 @@ const tests = [
     },
   },
   {
-    name: 'Unity first round renders exactly three static non-interactive card backs',
+    name: 'Unity casting stays separate from the ordinary spread draw flow',
     run() {
       const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
       const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
-      const staticDeckSource = castingSource.slice(
-        castingSource.indexOf('<div className="unity-static-card-row"'),
-        castingSource.indexOf('</main>'),
-      );
 
       assert.match(appSource, /currentPage === 'unity-casting'/);
       assert.match(appSource, /<UnityCastingPage/);
-      assert.match(castingSource, /Array\.from\(\{ length: 3 \}/);
-      assert.match(castingSource, /className="unity-static-card-back"/);
-      assert.match(castingSource, /aria-hidden="true"/);
+      assert.match(castingSource, /getUnityRoundCards\(session\)/);
+      assert.match(castingSource, /cards\.map\(\(card, cardIndex\)/);
+      assert.match(castingSource, /disabled=\{!isNext \|\| session\.revealedCount === 3\}/);
       assert.doesNotMatch(castingSource, /⚊|⚋|unity-line-glyph/);
-      assert.doesNotMatch(staticDeckSource, /<button|tabIndex|onClick|onKey|role="button"/);
-      assert.doesNotMatch(castingSource, /Math\.random|createDrawSession|cardDrawFlow|allTarotCards|isReversed|cardId/);
+      assert.doesNotMatch(castingSource, /Math\.random|createDrawSession|cardDrawFlow|allTarotCards/);
       assert.doesNotMatch(appSource, /handleStartUnityCasting[\s\S]{0,180}createDrawSession/);
     },
   },
