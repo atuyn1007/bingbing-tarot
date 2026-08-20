@@ -9,6 +9,12 @@ import {
   deriveUnityLine,
 } from '../src/unityAlgorithm.js';
 import {
+  UNITY_HEXAGRAMS,
+  getUnityHexagramByNumber,
+  getUnityHexagramByTrigrams,
+} from '../src/data/unity/hexagrams.js';
+import { UNITY_TRIGRAMS } from '../src/data/unity/trigrams.js';
+import {
   advanceUnityRound,
   createUnityCastingSession,
   isUnityCastingComplete,
@@ -71,6 +77,16 @@ test('frozen line mapping derives exact 6 7 8 9 facts', () => {
   assert.deepEqual(deriveUnityLine(cardsForValues([3, 3, 3])), {
     threeCardValues: [3, 3, 3], lineValue: 9, lineType: 'old-yang', linePolarity: 'yang', lineAge: 'old', isMoving: true, changedPolarity: 'yin',
   });
+});
+
+test('Unity structural knowledge indexes all trigrams and King Wen hexagrams', () => {
+  assert.equal(UNITY_TRIGRAMS.length, 8);
+  assert.equal(UNITY_HEXAGRAMS.length, 64);
+  assert.equal(new Set(UNITY_HEXAGRAMS.map((item) => item.kingWenNumber)).size, 64);
+  assert.deepEqual(getUnityHexagramByNumber(1).linePatternBottomToTop, Array(6).fill('yang'));
+  assert.deepEqual(getUnityHexagramByNumber(2).linePatternBottomToTop, Array(6).fill('yin'));
+  assert.equal(getUnityHexagramByTrigrams('kun', 'qian').kingWenNumber, 11);
+  assert.equal(getUnityHexagramByTrigrams('qian', 'kun').kingWenNumber, 12);
 });
 
 test('hexagram calculation uses bottom-to-top King Wen order and all moving lines', () => {
