@@ -126,6 +126,7 @@ export function buildUnityKnowledgeSnapshot(result, requestedLocale = 'zh-CN') {
     const round = result.rounds[lineIndex - 1];
     return Object.freeze({
       ...getUnityLineKnowledge(result.primaryHexagram.number, lineIndex, locale),
+      lineIndex,
       lineValue: round.lineValue,
       lineType: round.lineType,
       lineAge: round.lineAge,

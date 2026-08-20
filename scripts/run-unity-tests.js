@@ -32,6 +32,13 @@ import {
   loadUnityDraft,
   saveUnityDraft,
 } from '../src/unityPersistence.js';
+import {
+  createUnityResultArchive,
+  getUnityResultArchiveKey,
+  loadUnityResultArchive,
+  saveUnityResultArchive,
+  validateUnityResultArchive,
+} from '../src/unityResultPersistence.js';
 
 const tests = [];
 const test = (name, run) => tests.push({ name, run });
@@ -126,6 +133,48 @@ test('knowledge snapshot suppresses presentation changed hexagram when no lines 
   assert.deepEqual(snapshot.movingLines, []);
   assert.equal(snapshot.changed, null);
   assert.equal(calculation.changedHexagram.number, 1);
+});
+
+test('completed Unity archive reopens without recasting or changing facts', () => {
+  const storage = memoryStorage();
+  const calculation = calculateUnityResult(
+    roundsForLineValues([9, 7, 8, 7, 8, 6]),
+    { question: 'Q', now: '2026-08-20T00:00:00.000Z' },
+  );
+  const archive = createUnityResultArchive(calculation, 'u1', '2026-08-20T00:00:00.000Z');
+  assert.equal(saveUnityResultArchive(storage, archive), true);
+  const reopened = loadUnityResultArchive(storage, 'u1');
+  assert.deepEqual(reopened.calculation.rounds, calculation.rounds);
+  assert.deepEqual(reopened.calculation.movingLineIndexes, calculation.movingLineIndexes);
+  assert.deepEqual(reopened.calculation.primaryHexagram, calculation.primaryHexagram);
+  assert.deepEqual(
+    reopened.knowledgeByLocale['zh-CN'].primary.structure,
+    archive.knowledgeByLocale['zh-CN'].primary.structure,
+  );
+});
+
+test('completed Unity archive is owner scoped and rejects altered calculations', () => {
+  const storage = memoryStorage();
+  const calculation = calculateUnityResult(roundsForLineValues([7, 7, 7, 7, 7, 7]));
+  const archive = createUnityResultArchive(calculation, 'u1');
+  assert.equal(validateUnityResultArchive(archive, 'u1'), true);
+  assert.equal(validateUnityResultArchive(archive, 'u2'), false);
+
+  const duplicate = structuredClone(archive);
+  duplicate.calculation.rounds[0].tarotCards[1].cardId = duplicate.calculation.rounds[0].tarotCards[0].cardId;
+  assert.equal(validateUnityResultArchive(duplicate, 'u1'), false);
+
+  const alteredPattern = structuredClone(archive);
+  alteredPattern.calculation.primaryHexagram.linePatternBottomToTop[0] = 'yin';
+  assert.equal(validateUnityResultArchive(alteredPattern, 'u1'), false);
+
+  const missingLocale = structuredClone(archive);
+  delete missingLocale.knowledgeByLocale.it;
+  assert.equal(validateUnityResultArchive(missingLocale, 'u1'), false);
+
+  storage.setItem(getUnityResultArchiveKey('u1'), JSON.stringify(alteredPattern));
+  assert.equal(loadUnityResultArchive(storage, 'u1'), null);
+  assert.equal(storage.getItem(getUnityResultArchiveKey('u1')), null);
 });
 
 test('hexagram calculation uses bottom-to-top King Wen order and all moving lines', () => {
@@ -240,6 +289,18 @@ test('Unity pages expose sequential casting and calculation-only result contract
   assert.match(resultSource, /changedHexagram/);
   assert.match(resultSource, /getLocalizedMeaningCard/);
   assert.doesNotMatch(resultSource, /interpretation|reading|advice|synthesis|Coming Soon/i);
+});
+
+test('Unity introduction reopens a completed archive without starting a new cast', () => {
+  const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
+  assert.match(appSource, /loadUnityResultArchive/);
+  assert.match(appSource, /createUnityResultArchive/);
+  assert.match(appSource, /saveUnityResultArchive/);
+  assert.match(appSource, /handleOpenUnityResult/);
+  assert.match(introSource, /hasSavedResult/);
+  assert.match(introSource, /onOpenResult/);
+  assert.doesNotMatch(introSource, /createUnityCastingSession|calculateUnityResult/);
 });
 
 let failures = 0;

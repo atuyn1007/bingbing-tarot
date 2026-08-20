@@ -28,6 +28,11 @@ import {
   revealNextUnityCard,
 } from './unityCastingFlow';
 import { clearUnityDraft, loadUnityDraft, saveUnityDraft } from './unityPersistence';
+import {
+  createUnityResultArchive,
+  loadUnityResultArchive,
+  saveUnityResultArchive,
+} from './unityResultPersistence';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -288,6 +293,7 @@ function App() {
   const [unityResult, setUnityResult] = useState(null);
   const [unityError, setUnityError] = useState('');
   const [unityDraft, setUnityDraft] = useState(null);
+  const [unitySavedResult, setUnitySavedResult] = useState(null);
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -410,6 +416,7 @@ function App() {
     setUnityResult(null);
     setUnityError('');
     setUnityDraft(null);
+    setUnitySavedResult(null);
     setChoiceA('');
     setChoiceB('');
     setDrawnCards([]);
@@ -1126,8 +1133,11 @@ function App() {
     setSelectedSpreadKey(spreadKey);
     setShowSpreadModal(false);
     if (spreadKey === 'unity') {
-      const draft = loadUnityDraft(window.localStorage, user?.id || 'anonymous');
+      const ownerId = user?.id || 'anonymous';
+      const draft = loadUnityDraft(window.localStorage, ownerId);
+      const savedResult = loadUnityResultArchive(window.localStorage, ownerId);
       setUnityDraft(draft);
+      setUnitySavedResult(savedResult);
       setUnityQuestion('');
       setUnitySession(null);
       setUnityResult(null);
@@ -1181,9 +1191,12 @@ function App() {
     try {
       const result = calculateUnityResult(unitySession.completedRounds, {
         question: unitySession.question,
-        locale: language,
+        locale: unitySession.locale,
       });
-      setUnityResult(result);
+      const archive = createUnityResultArchive(result, unitySession.ownerId);
+      saveUnityResultArchive(window.localStorage, archive);
+      setUnityResult(archive);
+      setUnitySavedResult(archive);
       setUnityError('');
       clearUnityDraft(window.localStorage, unitySession.ownerId);
       setCurrentPage('unity-result');
@@ -1191,6 +1204,14 @@ function App() {
       console.warn('Unity calculation failed:', error);
       setUnityError(t('unity.calculationError'));
     }
+  };
+
+  const handleOpenUnityResult = () => {
+    if (!unitySavedResult) return;
+    setUnityResult(unitySavedResult);
+    setUnityQuestion(unitySavedResult.calculation.question);
+    setUnityError('');
+    setCurrentPage('unity-result');
   };
 
   const handleStartHumanReading = () => {
@@ -1568,6 +1589,7 @@ function App() {
     setUnityResult(null);
     setUnityError('');
     setUnityDraft(null);
+    setUnitySavedResult(null);
     setDrawnCards([]);
     setDrawSession(null);
   };
@@ -1677,6 +1699,8 @@ function App() {
         onStart={handleStartUnityCasting}
         onResume={handleResumeUnityCasting}
         hasDraft={Boolean(unityDraft)}
+        onOpenResult={handleOpenUnityResult}
+        hasSavedResult={Boolean(unitySavedResult)}
         goHome={goHome}
         t={t}
       />
@@ -1696,7 +1720,7 @@ function App() {
     ) : suspenseFallback;
   } else if (currentPage === 'unity-result') {
     currentView = unityResult ? (
-      <UnityResultPage theme={theme} result={unityResult} goHome={goHome} t={t} />
+      <UnityResultPage theme={theme} archive={unityResult} result={unityResult.calculation} goHome={goHome} t={t} />
     ) : suspenseFallback;
   } else if (currentPage === 'drawing-input') {
     currentView = (
