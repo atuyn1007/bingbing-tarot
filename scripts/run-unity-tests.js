@@ -15,6 +15,11 @@ import {
 } from '../src/data/unity/hexagrams.js';
 import { UNITY_TRIGRAMS } from '../src/data/unity/trigrams.js';
 import {
+  buildUnityKnowledgeSnapshot,
+  getUnityHexagramKnowledge,
+  getUnityLineKnowledge,
+} from '../src/unityKnowledge.js';
+import {
   advanceUnityRound,
   createUnityCastingSession,
   isUnityCastingComplete,
@@ -87,6 +92,40 @@ test('Unity structural knowledge indexes all trigrams and King Wen hexagrams', (
   assert.deepEqual(getUnityHexagramByNumber(2).linePatternBottomToTop, Array(6).fill('yin'));
   assert.equal(getUnityHexagramByTrigrams('kun', 'qian').kingWenNumber, 11);
   assert.equal(getUnityHexagramByTrigrams('qian', 'kun').kingWenNumber, 12);
+});
+
+test('verified Unity knowledge separates canonical and modern content', () => {
+  const qian = getUnityHexagramKnowledge(1, 'zh-CN');
+  assert.equal(qian.structure.kingWenNumber, 1);
+  assert.ok(qian.canonical.originalText.includes('乾'));
+  assert.ok(qian.modern.summary);
+  assert.notEqual(qian.canonical.originalText, qian.modern.summary);
+  assert.ok(qian.keywords.length >= 2);
+  assert.ok(qian.canonical.sourceId);
+});
+
+test('moving-line knowledge uses the primary hexagram and exact one-based position', () => {
+  const first = getUnityLineKnowledge(1, 1, 'zh-CN');
+  const sixth = getUnityLineKnowledge(1, 6, 'zh-CN');
+  assert.equal(first.linePosition, 1);
+  assert.equal(sixth.linePosition, 6);
+  assert.notEqual(first.canonical.originalText, sixth.canonical.originalText);
+});
+
+test('missing editorial knowledge is explicit and never borrowed', () => {
+  const missing = getUnityHexagramKnowledge(64, 'zh-CN');
+  assert.equal(missing.contentStatus, 'unavailable');
+  assert.equal(missing.canonical, null);
+  assert.equal(missing.modern, null);
+});
+
+test('knowledge snapshot suppresses presentation changed hexagram when no lines move', () => {
+  const calculation = calculateUnityResult(roundsForLineValues([7, 7, 7, 7, 7, 7]));
+  const snapshot = buildUnityKnowledgeSnapshot(calculation, 'zh-CN');
+  assert.equal(snapshot.primary.structure.kingWenNumber, 1);
+  assert.deepEqual(snapshot.movingLines, []);
+  assert.equal(snapshot.changed, null);
+  assert.equal(calculation.changedHexagram.number, 1);
 });
 
 test('hexagram calculation uses bottom-to-top King Wen order and all moving lines', () => {
