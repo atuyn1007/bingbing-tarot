@@ -1,27 +1,44 @@
-export function getRibbonBounds(viewportWidth, trackWidth, edgeInset = 0) {
-  const viewport = Math.max(0, Number(viewportWidth) || 0);
-  const track = Math.max(0, Number(trackWidth) || 0);
-  const inset = Math.max(0, Number(edgeInset) || 0);
-
-  if (track <= viewport) {
-    const centered = (viewport - track) / 2;
-    return { min: centered, max: centered };
-  }
-
+export function createCardPointerGesture({
+  clientX,
+  clientY,
+  pointerId,
+  pointerType,
+  scrollLeft,
+}) {
   return {
-    min: viewport - inset - track,
-    max: inset,
+    pointerId,
+    pointerType,
+    startX: Number(clientX) || 0,
+    startY: Number(clientY) || 0,
+    startScrollLeft: Math.max(0, Number(scrollLeft) || 0),
+    nextScrollLeft: Math.max(0, Number(scrollLeft) || 0),
+    didDrag: false,
   };
 }
 
-export function clampRibbonOffset(offset, bounds) {
-  const value = Number(offset) || 0;
-  return Math.min(bounds.max, Math.max(bounds.min, value));
+export function moveCardPointerGesture(gesture, point, threshold = 8) {
+  if (!gesture) return gesture;
+  const deltaX = (Number(point?.clientX) || 0) - gesture.startX;
+  const deltaY = (Number(point?.clientY) || 0) - gesture.startY;
+  const dragDistance = Math.hypot(deltaX, deltaY);
+
+  return {
+    ...gesture,
+    didDrag: gesture.didDrag || dragDistance > Math.max(0, Number(threshold) || 0),
+    nextScrollLeft: Math.max(0, gesture.startScrollLeft - deltaX),
+  };
 }
 
-export function getWheelRibbonOffset(currentOffset, wheel, bounds) {
+export function shouldActivateCardFromGesture(gesture, eventDetail = 1) {
+  if (eventDetail === 0) return true;
+  return !gesture?.didDrag;
+}
+
+export function getWheelScrollLeft(scrollLeft, scrollWidth, clientWidth, wheel) {
+  const current = Math.max(0, Number(scrollLeft) || 0);
+  const maximum = Math.max(0, (Number(scrollWidth) || 0) - (Number(clientWidth) || 0));
   const deltaX = Number(wheel?.deltaX) || 0;
   const deltaY = Number(wheel?.deltaY) || 0;
   const primaryDelta = Math.abs(deltaX) > Math.abs(deltaY) ? deltaX : deltaY;
-  return clampRibbonOffset(currentOffset - primaryDelta, bounds);
+  return Math.min(maximum, Math.max(0, current + primaryDelta));
 }

@@ -4863,20 +4863,17 @@ button.monthly-calendar-cell {
 .card-ribbon-shell::after { content: ''; position: absolute; top: 0; bottom: 0; z-index: 90; width: clamp(24px, 5vw, 70px); pointer-events: none; }
 .card-ribbon-shell::before { left: 0; background: linear-gradient(90deg, #091e19 4%, rgba(9, 30, 25, 0)); }
 .card-ribbon-shell::after { right: 0; background: linear-gradient(270deg, #091e19 4%, rgba(9, 30, 25, 0)); }
-.card-ribbon-viewport { position: relative; width: 100%; min-height: 210px; overflow: hidden; overscroll-behavior-inline: contain; touch-action: pan-y; cursor: grab; }
-.card-ribbon-viewport:active { cursor: grabbing; }
-.card-back-ribbon { display: flex; align-items: center; width: max-content; min-height: 210px; padding: 34px 70px 32px; cursor: grab; user-select: none; -webkit-user-select: none; will-change: transform; }
-.card-back-ribbon:active { cursor: grabbing; }
-.selectable-card-back { position: relative; flex: 0 0 88px; width: 88px; height: 142px; min-width: 44px; min-height: 44px; color: rgba(242, 217, 147, .76); border: 1px solid rgba(211, 172, 72, .32); border-radius: 2px 13px 2px 10px; background: radial-gradient(circle at center, rgba(211, 166, 53, .2) 0 5%, transparent 6% 24%, rgba(211, 166, 53, .12) 25% 26%, transparent 27%), linear-gradient(145deg, #173b31, #0a211c); box-shadow: 0 16px 28px rgba(0, 0, 0, .28), inset 0 0 0 5px rgba(220, 180, 81, .06); touch-action: pan-y; }
+.card-ribbon-viewport { position: relative; width: 100%; min-height: 210px; overflow-x: auto; overflow-y: hidden; overscroll-behavior-inline: contain; scroll-behavior: smooth; scroll-snap-type: x proximity; scrollbar-width: none; touch-action: pan-x pan-y; cursor: grab; -webkit-overflow-scrolling: touch; }
+.card-ribbon-viewport::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.card-ribbon-viewport.is-dragging { scroll-behavior: auto; scroll-snap-type: none; cursor: grabbing; }
+.card-back-ribbon { display: flex; align-items: center; width: max-content; min-width: 100%; min-height: 210px; padding: 34px 70px 32px; cursor: inherit; user-select: none; -webkit-user-select: none; }
+.selectable-card-back { position: relative; flex: 0 0 88px; width: 88px; height: 142px; min-width: 44px; min-height: 44px; color: rgba(242, 217, 147, .76); border: 1px solid rgba(211, 172, 72, .32); border-radius: 2px 13px 2px 10px; background: radial-gradient(circle at center, rgba(211, 166, 53, .2) 0 5%, transparent 6% 24%, rgba(211, 166, 53, .12) 25% 26%, transparent 27%), linear-gradient(145deg, #173b31, #0a211c); box-shadow: 0 16px 28px rgba(0, 0, 0, .28), inset 0 0 0 5px rgba(220, 180, 81, .06); scroll-snap-align: center; touch-action: pan-x pan-y; }
 .selectable-card-back + .selectable-card-back { margin-left: -25px; }
 .selectable-card-back.is-selected { color: #ffe59a; border-color: #d9ad3d; box-shadow: 0 18px 34px rgba(0,0,0,.35), 0 0 0 2px rgba(211, 165, 53, .24), inset 0 0 0 5px rgba(220, 180, 81, .1); }
 .card-back-ribbon.is-selection-complete .selectable-card-back:not(.is-selected) { filter: saturate(.72) brightness(.84); }
 .selectable-card-index { position: absolute; top: 7px; left: 8px; font: .58rem/1 var(--app-font-ui); letter-spacing: .1em; }
 .selectable-card-sigil { display: grid; place-items: center; height: 100%; font-size: 1.25rem; }
 .selectable-card-order { position: absolute; right: -7px; bottom: -7px; display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 28px; height: 28px; padding: 0 5px; color: #14271e; border-radius: 50%; background: #dcb64e; font: 700 .65rem/1 var(--app-font-ui); }
-.card-ribbon-direction { position: absolute; top: 50%; z-index: 100; display: grid; width: 28px; height: 28px; place-items: center; color: rgba(235, 200, 106, .7); border: 1px solid rgba(218, 178, 75, .24); border-radius: 50%; background: rgba(5, 22, 18, .76); font: 1rem/1 var(--app-font-ui); pointer-events: none; transform: translateY(-50%); }
-.card-ribbon-direction-left { left: 5px; }
-.card-ribbon-direction-right { right: 5px; }
 .selectable-card-back:focus-visible,
 .reading-spread-reveal-button:focus-visible,
 .drawing-question-examples button:focus-visible { outline: 3px solid #f0c85d; outline-offset: 4px; }
@@ -4982,7 +4979,6 @@ button.monthly-calendar-cell {
   .selectable-card-back + .selectable-card-back { margin-left: -19px; }
   .card-ribbon-shell::before,
   .card-ribbon-shell::after { width: 30px; }
-  .card-ribbon-direction { width: 25px; height: 25px; font-size: .82rem; }
   .card-reveal-stage { width: calc(100% - 12px); }
   .choice-reading-columns { grid-template-columns: 1fr; }
   .archive-reading-sheet { padding: 24px 18px; }

@@ -10,9 +10,10 @@ import {
   toggleBackSelection,
 } from '../src/cardDrawFlow.js';
 import {
-  clampRibbonOffset,
-  getRibbonBounds,
-  getWheelRibbonOffset,
+  createCardPointerGesture,
+  getWheelScrollLeft,
+  moveCardPointerGesture,
+  shouldActivateCardFromGesture,
 } from '../src/cardRibbon.js';
 import { getShuffleRitualTimeline } from '../src/shuffleRitual.js';
 import { getChoiceGroupSlots } from '../src/choiceSpreadUtils.js';
@@ -155,6 +156,8 @@ const tests = [
       session = toggleBackSelection(session, 5);
       session = toggleBackSelection(session, 2);
       [7, 9].forEach((index) => { session = toggleBackSelection(session, index); });
+      assert.equal(session.phase, 'selecting');
+      assert.deepEqual(session.drawnCards, []);
       session = confirmBackSelection(session);
       assert.deepEqual(session.selectedBacks, [5, 7, 9]);
       assert.equal(new Set(session.drawnCards.map((card) => card.id)).size, 3);
@@ -175,15 +178,35 @@ const tests = [
     },
   },
   {
-    name: 'card ribbon clamps drag and wheel movement to natural deck boundaries',
+    name: 'card selector drag threshold blocks mouse and touch card activation',
     run() {
-      const bounds = getRibbonBounds(360, 2400, 24);
-      assert.deepEqual(bounds, { min: -2064, max: 24 });
-      assert.equal(clampRibbonOffset(-900, bounds), -900);
-      assert.equal(clampRibbonOffset(80, bounds), 24);
-      assert.equal(clampRibbonOffset(-3000, bounds), -2064);
-      assert.equal(getWheelRibbonOffset(-500, { deltaX: 0, deltaY: 120 }, bounds), -620);
-      assert.equal(getWheelRibbonOffset(-500, { deltaX: -160, deltaY: 20 }, bounds), -340);
+      ['mouse', 'touch'].forEach((pointerType) => {
+        const start = createCardPointerGesture({
+          clientX: 140,
+          clientY: 80,
+          pointerId: 4,
+          pointerType,
+          scrollLeft: 500,
+        });
+        const tap = moveCardPointerGesture(start, { clientX: 146, clientY: 82 }, 8);
+        const drag = moveCardPointerGesture(start, { clientX: 116, clientY: 82 }, 8);
+
+        assert.equal(tap.didDrag, false);
+        assert.equal(shouldActivateCardFromGesture(tap, 1), true);
+        assert.equal(drag.didDrag, true);
+        assert.equal(drag.nextScrollLeft, 524);
+        assert.equal(shouldActivateCardFromGesture(drag, 1), false);
+        assert.equal(shouldActivateCardFromGesture(drag, 0), true);
+      });
+    },
+  },
+  {
+    name: 'card selector wheel maps trackpad and mouse wheel input to bounded horizontal scroll',
+    run() {
+      assert.equal(getWheelScrollLeft(500, 2400, 360, { deltaX: 0, deltaY: 120 }), 620);
+      assert.equal(getWheelScrollLeft(500, 2400, 360, { deltaX: -160, deltaY: 20 }), 340);
+      assert.equal(getWheelScrollLeft(0, 2400, 360, { deltaX: -200, deltaY: 0 }), 0);
+      assert.equal(getWheelScrollLeft(2000, 2400, 360, { deltaX: 200, deltaY: 0 }), 2040);
     },
   },
   {
