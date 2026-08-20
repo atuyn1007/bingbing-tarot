@@ -273,6 +273,34 @@ test('Unity casting and result copy is complete in every locale', () => {
   }
 });
 
+test('Unity phase three copy is complete in every locale', () => {
+  const phaseThreeKeys = [
+    'imagePanelKicker', 'imagePanelTitle', 'readingPanelKicker', 'readingPanelTitle',
+    'canonicalText', 'modernSummary', 'keywords', 'upperTrigram', 'lowerTrigram',
+    'hexagramNumber', 'noMovingLinesTitle', 'noMovingLinesDescription',
+    'changedHexagramHelp', 'knowledgeUnavailable', 'cardPosition', 'cardMetadataLabel',
+    'openSavedResult', 'savedResultInvalid',
+  ];
+  for (const locale of [zhCN, en, it]) {
+    phaseThreeKeys.forEach((key) => assert.ok(locale.unity[key], `Missing unity.${key}`));
+    assert.deepEqual(Object.keys(locale.unity.trigramNames).sort(), ['dui', 'gen', 'kan', 'kun', 'li', 'qian', 'xun', 'zhen']);
+    assert.deepEqual(Object.keys(locale.unity.polarityLabels).sort(), ['yang', 'yin']);
+    assert.ok(locale.unity.lineTypeLabels['old-yin']);
+    assert.ok(locale.unity.lineTypeLabels['old-yang']);
+  }
+});
+
+test('Unity phase three result has responsive archive styling contracts', () => {
+  const css = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
+  assert.match(css, /\.unity-result-layout/);
+  assert.match(css, /\.unity-result-tarot-grid/);
+  assert.match(css, /\.unity-result-reading-panel/);
+  assert.match(css, /\.unity-card-popover/);
+  assert.match(css, /@media \(max-width: 900px\)/);
+  assert.match(css, /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+});
+
 test('Unity pages expose sequential casting and calculation-only result contracts', () => {
   const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
   const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');

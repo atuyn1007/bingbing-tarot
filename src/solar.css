@@ -1277,39 +1277,78 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .unity-resume-button { min-height: 44px; margin-top: 10px; padding: 8px 14px; border: 0; color: #745b2d; background: transparent; font: .65rem/1.3 var(--app-font-ui); letter-spacing: .06em; text-decoration: underline; text-underline-offset: 4px; }
 .unity-resume-button:focus-visible { outline: 2px solid #8c682b; outline-offset: 3px; }
 
-.unity-result-page { min-height: 100vh; }
+.unity-result-page { min-height: 100vh; overflow-x: clip; }
 .unity-result-main { position: relative; z-index: 1; width: min(1380px, calc(100% - 42px)); margin: 0 auto; padding: 48px 0 92px; }
 .unity-result-question { max-width: 760px; margin: 0 0 34px; }
 .unity-result-question > p { margin: 0 0 9px; color: rgba(255, 210, 28, .58); font: .55rem/1.4 var(--app-font-ui); letter-spacing: .2em; }
-.unity-result-question blockquote { margin: 0; color: rgba(241, 234, 220, .82); font: clamp(1.15rem, 2vw, 1.7rem)/1.55 var(--app-font-serif); }
-.unity-result-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(290px, .75fr); gap: clamp(26px, 4vw, 58px); align-items: start; }
-.unity-result-tarot-panel, .unity-result-structure-panel { min-width: 0; }
-.unity-result-section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 210, 28, .22); }
-.unity-result-section-head span { color: rgba(255, 210, 28, .5); font: .55rem/1 var(--app-font-ui); letter-spacing: .17em; }
+.unity-result-question blockquote { margin: 0; color: rgba(241, 234, 220, .82); font: clamp(1.15rem, 2vw, 1.7rem)/1.55 var(--app-font-serif); overflow-wrap: anywhere; }
+.unity-result-layout { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .85fr); gap: clamp(28px, 4vw, 62px); align-items: start; }
+.unity-result-tarot-panel, .unity-result-reading-panel, .unity-result-round-record, .unity-hexagram-section { min-width: 0; }
+.unity-result-section-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 210, 28, .22); }
+.unity-result-section-head > span { padding-top: 5px; color: rgba(255, 210, 28, .5); font: .55rem/1 var(--app-font-ui); letter-spacing: .17em; }
+.unity-result-section-head p { margin: 0 0 5px; color: rgba(255, 210, 28, .48); font: .5rem/1.3 var(--app-font-ui); letter-spacing: .16em; text-transform: uppercase; }
 .unity-result-section-head h2 { margin: 0; color: var(--app-paper); font: 500 clamp(1.3rem, 2vw, 2rem)/1.15 var(--app-font-serif); }
-.unity-result-tarot-grid { display: grid; gap: 12px; }
-.unity-result-round-record { display: grid; grid-template-columns: minmax(120px, .42fr) minmax(0, 1.58fr); gap: 18px; padding: 18px; border: 1px solid rgba(127, 97, 42, .28); background: linear-gradient(145deg, rgba(237, 225, 198, .97), rgba(210, 190, 151, .92)); box-shadow: 0 14px 34px rgba(0, 0, 0, .22); }
-.unity-result-round-head { align-self: center; color: #312718; }
-.unity-result-round-head small { color: #80663c; font: .48rem/1.4 var(--app-font-ui); letter-spacing: .1em; }
-.unity-result-round-head h3 { margin: 4px 0 18px; font: 500 1.3rem/1.15 var(--app-font-serif); }
-.unity-result-round-head > strong { color: #72581f; font: 600 .72rem/1.4 var(--app-font-ui); letter-spacing: .07em; }
-.unity-result-round-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.unity-result-card-record { min-width: 0; text-align: center; }
-.unity-result-card-record .tarot-card-frame { width: min(100%, 96px); height: auto; margin: 0 auto; aspect-ratio: 2 / 3; }
-.unity-result-card-record p { overflow: hidden; margin: 8px 0 2px; color: #3b2d1c; font: .68rem/1.25 var(--app-font-reading); text-overflow: ellipsis; white-space: nowrap; }
-.unity-result-card-record small { color: #80663c; font: .48rem/1.2 var(--app-font-ui); letter-spacing: .05em; }
-.unity-result-structure-panel { position: sticky; top: 90px; display: grid; gap: 18px; padding: 22px; border: 1px solid rgba(255, 210, 28, .22); background: linear-gradient(160deg, rgba(20, 24, 17, .98), rgba(8, 15, 12, .96)); box-shadow: 0 24px 54px rgba(0, 0, 0, .32); }
-.unity-result-structure-panel .unity-result-section-head { margin-bottom: 0; }
-.unity-result-hexagram-record { display: grid; justify-items: center; padding: 18px 12px; border: 1px solid rgba(255, 210, 28, .14); text-align: center; }
-.unity-result-hexagram-record > p { margin: 0 0 16px; color: rgba(255, 224, 130, .62); font: .55rem/1.3 var(--app-font-ui); letter-spacing: .16em; }
-.unity-result-hexagram-record > strong { margin-top: 14px; color: var(--app-solar); font: 500 1.8rem/1 var(--app-font-serif); }
-.unity-result-hexagram-record h3 { margin: 7px 0 0; color: var(--app-paper); font: 500 1.1rem/1.3 var(--app-font-serif); }
+
+.unity-result-tarot-grid { display: grid; gap: 18px; }
+.unity-result-round-record { position: relative; display: grid; grid-template-columns: minmax(64px, .24fr) minmax(0, 1.76fr); gap: clamp(12px, 2vw, 24px); padding: clamp(14px, 2vw, 22px); border: 1px solid rgba(126, 96, 42, .32); background: linear-gradient(141deg, rgba(239, 227, 201, .98), rgba(207, 187, 149, .94)); box-shadow: 0 16px 36px rgba(0, 0, 0, .24); }
+.unity-result-round-record:nth-child(even) { transform: translateX(4px) rotate(.08deg); }
+.unity-result-round-record:nth-child(odd) { transform: translateX(-2px) rotate(-.06deg); }
+.unity-result-round-record::after { content: ''; position: absolute; inset: 7px; pointer-events: none; border: 1px solid rgba(105, 76, 30, .12); }
+.unity-result-round-head { position: relative; z-index: 1; align-self: center; color: #312718; }
+.unity-result-round-head span { color: #8a6a32; font: 600 .52rem/1 var(--app-font-ui); letter-spacing: .16em; }
+.unity-result-round-head h3 { margin: 8px 0 0; font: 500 clamp(1rem, 1.5vw, 1.35rem)/1.2 var(--app-font-serif); }
+.unity-result-round-cards { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; gap: clamp(8px, 1.4vw, 16px); }
+.unity-result-card-trigger { position: relative; display: grid; place-items: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; transition: transform .2s ease, filter .2s ease; }
+.unity-result-card-trigger .tarot-card-frame { width: min(100%, 122px); height: auto; margin: 0 auto; aspect-ratio: 2 / 3; }
+.unity-result-card-trigger:focus-visible { outline: 2px solid #8b661e; outline-offset: 5px; }
+.unity-card-popover { position: absolute; right: 50%; bottom: calc(100% - 8px); z-index: 8; display: grid; gap: 4px; width: max-content; max-width: min(220px, 70vw); padding: 11px 14px; color: #2d2417; border: 1px solid rgba(88, 64, 27, .3); background: #efe2c6; box-shadow: 0 14px 28px rgba(26, 20, 12, .28); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(50%, 5px); transition: opacity .16s ease, transform .16s ease, visibility .16s ease; }
+.unity-card-popover small { color: #806339; font: .48rem/1.35 var(--app-font-ui); letter-spacing: .06em; }
+.unity-card-popover strong { overflow-wrap: anywhere; font: 500 .84rem/1.35 var(--app-font-serif); }
+.unity-card-popover > span { color: #6c5331; font: .58rem/1.3 var(--app-font-ui); }
+.unity-result-card-trigger.is-open .unity-card-popover, .unity-result-card-trigger:focus-visible .unity-card-popover { opacity: 1; visibility: visible; transform: translate(50%, 0); }
+@media (hover: hover) and (pointer: fine) {
+  .unity-result-card-trigger:hover { z-index: 5; filter: drop-shadow(0 10px 10px rgba(45, 33, 16, .2)); transform: translateY(-7px); }
+  .unity-result-card-trigger:hover .unity-card-popover { opacity: 1; visibility: visible; transform: translate(50%, 0); }
+}
+
+.unity-result-reading-panel { position: sticky; top: 88px; padding: clamp(22px, 3vw, 34px); border: 1px solid rgba(255, 210, 28, .2); background: linear-gradient(160deg, rgba(19, 24, 17, .98), rgba(7, 14, 11, .98)); box-shadow: 0 26px 60px rgba(0, 0, 0, .34); }
+.unity-result-reading-panel > .unity-result-section-head { margin-bottom: 30px; }
+.unity-hexagram-section { position: relative; padding: 4px 2px 32px; }
+.unity-hexagram-section + * { border-top: 1px solid rgba(255, 210, 28, .16); }
+.unity-hexagram-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+.unity-hexagram-heading p, .unity-section-label { margin: 0 0 8px; color: rgba(255, 218, 91, .64); font: .55rem/1.3 var(--app-font-ui); letter-spacing: .17em; text-transform: uppercase; }
+.unity-hexagram-heading h3 { margin: 0; color: var(--app-paper); font: 500 clamp(1.8rem, 3vw, 2.8rem)/1.05 var(--app-font-serif); }
+.unity-hexagram-heading div > span { display: block; margin-top: 8px; color: rgba(241, 234, 220, .47); font: .58rem/1.4 var(--app-font-ui); letter-spacing: .1em; }
+.unity-hexagram-unicode { color: rgba(255, 210, 28, .82); font: 400 clamp(3.4rem, 6vw, 5rem)/.9 var(--app-font-serif); }
+.unity-hexagram-figure { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 22px; margin: 28px 0; padding: 20px 0; border-top: 1px solid rgba(255, 210, 28, .11); border-bottom: 1px solid rgba(255, 210, 28, .11); }
 .unity-result-hexagram-glyph { display: flex; flex-direction: column; gap: 7px; width: 106px; }
 .unity-result-line { position: relative; display: block; width: 100%; height: 7px; background: #d8bb54; }
 .unity-result-line.is-yin { background: linear-gradient(to right, #d8bb54 0 42%, transparent 42% 58%, #d8bb54 58% 100%); }
-.unity-result-moving-lines { padding: 14px 12px; border-top: 1px solid rgba(255, 210, 28, .15); border-bottom: 1px solid rgba(255, 210, 28, .15); text-align: center; }
-.unity-result-moving-lines p { margin: 0 0 7px; color: rgba(255, 224, 130, .55); font: .5rem/1.2 var(--app-font-ui); letter-spacing: .16em; }
-.unity-result-moving-lines strong { color: rgba(241, 234, 220, .84); font: 500 .85rem/1.5 var(--app-font-reading); }
+.unity-trigram-pair { display: grid; gap: 11px; margin: 0; }
+.unity-trigram-pair div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 13px; }
+.unity-trigram-pair dt { color: rgba(241, 234, 220, .42); font: .52rem/1.5 var(--app-font-ui); letter-spacing: .08em; }
+.unity-trigram-pair dd { margin: 0; color: rgba(241, 234, 220, .82); font: .78rem/1.5 var(--app-font-reading); overflow-wrap: anywhere; }
+.unity-canonical-text, .unity-modern-summary { margin-top: 24px; }
+.unity-canonical-text h4, .unity-modern-summary h4, .unity-hexagram-keywords h4, .unity-canonical-text h5, .unity-modern-summary h5 { margin: 0 0 9px; color: rgba(255, 218, 91, .56); font: 500 .54rem/1.4 var(--app-font-ui); letter-spacing: .14em; }
+.unity-canonical-text blockquote { margin: 0; color: rgba(241, 234, 220, .9); font: 500 1rem/1.8 var(--app-font-serif); overflow-wrap: anywhere; }
+.unity-modern-summary p { margin: 0; color: rgba(241, 234, 220, .7); font: .82rem/1.85 var(--app-font-reading); overflow-wrap: anywhere; }
+.unity-hexagram-keywords { margin-top: 24px; }
+.unity-hexagram-keywords > div { display: flex; flex-wrap: wrap; gap: 7px; }
+.unity-hexagram-keywords span { padding: 5px 9px; color: rgba(255, 229, 151, .72); border: 1px solid rgba(255, 210, 28, .2); font: .52rem/1.2 var(--app-font-ui); letter-spacing: .05em; }
+.unity-moving-lines-section { padding: 30px 2px; }
+.unity-moving-lines-section.is-stable > p:last-child { margin: 0; color: rgba(241, 234, 220, .7); font: .82rem/1.8 var(--app-font-reading); }
+.unity-moving-lines-section > header h3 { margin: 0; color: var(--app-solar); font: 500 1.35rem/1.35 var(--app-font-serif); }
+.unity-moving-lines-list { display: grid; gap: 0; margin-top: 22px; }
+.unity-moving-line-record { padding: 22px 0; border-top: 1px solid rgba(255, 210, 28, .12); }
+.unity-moving-line-record.is-moving { box-shadow: inset 2px 0 0 rgba(255, 210, 28, .42); padding-left: 18px; }
+.unity-moving-line-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+.unity-moving-line-heading h4 { margin: 0; color: var(--app-paper); font: 500 1.08rem/1.3 var(--app-font-serif); }
+.unity-moving-line-heading p { display: flex; gap: 7px; margin: 0; }
+.unity-moving-line-heading span { color: rgba(255, 225, 135, .68); font: .52rem/1.3 var(--app-font-ui); letter-spacing: .06em; }
+.unity-moving-line-record .unity-canonical-text, .unity-moving-line-record .unity-modern-summary { margin-top: 18px; }
+.unity-change-direction { display: grid; place-items: center; height: 58px; color: rgba(255, 210, 28, .62); border-top: 1px solid rgba(255, 210, 28, .16); }
+.unity-change-direction span { font: 300 1.45rem/1 var(--app-font-serif); }
+.unity-changed-help { margin: 0 0 28px; color: rgba(241, 234, 220, .58); font: .74rem/1.7 var(--app-font-reading); }
 
 .unity-static-card-row { display: flex; align-items: center; justify-content: center; gap: clamp(18px, 4vw, 54px); width: 100%; margin-top: clamp(40px, 7vw, 78px); perspective: 1200px; }
 .unity-static-card-back { position: relative; flex: 0 1 210px; width: clamp(118px, 17vw, 210px); aspect-ratio: 2 / 3; overflow: hidden; border: 1px solid rgba(255, 210, 28, .58); border-radius: var(--radius-card); background: radial-gradient(circle at center, rgba(255, 210, 28, .07), transparent 38%), linear-gradient(145deg, #242116, #0e100d 66%, #211b11); box-shadow: 0 23px 42px rgba(0, 0, 0, .42), inset 0 0 0 5px rgba(255, 210, 28, .055), inset 0 0 40px rgba(255, 210, 28, .035); }
@@ -1340,19 +1379,27 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 @media (max-width: 900px) {
   .unity-result-main { width: min(100% - 24px, 760px); padding-top: 34px; }
   .unity-result-layout { grid-template-columns: 1fr; }
-  .unity-result-structure-panel { position: static; grid-row: 1; }
+  .unity-result-reading-panel { position: static; }
 }
 
 @media (max-width: 560px) {
   .unity-result-round-record { grid-template-columns: 1fr; padding: 14px; }
-  .unity-result-round-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
-  .unity-result-round-head h3 { margin-bottom: 0; }
+  .unity-result-round-record:nth-child(n) { transform: none; }
+  .unity-result-round-head { display: flex; align-items: baseline; gap: 10px; }
+  .unity-result-round-head h3 { margin: 0; font-size: 1rem; }
   .unity-result-round-cards { gap: 7px; }
-  .unity-result-card-record p { font-size: .6rem; }
+  .unity-result-card-trigger .tarot-card-frame { width: min(100%, 104px); }
+  .unity-result-reading-panel { padding: 20px 16px; }
+  .unity-hexagram-figure { grid-template-columns: 94px minmax(0, 1fr); gap: 15px; }
+  .unity-result-hexagram-glyph { width: 90px; }
+  .unity-card-popover { max-width: min(190px, 74vw); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .unity-static-card-back { transform: none !important; }
+  .unity-result-round-record { transform: none !important; }
+  .unity-result-card-trigger, .unity-card-popover { transition: none !important; }
+  .unity-result-card-trigger:hover { transform: none !important; }
 }
 
 .result-archive-page .reading-question-card { transform: rotate(-.35deg); }
