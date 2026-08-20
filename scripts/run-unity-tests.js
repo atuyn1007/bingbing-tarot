@@ -472,6 +472,33 @@ test('Unity history rejects corrupt storage without touching another namespace',
   assert.equal(storage.getItem(getUnityHistoryKey('Bob')), '[]');
 });
 
+test('Unity history page exposes search, replay, delete, and clear controls without calculation access', () => {
+  const source = readFileSync(new URL('../src/pages/UnityHistoryPage.jsx', import.meta.url), 'utf8');
+  assert.match(source, /filterUnityHistory/);
+  assert.match(source, /onOpenEntry/);
+  assert.match(source, /onDeleteEntry/);
+  assert.match(source, /onClearAll/);
+  assert.match(source, /window\.confirm/);
+  assert.doesNotMatch(source, /calculateUnityResult|calculateUnityReading|buildUnityKnowledgeSnapshot/);
+});
+
+test('Unity history copy and responsive archive styles exist in every locale', () => {
+  const requiredKeys = [
+    'title', 'eyebrow', 'searchLabel', 'searchPlaceholder', 'recordCount',
+    'emptyTitle', 'emptyDescription', 'noMatchesTitle', 'noMatchesDescription',
+    'primaryHexagram', 'changedHexagram', 'noChangedHexagram', 'movingLineCount',
+    'openDetail', 'deleteEntry', 'clearAll', 'confirmDelete', 'confirmClear', 'versionLabel',
+  ];
+  for (const locale of [zhCN, en, it]) {
+    requiredKeys.forEach((key) => assert.ok(locale.unityHistory?.[key], `Missing unityHistory.${key}`));
+  }
+  const css = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
+  assert.match(css, /\.unity-history-page/);
+  assert.match(css, /\.unity-history-search/);
+  assert.match(css, /\.unity-history-record/);
+  assert.match(css, /\.unity-history-actions/);
+});
+
 let failures = 0;
 for (const { name, run } of tests) {
   try {
