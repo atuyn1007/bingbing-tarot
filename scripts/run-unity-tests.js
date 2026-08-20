@@ -284,11 +284,11 @@ test('Unity pages expose sequential casting and calculation-only result contract
   assert.match(introSource, /onResume/);
   assert.match(introSource, /hasDraft/);
   assert.match(introSource, /resumeCasting/);
-  assert.match(resultSource, /unity-result-tarot-grid/);
-  assert.match(resultSource, /primaryHexagram/);
-  assert.match(resultSource, /changedHexagram/);
-  assert.match(resultSource, /getLocalizedMeaningCard/);
-  assert.doesNotMatch(resultSource, /interpretation|reading|advice|synthesis|Coming Soon/i);
+  assert.match(resultSource, /UnityTarotArchive/);
+  assert.match(resultSource, /UnityHexagramSection/);
+  assert.match(resultSource, /UnityMovingLinesSection/);
+  assert.match(resultSource, /knowledge\.changed\s*\?/);
+  assert.doesNotMatch(resultSource, /displayReading|displayDetail|advice|synthesis|Coming Soon|\bAI\b/i);
 });
 
 test('Unity introduction reopens a completed archive without starting a new cast', () => {
@@ -301,6 +301,28 @@ test('Unity introduction reopens a completed archive without starting a new cast
   assert.match(introSource, /hasSavedResult/);
   assert.match(introSource, /onOpenResult/);
   assert.doesNotMatch(introSource, /createUnityCastingSession|calculateUnityResult/);
+});
+
+test('Unity tarot archive reverses presentation only and limits card metadata', () => {
+  const source = readFileSync(new URL('../src/components/unity/UnityTarotArchive.jsx', import.meta.url), 'utf8');
+  assert.match(source, /\[\.\.\.rounds\]\.reverse\(\)/);
+  assert.match(source, /aria-expanded/);
+  assert.match(source, /pointerdown/);
+  assert.match(source, /getLocalizedMeaningCard/);
+  assert.doesNotMatch(source, /displayReading|displayDetail|displayKeywords|meaningText/);
+});
+
+test('Unity I Ching components keep canonical and modern text structurally separate', () => {
+  const hexagramSource = readFileSync(new URL('../src/components/unity/UnityHexagramSection.jsx', import.meta.url), 'utf8');
+  const movingSource = readFileSync(new URL('../src/components/unity/UnityMovingLinesSection.jsx', import.meta.url), 'utf8');
+  assert.match(hexagramSource, /knowledge\.canonical\?\.originalText/);
+  assert.match(hexagramSource, /knowledge\.modern\?\.summary/);
+  assert.match(hexagramSource, /unity-canonical-text/);
+  assert.match(hexagramSource, /unity-modern-summary/);
+  assert.doesNotMatch(hexagramSource, /split\(/);
+  assert.match(movingSource, /line\.canonical\?\.originalText/);
+  assert.match(movingSource, /line\.modern\?\.summary/);
+  assert.match(movingSource, /noMovingLinesDescription/);
 });
 
 let failures = 0;
