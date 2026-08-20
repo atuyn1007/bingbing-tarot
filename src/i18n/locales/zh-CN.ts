@@ -275,6 +275,7 @@ const zhCN = {
     changedHexagram: '变卦',
     noChangedHexagram: '本次无变卦',
     movingLineCount: '动爻 {count} 处',
+    openHistory: '历史档案',
     openDetail: '查看完整卦象',
     deleteEntry: '删除这条档案',
     clearAll: '清空全部档案',

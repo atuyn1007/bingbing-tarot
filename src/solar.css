@@ -1349,6 +1349,9 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 .unity-change-direction { display: grid; place-items: center; height: 58px; color: rgba(255, 210, 28, .62); border-top: 1px solid rgba(255, 210, 28, .16); }
 .unity-change-direction span { font: 300 1.45rem/1 var(--app-font-serif); }
 .unity-changed-help { margin: 0 0 28px; color: rgba(241, 234, 220, .58); font: .74rem/1.7 var(--app-font-reading); }
+.unity-history-link { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 12px; color: rgba(241, 234, 220, .68); border: 1px solid rgba(255, 210, 28, .2); background: transparent; font: .56rem/1.25 var(--app-font-ui); letter-spacing: .05em; }
+.unity-history-link svg { width: 15px; }
+.unity-history-link:hover, .unity-history-link:focus-visible { color: var(--app-solar); border-color: rgba(255, 210, 28, .48); outline: 2px solid rgba(255, 210, 28, .16); outline-offset: 2px; }
 
 .unity-history-page { min-height: 100vh; overflow-x: clip; }
 .unity-history-main { position: relative; z-index: 1; width: min(1180px, calc(100% - 42px)); margin: 0 auto; padding: 42px 0 96px; }

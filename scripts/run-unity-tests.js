@@ -499,6 +499,21 @@ test('Unity history copy and responsive archive styles exist in every locale', (
   assert.match(css, /\.unity-history-actions/);
 });
 
+test('Unity history integration auto-saves and replays only the stored snapshot', () => {
+  const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
+  const resultSource = readFileSync(new URL('../src/pages/UnityResultPage.jsx', import.meta.url), 'utf8');
+
+  assert.match(appSource, /appendUnityHistory\(archive, activeNickname, window\.localStorage\)/);
+  assert.match(appSource, /readUnityHistory\(activeNickname, window\.localStorage\)/);
+  assert.match(appSource, /setUnityResult\(entry\.result\)/);
+  assert.match(appSource, /currentPage === 'unity-history'/);
+  assert.match(appSource, /<UnityHistoryPage/);
+  assert.doesNotMatch(appSource, /calculateUnityResult\(entry\.result|buildUnityKnowledgeSnapshot\(entry\.result/);
+  assert.match(introSource, /onOpenHistory/);
+  assert.match(resultSource, /onOpenHistory/);
+});
+
 let failures = 0;
 for (const { name, run } of tests) {
   try {

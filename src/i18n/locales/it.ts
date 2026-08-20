@@ -279,6 +279,7 @@ const it = {
     changedHexagram: 'Mutato',
     noChangedHexagram: 'Nessun esagramma mutato',
     movingLineCount: '{count} linee mobili',
+    openHistory: 'Archivio storico',
     openDetail: 'Apri il risultato completo',
     deleteEntry: 'Elimina questa voce',
     clearAll: 'Cancella tutto lo storico',

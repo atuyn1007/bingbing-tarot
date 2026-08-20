@@ -1,11 +1,11 @@
-import { X } from 'lucide-react';
+import { Archive, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import UnityHexagramSection from '../components/unity/UnityHexagramSection';
 import UnityMovingLinesSection from '../components/unity/UnityMovingLinesSection';
 import UnityTarotArchive from '../components/unity/UnityTarotArchive';
 import { useI18n } from '../i18n';
 
-function UnityResultPage({ theme, archive, goHome, t }) {
+function UnityResultPage({ theme, archive, goHome, onOpenHistory, t }) {
   const { language } = useI18n();
   const calculation = archive.calculation;
   const knowledge = archive.knowledgeByLocale[language] || archive.knowledgeByLocale['zh-CN'];
@@ -17,7 +17,13 @@ function UnityResultPage({ theme, archive, goHome, t }) {
           <X className="w-5 h-5" />
         </button>
         <h1 className="page-title">{t('unity.resultTitle')}</h1>
-        <div className="page-header-controls"><LanguageSwitcher /></div>
+        <div className="page-header-controls">
+          <button type="button" className="unity-history-link" onClick={onOpenHistory}>
+            <Archive aria-hidden="true" />
+            <span>{t('unityHistory.openHistory')}</span>
+          </button>
+          <LanguageSwitcher />
+        </div>
       </header>
 
       <main className="unity-result-main">

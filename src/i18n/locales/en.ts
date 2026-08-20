@@ -278,6 +278,7 @@ const en = {
     changedHexagram: 'Changed',
     noChangedHexagram: 'No changed hexagram',
     movingLineCount: '{count} moving lines',
+    openHistory: 'History archive',
     openDetail: 'Open full result',
     deleteEntry: 'Delete this archive record',
     clearAll: 'Clear all records',

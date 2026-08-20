@@ -11,6 +11,8 @@ function UnityIntroPage({
   hasDraft,
   onOpenResult,
   hasSavedResult,
+  onOpenHistory,
+  hasHistory,
   goHome,
   t,
 }) {
@@ -81,6 +83,11 @@ function UnityIntroPage({
           {hasSavedResult ? (
             <button type="button" className="unity-resume-button unity-open-result-button" onClick={onOpenResult}>
               {t('unity.openSavedResult')}
+            </button>
+          ) : null}
+          {hasHistory ? (
+            <button type="button" className="unity-resume-button unity-open-history-button" onClick={onOpenHistory}>
+              {t('unityHistory.openHistory')}
             </button>
           ) : null}
         </form>

@@ -33,6 +33,12 @@ import {
   loadUnityResultArchive,
   saveUnityResultArchive,
 } from './unityResultPersistence';
+import {
+  appendUnityHistory,
+  clearUnityHistory,
+  readUnityHistory,
+  removeUnityHistoryEntry,
+} from './unityHistoryStore';
 
 const AuthPage = lazy(() => import('./pages/AuthPage.jsx'));
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
@@ -40,6 +46,7 @@ const DrawingPage = lazy(() => import('./pages/DrawingPage.jsx'));
 const UnityIntroPage = lazy(() => import('./pages/UnityIntroPage.jsx'));
 const UnityCastingPage = lazy(() => import('./pages/UnityCastingPage.jsx'));
 const UnityResultPage = lazy(() => import('./pages/UnityResultPage.jsx'));
+const UnityHistoryPage = lazy(() => import('./pages/UnityHistoryPage.jsx'));
 const CardDrawStage = lazy(() => import('./components/CardDrawStage.jsx'));
 const ResultPage = lazy(() => import('./pages/ResultPage.jsx'));
 const ChatPage = lazy(() => import('./pages/ChatPage.jsx'));
@@ -294,6 +301,7 @@ function App() {
   const [unityError, setUnityError] = useState('');
   const [unityDraft, setUnityDraft] = useState(null);
   const [unitySavedResult, setUnitySavedResult] = useState(null);
+  const [unityHistoryEntries, setUnityHistoryEntries] = useState([]);
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -874,6 +882,10 @@ function App() {
     }
   }, [activeNickname, language]);
 
+  useEffect(() => {
+    setUnityHistoryEntries(readUnityHistory(activeNickname, window.localStorage));
+  }, [activeNickname]);
+
   const handleRegister = async () => {
     if (!email.trim() || !nickname.trim() || !password.trim()) {
       alert(t('alerts.registerMissing'));
@@ -1136,8 +1148,10 @@ function App() {
       const ownerId = user?.id || 'anonymous';
       const draft = loadUnityDraft(window.localStorage, ownerId);
       const savedResult = loadUnityResultArchive(window.localStorage, ownerId);
+      const historyEntries = readUnityHistory(activeNickname, window.localStorage);
       setUnityDraft(draft);
       setUnitySavedResult(savedResult);
+      setUnityHistoryEntries(historyEntries);
       setUnityQuestion('');
       setUnitySession(null);
       setUnityResult(null);
@@ -1195,6 +1209,7 @@ function App() {
       });
       const archive = createUnityResultArchive(result, unitySession.ownerId);
       saveUnityResultArchive(window.localStorage, archive);
+      setUnityHistoryEntries(appendUnityHistory(archive, activeNickname, window.localStorage));
       setUnityResult(archive);
       setUnitySavedResult(archive);
       setUnityError('');
@@ -1212,6 +1227,27 @@ function App() {
     setUnityQuestion(unitySavedResult.calculation.question);
     setUnityError('');
     setCurrentPage('unity-result');
+  };
+
+  const handleOpenUnityHistory = () => {
+    setUnityHistoryEntries(readUnityHistory(activeNickname, window.localStorage));
+    setCurrentPage('unity-history');
+  };
+
+  const handleOpenUnityHistoryEntry = (entry) => {
+    if (!entry?.result) return;
+    setUnityResult(entry.result);
+    setUnityQuestion(entry.result.calculation.question);
+    setUnityError('');
+    setCurrentPage('unity-result');
+  };
+
+  const handleDeleteUnityHistoryEntry = (entry) => {
+    setUnityHistoryEntries(removeUnityHistoryEntry(entry.id, activeNickname, window.localStorage));
+  };
+
+  const handleClearUnityHistory = () => {
+    setUnityHistoryEntries(clearUnityHistory(activeNickname, window.localStorage));
   };
 
   const handleStartHumanReading = () => {
@@ -1701,6 +1737,8 @@ function App() {
         hasDraft={Boolean(unityDraft)}
         onOpenResult={handleOpenUnityResult}
         hasSavedResult={Boolean(unitySavedResult)}
+        onOpenHistory={handleOpenUnityHistory}
+        hasHistory={unityHistoryEntries.length > 0}
         goHome={goHome}
         t={t}
       />
@@ -1720,8 +1758,27 @@ function App() {
     ) : suspenseFallback;
   } else if (currentPage === 'unity-result') {
     currentView = unityResult ? (
-      <UnityResultPage theme={theme} archive={unityResult} result={unityResult.calculation} goHome={goHome} t={t} />
+      <UnityResultPage
+        theme={theme}
+        archive={unityResult}
+        goHome={goHome}
+        onOpenHistory={handleOpenUnityHistory}
+        t={t}
+      />
     ) : suspenseFallback;
+  } else if (currentPage === 'unity-history') {
+    currentView = (
+      <UnityHistoryPage
+        theme={theme}
+        entries={unityHistoryEntries}
+        locale={intlLocale}
+        onOpenEntry={handleOpenUnityHistoryEntry}
+        onDeleteEntry={handleDeleteUnityHistoryEntry}
+        onClearAll={handleClearUnityHistory}
+        onBack={() => setCurrentPage(unityResult ? 'unity-result' : 'unity-intro')}
+        t={t}
+      />
+    );
   } else if (currentPage === 'drawing-input') {
     currentView = (
       <DrawingPage
