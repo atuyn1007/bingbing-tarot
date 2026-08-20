@@ -39,6 +39,15 @@ import {
   saveUnityResultArchive,
   validateUnityResultArchive,
 } from '../src/unityResultPersistence.js';
+import {
+  appendUnityHistory,
+  clearUnityHistory,
+  createUnityHistoryEntry,
+  filterUnityHistory,
+  getUnityHistoryKey,
+  readUnityHistory,
+  removeUnityHistoryEntry,
+} from '../src/unityHistoryStore.js';
 
 const tests = [];
 const test = (name, run) => tests.push({ name, run });
@@ -380,6 +389,87 @@ test('Unity knowledge maps no, single, multiple, and all moving-line scenarios e
       assert.equal(line.canonical.sourceId, 'zhouyi-canonical-ctext', scenario.name);
     });
   });
+});
+
+test('Unity history entry preserves the completed archive as a versioned snapshot', () => {
+  const calculation = calculateUnityResult(roundsForLineValues([9, 7, 8, 7, 8, 6]), {
+    question: 'Should this snapshot stay exact?',
+    now: '2026-08-20T10:00:00.000Z',
+  });
+  const archive = createUnityResultArchive(calculation, 'owner-1', '2026-08-20T10:00:00.000Z');
+  const entry = createUnityHistoryEntry(archive, '2026-08-20T10:01:00.000Z');
+
+  assert.match(entry.id, /^[0-9a-f-]{36}$/i);
+  assert.equal(entry.version, '1.0.0');
+  assert.equal(entry.createdAt, '2026-08-20T10:01:00.000Z');
+  assert.equal(entry.question, 'Should this snapshot stay exact?');
+  assert.equal(entry.primaryHexagramNumber, calculation.primaryHexagram.number);
+  assert.equal(entry.changedHexagramNumber, calculation.changedHexagram.number);
+  assert.equal(entry.movingLineCount, 2);
+  assert.equal(entry.result, archive);
+});
+
+test('Unity history supports consecutive saves, refresh reads, and nickname isolation', () => {
+  const storage = memoryStorage();
+  const first = createUnityResultArchive(
+    calculateUnityResult(roundsForLineValues([7, 7, 7, 7, 7, 7]), { question: 'First' }),
+    'owner-1',
+    '2026-08-20T08:00:00.000Z',
+  );
+  const second = createUnityResultArchive(
+    calculateUnityResult(roundsForLineValues([9, 7, 7, 7, 7, 7]), { question: 'Second' }),
+    'owner-1',
+    '2026-08-20T09:00:00.000Z',
+  );
+
+  appendUnityHistory(first, 'Alice', storage, '2026-08-20T08:00:00.000Z');
+  const afterSecond = appendUnityHistory(second, 'Alice', storage, '2026-08-20T09:00:00.000Z');
+  appendUnityHistory(first, 'Bob', storage, '2026-08-20T10:00:00.000Z');
+
+  assert.deepEqual(afterSecond.map((entry) => entry.question), ['Second', 'First']);
+  assert.deepEqual(readUnityHistory('Alice', storage).map((entry) => entry.question), ['Second', 'First']);
+  assert.deepEqual(readUnityHistory('Bob', storage).map((entry) => entry.question), ['First']);
+  assert.notEqual(getUnityHistoryKey('Alice'), getUnityHistoryKey('Bob'));
+});
+
+test('Unity history delete and clear mutate only the requested nickname archive', () => {
+  const storage = memoryStorage();
+  const archive = createUnityResultArchive(
+    calculateUnityResult(roundsForLineValues([9, 9, 7, 7, 7, 7]), { question: 'Keep the snapshot' }),
+    'owner-1',
+    '2026-08-20T09:00:00.000Z',
+  );
+  const alice = appendUnityHistory(archive, 'Alice', storage, '2026-08-20T09:00:00.000Z');
+  appendUnityHistory(archive, 'Bob', storage, '2026-08-20T09:00:00.000Z');
+
+  assert.deepEqual(removeUnityHistoryEntry(alice[0].id, 'Alice', storage), []);
+  assert.equal(readUnityHistory('Bob', storage).length, 1);
+  clearUnityHistory('Bob', storage);
+  assert.equal(readUnityHistory('Bob', storage).length, 0);
+  assert.equal(storage.getItem(getUnityHistoryKey('Alice')), '[]');
+});
+
+test('Unity history search matches question, hexagram numbers, and saved date text', () => {
+  const archive = createUnityResultArchive(
+    calculateUnityResult(roundsForLineValues([9, 7, 7, 7, 7, 7]), { question: 'Long-term direction' }),
+    'owner-1',
+    '2026-08-20T09:00:00.000Z',
+  );
+  const entry = createUnityHistoryEntry(archive, '2026-08-20T09:30:00.000Z');
+
+  assert.equal(filterUnityHistory([entry], 'long-term', 'en-US').length, 1);
+  assert.equal(filterUnityHistory([entry], String(entry.primaryHexagramNumber), 'en-US').length, 1);
+  assert.equal(filterUnityHistory([entry], String(entry.changedHexagramNumber), 'en-US').length, 1);
+  assert.equal(filterUnityHistory([entry], '2026-08-20', 'en-US').length, 1);
+  assert.equal(filterUnityHistory([entry], 'not present', 'en-US').length, 0);
+});
+
+test('Unity history rejects corrupt storage without touching another namespace', () => {
+  const storage = memoryStorage();
+  storage.setItem(getUnityHistoryKey('Alice'), '{broken');
+  storage.setItem(getUnityHistoryKey('Bob'), '[]');
+  assert.deepEqual(readUnityHistory('Alice', storage), []);
+  assert.equal(storage.getItem(getUnityHistoryKey('Bob')), '[]');
 });
 
 let failures = 0;
