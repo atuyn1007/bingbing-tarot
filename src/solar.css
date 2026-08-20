@@ -1383,6 +1383,10 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
 }
 
 @media (max-width: 560px) {
+  .unity-result-page .page-header { grid-template-columns: 44px minmax(0, 1fr); row-gap: 10px; }
+  .unity-result-page .page-header > :first-child { grid-column: 1; grid-row: 1; }
+  .unity-result-page .page-title { grid-column: 2; grid-row: 1; justify-self: start; min-width: 0; font-size: 1rem; white-space: normal; }
+  .unity-result-page .page-header-controls { grid-column: 1 / -1; grid-row: 2; justify-self: end; }
   .unity-result-round-record { grid-template-columns: 1fr; padding: 14px; }
   .unity-result-round-record:nth-child(n) { transform: none; }
   .unity-result-round-head { display: flex; align-items: baseline; gap: 10px; }

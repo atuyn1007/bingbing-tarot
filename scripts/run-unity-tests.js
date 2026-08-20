@@ -353,6 +353,35 @@ test('Unity I Ching components keep canonical and modern text structurally separ
   assert.match(movingSource, /noMovingLinesDescription/);
 });
 
+test('Unity knowledge maps no, single, multiple, and all moving-line scenarios exactly', () => {
+  const scenarios = [
+    { name: 'none', values: [7, 7, 7, 7, 7, 7], moving: [], changedNumber: null },
+    { name: 'single', values: [9, 7, 7, 7, 7, 7], moving: [1], changedNumber: 44 },
+    { name: 'multiple', values: [9, 9, 7, 7, 7, 7], moving: [1, 2], changedNumber: 33 },
+    { name: 'all', values: [9, 9, 9, 9, 9, 9], moving: [1, 2, 3, 4, 5, 6], changedNumber: 2 },
+  ];
+
+  scenarios.forEach((scenario) => {
+    const calculation = calculateUnityResult(roundsForLineValues(scenario.values), {
+      question: scenario.name,
+      now: '2026-08-20T00:00:00.000Z',
+    });
+    const snapshot = buildUnityKnowledgeSnapshot(calculation, 'zh-CN');
+    const cardIds = calculation.rounds.flatMap((round) => round.tarotCards.map((card) => card.cardId));
+
+    assert.equal(calculation.primaryHexagram.number, 1, scenario.name);
+    assert.deepEqual(calculation.movingLineIndexes, scenario.moving, scenario.name);
+    assert.equal(snapshot.changed?.structure.kingWenNumber ?? null, scenario.changedNumber, scenario.name);
+    assert.equal(cardIds.length, 18, scenario.name);
+    assert.equal(new Set(cardIds).size, 18, scenario.name);
+    snapshot.movingLines.forEach((line, index) => {
+      assert.equal(line.lineIndex, scenario.moving[index], scenario.name);
+      assert.equal(line.hexagramNumber, 1, scenario.name);
+      assert.equal(line.canonical.sourceId, 'zhouyi-canonical-ctext', scenario.name);
+    });
+  });
+});
+
 let failures = 0;
 for (const { name, run } of tests) {
   try {
