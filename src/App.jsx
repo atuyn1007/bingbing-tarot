@@ -23,9 +23,11 @@ import { getSpreadConfig, SPREAD_OPTIONS } from './spreadOptions';
 import { calculateUnityResult } from './unityAlgorithm';
 import {
   advanceUnityRound,
+  confirmUnityRoundSelection,
   createUnityCastingSession,
   isUnityCastingComplete,
   revealNextUnityCard,
+  toggleUnityCardSelection,
 } from './unityCastingFlow';
 import { clearUnityDraft, loadUnityDraft, saveUnityDraft } from './unityPersistence';
 import {
@@ -1192,6 +1194,22 @@ function App() {
     });
   };
 
+  const handleToggleUnityCard = (cardId) => {
+    setUnitySession((current) => {
+      const next = toggleUnityCardSelection(current, cardId);
+      if (next !== current) saveUnityDraft(window.localStorage, next);
+      return next;
+    });
+  };
+
+  const handleConfirmUnitySelection = () => {
+    setUnitySession((current) => {
+      const next = confirmUnityRoundSelection(current);
+      if (next !== current) saveUnityDraft(window.localStorage, next);
+      return next;
+    });
+  };
+
   const handleAdvanceUnityRound = () => {
     setUnitySession((current) => {
       const next = advanceUnityRound(current);
@@ -1749,10 +1767,13 @@ function App() {
         theme={theme}
         session={unitySession}
         goHome={goHome}
+        onToggleSelection={handleToggleUnityCard}
+        onConfirmSelection={handleConfirmUnitySelection}
         onReveal={handleRevealUnityCard}
         onAdvance={handleAdvanceUnityRound}
         onComplete={handleCompleteUnityCasting}
         error={unityError}
+        language={language}
         t={t}
       />
     ) : suspenseFallback;

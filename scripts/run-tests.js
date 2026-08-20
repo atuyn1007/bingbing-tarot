@@ -82,8 +82,10 @@ const tests = [
       assert.match(appSource, /currentPage === 'unity-casting'/);
       assert.match(appSource, /<UnityCastingPage/);
       assert.match(castingSource, /getUnityRoundCards\(session\)/);
-      assert.match(castingSource, /cards\.map\(\(card, cardIndex\)/);
-      assert.match(castingSource, /disabled=\{!isNext \|\| session\.revealedCount === 3\}/);
+      assert.match(castingSource, /getRemainingUnityCards\(session\)/);
+      assert.match(castingSource, /roundCards\.map\(\(card, cardIndex\)/);
+      assert.match(castingSource, /visibleBacks=\{remainingCards\.map/);
+      assert.match(castingSource, /disabled=\{!isNext\}/);
       assert.doesNotMatch(castingSource, /⚊|⚋|unity-line-glyph/);
       assert.doesNotMatch(castingSource, /Math\.random|createDrawSession|cardDrawFlow|allTarotCards/);
       assert.doesNotMatch(appSource, /handleStartUnityCasting[\s\S]{0,180}createDrawSession/);

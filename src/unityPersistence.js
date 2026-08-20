@@ -1,9 +1,14 @@
 import { validateUnityCastingSession } from './unityCastingFlow.js';
 
-const DRAFT_PREFIX = 'bingbing_tarot_unity_casting_v2';
+const DRAFT_PREFIX = 'bingbing_tarot_unity_casting_v3';
+const LEGACY_DRAFT_PREFIX = 'bingbing_tarot_unity_casting_v2';
 
 export function getUnityDraftKey(ownerId) {
   return `${DRAFT_PREFIX}:${String(ownerId || 'anonymous')}`;
+}
+
+function getLegacyUnityDraftKey(ownerId) {
+  return `${LEGACY_DRAFT_PREFIX}:${String(ownerId || 'anonymous')}`;
 }
 
 export function saveUnityDraft(storage, session) {
@@ -15,7 +20,9 @@ export function saveUnityDraft(storage, session) {
 export function loadUnityDraft(storage, ownerId) {
   if (!storage) return null;
   const key = getUnityDraftKey(ownerId);
+  const legacyKey = getLegacyUnityDraftKey(ownerId);
   const source = storage.getItem(key);
+  storage.removeItem(legacyKey);
   if (!source) return null;
   try {
     const parsed = JSON.parse(source);
@@ -33,4 +40,5 @@ export function loadUnityDraft(storage, ownerId) {
 export function clearUnityDraft(storage, ownerId) {
   if (!storage) return;
   storage.removeItem(getUnityDraftKey(ownerId));
+  storage.removeItem(getLegacyUnityDraftKey(ownerId));
 }

@@ -1257,20 +1257,35 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   .unity-orbit-system { transform: translate(-50%, -50%); }
 }
 
-.unity-casting-page { min-height: 100vh; }
-.unity-casting-main { position: relative; z-index: 1; display: grid; align-content: center; justify-items: center; width: min(1180px, calc(100% - 40px)); min-height: calc(100vh - 86px); margin: 0 auto; padding: 48px 0 72px; }
+.unity-casting-page { min-height: 100vh; overflow-x: hidden; }
+.unity-casting-main { position: relative; z-index: 1; display: grid; align-content: start; justify-items: center; width: min(1280px, calc(100% - 40px)); min-width: 0; min-height: calc(100vh - 86px); margin: 0 auto; padding: 48px 0 72px; }
 .unity-casting-heading { display: grid; justify-items: center; max-width: 780px; text-align: center; }
 .unity-casting-heading > p { margin: 0 0 13px; color: rgba(255, 210, 28, .66); font: 600 .6rem/1.4 var(--app-font-ui); letter-spacing: .22em; }
 .unity-casting-heading h2 { margin: 0; color: var(--app-paper); font: 500 clamp(3.5rem, 8vw, 7rem)/.92 var(--app-font-serif); letter-spacing: -.055em; }
 .unity-casting-heading blockquote { max-width: 52rem; margin: 28px 0 0; color: rgba(241, 234, 220, .72); font: 400 clamp(.92rem, 1.7vw, 1.18rem)/1.75 var(--app-font-reading); }
 .unity-casting-heading small { margin-top: 12px; color: rgba(241, 234, 220, .4); font: .58rem/1.55 var(--app-font-ui); letter-spacing: .08em; }
 
-.unity-casting-card-row { display: flex; align-items: flex-start; justify-content: center; gap: clamp(14px, 3.8vw, 50px); width: 100%; margin-top: clamp(38px, 6vw, 70px); perspective: 1200px; }
-.unity-casting-card-button { position: relative; display: grid; min-width: 44px; min-height: 44px; padding: 0 0 28px; border: 0; border-radius: var(--radius-card); background: transparent; cursor: default; opacity: .58; transition: opacity .25s ease, transform .25s ease, filter .25s ease; }
+.unity-casting-selector { width: 100%; min-width: 0; margin-top: clamp(28px, 4vw, 48px); padding: 24px clamp(8px, 2.5vw, 28px) 28px; border-block: 1px solid rgba(215, 177, 76, .2); background: linear-gradient(90deg, transparent, rgba(8, 29, 24, .68) 8% 92%, transparent); }
+.unity-casting-stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 28px; color: rgba(241, 224, 178, .76); font: 600 .66rem/1.5 var(--app-font-ui); letter-spacing: .1em; text-transform: uppercase; }
+.unity-casting-stats span:first-child { color: #e3c364; }
+.unity-casting-selector .card-ribbon-shell { max-width: 100%; }
+.unity-casting-selector .card-selection-confirm { min-width: min(100%, 250px); }
+.unity-casting-reveal-stage { display: grid; justify-items: center; width: 100%; margin-top: clamp(28px, 4vw, 48px); }
+.unity-reveal-instruction { margin: 0; color: rgba(241, 224, 178, .58); font: .72rem/1.6 var(--app-font-ui); letter-spacing: .05em; }
+.unity-casting-card-row { display: flex; align-items: flex-start; justify-content: center; gap: clamp(14px, 3.8vw, 50px); width: 100%; margin-top: clamp(28px, 5vw, 56px); perspective: 1200px; }
+.unity-casting-card-button { position: relative; display: grid; justify-items: center; min-width: 44px; min-height: 44px; padding: 0 0 28px; border: 0; border-radius: var(--radius-card); background: transparent; cursor: default; opacity: .58; transition: opacity .25s ease, transform .25s ease, filter .25s ease; }
 .unity-casting-card-button.is-next { cursor: pointer; opacity: 1; filter: drop-shadow(0 0 18px rgba(255, 210, 28, .17)); transform: translateY(-8px); }
 .unity-casting-card-button.is-revealed { opacity: 1; }
 .unity-casting-card-button:focus-visible { outline: 2px solid var(--app-solar); outline-offset: 7px; }
-.unity-casting-card-button > span { position: absolute; right: 3px; bottom: 0; color: rgba(255, 224, 130, .54); font: .55rem/1 var(--app-font-ui); letter-spacing: .18em; }
+.unity-casting-card-order { position: absolute; top: 8px; right: 8px; z-index: 4; color: rgba(255, 224, 130, .72); font: .55rem/1 var(--app-font-ui); letter-spacing: .18em; text-shadow: 0 1px 5px #000; }
+.unity-casting-card-caption { display: grid; gap: 4px; max-width: 160px; margin-top: 11px; color: rgba(245, 235, 207, .88); text-align: center; }
+.unity-casting-card-caption strong { font: 500 .86rem/1.25 var(--app-font-serif); }
+.unity-casting-card-caption small { color: #d8b85b; font: .58rem/1.3 var(--app-font-ui); letter-spacing: .08em; }
+.unity-line-result { display: grid; justify-items: center; width: min(620px, 100%); margin-top: 34px; padding: 24px 28px 27px; border-block: 1px solid rgba(218, 179, 77, .28); background: linear-gradient(90deg, transparent, rgba(216, 177, 76, .055) 18% 82%, transparent); text-align: center; }
+.unity-line-result > p { margin: 0; color: rgba(239, 220, 165, .56); font: 600 .6rem/1.4 var(--app-font-ui); letter-spacing: .18em; text-transform: uppercase; }
+.unity-line-result > strong { margin-top: 6px; color: #edcf72; font: 500 clamp(3rem, 7vw, 5rem)/1 var(--app-font-serif); }
+.unity-line-result > div { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; margin-top: 8px; color: rgba(244, 232, 199, .78); font: .72rem/1.5 var(--app-font-ui); letter-spacing: .08em; }
+.unity-next-line-button { min-width: min(100%, 230px); margin-top: 24px; }
 .unity-casting-error { display: grid; justify-items: center; gap: 12px; margin-top: 20px; }
 .unity-casting-error p { margin: 0; color: #e8c878; font: .78rem/1.6 var(--app-font-reading); }
 .unity-casting-error button { min-height: 44px; padding: 8px 18px; border: 1px solid rgba(255, 210, 28, .45); color: var(--app-solar); background: transparent; font: .63rem/1 var(--app-font-ui); letter-spacing: .08em; }
@@ -1441,9 +1456,14 @@ button.paper-feature:hover { transform: translateY(-6px) rotate(-.25deg); box-sh
   .unity-static-card-back { width: min(29vw, 132px); }
   .unity-static-card-back:nth-child(1),
   .unity-static-card-back:nth-child(3) { transform: translateY(8px); }
+  .unity-casting-selector { width: calc(100% + 24px); padding-inline: 0; }
+  .unity-casting-selector .card-ribbon-hint { padding-inline: 18px; text-align: center; }
+  .unity-casting-stats { gap: 7px 18px; padding-inline: 14px; }
   .unity-casting-card-row { gap: 5px; margin-top: 38px; }
   .unity-casting-card-button { width: min(31vw, 132px); padding-bottom: 24px; }
   .unity-casting-card-button .tarot-card-frame { width: 100%; height: auto; aspect-ratio: 2 / 3; }
+  .unity-casting-card-caption { font-size: .76rem; }
+  .unity-line-result { padding-inline: 14px; }
 }
 
 @media (max-width: 900px) {

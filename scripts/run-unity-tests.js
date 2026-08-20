@@ -21,9 +21,12 @@ import {
 } from '../src/unityKnowledge.js';
 import {
   advanceUnityRound,
+  confirmUnityRoundSelection,
   createUnityCastingSession,
+  getRemainingUnityCards,
   isUnityCastingComplete,
   revealNextUnityCard,
+  toggleUnityCardSelection,
   validateUnityCastingSession,
 } from '../src/unityCastingFlow.js';
 import {
@@ -32,6 +35,7 @@ import {
   loadUnityDraft,
   saveUnityDraft,
 } from '../src/unityPersistence.js';
+import { getLocalizedUnityCardName } from '../src/unityCardLocalization.js';
 import {
   createUnityResultArchive,
   getUnityResultArchiveKey,
@@ -204,65 +208,144 @@ test('no moving lines preserve the same hexagram', () => {
   assert.deepEqual(result.movingLineIndexes, []);
 });
 
-test('casting session freezes 18 unique cards and existing orientation threshold', () => {
+test('casting session freezes all 78 cards and preserves the existing orientation threshold', () => {
   let randomIndex = 0;
   const randomValues = Array.from({ length: 200 }, (_, index) => (index < 77 ? 0.999 : index % 2 ? 0.5 : 0.49));
   const session = createUnityCastingSession(allTarotCards, { ownerId: 'u1', question: 'Q', locale: 'zh-CN', random: () => randomValues[randomIndex++] ?? 0.9, now: '2026-08-13T00:00:00.000Z' });
-  assert.equal(session.cards.length, 18);
-  assert.equal(new Set(session.cards.map((card) => card.id)).size, 18);
-  assert.equal(session.cards[0].isReversed, false);
-  assert.equal(session.cards[1].isReversed, true);
+  assert.equal(session.deck.length, 78);
+  assert.equal(new Set(session.deck.map((card) => card.id)).size, 78);
+  assert.equal(session.deck[0].isReversed, false);
+  assert.equal(session.deck[1].isReversed, true);
   assert.equal(session.roundIndex, 1);
+  assert.equal(session.phase, 'selecting');
+  assert.deepEqual(session.selectedCardIds, []);
+  assert.equal(getRemainingUnityCards(session).length, 78);
   assert.equal(validateUnityCastingSession(session, 'u1'), true);
 });
 
-test('casting reveals strictly in order and advances all six rounds', () => {
+test('casting requires three user selections before reveal and removes each completed round from the deck', () => {
   let session = createUnityCastingSession(allTarotCards, { ownerId: 'u1', question: 'Q', random: () => 0.9 });
-  assert.equal(revealNextUnityCard(session, 1), session);
-  session = revealNextUnityCard(session, 0);
-  assert.equal(session.revealedCount, 1);
-  assert.equal(revealNextUnityCard(session, 0), session);
-  session = revealNextUnityCard(session, 1);
-  session = revealNextUnityCard(session, 2);
-  assert.equal(session.completedRounds.length, 1);
-  session = advanceUnityRound(session);
-  assert.equal(session.roundIndex, 2);
-  for (let round = 2; round <= 6; round += 1) {
+  const originalDeckIds = session.deck.map((card) => card.id);
+
+  for (let round = 1; round <= 6; round += 1) {
+    const expectedPoolSize = 78 - ((round - 1) * 3);
+    const available = getRemainingUnityCards(session);
+    assert.equal(available.length, expectedPoolSize);
+    assert.equal(session.phase, 'selecting');
+    assert.deepEqual(session.selectedCardIds, []);
+    assert.equal(revealNextUnityCard(session, 0), session);
+
+    const chosenIds = [available[4].id, available[11].id, available[2].id];
+    chosenIds.forEach((cardId) => { session = toggleUnityCardSelection(session, cardId); });
+    assert.deepEqual(session.selectedCardIds, chosenIds);
+    assert.equal(toggleUnityCardSelection(session, available[20].id), session);
+    session = toggleUnityCardSelection(session, chosenIds[1]);
+    assert.deepEqual(session.selectedCardIds, [chosenIds[0], chosenIds[2]]);
+    session = toggleUnityCardSelection(session, chosenIds[1]);
+    assert.deepEqual(session.selectedCardIds, [chosenIds[0], chosenIds[2], chosenIds[1]]);
+
+    session = confirmUnityRoundSelection(session);
+    assert.equal(session.phase, 'revealing');
+    assert.deepEqual(session.currentRoundCards.map((card) => card.id), [chosenIds[0], chosenIds[2], chosenIds[1]]);
+    assert.equal(toggleUnityCardSelection(session, chosenIds[0]), session);
+    assert.equal(revealNextUnityCard(session, 1), session);
     session = revealNextUnityCard(session, 0);
     session = revealNextUnityCard(session, 1);
     session = revealNextUnityCard(session, 2);
-    if (round < 6) session = advanceUnityRound(session);
+    assert.equal(session.phase, 'roundComplete');
+    assert.equal(session.completedRounds.length, round);
+    assert.equal(getRemainingUnityCards(session).length, expectedPoolSize - 3);
+
+    if (round < 6) {
+      session = advanceUnityRound(session);
+      assert.equal(session.roundIndex, round + 1);
+    }
   }
+
   assert.equal(session.completedRounds.length, 6);
+  assert.equal(getRemainingUnityCards(session).length, 60);
+  assert.equal(new Set(session.completedRounds.flatMap((round) => round.tarotCards.map((card) => card.id))).size, 18);
+  assert.deepEqual(session.deck.map((card) => card.id), originalDeckIds);
   assert.equal(isUnityCastingComplete(session), true);
 });
 
-test('draft persistence is owner scoped and rejects corrupt or duplicate drafts', () => {
+test('draft persistence restores deck order, selection, reveal progress, and completed rounds exactly', () => {
   const storage = memoryStorage();
-  const session = createUnityCastingSession(allTarotCards, { ownerId: 'u1', question: 'Q', random: () => 0.9 });
+  let session = createUnityCastingSession(allTarotCards, { ownerId: 'u1', question: 'Q', random: () => 0.9 });
+  session = toggleUnityCardSelection(session, session.deck[8].id);
+  session = toggleUnityCardSelection(session, session.deck[21].id);
   saveUnityDraft(storage, session);
   assert.equal(getUnityDraftKey('u1').includes('u1'), true);
   assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
   assert.equal(loadUnityDraft(storage, 'u2'), null);
-  const invalid = { ...session, cards: [...session.cards.slice(0, 17), session.cards[0]] };
+
+  session = toggleUnityCardSelection(session, session.deck[34].id);
+  session = confirmUnityRoundSelection(session);
+  session = revealNextUnityCard(session, 0);
+  saveUnityDraft(storage, session);
+  assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
+
+  session = revealNextUnityCard(session, 1);
+  session = revealNextUnityCard(session, 2);
+  saveUnityDraft(storage, session);
+  assert.equal(session.phase, 'roundComplete');
+  assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
+
+  session = advanceUnityRound(session);
+  saveUnityDraft(storage, session);
+  assert.equal(session.phase, 'selecting');
+  assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
+
+  for (let round = 2; round <= 6; round += 1) {
+    const nextCards = getRemainingUnityCards(session).slice(0, 3);
+    nextCards.forEach((card) => { session = toggleUnityCardSelection(session, card.id); });
+    session = confirmUnityRoundSelection(session);
+    session = revealNextUnityCard(session, 0);
+    session = revealNextUnityCard(session, 1);
+    session = revealNextUnityCard(session, 2);
+    saveUnityDraft(storage, session);
+    assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
+    if (round < 6) session = advanceUnityRound(session);
+  }
+  assert.equal(isUnityCastingComplete(session), true);
+
+  const invalid = { ...session, deck: [...session.deck.slice(0, 77), session.deck[0]] };
   storage.setItem(getUnityDraftKey('u1'), JSON.stringify(invalid));
   assert.equal(loadUnityDraft(storage, 'u1'), null);
   assert.equal(storage.getItem(getUnityDraftKey('u1')), null);
-  const wrongOrientation = { ...session, cards: session.cards.map((card, index) => index === 0 ? { ...card, isReversed: 'yes' } : card) };
+  const wrongOrientation = { ...session, deck: session.deck.map((card, index) => index === 0 ? { ...card, isReversed: 'yes' } : card) };
   storage.setItem(getUnityDraftKey('u1'), JSON.stringify(wrongOrientation));
   assert.equal(loadUnityDraft(storage, 'u1'), null);
-  const unknownCard = { ...session, cards: session.cards.map((card, index) => index === 0 ? { ...card, id: 999 } : card) };
+  const unknownCard = { ...session, deck: session.deck.map((card, index) => index === 0 ? { ...card, id: 999 } : card) };
   storage.setItem(getUnityDraftKey('u1'), JSON.stringify(unknownCard));
   assert.equal(loadUnityDraft(storage, 'u1'), null);
-  let progressed = revealNextUnityCard(session, 0);
-  progressed = revealNextUnityCard(progressed, 1);
-  progressed = revealNextUnityCard(progressed, 2);
-  const mismatchedRound = { ...progressed, completedRounds: [{ ...progressed.completedRounds[0], tarotCards: progressed.cards.slice(3, 6) }] };
-  storage.setItem(getUnityDraftKey('u1'), JSON.stringify(mismatchedRound));
+  const badSelection = { ...session, selectedCardIds: [session.deck[0].id, session.deck[0].id, session.deck[2].id] };
+  storage.setItem(getUnityDraftKey('u1'), JSON.stringify(badSelection));
   assert.equal(loadUnityDraft(storage, 'u1'), null);
   storage.setItem(getUnityDraftKey('u1'), '{bad');
   assert.equal(loadUnityDraft(storage, 'u1'), null);
   clearUnityDraft(storage, 'u1');
+});
+
+test('loading v3 drafts always retires the incompatible preselection-era v2 draft', () => {
+  const storage = memoryStorage();
+  const legacyKey = 'bingbing_tarot_unity_casting_v2:u1';
+  const session = createUnityCastingSession(allTarotCards, { ownerId: 'u1', question: 'Q', random: () => 0.9 });
+
+  storage.setItem(legacyKey, JSON.stringify({ schemaVersion: '2.0', cards: session.deck.slice(0, 18) }));
+  assert.equal(loadUnityDraft(storage, 'u1'), null);
+  assert.equal(storage.getItem(legacyKey), null);
+
+  saveUnityDraft(storage, session);
+  storage.setItem(legacyKey, '{}');
+  assert.deepEqual(loadUnityDraft(storage, 'u1'), session);
+  assert.equal(storage.getItem(legacyKey), null);
+
+  storage.setItem(getUnityDraftKey('u1'), '{bad');
+  storage.setItem(legacyKey, '{}');
+  assert.equal(loadUnityDraft(storage, 'u1'), null);
+  assert.equal(storage.getItem(getUnityDraftKey('u1')), null);
+  assert.equal(storage.getItem(legacyKey), null);
 });
 
 test('hexagram calculation rejects rounds that are not strictly ordered one through six', () => {
@@ -272,6 +355,11 @@ test('hexagram calculation rejects rounds that are not strictly ordered one thro
 });
 
 test('Unity casting and result copy is complete in every locale', () => {
+  const castingKeys = [
+    'remainingPool', 'selectionProgress', 'selectionHint', 'confirmLine', 'selectMoreCards',
+    'lineResult', 'movingState', 'stillState', 'enterNextLine', 'viewHexagram',
+    'upright', 'reversed', 'selectionDeckLabel', 'selectionCardLabel', 'revealInstruction',
+  ];
   for (const locale of [zhCN, en, it]) {
     assert.equal(locale.unity.lineLabels.length, 6);
     assert.equal(locale.unity.hexagramNames.length, 64);
@@ -279,7 +367,21 @@ test('Unity casting and result copy is complete in every locale', () => {
     assert.ok(locale.unity.revealCardLabel);
     assert.ok(locale.unity.primaryHexagram);
     assert.ok(locale.unity.changedHexagram);
+    castingKeys.forEach((key) => assert.ok(locale.unity[key], `Missing unity.${key}`));
   }
+});
+
+test('Unity revealed card names localize without changing the selected card', () => {
+  const card = { id: 7, name: '战车', englishName: 'The Chariot', isReversed: true };
+  const meaningArchive = {
+    findTarotMeaningCard: (source) => ({ id: source.id }),
+    getLocalizedMeaningCard: (source, language) => ({ displayName: language === 'it' ? 'Il Carro' : source.id }),
+  };
+  assert.equal(getLocalizedUnityCardName(card, 'zh-CN', meaningArchive), '战车');
+  assert.equal(getLocalizedUnityCardName(card, 'en', meaningArchive), 'The Chariot');
+  assert.equal(getLocalizedUnityCardName(card, 'it', meaningArchive), 'Il Carro');
+  assert.equal(card.id, 7);
+  assert.equal(card.isReversed, true);
 });
 
 test('Unity phase three copy is complete in every locale', () => {
@@ -310,14 +412,24 @@ test('Unity phase three result has responsive archive styling contracts', () => 
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
-test('Unity pages expose sequential casting and calculation-only result contracts', () => {
+test('Unity casting page selects from the remaining deck before sequential reveal', () => {
   const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
+  const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  const css = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
   const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
   const resultSource = readFileSync(new URL('../src/pages/UnityResultPage.jsx', import.meta.url), 'utf8');
+  assert.match(castingSource, /TarotCardSelector/);
+  assert.match(castingSource, /getRemainingUnityCards/);
+  assert.match(castingSource, /deriveUnityLine/);
+  assert.match(castingSource, /session\.phase === 'selecting'/);
   assert.match(castingSource, /revealedCount === cardIndex/);
   assert.match(castingSource, /useReducedMotion/);
-  assert.match(castingSource, /clearTimeout/);
-  assert.match(castingSource, /cancelAnimationFrame/);
+  assert.doesNotMatch(castingSource, /setTimeout|requestAnimationFrame/);
+  assert.match(appSource, /toggleUnityCardSelection/);
+  assert.match(appSource, /confirmUnityRoundSelection/);
+  assert.match(css, /\.unity-casting-selector/);
+  assert.match(css, /\.unity-casting-selector\s*\{[^}]*min-width:\s*0/);
+  assert.match(css, /\.unity-line-result/);
   assert.match(introSource, /onResume/);
   assert.match(introSource, /hasDraft/);
   assert.match(introSource, /resumeCasting/);

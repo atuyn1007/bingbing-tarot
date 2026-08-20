@@ -26,6 +26,8 @@ function TarotCardSelector({
   onConfirmSelection,
   shouldReduceMotion,
   t,
+  labels = {},
+  showProgress = true,
 }) {
   const viewportRef = useRef(null);
   const gestureRef = useRef(null);
@@ -134,23 +136,25 @@ function TarotCardSelector({
 
   return (
     <>
-      <div
-        className="card-selection-progress"
-        aria-live="polite"
-        aria-label={t('drawing.selectionProgress', {
-          selected: selectedBacks.length,
-          total: cardCount,
-          remaining: remainingCount,
-        })}
-      >
-        <span aria-hidden="true"><strong>{selectedBacks.length}</strong>{t('drawing.selectedCountLabel')}</span>
-        <span aria-hidden="true"><strong>{cardCount}</strong>{t('drawing.requiredCountLabel')}</span>
-        <span aria-hidden="true"><strong>{remainingCount}</strong>{t('drawing.remainingCountLabel')}</span>
-      </div>
+      {showProgress ? (
+        <div
+          className="card-selection-progress"
+          aria-live="polite"
+          aria-label={labels.progress || t('drawing.selectionProgress', {
+            selected: selectedBacks.length,
+            total: cardCount,
+            remaining: remainingCount,
+          })}
+        >
+          <span aria-hidden="true"><strong>{selectedBacks.length}</strong>{labels.selectedCount || t('drawing.selectedCountLabel')}</span>
+          <span aria-hidden="true"><strong>{cardCount}</strong>{labels.requiredCount || t('drawing.requiredCountLabel')}</span>
+          <span aria-hidden="true"><strong>{remainingCount}</strong>{labels.remainingCount || t('drawing.remainingCountLabel')}</span>
+        </div>
+      ) : null}
 
       <p id="card-ribbon-hint" className="card-ribbon-hint">
         <MoveHorizontal className="w-4 h-4" aria-hidden="true" />
-        {t('drawing.ribbonDragHint')}
+        {labels.dragHint || t('drawing.ribbonDragHint')}
       </p>
 
       <div className="card-ribbon-shell">
@@ -158,7 +162,7 @@ function TarotCardSelector({
           ref={viewportRef}
           className="card-ribbon-viewport"
           role="group"
-          aria-label={t('drawing.cardBackGroupLabel')}
+          aria-label={labels.groupLabel || t('drawing.cardBackGroupLabel')}
           aria-describedby="card-ribbon-hint"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
@@ -183,11 +187,17 @@ function TarotCardSelector({
                   style={{ zIndex: isSelected ? visibleBacks.length + selectedOrder : index + 1 }}
                   aria-pressed={isSelected}
                   aria-disabled={!isSelected && selectionComplete}
-                  aria-label={t('drawing.cardBackAria', {
-                    index: index + 1,
-                    state: isSelected ? t('drawing.selectedState') : t('drawing.unselectedState'),
-                    remaining: remainingCount,
-                  })}
+                  aria-label={labels.cardAria
+                    ? labels.cardAria({
+                      index: index + 1,
+                      isSelected,
+                      remaining: remainingCount,
+                    })
+                    : t('drawing.cardBackAria', {
+                      index: index + 1,
+                      state: isSelected ? t('drawing.selectedState') : t('drawing.unselectedState'),
+                      remaining: remainingCount,
+                    })}
                   onFocus={handleCardFocus}
                   onClick={() => onToggleBack(backIndex)}
                   onDragStart={(event) => event.preventDefault()}
@@ -220,8 +230,8 @@ function TarotCardSelector({
         onClick={onConfirmSelection}
       >
         {selectionComplete
-          ? t('drawing.confirmSelectedCards')
-          : t('drawing.selectRemainingCards', { count: remainingCount })}
+          ? labels.confirm || t('drawing.confirmSelectedCards')
+          : labels.incomplete || t('drawing.selectRemainingCards', { count: remainingCount })}
       </button>
     </>
   );
