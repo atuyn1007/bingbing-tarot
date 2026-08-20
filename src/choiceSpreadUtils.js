@@ -19,3 +19,13 @@ export function getChoiceDisplayGroups(cards, choiceA, choiceB, fallbackA, fallb
     { key: 'choice-self', label: selfLabel, cardIndexes: [4] },
   ];
 }
+
+export function getChoiceGroupSlots(cards, positions, cardIndexes) {
+  return cardIndexes
+    .map((cardIndex) => ({
+      cardIndex,
+      card: cards[cardIndex],
+      position: positions[cardIndex],
+    }))
+    .filter(({ card }) => Boolean(card));
+}

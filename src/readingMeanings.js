@@ -9,3 +9,11 @@ export function getReadingFromMeaningArchive(card, isReversed, language, meaning
 
   return String(archiveReading || '').trim() || fallbackReading;
 }
+
+export function getKeywordsFromMeaningArchive(card, language, meaningArchive) {
+  if (!meaningArchive || !card) return [];
+
+  const meaningCard = meaningArchive.findTarotMeaningCard(card);
+  const localizedCard = meaningArchive.getLocalizedMeaningCard(meaningCard, language);
+  return Array.isArray(localizedCard?.displayKeywords) ? localizedCard.displayKeywords : [];
+}

@@ -1,11 +1,14 @@
 import TarotCard from '../TarotCard';
-import { getChoiceDisplayGroups } from '../choiceSpreadUtils';
+import { getChoiceDisplayGroups, getChoiceGroupSlots } from '../choiceSpreadUtils';
+import { getCardDisplayNames } from '../data';
 
 function SpreadCards({
   cards,
   spread,
-  cardStyle,
   isRevealed,
+  revealedIndexes,
+  onRevealCard,
+  getCardKeywords,
   showOrientation = false,
   rotateReversed = true,
   className = '',
@@ -13,28 +16,57 @@ function SpreadCards({
   t,
 }) {
   const cardSize = spread.key === 'choice' ? 'small' : 'normal';
-  const renderCardSlot = (card, index, choicePositionTitle = null) => {
+  const renderCardSlot = (card, index) => {
     const position = spread.positions[index];
+    const isCardRevealed = Array.isArray(revealedIndexes) ? revealedIndexes.includes(index) : Boolean(isRevealed);
+    const positionTitle = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
+    const { chineseName, englishName } = getCardDisplayNames(card);
+    const keywords = isCardRevealed ? (getCardKeywords?.(card) || []).slice(0, 4) : [];
+    const cardFace = (
+      <TarotCard
+        card={card}
+        isRevealed={isCardRevealed}
+        size={cardSize}
+        showOrientation={showOrientation}
+        rotateReversed={rotateReversed}
+      />
+    );
 
     return (
       <div
         key={`${spread.key}-${card.id}-${index}`}
         className={`reading-spread-slot ${spread.key === 'choice' ? 'reading-spread-slot-choice-card' : `reading-spread-slot-${spread.key}-${index + 1}`}`}
       >
-        <TarotCard
-          card={card}
-          isRevealed={isRevealed}
-          size={cardSize}
-          showOrientation={showOrientation}
-          variant={cardStyle}
-          rotateReversed={rotateReversed}
-        />
-        {cardStyle === 'artwork' && isRevealed ? <p className="reading-spread-card-name">{card.name}</p> : null}
+        {onRevealCard ? (
+          <button
+            type="button"
+            className="reading-spread-reveal-button"
+            onClick={() => onRevealCard(index)}
+            disabled={isCardRevealed}
+            aria-label={isCardRevealed
+              ? t('drawing.cardRevealedAria', { index: index + 1, card: chineseName })
+              : t('drawing.revealCardAria', { index: index + 1, position: positionTitle })}
+          >
+            {cardFace}
+          </button>
+        ) : cardFace}
+        {isCardRevealed ? (
+          <div className="reading-spread-card-identity">
+            <p className="reading-spread-card-name">{chineseName}</p>
+            <small>{englishName}</small>
+            <span>{card.isReversed ? t('common.orientationReversed') : t('common.orientationUpright')}</span>
+          </div>
+        ) : null}
         <div className="reading-spread-meta">
           <p className="reading-spread-label">
-            {choicePositionTitle || position?.title || t('drawing.spreadLabelFallback', { index: index + 1 })}
+            {positionTitle}
           </p>
-          {!choicePositionTitle && position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
+          {position?.subtitle ? <p className="reading-spread-subtitle">{position.subtitle}</p> : null}
+          {keywords.length > 0 ? (
+            <div className="reading-spread-keywords" aria-label={t('reading.keywordsLabel')}>
+              {keywords.map((keyword) => <span key={`${card.id}-${keyword}`}>{keyword}</span>)}
+            </div>
+          ) : null}
         </div>
       </div>
     );
@@ -56,19 +88,8 @@ function SpreadCards({
           <section key={group.key} className={`choice-spread-group choice-spread-group-${group.key}`}>
             <h2 className="choice-spread-group-title">{group.label}</h2>
             <div className="choice-spread-group-cards">
-              {group.cardIndexes.map((cardIndex) => {
-                const card = cards[cardIndex];
-                if (!card) return null;
-
-                const choicePositionTitle =
-                  cardIndex === 2 || cardIndex === 3
-                    ? t('drawing.choiceFutureLabel')
-                    : cardIndex === 0 || cardIndex === 1
-                      ? t('drawing.choiceCurrentLabel')
-                      : null;
-
-                return renderCardSlot(card, cardIndex, choicePositionTitle);
-              })}
+              {getChoiceGroupSlots(cards, spread.positions, group.cardIndexes)
+                .map(({ card, cardIndex }) => renderCardSlot(card, cardIndex))}
             </div>
           </section>
         ))}

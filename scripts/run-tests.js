@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
 import {
@@ -20,8 +20,75 @@ import {
 import zhCN from '../src/i18n/locales/zh-CN.ts';
 import en from '../src/i18n/locales/en.ts';
 import it from '../src/i18n/locales/it.ts';
+import { SPREAD_OPTIONS } from '../src/spreadOptions.js';
+import { canStartUnityCasting, normalizeUnityQuestion } from '../src/unityEntryFlow.js';
 
 const tests = [
+  {
+    name: 'spread catalogue includes Unity metadata and no difficulty labels',
+    run() {
+      const spreadModalSource = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
+      const localeSources = [zhCN, en, it];
+
+      assert.equal(SPREAD_OPTIONS.length, 4);
+      assert.deepEqual(SPREAD_OPTIONS.find((spread) => spread.key === 'unity'), {
+        key: 'unity',
+        localeKey: 'spreads.unity',
+        canonicalName: 'unity of all things spread',
+        cardCount: 18,
+        preview: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      });
+      assert.match(spreadModalSource, /unity:/);
+      assert.match(spreadModalSource, /spread\.key === 'unity' && spread\.summary/);
+      assert.doesNotMatch(spreadModalSource, /metaDifficulty|spread\.difficulty/);
+
+      for (const locale of localeSources) {
+        assert.equal(locale.spreads.unity.cardCount, '18');
+        assert.ok(locale.spreads.unity.name);
+        assert.ok(locale.spreads.unity.englishTitle);
+        assert.ok(locale.spreads.unity.description);
+        assert.ok(locale.spreads.unity.readingTime);
+        assert.ok(locale.spreads.unity.recommended);
+        assert.equal('metaDifficulty' in locale.spreads, false);
+        for (const spreadKey of ['three', 'triangle', 'choice', 'unity']) {
+          assert.equal('difficulty' in locale.spreads[spreadKey], false);
+        }
+      }
+    },
+  },
+  {
+    name: 'Unity introduction requires a non-empty question and bypasses the ordinary draw route',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const introSource = readFileSync(new URL('../src/pages/UnityIntroPage.jsx', import.meta.url), 'utf8');
+
+      assert.equal(normalizeUnityQuestion('  我该如何看待未来三年的事业方向？\n'), '我该如何看待未来三年的事业方向？');
+      assert.equal(canStartUnityCasting('   \n\t'), false);
+      assert.equal(canStartUnityCasting('这是一个值得面对的问题'), true);
+      assert.match(appSource, /spreadKey === 'unity'/);
+      assert.match(appSource, /setCurrentPage\('unity-intro'\)/);
+      assert.match(appSource, /currentPage === 'unity-intro'/);
+      assert.match(introSource, /canStartUnityCasting\(question\)/);
+      assert.match(introSource, /disabled=\{!canContinue\}/);
+      assert.match(introSource, /onStart\(normalizeUnityQuestion\(question\)\)/);
+    },
+  },
+  {
+    name: 'Unity casting stays separate from the ordinary spread draw flow',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const castingSource = readFileSync(new URL('../src/pages/UnityCastingPage.jsx', import.meta.url), 'utf8');
+
+      assert.match(appSource, /currentPage === 'unity-casting'/);
+      assert.match(appSource, /<UnityCastingPage/);
+      assert.match(castingSource, /getUnityRoundCards\(session\)/);
+      assert.match(castingSource, /cards\.map\(\(card, cardIndex\)/);
+      assert.match(castingSource, /disabled=\{!isNext \|\| session\.revealedCount === 3\}/);
+      assert.doesNotMatch(castingSource, /⚊|⚋|unity-line-glyph/);
+      assert.doesNotMatch(castingSource, /Math\.random|createDrawSession|cardDrawFlow|allTarotCards/);
+      assert.doesNotMatch(appSource, /handleStartUnityCasting[\s\S]{0,180}createDrawSession/);
+    },
+  },
   {
     name: 'choice options require two non-empty trimmed values',
     run() {
@@ -75,6 +142,35 @@ const tests = [
     },
   },
   {
+    name: 'artwork is the only selectable tarot card face',
+    run() {
+      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+      const drawStageSource = readFileSync(new URL('../src/components/CardDrawStage.jsx', import.meta.url), 'utf8');
+      const resultSource = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const spreadCardsSource = readFileSync(new URL('../src/components/SpreadCards.jsx', import.meta.url), 'utf8');
+      const dailyModalSource = readFileSync(new URL('../src/components/modals/DailyModal.jsx', import.meta.url), 'utf8');
+      const tarotCardSource = readFileSync(new URL('../src/TarotCard.jsx', import.meta.url), 'utf8');
+      const styleSources = [
+        readFileSync(new URL('../src/index.css', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8'),
+      ];
+      const localeSources = [
+        readFileSync(new URL('../src/i18n/locales/zh-CN.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/en.ts', import.meta.url), 'utf8'),
+        readFileSync(new URL('../src/i18n/locales/it.ts', import.meta.url), 'utf8'),
+      ];
+
+      [appSource, drawStageSource, resultSource, spreadCardsSource]
+        .forEach((source) => assert.doesNotMatch(source, /\bcardStyle\b|CardStyleToggle|tarot_card_style/));
+      styleSources.forEach((source) => assert.doesNotMatch(source, /card-style-/));
+      localeSources.forEach((source) => assert.doesNotMatch(source, /^\s*cardStyle:\s*\{/m));
+      assert.equal(existsSync(new URL('../src/components/CardStyleToggle.jsx', import.meta.url)), false);
+      assert.doesNotMatch(`${spreadCardsSource}\n${dailyModalSource}`, /\bvariant=/);
+      assert.doesNotMatch(tarotCardSource, /\bvariant\b/);
+      assert.match(tarotCardSource, /const shouldShowArtwork = Boolean\(artworkSrc\) && !artworkFailed;/);
+    },
+  },
+  {
     name: 'choice spread keeps two outer columns and vertical card stacks at every viewport',
     run() {
       const css = readFileSync(new URL('../src/index.css', import.meta.url), 'utf8');
@@ -108,9 +204,10 @@ const tests = [
     },
   },
   {
-    name: 'reading presentation uses centered manuscript sections and removes spread difficulty',
+    name: 'reading presentation renders structured archive sections and removes spread difficulty',
     run() {
       const resultPage = readFileSync(new URL('../src/pages/ResultPage.jsx', import.meta.url), 'utf8');
+      const integratedSection = readFileSync(new URL('../src/components/IntegratedReadingSection.jsx', import.meta.url), 'utf8');
       const spreadModal = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
       const solarCss = readFileSync(new URL('../src/solar.css', import.meta.url), 'utf8');
       const localeSources = [
@@ -118,48 +215,28 @@ const tests = [
         readFileSync(new URL('../src/i18n/locales/en.ts', import.meta.url), 'utf8'),
         readFileSync(new URL('../src/i18n/locales/it.ts', import.meta.url), 'utf8'),
       ];
-      const getRuleBody = (source, selector) => {
-        const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        return source.match(new RegExp(`^\\s*${escapedSelector}\\s*\\{([^{}]*)\\}`, 'm'))?.[1] || '';
-      };
 
-      assert.match(resultPage, /readingBody\.split\('\\n\\n'\)/);
-      assert.match(resultPage, /const expectedPositionCount = spreadForCards\.positions\.length;/);
-      assert.match(resultPage, /const readingPositions = readingParagraphs\.slice\(1, expectedPositionCount \+ 1\);/);
-      assert.match(
-        resultPage,
-        /const readingSummary =\s*readingParagraphs\.length > expectedPositionCount \+ 1\s*\?\s*readingParagraphs\.at\(-1\)\s*:\s*'';/,
-      );
-      assert.match(resultPage, /const isChoiceA = index === 0 \|\| index === 2;/);
-      assert.match(resultPage, /const isChoiceB = index === 1 \|\| index === 3;/);
-      assert.match(resultPage, /const option = isChoiceA \? choiceOptions\.choiceA : choiceOptions\.choiceB;/);
-      assert.match(resultPage, /\{readingCards && \(\s*<section className="reading-paper-section reading-paper-section-cards">/);
-      assert.match(resultPage, /\{readingPositions\.map\(\(paragraph, index\) => \(\s*<section/);
-      assert.match(resultPage, /\{readingSummary && \(\s*<section className="reading-paper-section reading-paper-section-summary">/);
-      assert.ok(
-        resultPage.indexOf('reading-paper-section-cards') < resultPage.indexOf('readingPositions.map')
-          && resultPage.indexOf('readingPositions.map') < resultPage.indexOf('reading-paper-section-summary'),
-      );
-      assert.match(resultPage, /readingPositions\.length === 0 && !readingSummary && readingCursor/);
-      assert.match(resultPage, /index === readingPositions\.length - 1 && !readingSummary && readingCursor/);
-      assert.match(resultPage, /\{readingSummary\}\s*\{readingCursor\}/);
-      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /max-width:\s*min\(100%,\s*960px\)\s*;/);
-      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-layout'), /margin:\s*0\s+auto\s*;/);
-      assert.match(getRuleBody(solarCss, '.reading-paper-stack'), /gap:\s*clamp\(64px,\s*8vw,\s*96px\)\s*;/);
-      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-section'), /width:\s*min\(100%,\s*900px\)\s*;/);
-      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-section'), /margin-inline:\s*auto\s*;/);
-      assert.match(getRuleBody(solarCss, '.result-archive-page .reading-paper-copy'), /max-width:\s*68ch\s*;/);
+      assert.doesNotMatch(resultPage, /readingBody\.split/);
+      assert.match(resultPage, /<ReadingOverview overview=\{reading\.overview\}/);
+      assert.match(resultPage, /<ReadingCardSection/);
+      assert.match(resultPage, /readingCards\.map/);
+      assert.match(resultPage, /<IntegratedReadingSection reading=\{reading\}/);
+      assert.match(integratedSection, /resolveIntegratedReading/);
+      assert.match(integratedSection, /integratedReading\.title/);
+      assert.match(integratedSection, /integratedReading\.summary/);
+      assert.match(integratedSection, /integratedReading\.paragraphs\.map/);
+      assert.doesNotMatch(resultPage, /reading\.relationship/);
+      assert.doesNotMatch(resultPage, /reading\.advice\.map/);
+      assert.doesNotMatch(resultPage, /reading\.reflectionQuestion/);
+      assert.match(solarCss, /\.structured-reading-layout/);
+      assert.match(solarCss, /\.reading-card-files-list/);
+      assert.match(solarCss, /\.archive-reading-sheet/);
       assert.match(spreadModal, /t\('spreads\.metaTime'\)/);
       assert.match(spreadModal, /t\('spreads\.metaCards'\)/);
       assert.match(spreadModal, /t\('spreads\.metaRecommended'\)/);
-      assert.match(spreadModal, /\{spread\.recommended\}/);
       assert.doesNotMatch(spreadModal, /metaDifficulty/);
       assert.doesNotMatch(spreadModal, /spread\.difficulty/);
-      assert.match(getRuleBody(solarCss, '.spread-option-metadata'), /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)\s*;/);
-      localeSources.forEach((localeSource) => {
-        assert.match(localeSource, /cardsSectionTitle:\s*['"]/);
-        assert.match(localeSource, /summarySectionTitle:\s*['"]/);
-      });
+      localeSources.forEach((localeSource) => assert.match(localeSource, /reading:\s*\{/));
     },
   },
   {

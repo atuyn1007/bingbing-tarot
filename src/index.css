@@ -753,19 +753,7 @@ html[lang='zh-CN'] .eyebrow {
   backdrop-filter: blur(12px);
 }
 
-.card-style-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px;
-  border: 1px solid var(--app-border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(12px);
-}
-
-.language-switcher-button,
-.card-style-button {
+.language-switcher-button {
   border: none;
   background: transparent;
   color: var(--app-muted);
@@ -784,27 +772,17 @@ html[lang='zh-CN'] .eyebrow {
   text-transform: uppercase;
 }
 
-.language-switcher-button:hover,
-.card-style-button:hover {
+.language-switcher-button:hover {
   transform: translateY(-1px);
 }
 
-.language-switcher-button-active,
-.card-style-button-active {
+.language-switcher-button-active {
   background: #221712;
   color: #fff4e8;
   box-shadow: 0 10px 24px rgba(34, 23, 18, 0.16);
 }
 
-.auth-card-style-toggle {
-  margin: 0 auto 18px;
-}
-
 .topbar-language-switcher {
-  margin-right: 2px;
-}
-
-.topbar-card-style-toggle {
   margin-right: 2px;
 }
 

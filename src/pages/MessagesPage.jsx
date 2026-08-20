@@ -17,7 +17,6 @@ function MessagesPage({
   getMailboxStatusHint,
   handleOpenMailboxItem,
   handleClaimSystemNotification,
-  cardStyle,
   getSpreadConfig,
   adminRejectReason,
   setAdminRejectReason,
@@ -145,7 +144,6 @@ function MessagesPage({
                     <SpreadCards
                       cards={selectedMailboxItem.record_snapshot.cardsData}
                       spread={getSpreadConfig(selectedMailboxItem.record_snapshot.spreadKey || 'three')}
-                      cardStyle={cardStyle}
                       isRevealed
                       className="history-preview-spread mailbox-detail-spread"
                       t={t}
