@@ -52,6 +52,7 @@ import {
   readUnityHistory,
   removeUnityHistoryEntry,
 } from '../src/unityHistoryStore.js';
+import { groupUnityHistoryEntries } from '../src/unityHistoryPresentation.js';
 
 const tests = [];
 const test = (name, run) => tests.push({ name, run });
@@ -584,6 +585,23 @@ test('Unity history rejects corrupt storage without touching another namespace',
   assert.equal(storage.getItem(getUnityHistoryKey('Bob')), '[]');
 });
 
+test('Unity history presentation groups records by localized month without reordering entries', () => {
+  const entries = [
+    { id: 'newest', createdAt: '2026-08-20T09:30:00.000Z' },
+    { id: 'same-month', createdAt: '2026-08-11T09:30:00.000Z' },
+    { id: 'older', createdAt: '2026-07-31T09:30:00.000Z' },
+  ];
+
+  const groups = groupUnityHistoryEntries(entries, 'en-US');
+
+  assert.deepEqual(groups.map((group) => group.key), ['2026-08', '2026-07']);
+  assert.deepEqual(groups.map((group) => group.entries.map((entry) => entry.id)), [
+    ['newest', 'same-month'],
+    ['older'],
+  ]);
+  assert.deepEqual(entries.map((entry) => entry.id), ['newest', 'same-month', 'older']);
+});
+
 test('Unity history page exposes search, replay, delete, and clear controls without calculation access', () => {
   const source = readFileSync(new URL('../src/pages/UnityHistoryPage.jsx', import.meta.url), 'utf8');
   assert.match(source, /filterUnityHistory/);
@@ -596,10 +614,12 @@ test('Unity history page exposes search, replay, delete, and clear controls with
 
 test('Unity history copy and responsive archive styles exist in every locale', () => {
   const requiredKeys = [
-    'title', 'eyebrow', 'searchLabel', 'searchPlaceholder', 'recordCount',
+    'title', 'eyebrow', 'description', 'searchLabel', 'searchPlaceholder', 'recordCount',
     'emptyTitle', 'emptyDescription', 'noMatchesTitle', 'noMatchesDescription',
     'primaryHexagram', 'changedHexagram', 'noChangedHexagram', 'movingLineCount',
-    'openDetail', 'deleteEntry', 'clearAll', 'confirmDelete', 'confirmClear', 'versionLabel',
+    'spreadName', 'openDetail', 'viewRecord', 'moreActions', 'deleteEntry', 'clearAll',
+    'startReading', 'backToArchive', 'confirmDelete', 'confirmClear', 'versionLabel',
+    'archiveLabel', 'recordLabel', 'detailDate', 'detailTime', 'detailSpread', 'detailQuestion', 'detailVersion',
   ];
   for (const locale of [zhCN, en, it]) {
     requiredKeys.forEach((key) => assert.ok(locale.unityHistory?.[key], `Missing unityHistory.${key}`));
@@ -619,11 +639,14 @@ test('Unity history integration auto-saves and replays only the stored snapshot'
   assert.match(appSource, /appendUnityHistory\(archive, activeNickname, window\.localStorage\)/);
   assert.match(appSource, /readUnityHistory\(activeNickname, window\.localStorage\)/);
   assert.match(appSource, /setUnityResult\(entry\.result\)/);
+  assert.match(appSource, /setSelectedUnityHistoryEntry\(entry\)/);
+  assert.match(appSource, /historyEntry=\{selectedUnityHistoryEntry\}/);
   assert.match(appSource, /currentPage === 'unity-history'/);
   assert.match(appSource, /<UnityHistoryPage/);
   assert.doesNotMatch(appSource, /calculateUnityResult\(entry\.result|buildUnityKnowledgeSnapshot\(entry\.result/);
   assert.match(introSource, /onOpenHistory/);
   assert.match(resultSource, /onOpenHistory/);
+  assert.match(resultSource, /historyEntry/);
 });
 
 let failures = 0;
