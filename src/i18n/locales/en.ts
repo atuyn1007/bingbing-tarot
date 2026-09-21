@@ -200,8 +200,6 @@ const en = {
   },
   unity: {
     supplementTitle: "Supplementary I Ching reading",
-    supplementNote: "This section consults the current knowledge library without changing the original archive. Modern notes are editorial explanations, not personal predictions.",
-    supplementCoverage: "Complete entries: Qian, Kun, Tai, Pi and Da You. Other texts remain pending. Modern Da You notes await editorial review.",
     supplementSource: "Read the original source",
     supplementMovingHelp: "Gold marks the moving lines: read them in the context of the primary hexagram. The changed hexagram describes a changed structure, not an inevitable outcome.",
     sixLineReading: "Reading the six lines",

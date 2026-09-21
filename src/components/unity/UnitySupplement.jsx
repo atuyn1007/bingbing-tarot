@@ -18,8 +18,6 @@ export default function UnitySupplement({ calculation, language, t }) {
   const traditional = t('unity.traditionalLineNames');
   return <section className="unity-supplement" aria-labelledby="unity-supplement-title">
     <h2 id="unity-supplement-title">{t('unity.supplementTitle')}</h2>
-    <p>{t('unity.supplementNote')}</p>
-    <p>{t('unity.supplementCoverage')}</p>
     <h3>{t('unity.primaryHexagram')} · {names[calculation.primaryHexagram.number - 1]}</h3>
     <Texts knowledge={reading.primary} t={t} />
     <div className="unity-hexagram-keywords">{reading.primary.keywords.map((item) => <span key={item.keywordId}>{item.label}</span>)}</div>

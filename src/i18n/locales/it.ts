@@ -201,8 +201,6 @@ const it = {
   },
   unity: {
     supplementTitle: "Lettura integrativa dell’I Ching",
-    supplementNote: "Questa sezione consulta la biblioteca attuale senza modificare l’archivio originale. Le spiegazioni moderne sono note editoriali, non previsioni personali.",
-    supplementCoverage: "Voci complete: Qian, Kun, Tai, Pi e Da You. Gli altri testi sono da inserire. Le note moderne di Da You attendono revisione editoriale.",
     supplementSource: "Leggi la fonte originale",
     supplementMovingHelp: "L’oro evidenzia le linee mobili, da leggere nel contesto dell’esagramma principale. L’esagramma mutato descrive una struttura diversa, non un esito inevitabile.",
     sixLineReading: "Lettura delle sei linee",

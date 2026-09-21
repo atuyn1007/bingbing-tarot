@@ -197,8 +197,6 @@ const zhCN = {
   },
   unity: {
     supplementTitle: "易经补充解读",
-    supplementNote: "以下查阅当前知识库，不改写原始档案。现代释义为产品编辑说明，非个人结果预测。",
-    supplementCoverage: "当前完整内容：乾、坤、泰、否、大有。其他卦的原文与释义仍待录入；大有现代释义为待审校稿。",
     supplementSource: "查看原文来源",
     supplementMovingHelp: "金色标记为本次动爻，应结合本卦优先阅读。变卦描述变化后的结构，不是必然结局。",
     sixLineReading: "六爻阅读",
