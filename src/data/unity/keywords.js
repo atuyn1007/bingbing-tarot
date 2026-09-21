@@ -1,6 +1,9 @@
 const keyword = (keywordId, labels) => Object.freeze({ keywordId, labels: Object.freeze(labels) });
 
 export const UNITY_KEYWORDS = Object.freeze([
+  keyword('resources', { 'zh-CN': '资源', en: 'Resources', it: 'Risorse' }),
+  keyword('responsibility', { 'zh-CN': '责任', en: 'Responsibility', it: 'Responsabilità' }),
+  keyword('restraint', { 'zh-CN': '不自满', en: 'Restraint', it: 'Misura' }),
   keyword('initiative', { 'zh-CN': '开创', en: 'Initiative', it: 'Iniziativa' }),
   keyword('continuity', { 'zh-CN': '持续', en: 'Continuity', it: 'Continuità' }),
   keyword('discipline', { 'zh-CN': '节度', en: 'Discipline', it: 'Disciplina' }),

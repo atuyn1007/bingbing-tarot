@@ -1,4 +1,10 @@
 export const UNITY_SOURCES = Object.freeze({
+  'zhouyi-da-you-ctext': Object.freeze({
+    sourceId: 'zhouyi-da-you-ctext', title: '周易 · 大有',
+    sourceType: 'canonical-text',
+    referenceUrl: 'https://ctext.org/book-of-changes/da-you/zh',
+    reviewNote: 'Canonical hexagram and six line texts checked 2026-09-21. Modern summaries are editorial drafts.',
+  }),
   'zhouyi-canonical-ctext': Object.freeze({
     sourceId: 'zhouyi-canonical-ctext',
     title: '周易·易经',

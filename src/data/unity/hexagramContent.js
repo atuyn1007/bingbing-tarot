@@ -1,3 +1,4 @@
+import { DA_YOU_CONTENT } from './daYouContent.js';
 const CONTENT_VERSION = '1.0.0';
 const EDITOR_SOURCE = 'bingbing-unity-editorial-v1';
 
@@ -15,6 +16,7 @@ const content = ({ hexagramId, originalText, sourceId, keywordIds, modern }) => 
 });
 
 export const UNITY_HEXAGRAM_CONTENT = Object.freeze([
+  DA_YOU_CONTENT,
   content({
     hexagramId: 'hexagram-01',
     originalText: '乾：元亨，利貞。',

@@ -649,6 +649,28 @@ test('Unity history integration auto-saves and replays only the stored snapshot'
   assert.match(resultSource, /historyEntry/);
 });
 
+test('Supplement reads every stored line without changing the archive, across moving states and locales', async () => {
+  const { getUnitySupplement } = await import('../src/unitySupplement.js');
+  for (const values of [[7,7,7,7,8,7], [9,7,7,7,8,7], [9,9,7,7,8,7], [9,9,9,9,6,9]]) {
+    const calculation = calculateUnityResult(roundsForLineValues(values));
+    assert.equal(calculation.primaryHexagram.number, 14);
+    const archive = createUnityResultArchive(calculation, 'test-owner');
+    const before = JSON.stringify(archive);
+    for (const locale of ['zh-CN', 'en', 'it']) {
+      const reading = getUnitySupplement(archive.calculation, locale);
+      assert.equal(reading.lines.length, 6);
+      assert.deepEqual(reading.lines.map((line) => line.lineIndex), [1,2,3,4,5,6]);
+      assert.equal(reading.primary.canonical.originalText, '大有：元亨。');
+      assert.equal(reading.lines[4].polarity, 'yin');
+      assert.match(reading.lines[4].canonical.originalText, /^六五：厥孚/);
+      reading.lines.forEach((line) => assert.ok(line.modern.summary));
+      assert.equal(Boolean(reading.changed), calculation.movingLineIndexes.length > 0);
+      if (reading.changed) assert.equal(reading.changed.structure.kingWenNumber, calculation.changedHexagram.number);
+    }
+    assert.equal(JSON.stringify(archive), before);
+  }
+});
+
 let failures = 0;
 for (const { name, run } of tests) {
   try {

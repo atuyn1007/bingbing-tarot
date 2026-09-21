@@ -1,3 +1,4 @@
+import { DA_YOU_LINES } from './daYouContent.js';
 const CONTENT_VERSION = '1.0.0';
 const EDITOR_SOURCE = 'bingbing-unity-editorial-v1';
 
@@ -17,6 +18,7 @@ const line = (hexagramNumber, linePosition, originalText, sourceId, modern) => O
 });
 
 export const UNITY_LINE_TEXTS = Object.freeze([
+  ...DA_YOU_LINES,
   line(1, 1, '初九：潛龍，勿用。', 'zhouyi-canonical-ctext', {
     'zh-CN': '力量仍在形成，适合保留能力、观察时机，不急于把尚未成熟的行动推到前台。',
     en: 'The force is still forming; preserve capacity and observe timing rather than pushing an immature action into view.',
