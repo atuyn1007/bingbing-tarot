@@ -304,6 +304,7 @@ function App() {
   const [unityDraft, setUnityDraft] = useState(null);
   const [unitySavedResult, setUnitySavedResult] = useState(null);
   const [unityHistoryEntries, setUnityHistoryEntries] = useState([]);
+  const [selectedUnityHistoryEntry, setSelectedUnityHistoryEntry] = useState(null);
   const [choiceA, setChoiceA] = useState('');
   const [choiceB, setChoiceB] = useState('');
   const [drawnCards, setDrawnCards] = useState([]);
@@ -1157,6 +1158,7 @@ function App() {
       setUnityQuestion('');
       setUnitySession(null);
       setUnityResult(null);
+      setSelectedUnityHistoryEntry(null);
       setUnityError('');
       setCurrentPage('unity-intro');
       return;
@@ -1170,6 +1172,7 @@ function App() {
     setUnityQuestion(session.question);
     setUnitySession(session);
     setUnityResult(null);
+    setSelectedUnityHistoryEntry(null);
     setUnityError('');
     setUnityDraft(null);
     saveUnityDraft(window.localStorage, session);
@@ -1181,6 +1184,7 @@ function App() {
     setUnityQuestion(unityDraft.question);
     setUnitySession(unityDraft);
     setUnityResult(null);
+    setSelectedUnityHistoryEntry(null);
     setUnityError('');
     setUnityDraft(null);
     setCurrentPage('unity-casting');
@@ -1229,6 +1233,7 @@ function App() {
       saveUnityResultArchive(window.localStorage, archive);
       setUnityHistoryEntries(appendUnityHistory(archive, activeNickname, window.localStorage));
       setUnityResult(archive);
+      setSelectedUnityHistoryEntry(null);
       setUnitySavedResult(archive);
       setUnityError('');
       clearUnityDraft(window.localStorage, unitySession.ownerId);
@@ -1242,6 +1247,7 @@ function App() {
   const handleOpenUnityResult = () => {
     if (!unitySavedResult) return;
     setUnityResult(unitySavedResult);
+    setSelectedUnityHistoryEntry(null);
     setUnityQuestion(unitySavedResult.calculation.question);
     setUnityError('');
     setCurrentPage('unity-result');
@@ -1255,6 +1261,7 @@ function App() {
   const handleOpenUnityHistoryEntry = (entry) => {
     if (!entry?.result) return;
     setUnityResult(entry.result);
+    setSelectedUnityHistoryEntry(entry);
     setUnityQuestion(entry.result.calculation.question);
     setUnityError('');
     setCurrentPage('unity-result');
@@ -1266,6 +1273,11 @@ function App() {
 
   const handleClearUnityHistory = () => {
     setUnityHistoryEntries(clearUnityHistory(activeNickname, window.localStorage));
+  };
+
+  const handleStartUnityFromHistory = () => {
+    setSelectedUnityHistoryEntry(null);
+    setCurrentPage('unity-intro');
   };
 
   const handleStartHumanReading = () => {
@@ -1641,6 +1653,7 @@ function App() {
     setUnityQuestion('');
     setUnitySession(null);
     setUnityResult(null);
+    setSelectedUnityHistoryEntry(null);
     setUnityError('');
     setUnityDraft(null);
     setUnitySavedResult(null);
@@ -1756,7 +1769,6 @@ function App() {
         onOpenResult={handleOpenUnityResult}
         hasSavedResult={Boolean(unitySavedResult)}
         onOpenHistory={handleOpenUnityHistory}
-        hasHistory={unityHistoryEntries.length > 0}
         goHome={goHome}
         t={t}
       />
@@ -1782,6 +1794,8 @@ function App() {
       <UnityResultPage
         theme={theme}
         archive={unityResult}
+        historyEntry={selectedUnityHistoryEntry}
+        locale={intlLocale}
         goHome={goHome}
         onOpenHistory={handleOpenUnityHistory}
         t={t}
@@ -1796,6 +1810,7 @@ function App() {
         onOpenEntry={handleOpenUnityHistoryEntry}
         onDeleteEntry={handleDeleteUnityHistoryEntry}
         onClearAll={handleClearUnityHistory}
+        onStartReading={handleStartUnityFromHistory}
         onBack={() => setCurrentPage(unityResult ? 'unity-result' : 'unity-intro')}
         t={t}
       />
