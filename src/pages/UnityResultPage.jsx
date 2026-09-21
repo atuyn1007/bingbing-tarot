@@ -3,6 +3,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import UnityHexagramSection from '../components/unity/UnityHexagramSection';
 import UnityMovingLinesSection from '../components/unity/UnityMovingLinesSection';
 import UnityTarotArchive from '../components/unity/UnityTarotArchive';
+import UnitySupplement from '../components/unity/UnitySupplement';
 import { useI18n } from '../i18n';
 
 function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenHistory, t }) {
@@ -76,6 +77,7 @@ function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenH
                 <UnityHexagramSection kind="changed" knowledge={knowledge.changed} t={t} />
               </div>
             ) : null}
+            <UnitySupplement calculation={calculation} language={language} t={t} />
           </aside>
         </div>
       </main>

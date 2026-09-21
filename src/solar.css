@@ -5069,3 +5069,9 @@ button.monthly-calendar-cell {
 .monthly-share-content footer { position: sticky; bottom: 0; display: flex; flex-wrap: wrap; gap: 12px; padding: 16px 0; background: #0b1712; }
 .monthly-share-content a { display: inline-flex; align-items: center; text-decoration: none; }
 .monthly-share-entry button:focus-visible, .monthly-share-dialog :is(button,a):focus-visible { outline: 2px solid #eed390; outline-offset: 3px; }
+.unity-supplement { margin-top: 36px; padding-top: 28px; border-top: 1px solid #8e7744; overflow-wrap: anywhere; }
+.unity-supplement h2, .unity-supplement h3 { font-family: var(--app-font-serif); color: var(--app-paper); }
+.unity-supplement h3 { margin-top: 32px; }
+.unity-supplement > p, .unity-supplement article > p { font-size: 16px; line-height: 1.8; color: #c8c0aa; }
+.unity-supplement a { display: inline-flex; align-items: center; min-height: 44px; color: #ccb26d; font-size: 14px; }
+.unity-supplement a:focus-visible { outline: 2px solid #ccb26d; }
