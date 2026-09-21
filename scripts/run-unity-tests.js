@@ -436,7 +436,7 @@ test('Unity casting page selects from the remaining deck before sequential revea
   assert.match(introSource, /resumeCasting/);
   assert.match(resultSource, /UnityTarotArchive/);
   assert.match(resultSource, /UnityHexagramSection/);
-  assert.match(resultSource, /UnityMovingLinesSection/);
+  assert.match(resultSource, /UnitySupplement/);
   assert.match(resultSource, /knowledge\.changed\s*\?/);
   assert.doesNotMatch(resultSource, /displayReading|displayDetail|advice|synthesis|Coming Soon|\bAI\b/i);
 });
