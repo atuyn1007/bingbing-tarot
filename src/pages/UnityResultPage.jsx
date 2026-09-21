@@ -1,7 +1,6 @@
 import { Archive, ArrowLeft, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import UnityHexagramSection from '../components/unity/UnityHexagramSection';
-import UnityMovingLinesSection from '../components/unity/UnityMovingLinesSection';
 import UnityTarotArchive from '../components/unity/UnityTarotArchive';
 import UnitySupplement from '../components/unity/UnitySupplement';
 import { useI18n } from '../i18n';
@@ -68,13 +67,11 @@ function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenH
                 <h2 id="unity-reading-panel-title">{t('unity.readingPanelTitle')}</h2>
               </div>
             </div>
-            <UnityHexagramSection kind="primary" knowledge={knowledge.primary} t={t} />
-            <UnityMovingLinesSection lines={knowledge.movingLines} t={t} />
+            <UnityHexagramSection kind="primary" knowledge={knowledge.primary} t={t} showText={false} />
             {knowledge.changed ? (
               <div className="unity-changed-hexagram-wrap">
                 <div className="unity-change-direction" aria-hidden="true"><span>↓</span></div>
-                <p className="unity-changed-help">{t('unity.changedHexagramHelp')}</p>
-                <UnityHexagramSection kind="changed" knowledge={knowledge.changed} t={t} />
+                <UnityHexagramSection kind="changed" knowledge={knowledge.changed} t={t} showText={false} />
               </div>
             ) : null}
             <UnitySupplement calculation={calculation} language={language} t={t} />

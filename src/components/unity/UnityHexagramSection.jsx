@@ -8,7 +8,7 @@ function HexagramGlyph({ pattern, label }) {
   );
 }
 
-function UnityHexagramSection({ kind, knowledge, t }) {
+function UnityHexagramSection({ kind, knowledge, t, showText = true }) {
   const names = t('unity.hexagramNames');
   const trigramNames = t('unity.trigramNames');
   const structure = knowledge.structure;
@@ -32,6 +32,7 @@ function UnityHexagramSection({ kind, knowledge, t }) {
           <div><dt>{t('unity.lowerTrigram')}</dt><dd>{trigramNames[structure.lowerTrigramId]}</dd></div>
         </dl>
       </div>
+      {showText ? <>
       <section className="unity-canonical-text">
         <h4>{t('unity.canonicalText')}</h4>
         <blockquote>{knowledge.canonical?.originalText || t('unity.knowledgeUnavailable')}</blockquote>
@@ -46,6 +47,7 @@ function UnityHexagramSection({ kind, knowledge, t }) {
           <div>{knowledge.keywords.map((keyword) => <span key={keyword.keywordId}>{keyword.label}</span>)}</div>
         </section>
       ) : null}
+      </> : null}
     </section>
   );
 }
