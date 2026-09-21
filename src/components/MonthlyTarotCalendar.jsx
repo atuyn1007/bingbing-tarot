@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Circle, Moon } from 'lucide-react';
 import { getCardArtwork } from '../cardArtwork';
 import { getCalendarDayState, getLocalDateKey, getMonthCalendarDays, isSameCalendarMonth } from '../dateUtils';
 import CalendarModal from './modals/CalendarModal';
+import MonthlyShareModal from './modals/MonthlyShareModal';
 
 function MonthlyTarotCalendar({ dailyHistory, intlLocale, language, t, getCardDisplayNames }) {
   const today = useMemo(() => new Date(), []);
@@ -11,6 +12,7 @@ function MonthlyTarotCalendar({ dailyHistory, intlLocale, language, t, getCardDi
     () => new Date(today.getFullYear(), today.getMonth(), 1),
   );
   const [selectedDay, setSelectedDay] = useState(null);
+  const [shareOpen, setShareOpen] = useState(false);
   const days = useMemo(() => getMonthCalendarDays(visibleMonth), [visibleMonth]);
   const isCurrentMonth = isSameCalendarMonth(visibleMonth, today);
   const monthLabel = new Intl.DateTimeFormat(intlLocale, {
@@ -62,6 +64,7 @@ function MonthlyTarotCalendar({ dailyHistory, intlLocale, language, t, getCardDi
         </div>
       </header>
 
+      <div className="monthly-share-entry"><button type="button" onClick={() => setShareOpen(true)}>{t('calendar.shareTitle')}</button></div>
       <div className="monthly-calendar-weekdays" aria-hidden="true">
         {t('calendar.weekdays').map((label, index) => (
           <span key={`${label}-${index}`}>{label}</span>
@@ -134,6 +137,7 @@ function MonthlyTarotCalendar({ dailyHistory, intlLocale, language, t, getCardDi
         })}
       </div>
 
+      {shareOpen ? <MonthlyShareModal month={visibleMonth} history={dailyHistory} locale={intlLocale} t={t} onClose={() => setShareOpen(false)} /> : null}
       {selectedDay ? (
         <CalendarModal
           selectedDay={selectedDay}

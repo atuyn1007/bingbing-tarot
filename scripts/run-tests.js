@@ -558,6 +558,23 @@ const tests = [
   },
 ];
 
+const { getMonthlyShareDays } = await import('../src/monthlyTarotShare.js');
+tests.push({
+  name: 'monthly share preserves saved orientations, blank days and month boundaries',
+  run() {
+    const card = { id: 1, isReversed: true };
+    const history = { '2024-02-29': card, '2024-03-01': { id: 2, isReversed: false } };
+    const before = JSON.stringify(history);
+    const days = getMonthlyShareDays(new Date(2024, 1, 1), history);
+    assert.equal(days.filter((day) => day.type === 'day').length, 29);
+    assert.equal(days.find((day) => day.dateKey === '2024-02-29').card, card);
+    assert.equal(days.find((day) => day.dateKey === '2024-02-28').card, null);
+    assert.equal(days.some((day) => day.dateKey === '2024-03-01'), false);
+    assert.equal(days.filter((day) => day.type === 'blank').length, 3);
+    assert.equal(JSON.stringify(history), before);
+  },
+});
+
 let failed = 0;
 
 for (const test of tests) {
