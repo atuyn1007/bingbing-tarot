@@ -12,6 +12,7 @@ export function withUnityGeneralReading(knowledge) {
     summary = format(copy.hexagram, {
       number: kingWenNumber, upper: copy.trigrams[upperTrigramId], lower: copy.trigrams[lowerTrigramId],
       upperTheme: copy.themes[upperTrigramId], lowerTheme: copy.themes[lowerTrigramId],
+      upperAction: copy.actions[upperTrigramId], lowerAction: copy.actions[lowerTrigramId],
     });
   } else {
     const state = format(knowledge.isMoving ? copy.moving : copy.static, {

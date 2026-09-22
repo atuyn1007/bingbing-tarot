@@ -218,9 +218,6 @@ function buildRelationText(fromSection, toSection, t) {
   const relation = analyzeCardRelation(fromSection, toSection);
   const relationKey = {
     echo: 'reading.integratedRelationEcho',
-    revision: 'reading.integratedRelationRevision',
-    tension: 'reading.integratedRelationTension',
-    progression: 'reading.integratedRelationProgression',
     comparison: 'reading.integratedRelationComparison',
   }[relation.kind];
 
@@ -367,6 +364,7 @@ export function buildTriangleIntegratedReading({ spread, cardSections = [], ques
         realityRelation: buildRelationText(reality, guidance, t),
       }),
       t('reading.integratedTrianglePractical', {
+        practice: guidance.practice,
         question,
         perceptionPosition: perception.positionTitle,
         perceptionKeywords: perception.keywordText || perception.theme,
@@ -453,7 +451,7 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
         relation: buildRelationText(optionB.current, optionB.development, t),
       }),
       t('reading.integratedChoiceTradeoff', {
-        closing: t('reading.evidenceChoiceClose', { question, selfCard: self.cardName, selfOrientation: getOrientationLabel(self, t), selfMeaning: self.meaningLead, optionA: optionA.label, optionB: optionB.label }),
+        closing: t('reading.evidenceChoiceClose', { question, selfCard: self.cardName, selfOrientation: getOrientationLabel(self, t), selfMeaning: self.meaningLead, selfPractice: self.practice, optionA: optionA.label, optionB: optionB.label, aMeaning: optionA.development.meaningLead, bMeaning: optionB.development.meaningLead }),
         question,
         selfPosition: self.positionTitle,
         selfCard: self.cardName,

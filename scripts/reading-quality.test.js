@@ -11,6 +11,21 @@ const names = ['Nine of Cups', 'Queen of Pentacles', 'Ace of Wands', 'Five of Pe
 const cards = names.map((name, index) => ({ ...allTarotCards.find(card => card.englishName === name), isReversed: [1,4].includes(index) }));
 const positions = ['A current', 'B current', 'A development', 'B development', 'Self'].map(title => ({ title }));
 const tFor = dictionary => (key, values = {}) => String(key.split('.').reduce((value, part) => value?.[part], dictionary) || key).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? `{${key}}`);
+test('Choice overview compares actual route evidence and conclusion includes both routes and self', () => {
+  const result = build();
+  for (const section of result.cards) assert.ok(result.overview.includes(section.meaningLead));
+  const closing = result.integratedReading.paragraphs.at(-1);
+  for (const section of [result.cards[2], result.cards[3], result.cards[4]]) assert.ok(closing.includes(section.meaningLead));
+  assert.doesNotMatch(closing, /不要把前期准备|不按正逆位|不替你宣布/);
+});
+test('Readings do not expose instructions addressed to the generator', () => {
+  for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
+    for (const key of ['three', 'triangle', 'choice']) {
+      const result = build(language, dictionary, { question: '这个项目还会顺利进行吗？', spread: { key, positions }, cards: cards.slice(0, key === 'choice' ? 5 : 3) });
+      assert.doesNotMatch(JSON.stringify(result), /不擅自认定|没有提供的经历|采用逆位正文|通用关键词反过来|不按正逆位|不能相互证明|关键词相同不代表|not an inversion|cannot establish experiences|orientation alone|Neither proves|unrecognized experience|Si usa il testo|non dimostra esperienze|Nessuno dimostra|senza presumere esperienze/);
+    }
+  }
+});
 test('Career context uses the same evidence in every language and respects non-career questions', () => {
   const sample = ['The Emperor', 'Two of Swords', 'Queen of Pentacles'].map((name, index) => ({ ...allTarotCards.find(card => card.englishName === name), isReversed: index === 0 }));
   const before = JSON.stringify(sample);

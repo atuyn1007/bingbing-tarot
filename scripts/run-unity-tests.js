@@ -730,6 +730,24 @@ test('All 64 supplements have localized fallback without replacing dedicated kno
   }
 });
 
+test('Unity reading focus follows actual moving lines and never mutates saved facts', async () => {
+  const { getUnitySupplement } = await import('../src/unitySupplement.js');
+  for (const values of [[7,7,7,7,8,7], [9,7,7,7,8,7], [9,9,7,7,8,7], [9,9,9,9,6,9]]) {
+    const calculation = { ...calculateUnityResult(roundsForLineValues(values)), question: '项目如何推进？' };
+    const before = JSON.stringify(calculation);
+    for (const locale of ['zh-CN', 'en', 'it']) {
+      const result = getUnitySupplement(calculation, locale);
+      assert.equal(result.focus.question, calculation.question);
+      assert.deepEqual(result.focus.movingLines.map(line => line.lineIndex), calculation.movingLineIndexes);
+      assert.equal(result.focus.primary.summary, result.primary.modern.summary);
+      assert.equal(Boolean(result.focus.changed), calculation.movingLineIndexes.length > 0);
+      for (const line of result.focus.movingLines) assert.equal(line.summary, result.lines[line.lineIndex - 1].modern.summary);
+      assert.doesNotMatch(JSON.stringify(result), /不是该爻爻辞的翻译|not a translation of the line|non una traduzione del testo/);
+    }
+    assert.equal(JSON.stringify(calculation), before);
+  }
+});
+
 let failures = 0;
 for (const { name, run } of tests) {
   try {
