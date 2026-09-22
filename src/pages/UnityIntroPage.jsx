@@ -1,4 +1,4 @@
-import { Archive, ArrowRight, X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { canStartUnityCasting, normalizeUnityQuestion } from '../unityEntryFlow';
 
@@ -11,7 +11,6 @@ function UnityIntroPage({
   hasDraft,
   onOpenResult,
   hasSavedResult,
-  onOpenHistory,
   goHome,
   t,
 }) {
@@ -31,10 +30,6 @@ function UnityIntroPage({
         </button>
         <h1 className="page-title">{t('unity.title')}</h1>
         <div className="page-header-controls unity-intro-header-controls">
-          <button type="button" className="unity-history-link" onClick={onOpenHistory}>
-            <Archive aria-hidden="true" />
-            <span>{t('unityHistory.openHistory')}</span>
-          </button>
           <LanguageSwitcher />
         </div>
       </header>

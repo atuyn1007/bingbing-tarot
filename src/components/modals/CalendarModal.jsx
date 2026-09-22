@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { LazyMotion, domAnimation, m, useReducedMotion } from 'framer-motion';
 import { BookOpen, X } from 'lucide-react';
 import { getCardArtwork } from '../../cardArtwork';
+import { getDailyShareData } from '../../dailyTarotShare';
+import DailyShareModal from './DailyShareModal';
 
 function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames, onClose, t }) {
   const [meaning, setMeaning] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [shareData, setShareData] = useState(null);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -31,12 +34,12 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
 
   useEffect(() => {
     const closeOnEscape = (event) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape' && !shareData) onClose();
     };
 
     window.addEventListener('keydown', closeOnEscape);
     return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [onClose]);
+  }, [onClose, shareData]);
 
   if (!selectedDay?.card) return null;
 
@@ -128,6 +131,7 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
               ) : null}
 
               <div className="calendar-archive-actions">
+                <button type="button" className="calendar-archive-meaning-button" disabled={!shortOracle} onClick={() => setShareData(getDailyShareData({ card, dateKey, name: meaning?.displayName || (language === 'zh-CN' ? names.chineseName : names.englishName), summary: shortOracle, keywords: meaning?.displayKeywords || [] }))}>{t('archive.shareDaily')}</button>
                 {fullMeaning ? (
                   <button type="button" className="calendar-archive-meaning-button" onClick={() => setIsExpanded((current) => !current)}>
                     <BookOpen aria-hidden="true" />
@@ -144,6 +148,7 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
           <span className="calendar-archive-engraving calendar-archive-engraving-bottom" aria-hidden="true">IV · PERSONAL ORACLE ARCHIVE</span>
         </m.div>
       </m.div>
+      {shareData && <DailyShareModal data={shareData} t={t} onClose={() => setShareData(null)} />}
     </LazyMotion>
   );
 }

@@ -1,5 +1,5 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
-import { ArrowRight, Bell, BookOpen, Coins, Gift, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Bell, BookOpen, Coins, Gift, Sparkles } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import MonthlyTarotCalendar from '../components/MonthlyTarotCalendar';
 import { getCardArtwork } from '../cardArtwork';
@@ -17,10 +17,9 @@ function HomePage({
   dailyHistory,
   intlLocale,
   language,
-  recentReadings,
+  archiveEntries,
+  onOpenArchive,
   onOpenHistory,
-  onDeleteHistory,
-  formatHistorySummary,
   isSignedIn,
   savedDailyTarot,
   getCardDisplayNames,
@@ -207,44 +206,23 @@ function HomePage({
             />
 
             <aside className="home-utility-rail">
-              <div className="utility-caption" aria-hidden="true"><span>RECENT READINGS</span><small>最近抽牌 · ARCHIVE LOG</small></div>
-              <div className="history-card">
+              <div className="utility-caption" aria-hidden="true"><span>{t('unityHistory.eyebrow')}</span></div>
+              <div className="history-card unified-home-archive">
                 <div className="history-card-head">
-                  <div><p className="eyebrow">History</p><strong>{t('history.title')}</strong></div>
-                  <span className="history-card-count">{recentReadings.length}</span>
+                  <div><p className="eyebrow">{t('unityHistory.eyebrow')}</p><strong>{t('archive.title')}</strong></div>
+                  <span className="history-card-count">{archiveEntries.length}</span>
                 </div>
-              {recentReadings.length > 0 ? (
+              {archiveEntries.length > 0 ? (
                 <div className="history-list">
-                  {recentReadings.map((entry) => (
-                    <article
+                  {archiveEntries.slice(0, 3).map((entry) => (
+                    <button type="button"
                       key={entry.id}
-                      className="history-item"
-                      role="button"
-                      tabIndex={0}
+                      className="history-item archive-home-record"
                       onClick={() => onOpenHistory(entry)}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          onOpenHistory(entry);
-                        }
-                      }}
                     >
-                      <div className="history-item-head">
-                        <p className="history-question">{`"${entry.question}"`}</p>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            onDeleteHistory(entry.id);
-                          }}
-                          className="history-delete-button"
-                          aria-label={t('home.deleteHistoryAria')}
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <p className="history-cards">{formatHistorySummary(entry)}</p>
-                    </article>
+                      <span className="archive-home-date">{entry.createdAt.slice(0, 10)} · {t(`archive.${entry.kind}`)}</span>
+                      <span className="history-question">{entry.question || entry.spreadName}</span>
+                    </button>
                   ))}
                 </div>
               ) : (
@@ -253,6 +231,7 @@ function HomePage({
                   <p className="history-empty-copy">{t('home.historyEmptyCopy')}</p>
                 </div>
               )}
+                <button type="button" className="reader-link archive-home-open" onClick={onOpenArchive}><span>{t('archive.open')}</span><ArrowRight aria-hidden="true" /></button>
               </div>
               <button type="button" onClick={onOpenHumanRequest} className="reader-link">
                 <span>{t('home.humanReadingTitle')}</span><ArrowRight />

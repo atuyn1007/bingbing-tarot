@@ -1,7 +1,12 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import TarotCard from '../../TarotCard';
+import { useState } from 'react';
+import { getLocalDateKey } from '../../dateUtils';
+import { getDailyShareData } from '../../dailyTarotShare';
+import DailyShareModal from './DailyShareModal';
 
-function DailyModal({ card, intlLocale, keywords, summary, onClose, t, getCardDisplayNames, theme }) {
+function DailyModal({ card, dateKey = getLocalDateKey(new Date()), displayName, intlLocale, keywords, summary, onClose, t, getCardDisplayNames }) {
+  const [shareData, setShareData] = useState(null);
   if (!card) return null;
 
   return (
@@ -31,7 +36,7 @@ function DailyModal({ card, intlLocale, keywords, summary, onClose, t, getCardDi
           </div>
 
           <div className="daily-archive-content">
-            <p className="eyebrow">{new Intl.DateTimeFormat(intlLocale, { month: 'numeric', day: 'numeric' }).format(new Date())} {t('daily.modalSuffix')}</p>
+            <p className="eyebrow">{new Intl.DateTimeFormat(intlLocale, { month: 'numeric', day: 'numeric' }).format(new Date(`${dateKey}T12:00:00`))} {t('daily.modalSuffix')}</p>
             <div className="fortune-modal-card">
               <span>{card.name}{card.isReversed ? `${t('common.dateSeparator')}${t('common.orientationReversed')}` : `${t('common.dateSeparator')}${t('common.orientationUpright')}`}</span>
               <small>{getCardDisplayNames(card).englishName}</small>
@@ -47,9 +52,11 @@ function DailyModal({ card, intlLocale, keywords, summary, onClose, t, getCardDi
             <button type="button" onClick={onClose} className="primary-button">
               {t('daily.acknowledge')}
             </button>
+            <button type="button" className="secondary-button" onClick={() => setShareData(getDailyShareData({ card, dateKey, name: displayName || (intlLocale.startsWith('zh') ? getCardDisplayNames(card).chineseName : getCardDisplayNames(card).englishName), summary, keywords }))}>{t('archive.shareDaily')}</button>
           </div>
         </m.div>
       </m.div>
+      {shareData && <DailyShareModal data={shareData} t={t} onClose={() => setShareData(null)} />}
     </LazyMotion>
   );
 }

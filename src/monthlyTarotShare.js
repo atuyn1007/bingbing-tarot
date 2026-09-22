@@ -9,7 +9,7 @@ export function getMonthlyShareDays(month, history) {
   }));
 }
 
-function loadArtwork(src, signal) {
+export function loadArtwork(src, signal) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     const finish = (error) => {

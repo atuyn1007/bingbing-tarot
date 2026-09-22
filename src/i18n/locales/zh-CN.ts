@@ -1,4 +1,5 @@
 const zhCN = {
+  archive: { title: '历史档案', all: '全部', daily: '每日一牌', tarot: '塔罗牌阵', unity: '万象归一', open: '查看全部档案', shareDaily: '分享今日牌卡', search: '检索日期、问题、牌名或卦序……', clear: '清空占卜档案（保留每日一牌）', confirmClear: '确定清空普通塔罗与万象归一档案？每日一牌将保留。', dailyPreserved: '每日一牌与签到日历关联，仅查看，不在此删除。' },
   meta: {
     locale: 'zh-CN',
     languageName: '中文',

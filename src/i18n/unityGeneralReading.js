@@ -1,0 +1,36 @@
+// Product reference templates, not translations of missing canonical texts.
+export const unityGeneralReading = {
+  'zh-CN': {
+    title: '通用参考解读',
+    trigrams: { qian: '乾·天', kun: '坤·地', zhen: '震·雷', xun: '巽·风', kan: '坎·水', li: '离·火', gen: '艮·山', dui: '兑·泽' },
+    themes: { qian: '行动与承担', kun: '承载与配合', zhen: '启动与应变', xun: '渐进与渗透', kan: '风险与通行条件', li: '辨别与依托', gen: '停止与界限', dui: '交流与互惠' },
+    hexagram: '第{number}卦，上{upper}、下{lower}。通用阅读可把“{lowerTheme}”与“{upperTheme}”放在一起考察：两者在你提出的问题中能否兼顾，哪些条件仍需要核实？这是一种观察角度，不是对事情结果的预测。',
+    positions: ['处在起步位置，可先核实基础与进入条件。', '处在下卦中位，可观察当前做法能否持续承载。', '处在下卦末位，可检查推进到下一阶段所需的条件。', '进入上卦，可关注环境或职责变化后的衔接。', '处在上卦中位，可审视统筹与承担是否相称。', '处在全卦末位，可检查收尾、延续或退出的边界。'],
+    line: '第{number}卦第{position}爻。{stage}{state}这些是爻位与变化状态的通用观察提示，不是该爻爻辞的翻译，也不代表吉凶结论。',
+    moving: '本爻为动爻，由{from}转为{to}；可把它作为需要重新核实条件的环节。',
+    static: '本爻为静爻，保留{from}的状态；静并不意味着现实不会改变。',
+    polarity: { yin: '阴', yang: '阳' },
+  },
+  en: {
+    title: 'General Reference Reading',
+    trigrams: { qian: 'Qian · Heaven', kun: 'Kun · Earth', zhen: 'Zhen · Thunder', xun: 'Xun · Wind', kan: 'Kan · Water', li: 'Li · Fire', gen: 'Gen · Mountain', dui: 'Dui · Lake' },
+    themes: { qian: 'action and responsibility', kun: 'support and cooperation', zhen: 'initiative and response', xun: 'gradual influence', kan: 'risk and conditions for passage', li: 'discernment and reliance', gen: 'stopping and boundaries', dui: 'exchange and reciprocity' },
+    hexagram: 'Hexagram {number}: {upper} above, {lower} below. A general reading considers “{lowerTheme}” alongside “{upperTheme}”. Can both be accommodated in your question, and which conditions still need checking? This is a perspective for reflection, not a forecast.',
+    positions: ['At the beginning, examine foundations and entry conditions. ', 'At the centre of the lower trigram, consider whether the current approach is sustainable. ', 'At the end of the lower trigram, check conditions for the next stage. ', 'Entering the upper trigram, consider transitions in circumstances or responsibilities. ', 'At the centre of the upper trigram, examine coordination and responsibility. ', 'At the final position, examine the boundaries of completion, continuation or withdrawal. '],
+    line: 'Hexagram {number}, line {position}. {stage}{state} These are general prompts based on position and movement, not a translation of the line text or a verdict on fortune.',
+    moving: 'This line changes from {from} to {to}; consider it a point where conditions merit checking again.',
+    static: 'This line remains {from}; a static line does not mean real circumstances cannot change.',
+    polarity: { yin: 'yin', yang: 'yang' },
+  },
+  it: {
+    title: 'Lettura generale di riferimento',
+    trigrams: { qian: 'Qian · Cielo', kun: 'kun · Terra', zhen: 'Zhen · Tuono', xun: 'Xun · Vento', kan: 'Kan · Acqua', li: 'Li · Fuoco', gen: 'Gen · Montagna', dui: 'Dui · Lago' },
+    themes: { qian: 'azione e responsabilità', kun: 'sostegno e collaborazione', zhen: 'avvio e reazione', xun: 'influenza graduale', kan: 'rischi e condizioni del passaggio', li: 'discernimento e sostegno', gen: 'arresto e limiti', dui: 'scambio e reciprocità' },
+    hexagram: 'Esagramma {number}: {upper} sopra, {lower} sotto. Una lettura generale considera insieme «{lowerTheme}» e «{upperTheme}». Possono trovare entrambe spazio nella tua domanda? Quali condizioni vanno ancora verificate? È una prospettiva di riflessione, non una previsione.',
+    positions: ['All’inizio, verifica le basi e le condizioni di accesso. ', 'Al centro del trigramma inferiore, considera la sostenibilità del metodo attuale. ', 'Alla fine del trigramma inferiore, verifica le condizioni per la fase successiva. ', 'Entrando nel trigramma superiore, considera i passaggi legati a nuove circostanze o responsabilità. ', 'Al centro del trigramma superiore, esamina coordinamento e responsabilità. ', 'Nella posizione finale, esamina i limiti tra conclusione, prosecuzione e ritiro. '],
+    line: 'Esagramma {number}, linea {position}. {stage}{state} Sono spunti generali basati sulla posizione e sul mutamento, non una traduzione del testo della linea né un giudizio sulla fortuna.',
+    moving: 'Questa linea passa da {from} a {to}: può essere un punto in cui verificare nuovamente le condizioni.',
+    static: 'Questa linea rimane {from}; una linea stabile non significa che le circostanze reali non possano cambiare.',
+    polarity: { yin: 'yin', yang: 'yang' },
+  },
+};

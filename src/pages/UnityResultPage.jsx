@@ -1,4 +1,4 @@
-import { Archive, ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import UnityHexagramSection from '../components/unity/UnityHexagramSection';
 import UnityTarotArchive from '../components/unity/UnityTarotArchive';
@@ -25,10 +25,10 @@ function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenH
         </button>
         <h1 className="page-title">{t('unity.resultTitle')}</h1>
         <div className="page-header-controls">
-          <button type="button" className="unity-history-link" onClick={onOpenHistory}>
-            {historyEntry ? <ArrowLeft aria-hidden="true" /> : <Archive aria-hidden="true" />}
-            <span>{historyEntry ? t('unityHistory.backToArchive') : t('unityHistory.openHistory')}</span>
-          </button>
+          {historyEntry && <button type="button" className="unity-history-link" onClick={onOpenHistory}>
+            <ArrowLeft aria-hidden="true" />
+            <span>{t('unityHistory.backToArchive')}</span>
+          </button>}
           <LanguageSwitcher />
         </div>
       </header>

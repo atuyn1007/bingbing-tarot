@@ -1,4 +1,5 @@
 const it = {
+  archive: { title: 'Archivio delle letture', all: 'Tutte', daily: 'Carta del giorno', tarot: 'Stese dei tarocchi', unity: 'Unità', open: 'Apri tutti i documenti', shareDaily: 'Condividi la carta del giorno', search: 'Cerca data, domanda, carta o numero dell’esagramma…', clear: 'Svuota le letture (conserva le carte giornaliere)', confirmClear: 'Eliminare le letture dei tarocchi e Unità? Le carte giornaliere saranno conservate.', dailyPreserved: 'Le carte giornaliere appartengono al calendario e non possono essere eliminate qui.' },
   meta: {
     locale: 'it',
     languageName: 'Italiano',

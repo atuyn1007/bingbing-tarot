@@ -18,6 +18,7 @@ import {
   toggleBackSelection,
 } from './cardDrawFlow';
 import { isDefinitiveAuthFailure, isSessionExpiredAt } from './sessionUtils';
+import { buildReadingArchive } from './readingArchive';
 import { hasCompleteChoiceOptions, normalizeChoiceOptions } from './choiceSpreadUtils';
 import { getSpreadConfig, SPREAD_OPTIONS } from './spreadOptions';
 import { calculateUnityResult } from './unityAlgorithm';
@@ -57,6 +58,7 @@ const CardMeaningsPage = lazy(() => import('./pages/CardMeaningsPage.jsx'));
 const CardMeaningDetailPage = lazy(() => import('./pages/CardMeaningDetailPage.jsx'));
 const HistoryModal = lazy(() => import('./components/modals/HistoryModal.jsx'));
 const DailyModal = lazy(() => import('./components/modals/DailyModal.jsx'));
+const CalendarModal = lazy(() => import('./components/modals/CalendarModal.jsx'));
 const HumanRequestModal = lazy(() => import('./components/modals/HumanRequestModal.jsx'));
 const ForgotPasswordModal = lazy(() => import('./components/modals/ForgotPasswordModal.jsx'));
 const SpreadModal = lazy(() => import('./components/modals/SpreadModal.jsx'));
@@ -330,6 +332,8 @@ function App() {
   const [dailyHistory, setDailyHistory] = useState(storedProfile.dailyHistory || {});
   const [showSpreadModal, setShowSpreadModal] = useState(false);
   const [recentReadings, setRecentReadings] = useState([]);
+  const [archiveDailyDay, setArchiveDailyDay] = useState(null);
+  const archiveEntries = buildReadingArchive({ unity: unityHistoryEntries, tarot: recentReadings, daily: dailyHistory });
   const [selectedSpreadKey, setSelectedSpreadKey] = useState('three');
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
@@ -454,6 +458,7 @@ function App() {
     setSavedDailyTarot(null);
     setIsSignedIn(false);
     setDailyHistory({});
+    setArchiveDailyDay(null);
     setShowCalendarModal(false);
     setShowSpreadModal(false);
     setRecentReadings([]);
@@ -1275,6 +1280,22 @@ function App() {
     setUnityHistoryEntries(clearUnityHistory(activeNickname, window.localStorage));
   };
 
+  const openArchiveEntry = (entry) => {
+    if (entry.kind === 'unity') handleOpenUnityHistoryEntry(entry.source);
+    else if (entry.kind === 'tarot') openHistoryModal(entry.source);
+    else if (entry.kind === 'daily') setArchiveDailyDay(entry.source);
+  };
+
+  const deleteArchiveEntry = (entry) => {
+    if (entry.kind === 'unity') handleDeleteUnityHistoryEntry(entry.source);
+    else if (entry.kind === 'tarot') deleteRecentReading(entry.source.id);
+  };
+
+  const clearReadingArchive = () => {
+    handleClearUnityHistory();
+    recentReadings.forEach(entry => deleteRecentReading(entry.id));
+  };
+
   const handleStartUnityFromHistory = () => {
     setSelectedUnityHistoryEntry(null);
     setCurrentPage('unity-intro');
@@ -1716,10 +1737,9 @@ function App() {
         dailyHistory={dailyHistory}
         intlLocale={intlLocale}
         language={language}
-        recentReadings={recentReadings}
-        onOpenHistory={openHistoryModal}
-        onDeleteHistory={deleteRecentReading}
-        formatHistorySummary={formatHistorySummaryLabel}
+        archiveEntries={archiveEntries}
+        onOpenArchive={handleOpenUnityHistory}
+        onOpenHistory={openArchiveEntry}
         isSignedIn={isSignedIn}
         savedDailyTarot={savedDailyTarot}
         getCardDisplayNames={getCardDisplayNames}
@@ -1805,13 +1825,14 @@ function App() {
     currentView = (
       <UnityHistoryPage
         theme={theme}
-        entries={unityHistoryEntries}
+        entries={archiveEntries}
+        unified
         locale={intlLocale}
-        onOpenEntry={handleOpenUnityHistoryEntry}
-        onDeleteEntry={handleDeleteUnityHistoryEntry}
-        onClearAll={handleClearUnityHistory}
-        onStartReading={handleStartUnityFromHistory}
-        onBack={() => setCurrentPage(unityResult ? 'unity-result' : 'unity-intro')}
+        onOpenEntry={openArchiveEntry}
+        onDeleteEntry={deleteArchiveEntry}
+        onClearAll={clearReadingArchive}
+        onStartReading={handleStartFreeReading}
+        onBack={goHome}
         t={t}
       />
     );
@@ -1989,10 +2010,13 @@ function App() {
         </Suspense>
       ) : null}
 
+      {archiveDailyDay && <Suspense fallback={null}><CalendarModal selectedDay={archiveDailyDay} language={language} intlLocale={intlLocale} getCardDisplayNames={getCardDisplayNames} t={t} onClose={() => setArchiveDailyDay(null)} /></Suspense>}
       {showDailyResult && activeDailyCard ? (
         <Suspense fallback={null}>
           <DailyModal
             card={activeDailyCard}
+            dateKey={lastSignInDate || undefined}
+            displayName={cardMeaningsModule?.getLocalizedMeaningCard(cardMeaningsModule.findTarotMeaningCard(activeDailyCard), language)?.displayName}
             intlLocale={intlLocale}
             keywords={dailyFortuneKeywords}
             summary={getDailyFortuneSummary(activeDailyCard)}

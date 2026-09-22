@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { buildReadingArchive, filterReadingArchive } from '../src/readingArchive.js';
+import { getDailyShareData, wrapShareText } from '../src/dailyTarotShare.js';
 import { existsSync, readFileSync } from 'node:fs';
 
 import { isDefinitiveAuthFailure, isSessionExpiredAt, SESSION_MAX_AGE_MS } from '../src/sessionUtils.js';
@@ -361,7 +363,7 @@ const tests = [
         'onOpenRedeemModal',
         'onLogout',
         'onOpenHistory',
-        'onDeleteHistory',
+        'onOpenArchive',
         'onDailyAction',
         'onStartFreeReading',
         'onOpenCardMeanings',
@@ -574,6 +576,33 @@ tests.push({
     assert.equal(JSON.stringify(history), before);
   },
 });
+
+tests.push({ name: 'Unified archive merges saved sources without mutation or id collisions', run() {
+  const unity = [{ id: 'same', createdAt: '2026-09-22T10:00:00Z', question: 'Unity question', primaryHexagramNumber: 18, result: { snapshot: true } }];
+  const tarot = [{ id: 'same', createdAt: '2026-09-21T10:00:00Z', question: 'Tarot question', spreadKey: 'three' }];
+  const daily = { '2026-09-20': { id: 7, name: 'Chariot', isReversed: true } };
+  const before = JSON.stringify([unity, tarot, daily]);
+  const entries = buildReadingArchive({ unity, tarot, daily });
+  assert.deepEqual(entries.map(e => e.kind), ['unity', 'tarot', 'daily']);
+  assert.equal(new Set(entries.map(e => e.id)).size, 3);
+  assert.equal(entries[0].source, unity[0]);
+  assert.equal(entries[2].source.card, daily['2026-09-20']);
+  assert.equal(entries[2].canDelete, false);
+  assert.equal(filterReadingArchive(entries, 'question', 'tarot').length, 1);
+  assert.equal(filterReadingArchive(entries, '2026-09-20', 'all').length, 1);
+  assert.equal(JSON.stringify([unity, tarot, daily]), before);
+}});
+tests.push({ name: 'Daily share keeps saved date and orientation and wraps all content', run() {
+  const card = { id: 7, name: '战车', isReversed: true };
+  const result = getDailyShareData({ card, dateKey: '2026-09-01', name: 'Chariot', summary: 'one\ntwo', keywords: ['test'] });
+  assert.equal(result.dateKey, '2026-09-01');
+  assert.equal(result.isReversed, true);
+  assert.equal(result.summary, 'one\ntwo');
+  assert.equal(result.name, 'Chariot');
+  const lines = wrapShareText('abcdef\ngh', text => text.length, 3);
+  assert.deepEqual(lines, ['abc', 'def', 'gh']);
+  assert.equal(card.isReversed, true);
+}});
 
 let failed = 0;
 

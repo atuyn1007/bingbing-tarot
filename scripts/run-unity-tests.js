@@ -644,7 +644,7 @@ test('Unity history integration auto-saves and replays only the stored snapshot'
   assert.match(appSource, /currentPage === 'unity-history'/);
   assert.match(appSource, /<UnityHistoryPage/);
   assert.doesNotMatch(appSource, /calculateUnityResult\(entry\.result|buildUnityKnowledgeSnapshot\(entry\.result/);
-  assert.match(introSource, /onOpenHistory/);
+  assert.match(readFileSync(new URL('../src/pages/HomePage.jsx', import.meta.url), 'utf8'), /onOpenArchive/);
   assert.match(resultSource, /onOpenHistory/);
   assert.match(resultSource, /historyEntry/);
 });
@@ -668,6 +668,65 @@ test('Supplement reads every stored line without changing the archive, across mo
       if (reading.changed) assert.equal(reading.changed.structure.kingWenNumber, calculation.changedHexagram.number);
     }
     assert.equal(JSON.stringify(archive), before);
+  }
+});
+
+test('Gu changing at five and six reads Gu lines and Jing text without mutating history', async () => {
+  const { getUnitySupplement } = await import('../src/unitySupplement.js');
+  const calculation = calculateUnityResult(roundsForLineValues([8,7,7,8,6,9]));
+  assert.equal(calculation.primaryHexagram.number, 18);
+  assert.equal(calculation.changedHexagram.number, 48);
+  const archive = createUnityResultArchive(calculation, 'test-owner');
+  const before = JSON.stringify(archive);
+  for (const locale of ['zh-CN', 'en', 'it']) {
+    const result = getUnitySupplement(JSON.parse(before).calculation, locale);
+    assert.equal(result.primary.canonical, null);
+    assert.equal(result.changed.canonical, null);
+    assert.ok(result.primary.modern?.summary);
+    assert.ok(result.changed.modern?.summary);
+    assert.deepEqual(result.lines.map(line => line.hexagramNumber), [18,18,18,18,18,18]);
+    assert.equal(result.lines[4].polarity, 'yin');
+    assert.equal(result.lines[5].polarity, 'yang');
+  }
+  assert.equal(JSON.stringify(archive), before);
+});
+
+test('Gu and Jing provide all six localized lines for static and moving results', async () => {
+  const { getUnitySupplement } = await import('../src/unitySupplement.js');
+  for (const values of [[8,7,7,8,8,7], [8,7,7,8,6,7], [8,7,7,8,6,9], [6,9,9,6,6,9], [8,7,7,8,7,8]]) {
+    const calculation = calculateUnityResult(roundsForLineValues(values));
+    for (const locale of ['zh-CN', 'en', 'it']) {
+      const result = getUnitySupplement(calculation, locale);
+      assert.equal(Boolean(result.changed), calculation.movingLineIndexes.length > 0);
+      assert.equal(result.lines.length, 6);
+      result.lines.forEach((line, index) => {
+        assert.equal(line.canonical, null);
+        assert.ok(line.modern?.summary, `Missing ${locale} summary`);
+        assert.equal(line.linePosition, index + 1);
+        assert.equal(line.modern.kind, 'general-reference');
+      });
+    }
+  }
+});
+
+test('All 64 supplements have localized fallback without replacing dedicated knowledge', async () => {
+  const { getUnitySupplement } = await import('../src/unitySupplement.js');
+  const { UNITY_HEXAGRAMS } = await import('../src/data/unity/hexagrams.js');
+  for (const structure of UNITY_HEXAGRAMS) {
+    const calculation = calculateUnityResult(roundsForLineValues(structure.linePatternBottomToTop.map(p => p === 'yin' ? 6 : 9)));
+    const before = JSON.stringify(calculation);
+    for (const locale of ['zh-CN', 'en', 'it']) {
+      const reading = getUnitySupplement(calculation, locale);
+      for (const item of [reading.primary, reading.changed, ...reading.lines]) {
+        assert.ok(item.modern?.summary);
+        if (!item.canonical) assert.equal(item.modern.kind, 'general-reference');
+      }
+      if (structure.kingWenNumber === 14) {
+        assert.equal(reading.primary.canonical.originalText, '大有：元亨。');
+        assert.notEqual(reading.primary.modern.kind, 'general-reference');
+      }
+    }
+    assert.equal(JSON.stringify(calculation), before);
   }
 });
 

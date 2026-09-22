@@ -3,12 +3,14 @@ import { useMemo, useState } from 'react';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { filterUnityHistory } from '../unityHistoryStore';
 import { groupUnityHistoryEntries } from '../unityHistoryPresentation';
+import { filterReadingArchive } from '../readingArchive';
 
-function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, onClearAll, onStartReading, onBack, t }) {
+function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, onClearAll, onStartReading, onBack, t, unified = false }) {
   const [query, setQuery] = useState('');
+  const [kind, setKind] = useState('all');
   const filteredEntries = useMemo(
-    () => filterUnityHistory(entries, query, locale),
-    [entries, locale, query],
+    () => unified ? filterReadingArchive(entries, query, kind) : filterUnityHistory(entries, query, locale),
+    [entries, locale, query, unified, kind],
   );
   const hexagramNames = t('unity.hexagramNames');
   const dateFormatter = useMemo(
@@ -33,7 +35,7 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
   };
 
   const confirmClear = () => {
-    if (window.confirm(t('unityHistory.confirmClear'))) onClearAll();
+    if (window.confirm(t(unified ? 'archive.confirmClear' : 'unityHistory.confirmClear'))) onClearAll();
   };
 
   return (
@@ -62,7 +64,7 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={t('unityHistory.searchPlaceholder')}
+              placeholder={t(unified ? 'archive.search' : 'unityHistory.searchPlaceholder')}
             />
             {query ? (
               <button type="button" onClick={() => setQuery('')} aria-label={t('unityHistory.clearSearch')}>
@@ -71,6 +73,10 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
             ) : null}
           </label>
         </section>
+
+        {unified && <nav className="archive-filters" aria-label={t('archive.title')}>
+          {['all', 'daily', 'tarot', 'unity'].map(value => <button key={value} type="button" aria-pressed={kind === value} onClick={() => setKind(value)}>{t(`archive.${value}`)}</button>)}
+        </nav>}
 
         {!entries.length ? (
           <section className="unity-history-empty">
@@ -109,15 +115,15 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
                         <span className="unity-history-node" aria-hidden="true" />
                         <div className="unity-history-time">
                           <time dateTime={entry.createdAt}>{dateFormatter.format(new Date(entry.createdAt))}</time>
-                          <small>{timeFormatter.format(new Date(entry.createdAt))}</small>
+                          {!entry.dateOnly && <small>{timeFormatter.format(new Date(entry.createdAt))}</small>}
                         </div>
                         <button type="button" className="unity-history-record-main" onClick={() => onOpenEntry(entry)}>
                           <span className="unity-history-record-meta">
-                            <span>{t('unityHistory.spreadName')}</span>
+                            <span>{entry.kind && entry.kind !== 'unity' ? (entry.spreadName || t(`archive.${entry.kind}`)) : t('unityHistory.spreadName')}</span>
                             <span aria-hidden="true">ARC. {entry.createdAt.slice(0, 10)} · REC. {recordNumber}</span>
                           </span>
                           <span className="unity-history-record-question">{entry.question}</span>
-                          <span className="unity-history-hexagrams">
+                          {(!entry.kind || entry.kind === 'unity') && <span className="unity-history-hexagrams">
                             <span>{t('unityHistory.primaryHexagram')} · {entry.primaryHexagramNumber} {primaryName}</span>
                             {changedName ? (
                               <span className="unity-history-change" aria-label={t('unityHistory.changedHexagram')}>
@@ -128,12 +134,12 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
                               <span>{t('unityHistory.noChangedHexagram')}</span>
                             )}
                             <span>{t('unityHistory.movingLineCount', { count: entry.movingLineCount })}</span>
-                          </span>
+                          </span>}
                           <span className="unity-history-view">
                             {t('unityHistory.viewRecord')} <ArrowRight aria-hidden="true" />
                           </span>
                         </button>
-                        <details className="unity-history-actions">
+                        {entry.canDelete !== false && <details className="unity-history-actions">
                           <summary aria-label={t('unityHistory.moreActions')}>
                             <MoreHorizontal aria-hidden="true" />
                           </summary>
@@ -143,7 +149,7 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
                               <span>{t('unityHistory.deleteEntry')}</span>
                             </button>
                           </div>
-                        </details>
+                        </details>}
                       </article>
                     );
                   })}
@@ -153,11 +159,12 @@ function UnityHistoryPage({ theme, entries, locale, onOpenEntry, onDeleteEntry, 
           </section>
         )}
 
-        {entries.length ? (
+        {unified && entries.some(entry => entry.kind === 'daily') && <p className="archive-retention-note">{t('archive.dailyPreserved')}</p>}
+        {entries.some(entry => entry.canDelete !== false) ? (
           <footer className="unity-history-footer">
             <button type="button" className="unity-history-clear" onClick={confirmClear}>
               <Trash2 aria-hidden="true" />
-              <span>{t('unityHistory.clearAll')}</span>
+              <span>{t(unified ? 'archive.clear' : 'unityHistory.clearAll')}</span>
             </button>
           </footer>
         ) : null}
