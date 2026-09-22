@@ -11,6 +11,37 @@ const names = ['Nine of Cups', 'Queen of Pentacles', 'Ace of Wands', 'Five of Pe
 const cards = names.map((name, index) => ({ ...allTarotCards.find(card => card.englishName === name), isReversed: [1,4].includes(index) }));
 const positions = ['A current', 'B current', 'A development', 'B development', 'Self'].map(title => ({ title }));
 const tFor = dictionary => (key, values = {}) => String(key.split('.').reduce((value, part) => value?.[part], dictionary) || key).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? `{${key}}`);
+test('Result page renders integrated reading without a career match, including legacy snapshots', async () => {
+  const { createServer } = await import('vite');
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { mkdtemp, rm } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const cacheDir = await mkdtemp(join(tmpdir(), 'tarot-render-test-'));
+  const server = await createServer({ cacheDir, server: { middlewareMode: true }, appType: 'custom' });
+  try {
+    const { default: ResultPage } = await server.ssrLoadModule('/src/pages/ResultPage.jsx');
+    const i18n = await server.ssrLoadModule('/src/i18n/index.ts');
+    await i18n.preloadInitialLanguage();
+    for (const key of ['three', 'triangle', 'choice']) {
+      const spread = { key, name: key, positions };
+      const drawnCards = cards.slice(0, key === 'choice' ? 5 : 3);
+      const reading = build('zh-CN', zh, { question: '感情发展', cards: drawnCards, spread });
+      assert.equal(reading.hasContextualReading, false);
+      for (const legacy of [false, true]) {
+        const snapshot = structuredClone(reading);
+        if (legacy) delete snapshot.hasContextualReading;
+        const before = JSON.stringify(snapshot);
+        const html = renderToStaticMarkup(createElement(ResultPage, { reading: snapshot, drawnCards, spreadForCards: spread, userQuestion: '感情发展', t: tFor(zh) }));
+        assert.match(html, /reading-integrated-summary/);
+        assert.match(html, /综合解读/);
+        assert.doesNotMatch(html, /先确认这个选项需要投入的时间、资源和支持/);
+        assert.equal(JSON.stringify(snapshot), before);
+      }
+    }
+  } finally { await server.close(); await rm(cacheDir, { recursive: true, force: true }); }
+});
 test('Unmatched questions and cards expose only archive meanings, not contextual filler', () => {
   for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
     for (const key of ['three', 'triangle', 'choice']) {

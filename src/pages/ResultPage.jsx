@@ -123,7 +123,7 @@ function ResultPage({
               </div>
             </m.section>
 
-            {hasContextualReading ? <IntegratedReadingSection reading={reading} t={t} /> : null}
+            <IntegratedReadingSection reading={reading} t={t} />
           </LazyMotion>
 
           <p className="reading-disclaimer">{reading.disclaimer}</p>
