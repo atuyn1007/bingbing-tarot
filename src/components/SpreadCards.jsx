@@ -1,6 +1,7 @@
 import TarotCard from '../TarotCard';
 import { getChoiceDisplayGroups, getChoiceGroupSlots } from '../choiceSpreadUtils';
 import { getCardDisplayNames } from '../data';
+import { selectDisplayKeywords } from '../readingMeanings';
 
 function SpreadCards({
   cards,
@@ -21,7 +22,7 @@ function SpreadCards({
     const isCardRevealed = Array.isArray(revealedIndexes) ? revealedIndexes.includes(index) : Boolean(isRevealed);
     const positionTitle = position?.title || t('drawing.spreadLabelFallback', { index: index + 1 });
     const { chineseName, englishName } = getCardDisplayNames(card);
-    const keywords = isCardRevealed ? (getCardKeywords?.(card) || []).slice(0, 4) : [];
+    const keywords = isCardRevealed ? selectDisplayKeywords(getCardKeywords?.(card) || []) : [];
     const cardFace = (
       <TarotCard
         card={card}

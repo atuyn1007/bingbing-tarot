@@ -14,6 +14,9 @@ import {
 import { getCardArtwork } from '../src/cardArtwork.js';
 import { findTarotMeaningCard, getLocalizedMeaningCard, getTarotMeaningCard } from '../src/cardMeanings.js';
 import { getReadingFromMeaningArchive } from '../src/readingMeanings.js';
+import { getKeywordsFromMeaningArchive, selectDisplayKeywords } from '../src/readingMeanings.js';
+import { allTarotCards } from '../src/data.js';
+import * as keywordArchive from '../src/cardMeanings.js';
 import {
   getChoiceDisplayGroups,
   hasCompleteChoiceOptions,
@@ -602,6 +605,40 @@ tests.push({ name: 'Daily share keeps saved date and orientation and wraps all c
   const lines = wrapShareText('abcdef\ngh', text => text.length, 3);
   assert.deepEqual(lines, ['abc', 'def', 'gh']);
   assert.equal(card.isReversed, true);
+}});
+
+tests.push({ name: 'Reveal and daily keyword callbacks use archive, never generic catalogue fallback', run() {
+  const source = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
+  for (const name of ['getReadingCardKeywords', 'getDailyFortuneKeywords']) {
+    const start = source.indexOf(`const ${name} =`);
+    const body = source.slice(start, source.indexOf(';', start) + 1);
+    assert.match(body, /getKeywordsFromMeaningArchive\(card, language, cardMeaningsModule\)/);
+    assert.doesNotMatch(body, /getLocalizedTarotKeywords|uprightKeywords|reversedKeywords/);
+  }
+}});
+tests.push({ name: 'All 78 reveal cards resolve their own daily archive keywords in every language and orientation', run() {
+  for (const language of ['zh-CN', 'en', 'it']) {
+    for (const card of allTarotCards) {
+      const archived = keywordArchive.findTarotMeaningCard(card);
+      assert.ok(archived, `Unmapped ${card.id}: ${card.name}`);
+      const expected = keywordArchive.getLocalizedMeaningCard(archived, language).displayKeywords;
+      assert.ok(expected.length, `${language}/${card.name}`);
+      for (const isReversed of [false, true]) {
+        assert.deepEqual(getKeywordsFromMeaningArchive({ ...card, isReversed }, language, keywordArchive), expected);
+      }
+      assert.notDeepEqual(expected, ['清晰', '觉察', '机会']);
+    }
+  }
+  assert.deepEqual(getKeywordsFromMeaningArchive(allTarotCards[0], 'zh-CN', null), []);
+}});
+
+tests.push({ name: 'Card keyword display prefers two-character Chinese terms without rewriting archive', run() {
+  const keywords = ['新开始', '灵感', '行动力', '创造力', '热情', '机会'];
+  assert.deepEqual(selectDisplayKeywords(keywords), ['灵感', '热情', '机会']);
+  assert.deepEqual(selectDisplayKeywords(['经济压力', '求助']), ['求助', '经济压力']);
+  assert.deepEqual(selectDisplayKeywords(['热情', '热情', '机会']), ['热情', '机会']);
+  assert.deepEqual(selectDisplayKeywords(['New beginning', 'Inspiration', 'Action', 'Passion']), ['New beginning', 'Inspiration', 'Action']);
+  assert.equal(keywords[0], '新开始');
 }});
 
 let failed = 0;

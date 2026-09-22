@@ -1,4 +1,6 @@
 import { getKeywordsFromMeaningArchive, getReadingFromMeaningArchive } from './readingMeanings.js';
+import { classifyMeaningEvidence, getEvidenceRelation } from './readingEvidence.js';
+import { getCareerContext, careerThreeReading, isCareerQuestion } from './readingCareer.js';
 
 export function normalizeReadingQuestion(question) {
   return String(question || '').replace(/\s+/g, ' ').trim();
@@ -54,6 +56,10 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
   );
   const meaningLead = getMeaningLead(baseMeaning) || keywordText;
   const theme = getTheme(keywords, card?.name, t);
+  const localized = meaningArchive?.getLocalizedMeaningCard(meaningArchive.findTarotMeaningCard(card), language);
+  const canonicalMeaning = getReadingFromMeaningArchive(card, Boolean(card?.isReversed), 'zh-CN', meaningArchive, '');
+  const careerContext = getCareerContext(question, canonicalMeaning, t);
+  const practice = careerContext?.check || (isCareerQuestion(question) ? t('reading.evidenceNoPractice') : (card?.isReversed ? localized?.displayDailyReversed : localized?.displayDailyUpright)) || t('reading.evidenceNoPractice');
 
   return {
     cardId: card?.id,
@@ -68,6 +74,9 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
     theme,
     baseMeaning,
     meaningLead,
+    practice,
+    careerContext,
+    evidenceKind: classifyMeaningEvidence(getMeaningLead(baseMeaning), language),
     positionResponsibility: position.subtitle
       ? t('reading.positionResponsibility', { position: position.title, subtitle: position.subtitle })
       : t('reading.positionResponsibilityNoSubtitle', { position: position.title }),
@@ -76,7 +85,7 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
       keywords: keywordText,
       meaningLead,
     }),
-    contextualMeaning: t('reading.contextualMeaning', {
+    contextualMeaning: careerContext ? t('reading.career.context', { position: position.title, question, ...careerContext }) : t('reading.contextualMeaning', {
       question,
       position: position.title,
       subtitle: position.subtitle,
@@ -85,6 +94,7 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
       meaningLead,
     }),
     attention: t('reading.attention', {
+      practice,
       position: position.title,
       keywords: keywordText,
       meaningLead,
@@ -97,13 +107,36 @@ function buildPositionTrace(cardSections, t) {
   return cardSections
     .map((section) => t('reading.positionThemeTrace', {
       position: section.positionTitle,
-      theme: section.theme,
+      theme: section.meaningLead.replace(/[。.!?！？]+$/u, ''),
     }))
     .join(t('common.listSeparator'));
 }
 
 function getOrientationLabel(section, t) {
   return t(section.orientation === 'reversed' ? 'common.orientationReversed' : 'common.orientationUpright');
+}
+
+function buildEvidencePath(label, current, development, t) {
+  const quote = section => t('reading.evidenceQuote', {
+    position: section.positionTitle, card: section.cardName,
+    orientation: getOrientationLabel(section, t), meaning: section.meaningLead,
+  });
+  return t('reading.evidencePath', {
+    label, currentEvidence: quote(current), developmentEvidence: quote(development),
+    bridge: t('reading.evidenceBridge.' + getEvidenceRelation(current, development)),
+  });
+}
+
+function buildOptionEvidence(label, current, development, kind, t) {
+  // Later risk is particularly relevant; current resources remain the starting point.
+  const candidates = kind === 'caution' ? [development, current] : [current, development];
+  const source = candidates.find(section => section.evidenceKind === kind);
+  if (!source) return t(kind === 'support' ? 'reading.evidenceNoSupport' : 'reading.evidenceNoRisk', {
+    practice: development.practice || current.practice || t('reading.evidenceNoPractice'),
+  });
+  return t(kind === 'support' ? 'reading.evidenceSupport' : 'reading.evidenceRisk', {
+    label, card: source.cardName, position: source.positionTitle, meaning: source.meaningLead,
+  });
 }
 
 function buildChoiceComparison(cardSections, choiceOptions, t) {
@@ -115,8 +148,11 @@ function buildChoiceComparison(cardSections, choiceOptions, t) {
     label,
     current,
     development,
+    relationKind: getEvidenceRelation(current, development),
+    path: buildEvidencePath(label, current, development, t),
     trace: buildPositionTrace([current, development], t),
     advantage: t('reading.choiceAdvantage', {
+      evidence: buildOptionEvidence(label, current, development, 'support', t),
       label,
       currentTheme: current.theme,
       developmentTheme: development.theme,
@@ -124,6 +160,7 @@ function buildChoiceComparison(cardSections, choiceOptions, t) {
       developmentOrientation: getOrientationLabel(development, t),
     }),
     risk: t('reading.choiceRisk', {
+      evidence: buildOptionEvidence(label, current, development, 'caution', t),
       label,
       currentTheme: current.theme,
       developmentTheme: development.theme,
@@ -138,6 +175,7 @@ function buildChoiceComparison(cardSections, choiceOptions, t) {
     self: {
       ...self,
       concern: t('reading.choiceConcern', {
+        evidence: t('reading.evidenceSelf', { card: self.cardName, orientation: getOrientationLabel(self, t), meaningLead: self.meaningLead }),
         position: self.positionTitle,
         theme: self.theme,
         meaningLead: self.meaningLead,
@@ -168,13 +206,12 @@ export function analyzeCardRelation(fromSection, toSection) {
   const sharedKeywords = (fromSection?.keywords || []).filter((keyword) => (
     toKeywords.has(normalizeKeywordForComparison(keyword))
   ));
-  const sameOrientation = fromSection?.orientation === toSection?.orientation;
 
   if (sharedKeywords.length > 0) {
-    return { kind: sameOrientation ? 'echo' : 'revision', sharedKeywords };
+    return { kind: 'echo', sharedKeywords };
   }
 
-  return { kind: sameOrientation ? 'progression' : 'tension', sharedKeywords: [] };
+  return { kind: 'comparison', sharedKeywords: [] };
 }
 
 function buildRelationText(fromSection, toSection, t) {
@@ -184,9 +221,15 @@ function buildRelationText(fromSection, toSection, t) {
     revision: 'reading.integratedRelationRevision',
     tension: 'reading.integratedRelationTension',
     progression: 'reading.integratedRelationProgression',
+    comparison: 'reading.integratedRelationComparison',
   }[relation.kind];
 
   return t(relationKey, {
+    fromPosition: fromSection.positionTitle,
+    toPosition: toSection.positionTitle,
+    fromMeaning: fromSection.meaningLead,
+    toMeaning: toSection.meaningLead,
+    bridge: t('reading.evidenceBridge.' + getEvidenceRelation(fromSection, toSection)),
     sharedKeywords: relation.sharedKeywords.join(t('common.listSeparator')),
     fromCard: fromSection.cardName,
     toCard: toSection.cardName,
@@ -204,6 +247,9 @@ function getCompleteMeaning(section) {
 export function buildThreeCardIntegratedReading({ spread, cardSections = [], question, t }) {
   const title = t('reading.integratedTitle');
   if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
+  if (cardSections.length === 3 && cardSections.every(section => section.careerContext)) {
+    return careerThreeReading(cardSections, question, t);
+  }
 
   const [first, middle = cardSections[0], last = cardSections.at(-1)] = cardSections;
   return {
@@ -215,6 +261,9 @@ export function buildThreeCardIntegratedReading({ spread, cardSections = [], que
       firstCard: first.cardName,
       firstOrientation: getOrientationLabel(first, t),
       firstKeywords: first.keywordText || first.theme,
+      firstMeaning: first.meaningLead,
+      middleMeaning: middle.meaningLead,
+      lastMeaning: last.meaningLead,
       middlePosition: middle.positionTitle,
       middleCard: middle.cardName,
       middleOrientation: getOrientationLabel(middle, t),
@@ -252,6 +301,8 @@ export function buildThreeCardIntegratedReading({ spread, cardSections = [], que
         relation: buildRelationText(middle, last, t),
       }),
       t('reading.integratedThreePractical', {
+        middleMeaning: middle.meaningLead,
+        practice: last.practice,
         question,
         middlePosition: middle.positionTitle,
         middleCard: middle.cardName,
@@ -290,6 +341,8 @@ export function buildTriangleIntegratedReading({ spread, cardSections = [], ques
     paragraphs: [
       t('reading.integratedTriangleReality', {
         perceptionPosition: perception.positionTitle,
+        realityPosition: reality.positionTitle,
+        perceptionPosition: perception.positionTitle,
         perceptionCard: perception.cardName,
         perceptionTheme: perception.theme,
         perceptionMeaning: getCompleteMeaning(perception),
@@ -302,6 +355,7 @@ export function buildTriangleIntegratedReading({ spread, cardSections = [], ques
         relation: buildRelationText(perception, reality, t),
       }),
       t('reading.integratedTriangleExit', {
+        practice: guidance.practice,
         guidancePosition: guidance.positionTitle,
         guidanceCard: guidance.cardName,
         guidanceTheme: guidance.theme,
@@ -363,6 +417,10 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
     }),
     paragraphs: [
       t('reading.integratedChoicePath', {
+        path: optionA.path,
+        practice: optionA.development.practice,
+        advantage: optionA.advantage,
+        risk: optionA.risk,
         label: optionA.label,
         currentPosition: optionA.current.positionTitle,
         currentCard: optionA.current.cardName,
@@ -377,6 +435,10 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
         relation: buildRelationText(optionA.current, optionA.development, t),
       }),
       t('reading.integratedChoicePath', {
+        path: optionB.path,
+        practice: optionB.development.practice,
+        advantage: optionB.advantage,
+        risk: optionB.risk,
         label: optionB.label,
         currentPosition: optionB.current.positionTitle,
         currentCard: optionB.current.cardName,
@@ -391,6 +453,7 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
         relation: buildRelationText(optionB.current, optionB.development, t),
       }),
       t('reading.integratedChoiceTradeoff', {
+        closing: t('reading.evidenceChoiceClose', { question, selfCard: self.cardName, selfOrientation: getOrientationLabel(self, t), selfMeaning: self.meaningLead, optionA: optionA.label, optionB: optionB.label }),
         question,
         selfPosition: self.positionTitle,
         selfCard: self.cardName,
@@ -457,12 +520,17 @@ export function buildStructuredReading({
     getFallbackReading,
     getKeywords,
   }));
-  const reversedCount = cardSections.filter((section) => section.orientation === 'reversed').length;
   const trace = buildPositionTrace(cardSections, t);
   const choiceComparison = spread?.key === 'choice'
     ? buildChoiceComparison(cardSections, choiceOptions, t)
     : null;
-  const overview = [
+  const overview = choiceComparison ? t('reading.evidenceChoiceOverview', {
+    question: questionContext, aPath: choiceComparison.optionA.path, bPath: choiceComparison.optionB.path,
+    optionA: choiceComparison.optionA.label, optionB: choiceComparison.optionB.label,
+    aBridge: t('reading.evidenceBridge.' + choiceComparison.optionA.relationKind),
+    bBridge: t('reading.evidenceBridge.' + choiceComparison.optionB.relationKind),
+    selfMeaning: choiceComparison.self.meaningLead,
+  }) : [
     spread?.key === 'choice' && choiceComparison
       ? t('reading.choiceOverview', {
           question: questionContext,
@@ -471,9 +539,6 @@ export function buildStructuredReading({
           trace,
         })
       : t('reading.overview', { question: questionContext, trace }),
-    reversedCount > 0
-      ? t(reversedCount === 1 ? 'reading.overviewReversedOne' : 'reading.overviewReversed', { count: reversedCount })
-      : t('reading.overviewUpright'),
   ].join(' ');
   const integratedReading = buildIntegratedReading({
     spread,
@@ -485,7 +550,7 @@ export function buildStructuredReading({
 
   return {
     normalizedQuestion,
-    overview,
+    overview: spread?.key === 'three' && cardSections.length === 3 && cardSections.every(section => section.careerContext) ? integratedReading.summary : overview,
     cards: cardSections,
     integratedReading,
     disclaimer: t('reading.disclaimer'),

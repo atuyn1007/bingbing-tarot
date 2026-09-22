@@ -6,6 +6,7 @@ import { OFFICIAL_READER_ID, OFFICIAL_READER_NICKNAME } from './constants/reader
 import { loadSupabaseAppModule, loadSupabaseClientModule, loadSupabaseTarotModule } from './services/lazySupabase';
 import { getLocalizedTarotKeywords, getLocalizedTarotReading } from './tarotKeywordTranslations';
 import { buildStructuredReading } from './readingEngine';
+import { getKeywordsFromMeaningArchive } from './readingMeanings';
 import {
   completeShuffle,
   confirmBackSelection,
@@ -379,7 +380,7 @@ function App() {
   const spreadConfigByKey = (spreadKey) => getSpreadConfig(spreadKey, t);
 
   useEffect(() => {
-    if (!activeDailyCard || cardMeaningsModule) return undefined;
+    if ((!activeDailyCard && !drawSession) || cardMeaningsModule) return undefined;
 
     let cancelled = false;
     loadCardMeaningsModule()
@@ -393,7 +394,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [activeDailyCard, cardMeaningsModule]);
+  }, [activeDailyCard, Boolean(drawSession), cardMeaningsModule]);
 
   const markSessionStarted = () => {
     localStorage.setItem(SESSION_STARTED_AT_KEY, `${Date.now()}`);
@@ -1071,19 +1072,7 @@ function App() {
     setShowDailyResult(true);
   };
 
-  const getDailyFortuneKeywords = (card) => {
-    const meaningCard = cardMeaningsModule
-      ? cardMeaningsModule.getLocalizedMeaningCard(cardMeaningsModule.findTarotMeaningCard(card), language)
-      : null;
-    if (meaningCard?.displayKeywords?.length) {
-      return meaningCard.displayKeywords;
-    }
-
-    const data = resolveCardData(card);
-    const keywords = card?.isReversed ? data.reversedKeywords : data.uprightKeywords;
-
-    return getLocalizedTarotKeywords(data.id, Boolean(card?.isReversed), language, keywords);
-  };
+  const getDailyFortuneKeywords = (card) => getKeywordsFromMeaningArchive(card, language, cardMeaningsModule);
 
   const getDailyFortuneSummary = (card) => {
     if (!card) return '';
@@ -1101,11 +1090,7 @@ function App() {
 
   const dailyFortuneKeywords = activeDailyCard ? getDailyFortuneKeywords(activeDailyCard) : [];
 
-  const getReadingCardKeywords = (card) => {
-    const data = resolveCardData(card);
-    const keywords = card?.isReversed ? data.reversedKeywords : data.uprightKeywords;
-    return getLocalizedTarotKeywords(data.id, Boolean(card?.isReversed), language, keywords);
-  };
+  const getReadingCardKeywords = (card) => getKeywordsFromMeaningArchive(card, language, cardMeaningsModule);
 
   const getReadingFallback = (card) => {
     const data = resolveCardData(card);

@@ -304,7 +304,7 @@ const tests = [
     },
   },
   {
-    name: 'card relation analysis distinguishes echo revision tension and progression from evidence',
+    name: 'card relations never infer conflict or progress from orientation alone',
     run() {
       assert.equal(typeof readingEngine.analyzeCardRelation, 'function');
       const section = (keywords, orientation) => ({ keywords, orientation });
@@ -315,15 +315,15 @@ const tests = [
       );
       assert.deepEqual(
         readingEngine.analyzeCardRelation(section(['boundary', 'pace'], 'upright'), section(['pace', 'dialogue'], 'reversed')),
-        { kind: 'revision', sharedKeywords: ['pace'] },
+        { kind: 'echo', sharedKeywords: ['pace'] },
       );
       assert.deepEqual(
         readingEngine.analyzeCardRelation(section(['boundary'], 'upright'), section(['dialogue'], 'reversed')),
-        { kind: 'tension', sharedKeywords: [] },
+        { kind: 'comparison', sharedKeywords: [] },
       );
       assert.deepEqual(
         readingEngine.analyzeCardRelation(section(['boundary'], 'upright'), section(['dialogue'], 'upright')),
-        { kind: 'progression', sharedKeywords: [] },
+        { kind: 'comparison', sharedKeywords: [] },
       );
     },
   },

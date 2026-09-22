@@ -1,0 +1,35 @@
+export const readingCareerCopy = {
+  'zh-CN': {
+    focus: { authority: '权责与决策权限', decision: '选择依据与信息缺口', resources: '收入、时间与精力的承受能力', initiative: '启动项目的动力与实际投入', belonging: '团队支持与合作期待' },
+    check: { authority: '写清哪些事由你决定、哪些需要协商，核对责任是否配有相应权限。', decision: '列出尚缺的关键信息、获取方式和决定期限，不把拖延当成权衡。', resources: '估算这条发展路线需要多少时间、精力与收入缓冲，再看能否持续承担。', initiative: '先做一次成本可控的小尝试，用实际反馈检验热情能否转化为成果。', belonging: '向相关的人确认能提供哪些具体支持，不把对团队的期待当成已经获得的承诺。' },
+    reference: '“{position}”的{card}（{orientation}）：{meaning}',
+    summary: '关于“{question}”，这组三张牌适合交叉检查{a}、{b}和{c}。发展是否可行，不能只看其中一项；它们需要在现实条件中同时对得上。',
+    link: '把{from}与{to}放在一起看：一项条件成立，并不能替代另一项。比较工作方案时，可以找出哪一项已经有事实支持、哪一项仍需要验证。',
+    links: {
+      authority_decision: '如果迟迟难以决定与权限不明有关，仅靠继续比较选项未必能解决问题；先确认谁有决定权、规则能否协商，再补齐判断所需的信息。反过来，如果权限已经明确，就不必把犹豫归因于他人的控制。',
+      decision_resources: '在权衡方向时，把可持续的投入作为筛选条件：方案需要多少时间、精力和收入缓冲？资源管理不是要求你一味求稳，而是检验一个看似合适的选择能否真正执行。',
+    },
+    practical: '回到“{question}”，可以把比较落实为三项核对：{a}{b}{c}核对后再决定推进哪一步，而不是把牌面当作升职或离职的结论。',
+    context: '在“{position}”讨论“{question}”时，这张牌可对应到{focus}。{check}',
+  },
+  en: {
+    focus: { authority: 'responsibility and decision rights', decision: 'decision criteria and missing information', resources: 'sustainable income, time and energy', initiative: 'motivation and investment in a new project', belonging: 'team support and expectations of cooperation' },
+    check: { authority: 'Specify what you can decide and what needs agreement; check that responsibility comes with authority.', decision: 'List missing information, how to obtain it and a decision deadline; distinguish deliberation from delay.', resources: 'Estimate the time, energy and income buffer the route requires, then check whether you can sustain it.', initiative: 'Try a small, affordable experiment and use feedback to test whether enthusiasm translates into results.', belonging: 'Ask what concrete support others can offer rather than treating your expectations as commitments.' },
+    reference: 'At “{position}”, {card} ({orientation}): {meaning}',
+    summary: 'For “{question}”, consider {a}, {b} and {c} together. No single condition establishes feasibility; check whether they can coexist in practice.',
+    link: 'Compare {from} with {to}: meeting one condition does not meet the other. Identify which has factual support and which still needs testing.',
+    links: { authority_decision: 'If unclear decision rights are holding up the choice, comparing options alone may not help. Establish who can decide and which rules are negotiable, then gather missing information. If authority is already clear, do not attribute hesitation to someone else’s control.', decision_resources: 'Use sustainable commitment as a decision criterion: how much time, energy and income buffer does each route require? Resource management is not an instruction to avoid risk; it tests whether a promising option can be executed.' },
+    practical: 'For “{question}”, make three concrete checks: {a} {b} {c} Use the findings to choose a next step, not the cards as a verdict on promotion or resignation.',
+    context: 'At “{position}”, for “{question}”, consider {focus}. {check}',
+  },
+  it: {
+    focus: { authority: 'responsabilità e potere decisionale', decision: 'criteri di scelta e informazioni mancanti', resources: 'sostenibilità di reddito, tempo ed energie', initiative: 'motivazione e investimento in un nuovo progetto', belonging: 'sostegno del gruppo e aspettative di collaborazione' },
+    check: { authority: 'Distingui ciò che puoi decidere da ciò che richiede un accordo; verifica che alle responsabilità corrisponda autonomia.', decision: 'Elenca le informazioni mancanti, come ottenerle e un termine per decidere: ponderare non equivale a rimandare.', resources: 'Stima tempo, energie e margine economico necessari, poi verifica se puoi sostenerli.', initiative: 'Fai una prova a costo contenuto e verifica con i risultati se l’entusiasmo può diventare lavoro concreto.', belonging: 'Chiedi quale sostegno concreto puoi ricevere, senza scambiare le aspettative per impegni già presi.' },
+    reference: 'Nella posizione “{position}”, {card} ({orientation}): {meaning}',
+    summary: 'Per “{question}”, considera insieme {a}, {b} e {c}. Nessuna condizione basta da sola: verifica che possano coesistere nella pratica.',
+    link: 'Confronta {from} con {to}: soddisfare una condizione non sostituisce l’altra. Distingui ciò che è sostenuto dai fatti da ciò che va ancora verificato.',
+    links: { authority_decision: 'Se la scelta è bloccata da poteri decisionali poco definiti, confrontare le opzioni potrebbe non bastare. Verifica chi può decidere e quali regole sono negoziabili, poi raccogli le informazioni mancanti. Se l’autonomia è già definita, non attribuire l’esitazione al controllo altrui.', decision_resources: 'Usa la sostenibilità come criterio: quanto tempo, quante energie e quale margine economico richiede ogni strada? Gestire le risorse non significa evitare ogni rischio, ma verificare se una scelta promettente è attuabile.' },
+    practical: 'Per “{question}”, fai tre verifiche concrete: {a} {b} {c} Parti dai riscontri per scegliere il prossimo passo, non dalle carte come verdetto su promozioni o dimissioni.',
+    context: 'Nella posizione “{position}”, rispetto a “{question}”, considera {focus}. {check}',
+  },
+};
