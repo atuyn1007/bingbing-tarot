@@ -9,7 +9,7 @@ function Source({ canonical, t }) {
 function Texts({ knowledge, t }) {
   return <>
     <section className="unity-canonical-text"><h4>{t('unity.canonicalText')}</h4><blockquote>{knowledge.canonical?.originalText || t('unity.knowledgeUnavailable')}</blockquote><Source canonical={knowledge.canonical} t={t} /></section>
-    <section className="unity-modern-summary"><h4>{knowledge.modern?.kind === 'general-reference' ? knowledge.modern.title : t('unity.modernSummary')}</h4><p>{knowledge.modern?.summary || t('unity.knowledgeUnavailable')}</p></section>
+    {knowledge.modern?.summary && knowledge.modern.kind !== 'general-reference' ? <section className="unity-modern-summary"><h4>{t('unity.modernSummary')}</h4><p>{knowledge.modern.summary}</p></section> : null}
   </>;
 }
 export default function UnitySupplement({ calculation, language, t }) {

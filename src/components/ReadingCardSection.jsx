@@ -24,11 +24,9 @@ function ReadingCardSection({ section, t }) {
       </div>
       <div className="reading-card-copy">
         <p>{section.positionResponsibility}</p>
-        <p>{section.orientationMeaning}</p>
         <p className="reading-card-base-meaning">{section.baseMeaning}</p>
-        <p>{section.contextualMeaning}</p>
-        <p className="reading-card-attention">{section.attention}</p>
-        <p className="reading-card-boundary">{section.boundary}</p>
+        {section.careerContext && section.contextualMeaning ? <p>{section.contextualMeaning}</p> : null}
+        {section.careerContext && section.attention ? <p className="reading-card-attention">{section.attention}</p> : null}
       </div>
     </article>
   );

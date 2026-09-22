@@ -1,6 +1,6 @@
 import { getKeywordsFromMeaningArchive, getReadingFromMeaningArchive } from './readingMeanings.js';
 import { classifyMeaningEvidence, getEvidenceRelation } from './readingEvidence.js';
-import { getCareerContext, careerThreeReading, isCareerQuestion } from './readingCareer.js';
+import { getCareerContext, careerThreeReading } from './readingCareer.js';
 
 export function normalizeReadingQuestion(question) {
   return String(question || '').replace(/\s+/g, ' ').trim();
@@ -56,10 +56,12 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
   );
   const meaningLead = getMeaningLead(baseMeaning) || keywordText;
   const theme = getTheme(keywords, card?.name, t);
-  const localized = meaningArchive?.getLocalizedMeaningCard(meaningArchive.findTarotMeaningCard(card), language);
   const canonicalMeaning = getReadingFromMeaningArchive(card, Boolean(card?.isReversed), 'zh-CN', meaningArchive, '');
   const careerContext = getCareerContext(question, canonicalMeaning, t);
-  const practice = careerContext?.check || (isCareerQuestion(question) ? t('reading.evidenceNoPractice') : (card?.isReversed ? localized?.displayDailyReversed : localized?.displayDailyUpright)) || t('reading.evidenceNoPractice');
+  // Keep this cue tied to the exact card and orientation. Do not replace missing
+  // content with a career-category template or borrow daily-life advice.
+  const sentences = String(baseMeaning || '').match(/[^。！？.!?\n]+[。！？.!?]?/gu) || [];
+  const practice = sentences.at(-1)?.trim() || '';
 
   return {
     cardId: card?.id,
@@ -85,20 +87,13 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
       keywords: keywordText,
       meaningLead,
     }),
-    contextualMeaning: careerContext ? t('reading.career.context', { position: position.title, question, ...careerContext }) : t('reading.contextualMeaning', {
-      question,
-      position: position.title,
-      subtitle: position.subtitle,
-      card: card?.name || '',
-      keywords: keywordText,
-      meaningLead,
-    }),
-    attention: t('reading.attention', {
+    contextualMeaning: careerContext ? t('reading.career.context', { position: position.title, question, ...careerContext }) : '',
+    attention: careerContext && practice ? t('reading.attention', {
       practice,
       position: position.title,
       keywords: keywordText,
       meaningLead,
-    }),
+    }) : '',
     boundary: t('reading.boundary'),
   };
 }
@@ -132,7 +127,7 @@ function buildOptionEvidence(label, current, development, kind, t) {
   const candidates = kind === 'caution' ? [development, current] : [current, development];
   const source = candidates.find(section => section.evidenceKind === kind);
   if (!source) return t(kind === 'support' ? 'reading.evidenceNoSupport' : 'reading.evidenceNoRisk', {
-    practice: development.practice || current.practice || t('reading.evidenceNoPractice'),
+    practice: development.practice || current.practice || '',
   });
   return t(kind === 'support' ? 'reading.evidenceSupport' : 'reading.evidenceRisk', {
     label, card: source.cardName, position: source.positionTitle, meaning: source.meaningLead,
@@ -548,6 +543,7 @@ export function buildStructuredReading({
 
   return {
     normalizedQuestion,
+    hasContextualReading: cardSections.length > 0 && cardSections.every(section => Boolean(section.careerContext)),
     overview: spread?.key === 'three' && cardSections.length === 3 && cardSections.every(section => section.careerContext) ? integratedReading.summary : overview,
     cards: cardSections,
     integratedReading,

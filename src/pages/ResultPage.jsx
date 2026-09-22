@@ -65,6 +65,7 @@ function ResultPage({
 }) {
   const shouldReduceMotion = useReducedMotion();
   const readingCards = Array.isArray(reading?.cards) ? reading.cards : [];
+  const hasContextualReading = reading.hasContextualReading === true;
   const keywordsByCardId = new Map(readingCards.map((section) => [section.cardId, section.keywords]));
 
   return (
@@ -102,9 +103,9 @@ function ResultPage({
           </section>
 
           <LazyMotion features={domAnimation}>
-            <ReadingOverview overview={reading.overview} t={t} />
+            {hasContextualReading ? <ReadingOverview overview={reading.overview} t={t} /> : null}
 
-            <ChoiceComparison comparison={reading.choiceComparison} t={t} />
+            {hasContextualReading ? <ChoiceComparison comparison={reading.choiceComparison} t={t} /> : null}
 
             <m.section
               className="reading-card-files"
@@ -122,7 +123,7 @@ function ResultPage({
               </div>
             </m.section>
 
-            <IntegratedReadingSection reading={reading} t={t} />
+            {hasContextualReading ? <IntegratedReadingSection reading={reading} t={t} /> : null}
           </LazyMotion>
 
           <p className="reading-disclaimer">{reading.disclaimer}</p>

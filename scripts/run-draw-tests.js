@@ -448,9 +448,9 @@ const tests = [
 
       assert.equal(result.cards[0].baseMeaning, 'upright lead 10.\n\nfollow-up upright 10.');
       assert.equal(result.cards[1].baseMeaning, 'reversed lead 11.\n\nfollow-up reversed 11.');
-      assert.match(result.cards[0].contextualMeaning, /Sun.*success/);
-      assert.doesNotMatch(result.cards[1].contextualMeaning, /Sun|success/);
-      assert.match(result.cards[1].contextualMeaning, /Moon.*uncertainty/);
+      assert.equal(result.cards[0].contextualMeaning, '');
+      assert.equal(result.cards[1].contextualMeaning, '');
+      assert.equal(result.hasContextualReading, false);
       assert.match(result.cards[1].orientationMeaning, /Moon.*uncertainty/);
     },
   },

@@ -8,7 +8,6 @@ export const readingEvidenceCopy = {
     evidenceRisk: '需要承担的条件主要来自{position}的{card}：{meaning}这是需要预先核实的风险，不是选择“{label}”就必然发生的结果。',
     evidenceNoRisk: '这组牌义没有明确指出一种具体损失；不能因此判定没有代价。兑现后续条件仍需要投入，先核实：{practice}',
     evidenceQuote: '{position}的{card}（{orientation}）：{meaning}',
-    evidenceNoPractice: '先确认这个选项需要投入的时间、资源和支持，再决定是否推进。',
     evidenceBridge: {
       'support-support': '当前条件可以成为起点，但后续可能性并不会由等待自动兑现，需要实际行动承接。',
       'support-caution': '已有的可用条件不能抵消后续风险；比较这条路线时，要把可能消耗掉的资源也算进去。',
@@ -42,7 +41,6 @@ export const readingEvidenceCopy = {
     evidenceRisk: 'The condition to account for appears at {position}, in {card}: {meaning} Check this risk in advance; it is not an inevitable consequence of choosing “{label}”.',
     evidenceNoRisk: 'No specific loss is established by these meanings; that does not make the route cost-free. Check the effort required to meet the later conditions: {practice}',
     evidenceQuote: '{position}, {card} ({orientation}): {meaning}',
-    evidenceNoPractice: 'Check the time, resources and support this option requires before proceeding.',
     evidenceBridge: {
       'support-support': 'Present resources can provide a starting point, but the later possibility requires action rather than waiting.',
       'support-caution': 'Available resources do not cancel later risks; include what the route may consume in the comparison.',
@@ -76,7 +74,6 @@ export const readingEvidenceCopy = {
     evidenceRisk: 'La condizione da considerare emerge in {position}, con {card}: {meaning} Verifica questo rischio; non è una conseguenza inevitabile della scelta «{label}».',
     evidenceNoRisk: 'I significati non indicano una perdita precisa; ciò non rende il percorso privo di costi. Verifica l’impegno richiesto dalle condizioni successive: {practice}',
     evidenceQuote: '{position}, {card} ({orientation}): {meaning}',
-    evidenceNoPractice: 'Verifica tempo, risorse e sostegno richiesti prima di procedere.',
     evidenceBridge: {
       'support-support': 'Le risorse presenti possono essere un punto di partenza, ma la possibilità successiva richiede azione, non soltanto attesa.',
       'support-caution': 'Le risorse disponibili non annullano i rischi successivi; considera anche ciò che il percorso può consumare.',

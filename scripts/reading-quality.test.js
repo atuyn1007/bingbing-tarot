@@ -11,6 +11,38 @@ const names = ['Nine of Cups', 'Queen of Pentacles', 'Ace of Wands', 'Five of Pe
 const cards = names.map((name, index) => ({ ...allTarotCards.find(card => card.englishName === name), isReversed: [1,4].includes(index) }));
 const positions = ['A current', 'B current', 'A development', 'B development', 'Self'].map(title => ({ title }));
 const tFor = dictionary => (key, values = {}) => String(key.split('.').reduce((value, part) => value?.[part], dictionary) || key).replace(/\{(\w+)\}/g, (_, key) => values[key] ?? `{${key}}`);
+test('Unmatched questions and cards expose only archive meanings, not contextual filler', () => {
+  for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
+    for (const key of ['three', 'triangle', 'choice']) {
+      const result = build(language, dictionary, { question: '我们的感情如何发展？', spread: { key, positions } });
+      assert.equal(result.hasContextualReading, false);
+      for (const card of result.cards) {
+        assert.ok(card.baseMeaning);
+        assert.equal(card.contextualMeaning, '');
+        assert.equal(card.attention, '');
+      }
+    }
+  }
+});
+test('Every card practice comes from its own orientation-specific reading, never a shared career fallback', () => {
+  for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
+    const seen = new Map();
+    for (const card of allTarotCards) for (const isReversed of [false, true]) {
+      const result = build(language, dictionary, { cards: [{ ...card, isReversed }], question: '我现在应该怎么做好我的工作', spread: { key: 'three', positions } });
+      const section = result.cards[0];
+      assert.ok(section.practice.length > 0);
+      assert.ok(section.baseMeaning.includes(section.practice), `${language} ${card.englishName}: practice must be traceable to this card`);
+      assert.ok(!seen.has(section.practice), `Shared practice: ${seen.get(section.practice)} / ${card.englishName}`);
+      seen.set(section.practice, `${card.englishName}/${isReversed}`);
+    }
+  }
+});
+
+test('Missing archive never fabricates a generic practice', () => {
+  const result = build('zh-CN', zh, { meaningArchive: undefined, cards: [cards[0]], spread: { key: 'three', positions } });
+  assert.equal(result.cards[0].practice, '');
+  assert.equal(result.cards[0].attention, '');
+});
 test('Choice overview compares actual route evidence and conclusion includes both routes and self', () => {
   const result = build();
   for (const section of result.cards) assert.ok(result.overview.includes(section.meaningLead));
