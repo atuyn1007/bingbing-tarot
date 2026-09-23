@@ -17,7 +17,8 @@ function DrawingPage({
   handleConfirmQuestion,
   t,
 }) {
-  const questionExamples = t('drawing.questionExamples');
+  const isSeasonal = activeSpread.key === 'seasons';
+  const questionExamples = t(isSeasonal ? 'seasons.examples' : 'drawing.questionExamples');
   const missingQuestion = !userQuestion.trim();
   const missingChoiceA = isChoiceSpread && !choiceA.trim();
   const missingChoiceB = isChoiceSpread && !choiceB.trim();
@@ -61,6 +62,12 @@ function DrawingPage({
             <p className="eyebrow">{isHumanMode ? t('drawing.humanTitle') : activeSpread.name}</p>
             <h2 className="question-title">{isHumanMode ? t('drawing.humanQuestionTitle') : t('drawing.chooseSpreadTitle', { spread: activeSpread.name })}</h2>
             <p className="question-note">{isHumanMode ? t('drawing.humanQuestionNote') : activeSpread.summary}</p>
+            {isSeasonal ? (
+              <div className="seasonal-intro-note">
+                <strong>{t('seasons.period')}</strong>
+                <p>{t('seasons.availability')}</p>
+              </div>
+            ) : null}
             <section className="drawing-spread-positions" aria-labelledby="drawing-spread-positions-title">
               <p id="drawing-spread-positions-title" className="drawing-field-kicker">{t('drawing.positionsTitle')}</p>
               <div className="drawing-position-list">
@@ -81,7 +88,7 @@ function DrawingPage({
               id="tarot-question"
               value={userQuestion}
               onChange={(event) => setUserQuestion(event.target.value)}
-              placeholder={t('drawing.questionPlaceholder')}
+              placeholder={t(isSeasonal ? 'seasons.questionPlaceholder' : 'drawing.questionPlaceholder')}
               className="question-input"
               rows={5}
               autoFocus

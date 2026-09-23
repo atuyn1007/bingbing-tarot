@@ -82,6 +82,9 @@ function CardDrawStage({
   const shouldReduceMotion = useReducedMotion();
   const completeShuffleRef = useRef(onShuffleComplete);
   const [shufflePhase, setShufflePhase] = useState('riffle');
+  const isSeasonal = Boolean(session.groups);
+  const groupNames = isSeasonal ? t('seasons.groups') : [];
+  const groupName = groupNames[session.groupIndex];
   completeShuffleRef.current = onShuffleComplete;
 
   useEffect(() => {
@@ -113,6 +116,19 @@ function CardDrawStage({
       </header>
 
       <main className="page-content card-draw-content">
+        {isSeasonal && session.phase !== 'revealing' ? (
+          <section className="seasonal-draw-progress" aria-label={spread.name}>
+            <p aria-live="polite">{t('seasons.groupStep', { index: session.groupIndex + 1, group: groupName })}</p>
+            <ol>
+              {groupNames.map((name, index) => (
+                <li key={name} className={index === session.groupIndex ? 'is-current' : index < session.groupIndex ? 'is-complete' : ''} aria-current={index === session.groupIndex ? 'step' : undefined}>
+                  <span aria-hidden="true">{index < session.groupIndex ? '✓' : index + 1}</span>{name}
+                </li>
+              ))}
+            </ol>
+            <small>{t('seasons.completed', { count: session.drawnCards.length })}</small>
+          </section>
+        ) : null}
         <LazyMotion features={domMax}>
           {session.phase === 'shuffling' ? (
             <m.section
@@ -124,7 +140,7 @@ function CardDrawStage({
             >
               <p className="eyebrow">{t('drawing.shuffleEyebrow')}</p>
               <h2 id="shuffle-stage-title">{t('drawing.shuffleTitle')}</h2>
-              <p>{t('drawing.shuffleDescription')}</p>
+              <p>{isSeasonal ? t('seasons.groupShuffle', { group: groupName }) : t('drawing.shuffleDescription')}</p>
               <p className="shuffle-phase-label" aria-live="polite">
                 <span aria-hidden="true">{String(['riffle', 'cut', 'gather'].indexOf(shufflePhase) + 1).padStart(2, '0')}</span>
                 {t(SHUFFLE_PHASE_COPY[shufflePhase] || SHUFFLE_PHASE_COPY.gather)}
@@ -156,12 +172,17 @@ function CardDrawStage({
               aria-labelledby="selection-stage-title"
             >
               <p className="eyebrow">{t('drawing.selectionEyebrow')}</p>
-              <h2 id="selection-stage-title">{t('drawing.selectionTitle', { count: session.cardCount })}</h2>
-              <p>{t('drawing.selectionDescription')}</p>
+              <h2 id="selection-stage-title">{isSeasonal ? t('seasons.groupTitle', { group: groupName }) : t('drawing.selectionTitle', { count: session.cardCount })}</h2>
+              <p>{isSeasonal ? t('seasons.groupDescription', { count: session.visibleBacks.length }) : t('drawing.selectionDescription')}</p>
               <TarotCardSelector
+                key={isSeasonal ? session.groupIndex : 'standard'}
                 visibleBacks={session.visibleBacks}
                 selectedBacks={session.selectedBacks}
-                cardCount={session.cardCount}
+                cardCount={isSeasonal ? 1 : session.cardCount}
+                labels={isSeasonal ? {
+                  groupLabel: groupName,
+                  confirm: session.groupIndex === 4 ? t('seasons.confirmLast') : t('seasons.confirmNext', { group: groupNames[session.groupIndex + 1] }),
+                } : undefined}
                 onToggleBack={onToggleBack}
                 onConfirmSelection={onConfirmSelection}
                 shouldReduceMotion={shouldReduceMotion}
@@ -180,6 +201,7 @@ function CardDrawStage({
             >
               <p className="eyebrow">{t('drawing.revealEyebrow')}</p>
               <h2 id="reveal-stage-title">{t('drawing.revealTitle')}</h2>
+              {isSeasonal ? <p className="seasonal-reveal-guide">{t('seasons.revealGuide')}</p> : null}
               <p>{session.allRevealed ? t('drawing.revealComplete') : t('drawing.revealDescription')}</p>
               <SpreadCards
                 cards={session.drawnCards}

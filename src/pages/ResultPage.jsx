@@ -91,6 +91,7 @@ function ResultPage({
           <section className="reading-full-spread" aria-labelledby="reading-spread-title">
             <p className="eyebrow">{t('reading.spreadEyebrow')}</p>
             <h2 id="reading-spread-title">{t('reading.spreadTitle')}</h2>
+            {spreadForCards.key === 'seasons' ? <p className="seasonal-reveal-guide">{t('seasons.revealGuide')}</p> : null}
             <SpreadCards
               cards={drawnCards}
               spread={spreadForCards}

@@ -1,9 +1,10 @@
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 import { X } from 'lucide-react';
 
-const ARCHIVE_NUMBERS = ['I', 'II', 'III', 'IV'];
+const ARCHIVE_NUMBERS = ['I', 'II', 'III', 'IV', 'V'];
 
 const DIAGRAM_PATHS = {
+  seasons: 'M150 22 V178 M68 100 H232',
   three: 'M34 74 H266',
   triangle: 'M72 54 L228 54 L150 162 Z',
   choice: 'M150 172 V138 M150 138 L84 94 M150 138 L216 94 M84 94 L84 48 M216 94 L216 48',

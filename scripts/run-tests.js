@@ -35,7 +35,7 @@ const tests = [
       const spreadModalSource = readFileSync(new URL('../src/components/modals/SpreadModal.jsx', import.meta.url), 'utf8');
       const localeSources = [zhCN, en, it];
 
-      assert.equal(SPREAD_OPTIONS.length, 4);
+      assert.equal(SPREAD_OPTIONS.length, 5);
       assert.deepEqual(SPREAD_OPTIONS.find((spread) => spread.key === 'unity'), {
         key: 'unity',
         localeKey: 'spreads.unity',
@@ -55,7 +55,7 @@ const tests = [
         assert.ok(locale.spreads.unity.readingTime);
         assert.ok(locale.spreads.unity.recommended);
         assert.equal('metaDifficulty' in locale.spreads, false);
-        for (const spreadKey of ['three', 'triangle', 'choice', 'unity']) {
+        for (const spreadKey of ['three', 'triangle', 'choice', 'seasons', 'unity']) {
           assert.equal('difficulty' in locale.spreads[spreadKey], false);
         }
       }

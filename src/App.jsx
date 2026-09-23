@@ -12,6 +12,7 @@ import {
   confirmBackSelection,
   createDrawPersistenceCoordinator,
   createDrawSession,
+  createSeasonalDrawSession,
   getConfirmedDrawForPersistence,
   openStructuredReading,
   revealAllSelectedCards,
@@ -1137,6 +1138,7 @@ function App() {
   const handleSelectSpread = (spreadKey) => {
     setSelectedSpreadKey(spreadKey);
     setShowSpreadModal(false);
+    if (spreadKey === 'seasons') setUserQuestion(t('seasons.question'));
     if (spreadKey === 'unity') {
       const ownerId = user?.id || 'anonymous';
       const draft = loadUnityDraft(window.localStorage, ownerId);
@@ -1317,7 +1319,9 @@ function App() {
     }
 
     setDrawnCards([]);
-    setDrawSession(createDrawSession(allTarotCards, spreadForCards.cardCount));
+    setDrawSession(spreadForCards.key === 'seasons'
+      ? createSeasonalDrawSession(allTarotCards)
+      : createDrawSession(allTarotCards, spreadForCards.cardCount));
     setCurrentPage('drawing');
   };
 

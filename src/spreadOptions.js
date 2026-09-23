@@ -21,6 +21,13 @@ export const SPREAD_OPTIONS = [
     preview: ['A', 'B', 'A+', 'B+', 'You'],
   },
   {
+    key: 'seasons',
+    localeKey: 'spreads.seasons',
+    canonicalName: 'four seasons spread',
+    cardCount: 5,
+    preview: ['1', '2', '3', '4', '5'],
+  },
+  {
     key: 'unity',
     localeKey: 'spreads.unity',
     canonicalName: 'unity of all things spread',

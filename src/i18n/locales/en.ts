@@ -1,4 +1,5 @@
 import { readingEvidenceCopy } from '../readingEvidenceCopy.js';
+import { seasonalCopy } from '../seasonalCopy.js';
 
 const en = {
   archive: { title: 'Reading Archive', all: 'All', daily: 'Daily Card', tarot: 'Tarot Spreads', unity: 'Unity', open: 'View all records', shareDaily: 'Share daily card', search: 'Search date, question, card name or hexagram number…', clear: 'Clear readings (keep daily cards)', confirmClear: 'Clear tarot and Unity records? Daily cards will be kept.', dailyPreserved: 'Daily cards belong to the check-in calendar and cannot be deleted here.' },
@@ -132,6 +133,7 @@ const en = {
     sendReadingButton: "Send for Bingbing's reading",
   },
   spreads: {
+    seasons: seasonalCopy['en'].spread,
     chooseEyebrow: 'Choose a Spread',
     chooseTitle: 'Choose a spread',
     archiveLabel: 'ARCHIVE 03',
@@ -201,6 +203,7 @@ const en = {
       positions: [],
     },
   },
+  seasons: seasonalCopy['en'],
   unity: {
     supplementTitle: "Supplementary I Ching reading",
     supplementSource: "Read the original source",

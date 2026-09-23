@@ -1,4 +1,5 @@
 import { readingEvidenceCopy } from '../readingEvidenceCopy.js';
+import { seasonalCopy } from '../seasonalCopy.js';
 
 const it = {
   archive: { title: 'Archivio delle letture', all: 'Tutte', daily: 'Carta del giorno', tarot: 'Stese dei tarocchi', unity: 'Unità', open: 'Apri tutti i documenti', shareDaily: 'Condividi la carta del giorno', search: 'Cerca data, domanda, carta o numero dell’esagramma…', clear: 'Svuota le letture (conserva le carte giornaliere)', confirmClear: 'Eliminare le letture dei tarocchi e Unità? Le carte giornaliere saranno conservate.', dailyPreserved: 'Le carte giornaliere appartengono al calendario e non possono essere eliminate qui.' },
@@ -133,6 +134,7 @@ const it = {
     sendReadingButton: 'Invia a Bingbing per la lettura',
   },
   spreads: {
+    seasons: seasonalCopy['it'].spread,
     chooseEyebrow: 'Choose a Spread',
     chooseTitle: 'Scegli uno schema',
     archiveLabel: 'ARCHIVE 03',
@@ -202,6 +204,7 @@ const it = {
       positions: [],
     },
   },
+  seasons: seasonalCopy['it'],
   unity: {
     supplementTitle: "Lettura integrativa dell’I Ching",
     supplementSource: "Leggi la fonte originale",

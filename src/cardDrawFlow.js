@@ -28,6 +28,22 @@ export function createDrawSession(cards, cardCount, random = Math.random) {
   };
 }
 
+// Catalogue IDs are stable: major 0–21, wands 22–35, cups 36–49,
+// swords 50–63, pentacles 64–77. Back indexes always address the frozen deck.
+const SEASONAL_RANGES = [[0, 21], [50, 63], [22, 35], [36, 49], [64, 77]];
+
+export function createSeasonalDrawSession(cards, random = Math.random) {
+  if (cards.length !== 78 || new Set(cards.map(card => card.id)).size !== 78
+    || cards.some(card => !Number.isInteger(card.id) || card.id < 0 || card.id > 77)) {
+    throw new Error('Seasonal draw requires a complete, unique 78-card deck');
+  }
+  const session = createDrawSession(cards, 5, random);
+  const groups = SEASONAL_RANGES.map(([first, last]) => session.visibleBacks.filter(index => (
+    session.deck[index].id >= first && session.deck[index].id <= last
+  )));
+  return { ...session, groups, groupIndex: 0, visibleBacks: groups[0] };
+}
+
 export function completeShuffle(session) {
   if (!session || session.phase !== 'shuffling') return session;
   return { ...session, phase: 'selecting' };
@@ -45,7 +61,7 @@ export function toggleBackSelection(session, backIndex) {
     };
   }
 
-  if (session.selectedBacks.length >= session.cardCount) return session;
+  if (session.selectedBacks.length >= (session.groups ? 1 : session.cardCount)) return session;
 
   return {
     ...session,
@@ -54,8 +70,24 @@ export function toggleBackSelection(session, backIndex) {
 }
 
 export function confirmBackSelection(session) {
-  if (!session || session.phase !== 'selecting' || session.selectedBacks.length !== session.cardCount) {
+  if (!session || session.phase !== 'selecting' || session.selectedBacks.length !== (session.groups ? 1 : session.cardCount)) {
     return session;
+  }
+
+  if (session.groups) {
+    const drawnCards = [...session.drawnCards, session.deck[session.selectedBacks[0]]];
+    const groupIndex = session.groupIndex + 1;
+    const complete = groupIndex === session.groups.length;
+    return {
+      ...session,
+      phase: complete ? 'revealing' : 'shuffling',
+      groupIndex: complete ? session.groupIndex : groupIndex,
+      visibleBacks: complete ? [] : session.groups[groupIndex],
+      selectedBacks: [],
+      drawnCards,
+      revealedCards: [],
+      allRevealed: false,
+    };
   }
 
   return {

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "node scripts/run-tests.js && node scripts/run-draw-tests.js && node scripts/run-unity-tests.js && node --test scripts/daily-share.test.js scripts/reading-quality.test.js",
+    "test": "node scripts/run-tests.js && node scripts/run-draw-tests.js && node scripts/run-unity-tests.js && node --test scripts/daily-share.test.js scripts/reading-quality.test.js scripts/four-seasons.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

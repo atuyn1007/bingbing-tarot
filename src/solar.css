@@ -5087,3 +5087,62 @@ button.monthly-calendar-cell {
 .archive-retention-note { color: #b4ab95; font-size: 14px; line-height: 1.7; margin-top: 24px; }
 .daily-archive-content > button { min-height: 44px; margin-top: 10px; }
 .unified-home-archive { min-width: 0; }
+
+/* Four Seasons: a fixed cross, also used in saved-reading previews. */
+.reading-spread.reading-spread-seasons {
+  width: min(100%, 660px);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: ". coins ." "wands core swords" ". cups .";
+  align-items: start;
+  gap: 24px 16px;
+}
+.reading-spread-slot-seasons-1 { grid-area: core; }
+.reading-spread-slot-seasons-2 { grid-area: swords; }
+.reading-spread-slot-seasons-3 { grid-area: wands; }
+.reading-spread-slot-seasons-4 { grid-area: cups; }
+.reading-spread-slot-seasons-5 { grid-area: coins; }
+.reading-spread-seasons .reading-spread-slot {
+  width: 100%; min-width: 0; align-content: start; gap: 8px; overflow-wrap: anywhere;
+}
+.reading-spread-seasons .reading-spread-reveal-button { width: min(100%, 144px); }
+.reading-spread-seasons .tarot-card-frame-normal {
+  width: min(100%, 144px); height: auto; aspect-ratio: 2 / 3;
+}
+.reading-spread-seasons .reading-spread-card-identity { margin-top: 3px; max-width: 100%; }
+.reading-spread-seasons .reading-spread-label { color: #e6d3a7; font-size: .88rem; line-height: 1.5; }
+.reading-spread-seasons .reading-spread-subtitle { color: #b6ad99; font-size: .72rem; line-height: 1.65; }
+.reading-spread-seasons .reading-spread-card-name { font-size: .9rem; line-height: 1.5; }
+.reading-spread-slot-seasons-1 .reading-spread-label { color: #dfbd70; }
+.seasonal-reveal-guide { max-width: 660px; margin: 14px auto 24px; color: #bdb39e; font-size: .88rem; line-height: 1.8; }
+.seasonal-intro-note { padding: 15px 18px; margin: 20px 0; border-left: 2px solid #997738; background: rgba(139, 105, 47, .07); }
+.seasonal-intro-note strong { color: #685027; font: 500 1rem/1.5 var(--app-font-serif); }
+.seasonal-intro-note p { margin: 6px 0 0; color: #695f50; font-size: .85rem; line-height: 1.75; }
+.seasonal-draw-progress { width: min(100%, 700px); margin: 8px auto 24px; text-align: center; }
+.seasonal-draw-progress > p { margin: 0 0 16px; color: #dfbd70; font-size: .9rem; }
+.seasonal-draw-progress ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; padding: 0; margin: 0 0 12px; list-style: none; }
+.seasonal-draw-progress li { display: grid; justify-items: center; align-content: start; gap: 8px; padding: 10px 4px; color: #aba18f; border-bottom: 1px solid #61523a; font-size: .8rem; line-height: 1.4; overflow-wrap: anywhere; }
+.seasonal-draw-progress li > span { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid currentColor; border-radius: 50%; }
+.seasonal-draw-progress li.is-current { color: #edce88; border-color: #edce88; background: rgba(173, 145, 86, .08); }
+.seasonal-draw-progress li.is-complete { color: #bdb79b; }
+.seasonal-draw-progress small { color: #bdb39e; }
+.spread-modal .spread-option-preview-seasons .spread-option-chip { width: 36px; height: 55px; padding: 3px 2px; }
+.spread-option-preview-seasons .spread-option-chip-seasons-1 { top: 70px; left: 50%; }
+.spread-option-preview-seasons .spread-option-chip-seasons-2 { top: 70px; left: 78%; }
+.spread-option-preview-seasons .spread-option-chip-seasons-3 { top: 70px; left: 22%; }
+.spread-option-preview-seasons .spread-option-chip-seasons-4 { top: 134px; left: 50%; }
+.spread-option-preview-seasons .spread-option-chip-seasons-5 { top: 6px; left: 50%; }
+.spread-option-preview-seasons .spread-option-chip-label { font-size: .42rem; letter-spacing: 0; }
+.spread-option-preview-seasons .spread-option-chip-star { font-size: .7rem; }
+@media (max-width: 600px) {
+  .reading-spread.reading-spread-seasons { gap: 18px 8px; }
+  .reading-spread-seasons .tarot-card-frame-normal { width: min(100%, 96px); height: auto; }
+  .reading-spread-seasons .reading-spread-reveal-button { width: min(100%, 96px); }
+  .reading-spread-seasons .reading-spread-label,
+  .reading-spread-seasons .reading-spread-card-name { font-size: .75rem; letter-spacing: 0; }
+  .reading-spread-seasons .reading-spread-subtitle { font-size: .65rem; letter-spacing: 0; }
+  .reading-spread-seasons .reading-spread-card-identity small { font-size: .58rem; }
+  .reading-spread-seasons .reading-spread-keywords { gap: 3px; }
+  .reading-spread-seasons .reading-spread-keywords span { padding: 3px 4px; font-size: .55rem; }
+  .seasonal-draw-progress ol { gap: 4px; }
+  .seasonal-draw-progress li { font-size: .68rem; }
+}

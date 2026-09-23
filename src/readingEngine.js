@@ -57,7 +57,7 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
   const meaningLead = getMeaningLead(baseMeaning) || keywordText;
   const theme = getTheme(keywords, card?.name, t);
   const canonicalMeaning = getReadingFromMeaningArchive(card, Boolean(card?.isReversed), 'zh-CN', meaningArchive, '');
-  const careerContext = getCareerContext(question, canonicalMeaning, t);
+  const careerContext = spread?.key === 'seasons' ? null : getCareerContext(question, canonicalMeaning, t);
   // Keep this cue tied to the exact card and orientation. Do not replace missing
   // content with a career-category template or borrow daily-life advice.
   const sentences = String(baseMeaning || '').match(/[^。！？.!?\n]+[。！？.!?]?/gu) || [];
@@ -464,7 +464,38 @@ export function buildChoiceIntegratedReading({ spread, cardSections = [], questi
   };
 }
 
+function buildSeasonalIntegratedReading({ cardSections, question, t }) {
+  const [core, ...dimensions] = cardSections;
+  const title = t('seasons.reading.title');
+  if (!core || dimensions.length !== 4) {
+    return { title, summary: '', paragraphs: [buildIntegratedTrace(cardSections, t)].filter(Boolean) };
+  }
+  return {
+    title,
+    summary: t('seasons.reading.summary', {
+      question, card: core.cardName, orientation: getOrientationLabel(core, t), meaning: core.meaningLead,
+    }),
+    paragraphs: [
+      ...dimensions.map((section, index) => t('seasons.reading.dimension', {
+        position: section.positionTitle,
+        card: section.cardName,
+        orientation: getOrientationLabel(section, t),
+        coreCard: core.cardName,
+        meaning: getCompleteMeaning(section),
+        link: buildRelationText(core, section, t),
+        prompt: t(`seasons.reading.prompts.${index + 1}`),
+      })),
+      t('seasons.reading.closing', {
+        trace: cardSections.map(section => `${section.positionTitle} — ${section.meaningLead}`).join(' '),
+        coreCard: core.cardName,
+        coreMeaning: core.meaningLead,
+      }),
+    ],
+  };
+}
+
 function buildIntegratedReading(options) {
+  if (options.spread?.key === 'seasons') return buildSeasonalIntegratedReading(options);
   if (options.spread?.key === 'choice') return buildChoiceIntegratedReading(options);
   if (options.spread?.key === 'triangle') return buildTriangleIntegratedReading(options);
   return buildThreeCardIntegratedReading(options);
