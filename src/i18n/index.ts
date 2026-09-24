@@ -145,6 +145,14 @@ export function getIntlLocale(language: SupportedLanguage) {
   return 'en-US';
 }
 
+// Stable per-language identities: background state updates must not restart
+// consumers' effects (notably share-image generation). Dictionaries are still
+// read at call time, so loading translations does not leave stale text cached.
+const translators = Object.fromEntries(supportedLanguages.map((language) => [
+  language,
+  <TKey extends TranslationKey>(key: TKey, values?: Record<string, string | number>) => t(key, values, language),
+])) as Record<SupportedLanguage, typeof t>;
+
 export function useI18n() {
   const language = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
@@ -153,8 +161,7 @@ export function useI18n() {
     supportedLanguages,
     defaultLanguage,
     setLanguage,
-    t: <TKey extends TranslationKey>(key: TKey, values?: Record<string, string | number>) =>
-      t(key, values, language),
+    t: translators[language],
     locale: getLoadedDictionary(language),
   };
 }

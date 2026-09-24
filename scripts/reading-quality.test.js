@@ -1,4 +1,5 @@
 import test from 'node:test';
+import './share-stability.test.js';
 import assert from 'node:assert/strict';
 import { buildStructuredReading } from '../src/readingEngine.js';
 import { allTarotCards } from '../src/data.js';
