@@ -5,6 +5,7 @@ import SpreadCards from '../components/SpreadCards';
 import ReadingOverview from '../components/ReadingOverview';
 import ReadingCardSection from '../components/ReadingCardSection';
 import IntegratedReadingSection from '../components/IntegratedReadingSection';
+import SpreadShareButton from '../components/SpreadShareButton';
 
 function ChoiceComparison({ comparison, t }) {
   if (!comparison) return null;
@@ -130,6 +131,7 @@ function ResultPage({
           <p className="reading-disclaimer">{reading.disclaimer}</p>
 
           <div className="reading-actions structured-reading-actions">
+            <SpreadShareButton cards={drawnCards} spread={spreadForCards} question={userQuestion} choiceOptions={choiceOptions} />
             <button type="button" onClick={onOpenHumanRequest} className="primary-button">
               <MessageCircle className="w-5 h-5" />
               {isHumanMode ? t('humanRequest.sendReadingButton') : t('drawing.sendToReader')}

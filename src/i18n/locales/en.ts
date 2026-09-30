@@ -408,6 +408,7 @@ const en = {
       'Looking at "{question}", these three cards together suggest that you first identify the real center of gravity, then decide the order of action. Do not rush for an instant answer. Bring the reminders from the cards back into real life, test them step by step, adjust, and continue forward.',
   },
   reading: {
+    shareSpread: 'Share spread',
     ...readingEvidenceCopy['en'],
     questionTitle: 'The question you brought',
     spreadEyebrow: 'ARCHIVE 01 · THE SPREAD',

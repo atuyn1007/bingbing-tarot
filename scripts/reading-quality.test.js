@@ -25,9 +25,9 @@ test('Result page renders integrated reading without a career match, including l
     const { default: ResultPage } = await server.ssrLoadModule('/src/pages/ResultPage.jsx');
     const i18n = await server.ssrLoadModule('/src/i18n/index.ts');
     await i18n.preloadInitialLanguage();
-    for (const key of ['three', 'triangle', 'choice']) {
+    for (const key of ['three', 'triangle', 'choice', 'seasons']) {
       const spread = { key, name: key, positions };
-      const drawnCards = cards.slice(0, key === 'choice' ? 5 : 3);
+      const drawnCards = cards.slice(0, ['choice', 'seasons'].includes(key) ? 5 : 3);
       const reading = build('zh-CN', zh, { question: '感情发展', cards: drawnCards, spread });
       assert.equal(reading.hasContextualReading, false);
       for (const legacy of [false, true]) {
@@ -37,6 +37,7 @@ test('Result page renders integrated reading without a career match, including l
         const html = renderToStaticMarkup(createElement(ResultPage, { reading: snapshot, drawnCards, spreadForCards: spread, userQuestion: '感情发展', t: tFor(zh) }));
         assert.match(html, /reading-integrated-summary/);
         assert.match(html, /综合解读/);
+        assert.match(html, /分享牌阵/);
         assert.doesNotMatch(html, /先确认这个选项需要投入的时间、资源和支持/);
         assert.equal(JSON.stringify(snapshot), before);
       }

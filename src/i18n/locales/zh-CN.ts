@@ -405,6 +405,7 @@ const zhCN = {
       '围绕“{question}”来看，这三张牌共同提示你：先辨认眼前真正的重心，再决定行动的顺序。别急着求一个立刻清晰的答案，而是把牌面里的提醒带回现实，一步一步验证、调整，再继续推进。',
   },
   reading: {
+    shareSpread: '分享牌阵',
     ...readingEvidenceCopy['zh-CN'],
     questionTitle: '你带来的问题',
     spreadEyebrow: 'ARCHIVE 01 · THE SPREAD',

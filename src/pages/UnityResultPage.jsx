@@ -3,6 +3,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import UnityHexagramSection from '../components/unity/UnityHexagramSection';
 import UnityTarotArchive from '../components/unity/UnityTarotArchive';
 import UnitySupplement from '../components/unity/UnitySupplement';
+import SpreadShareButton from '../components/SpreadShareButton';
 import { useI18n } from '../i18n';
 
 function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenHistory, t }) {
@@ -55,6 +56,7 @@ function UnityResultPage({ theme, archive, historyEntry, locale, goHome, onOpenH
         <section className="unity-result-question">
           <p>{t('unity.resultArchiveLabel')}</p>
           <blockquote>{calculation.question}</blockquote>
+          <SpreadShareButton calculation={calculation} />
         </section>
 
         <div className="unity-result-layout">

@@ -409,6 +409,7 @@ const it = {
       'Guardando "{question}", queste tre carte insieme ti suggeriscono di individuare prima il vero centro della situazione, poi decidere l’ordine delle azioni. Non cercare una risposta immediata: riporta i segnali delle carte nella vita reale, verifica passo dopo passo, aggiusta e continua.',
   },
   reading: {
+    shareSpread: 'Condividi la stesa',
     ...readingEvidenceCopy['it'],
     questionTitle: 'La domanda che hai portato',
     spreadEyebrow: 'ARCHIVE 01 · THE SPREAD',
