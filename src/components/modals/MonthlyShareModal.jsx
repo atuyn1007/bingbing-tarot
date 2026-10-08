@@ -9,8 +9,12 @@ export default function MonthlyShareModal({ month, history, locale, t, onClose }
   const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const previous = document.activeElement;
-    dialog.current.showModal();
-    return () => previous?.focus();
+    const modal = dialog.current;
+    modal.showModal();
+    return () => {
+      modal.close();
+      if (previous?.isConnected) previous.focus({ preventScroll: true });
+    };
   }, []);
   useEffect(() => {
     const controller = new AbortController();
@@ -32,7 +36,7 @@ export default function MonthlyShareModal({ month, history, locale, t, onClose }
     finally { setSharing(false); }
   };
   return (
-    <dialog ref={dialog} className="monthly-share-dialog" onCancel={onClose} onClick={(event) => { if (event.target === dialog.current) onClose(); }}>
+    <dialog ref={dialog} aria-label={t('calendar.shareTitle')} className="monthly-share-dialog" onCancel={event => { event.preventDefault(); onClose(); }} onClick={(event) => { event.stopPropagation(); if (event.target === dialog.current) onClose(); }}>
       <div className="monthly-share-content">
         <header><h2>{t('calendar.shareTitle')}</h2><button type="button" onClick={onClose} aria-label={t('calendar.close')}>×</button></header>
         <p>{t('calendar.shareHelp')}</p>

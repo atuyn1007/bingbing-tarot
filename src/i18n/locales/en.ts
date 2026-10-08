@@ -2,6 +2,13 @@ import { readingEvidenceCopy } from '../readingEvidenceCopy.js';
 import { seasonalCopy } from '../seasonalCopy.js';
 
 const en = {
+  historySnapshot: { unavailable: 'The full original interpretation was not saved for this record. Your original cards are preserved below.' },
+  archiveStorage: {
+    saveError: 'Your tarot archive has not been saved on this device. Records remain on this page for now. Do not refresh or sign out; free browser storage and retry.',
+    loadError: 'The tarot archive could not be read. Existing data has not been overwritten. New records remain on this page; do not refresh or sign out.',
+    syncError: 'Some tarot summaries could not sync to the cloud. You can retry. Check any device-storage notice separately.',
+    retry: 'Retry local save', retrySync: 'Retry sync',
+  },
   archive: { title: 'Reading Archive', all: 'All', daily: 'Daily Card', tarot: 'Tarot Spreads', unity: 'Unity', open: 'View all records', shareDaily: 'Share daily card', search: 'Search date, question, card name or hexagram number…', clear: 'Clear readings (keep daily cards)', confirmClear: 'Clear tarot and Unity records? Daily cards will be kept.', dailyPreserved: 'Daily cards belong to the check-in calendar and cannot be deleted here.' },
   meta: {
     locale: 'en',

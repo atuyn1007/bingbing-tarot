@@ -4,8 +4,10 @@ import { BookOpen, X } from 'lucide-react';
 import { getCardArtwork } from '../../cardArtwork';
 import { getDailyShareData } from '../../dailyTarotShare';
 import DailyShareModal from './DailyShareModal';
+import useModalFocus from './useModalFocus';
 
 function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames, onClose, t }) {
+  const panel = useModalFocus(onClose, Boolean(selectedDay?.card));
   const [meaning, setMeaning] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [shareData, setShareData] = useState(null);
@@ -31,15 +33,6 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
       cancelled = true;
     };
   }, [selectedDay, language]);
-
-  useEffect(() => {
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape' && !shareData) onClose();
-    };
-
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [onClose, shareData]);
 
   if (!selectedDay?.card) return null;
 
@@ -68,6 +61,7 @@ function CalendarModal({ selectedDay, language, intlLocale, getCardDisplayNames,
       >
         <m.div
           className="calendar-modal calendar-archive-modal"
+          ref={panel} tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-labelledby="calendar-archive-title"

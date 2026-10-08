@@ -4,8 +4,10 @@ import { useState } from 'react';
 import { getLocalDateKey } from '../../dateUtils';
 import { getDailyShareData } from '../../dailyTarotShare';
 import DailyShareModal from './DailyShareModal';
+import useModalFocus from './useModalFocus';
 
 function DailyModal({ card, dateKey = getLocalDateKey(new Date()), displayName, intlLocale, keywords, summary, onClose, t, getCardDisplayNames }) {
+  const panel = useModalFocus(onClose, Boolean(card));
   const [shareData, setShareData] = useState(null);
   if (!card) return null;
 
@@ -14,6 +16,7 @@ function DailyModal({ card, dateKey = getLocalDateKey(new Date()), displayName, 
       <m.div className="modal-mask" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
         <m.div
           className="fortune-modal daily-archive-modal"
+          ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t('archive.daily')}
           initial={{ opacity: 0, y: 20, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 12, scale: 0.96 }}

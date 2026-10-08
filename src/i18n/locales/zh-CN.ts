@@ -2,6 +2,13 @@ import { readingEvidenceCopy } from '../readingEvidenceCopy.js';
 import { seasonalCopy } from '../seasonalCopy.js';
 
 const zhCN = {
+  historySnapshot: { unavailable: '这条记录未保存完整的解读原文，以下保留原始牌组供你回看。' },
+  archiveStorage: {
+    saveError: '普通塔罗档案尚未保存到本机。记录暂留在当前页面，请勿刷新或退出，可释放浏览器存储空间后重试。',
+    loadError: '暂时无法读取普通塔罗档案，原数据未被覆盖。新记录暂留在当前页面，请勿刷新或退出。',
+    syncError: '部分普通塔罗记录的云端摘要同步失败，可重试。本机保存状态请以本机提示为准。',
+    retry: '重试本机保存', retrySync: '重试同步',
+  },
   archive: { title: '历史档案', all: '全部', daily: '每日一牌', tarot: '塔罗牌阵', unity: '万象归一', open: '查看全部档案', shareDaily: '分享今日牌卡', search: '检索日期、问题、牌名或卦序……', clear: '清空占卜档案（保留每日一牌）', confirmClear: '确定清空普通塔罗与万象归一档案？每日一牌将保留。', dailyPreserved: '每日一牌与签到日历关联，仅查看，不在此删除。' },
   meta: {
     locale: 'zh-CN',

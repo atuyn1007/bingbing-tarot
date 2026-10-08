@@ -420,14 +420,6 @@ const tests = [
     },
   },
   {
-    name: 'localized history effect depends on stable language state',
-    run() {
-      const appSource = readFileSync(new URL('../src/App.jsx', import.meta.url), 'utf8');
-      assert.match(appSource, /\}, \[activeNickname, language\]\);/);
-      assert.doesNotMatch(appSource, /\}, \[activeNickname, t\]\);/);
-    },
-  },
-  {
     name: 'card artwork resolves chinese numeral aliases',
     run() {
       assert.equal(getCardArtwork({ name: '圣杯四' }), '/cards/waite-cn/圣杯4.jpg');

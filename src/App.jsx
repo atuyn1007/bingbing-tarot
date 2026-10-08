@@ -1,4 +1,7 @@
-import { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { createTarotArchiveStore } from './tarotArchiveStore';
+import ArchiveSaveNotice from './components/ArchiveSaveNotice';
+import { resolveTarotReadingSnapshot } from './tarotReadingSnapshot';
 import { allTarotCards, getCardData, getCardDisplayNames, getCardReading } from './data';
 import AppLoading from './components/AppLoading';
 import { getIntlLocale, useI18n } from './i18n';
@@ -82,10 +85,6 @@ function loadCardMeaningsModule() {
   }
 
   return cardMeaningsModulePromise;
-}
-
-function getRecentReadingsKey(nickname) {
-  return `tarot_recent_readings_${nickname || 'guest'}`;
 }
 
 function getDailyLine(lines = []) {
@@ -196,6 +195,9 @@ function normalizeRecentReadingEntry(entry, t) {
   return {
     id: entry.id || `${Date.now()}`,
     recordId: entry.recordId ?? entry.record_id ?? null,
+    syncFailed: Boolean(entry.syncFailed),
+    readingSnapshot: entry.readingSnapshot,
+    snapshotState: entry.snapshotState,
     question: sanitizeHistoryText(entry.question || ''),
     spreadKey,
     spreadName: sanitizeHistoryText(entry.spreadName || spread.name),
@@ -333,9 +335,7 @@ function App() {
   const [isSignedIn, setIsSignedIn] = useState(Boolean(storedProfile.isSignedIn));
   const [dailyHistory, setDailyHistory] = useState(storedProfile.dailyHistory || {});
   const [showSpreadModal, setShowSpreadModal] = useState(false);
-  const [recentReadings, setRecentReadings] = useState([]);
   const [archiveDailyDay, setArchiveDailyDay] = useState(null);
-  const archiveEntries = buildReadingArchive({ unity: unityHistoryEntries, tarot: recentReadings, daily: dailyHistory });
   const [selectedSpreadKey, setSelectedSpreadKey] = useState('three');
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [selectedHistoryReading, setSelectedHistoryReading] = useState(null);
@@ -362,6 +362,19 @@ function App() {
     drawPersistenceCoordinatorRef.current = createDrawPersistenceCoordinator();
   }
   const activeNickname = user?.nickname || nickname;
+  const tarotArchiveStore = useMemo(() => createTarotArchiveStore({
+    storage: {
+      getItem: key => window.localStorage.getItem(key),
+      setItem: (key, value) => window.localStorage.setItem(key, value),
+    }, nickname: activeNickname,
+  }), [activeNickname]);
+  const tarotArchive = useSyncExternalStore(tarotArchiveStore.subscribe, tarotArchiveStore.getSnapshot, tarotArchiveStore.getSnapshot);
+  useEffect(() => { tarotArchiveStore.retry(); }, [tarotArchiveStore]);
+  const tarotArchiveEntries = tarotArchive.entries.map(entry => normalizeRecentReadingEntry(entry, t)).filter(Boolean);
+  const recentReadings = tarotArchiveEntries.slice(0, 3);
+  const setRecentReadings = tarotArchiveStore.update;
+  const archiveEntries = buildReadingArchive({ unity: unityHistoryEntries, tarot: tarotArchiveEntries, daily: dailyHistory });
+  const [retryingArchiveSync, setRetryingArchiveSync] = useState(false);
   const dailyLine = getDailyLine(t('quotes'));
   const activeDailyCard = savedDailyTarot || dailyCard;
   const activeSpread = getSpreadConfig(selectedSpreadKey, t);
@@ -369,7 +382,9 @@ function App() {
   const hasAuthDraft =
     Boolean((emailInputRef.current?.value || email || '').trim()) ||
     Boolean((passwordInputRef.current?.value || (isRecoveryMode ? resetPasswordValue : password) || '').trim());
-  const selectedHistorySpread = selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null;
+  const selectedHistorySource = tarotArchiveEntries.find(entry => entry.id === selectedHistoryReading?.id) || selectedHistoryReading;
+  const selectedHistoryReplay = resolveTarotReadingSnapshot(selectedHistorySource, language);
+  const selectedHistorySpread = selectedHistoryReplay?.spread || (selectedHistoryReading ? getSpreadConfig(selectedHistoryReading.spreadKey, t) : null);
   const spreadForCards = getSpreadConfig(isHumanMode ? 'three' : activeSpread.key, t);
   const isChoiceSpread = !isHumanMode && activeSpread.key === 'choice';
   const canConfirmQuestion =
@@ -463,7 +478,6 @@ function App() {
     setArchiveDailyDay(null);
     setShowCalendarModal(false);
     setShowSpreadModal(false);
-    setRecentReadings([]);
     setSelectedSpreadKey('three');
     setShowHistoryModal(false);
     setSelectedHistoryReading(null);
@@ -589,15 +603,12 @@ function App() {
     }
   };
 
-  const persistRecentReadings = (items) => {
-    localStorage.setItem(getRecentReadingsKey(activeNickname), JSON.stringify(items));
-  };
-
   const saveRecentReading = async (question, cards, spreadKey, choiceOptions = {}) => {
     const spread = getSpreadConfig(spreadKey, t);
-    const entry = normalizeRecentReadingEntry({
+    let entry = normalizeRecentReadingEntry({
       id: `${Date.now()}`,
       recordId: null,
+      snapshotState: 'pending',
       question,
       spreadKey: spread.key,
       spreadName: spread.name,
@@ -614,29 +625,41 @@ function App() {
 
     currentReadingEntryRef.current = entry;
     setRecentReadings((current) => {
-      const next = [entry, ...current].slice(0, 3);
-      persistRecentReadings(next);
+      const next = [entry, ...current];
       return next;
     });
+
+    try {
+      const [{ buildTarotReadingSnapshot }, meanings] = await Promise.all([
+        import('./buildTarotReadingSnapshot.js'), loadCardMeaningsModule(),
+      ]);
+      entry = { ...entry, readingSnapshot: buildTarotReadingSnapshot(entry, meanings), snapshotState: 'saved' };
+      setRecentReadings(current => current.map(item => item.id === entry.id
+        ? { ...item, readingSnapshot: entry.readingSnapshot, snapshotState: 'saved' } : item));
+    } catch (error) {
+      console.warn('Failed to capture tarot reading snapshot:', error);
+      entry = { ...entry, snapshotState: 'failed' };
+      setRecentReadings(current => current.map(item => item.id === entry.id ? { ...item, snapshotState: 'failed' } : item));
+    }
 
     return drawPersistenceCoordinatorRef.current.run(entry.id, async () => {
       try {
         const { saveSpreadHistoryRecord } = await getSupabaseTarot();
         const synced = await saveSpreadHistoryRecord(question, spread.name, cards);
-        if (!synced?.id) return entry;
+        if (!synced?.id) throw new Error('Missing saved record id');
 
-        const syncedEntry = normalizeRecentReadingEntry({ ...entry, recordId: synced.id }, t);
+        const syncedEntry = normalizeRecentReadingEntry({ ...entry, recordId: synced.id, syncFailed: false }, t);
         if (currentReadingEntryRef.current?.id === entry.id) {
           currentReadingEntryRef.current = syncedEntry;
         }
         setRecentReadings((current) => {
-          const next = current.map((item) => (item.id === entry.id ? syncedEntry : item));
-          persistRecentReadings(next);
+          const next = current.map((item) => (item.id === entry.id ? { ...item, recordId: synced.id, syncFailed: false } : item));
           return next;
         });
         return syncedEntry;
       } catch (error) {
         console.warn('Failed to sync spread history to Supabase:', error);
+        setRecentReadings(current => current.map(item => item.id === entry.id ? { ...item, syncFailed: true } : item));
         return entry;
       }
     });
@@ -663,14 +686,15 @@ function App() {
       try {
         const { saveSpreadHistoryRecord } = await getSupabaseTarot();
         const synced = await saveSpreadHistoryRecord(entry.question, entry.spreadName, entry.cardsData || []);
+        if (!synced?.id) throw new Error('Missing saved record id');
         const nextEntry = normalizeRecentReadingEntry({
           ...entry,
           recordId: synced?.id ?? null,
+          syncFailed: false,
         }, t);
 
         setRecentReadings((current) => {
-          const next = current.map((item) => (item.id === entry.id ? nextEntry : item));
-          persistRecentReadings(next);
+          const next = current.map((item) => (item.id === entry.id ? { ...item, recordId: synced.id, syncFailed: false } : item));
           return next;
         });
 
@@ -681,6 +705,7 @@ function App() {
         return nextEntry;
       } catch (error) {
         console.warn('Failed to backfill record_id for recent reading:', error);
+        setRecentReadings(current => current.map(item => item.id === entry.id ? { ...item, syncFailed: true } : item));
         return entry;
       }
     });
@@ -689,17 +714,21 @@ function App() {
   const deleteRecentReading = (entryId) => {
     setRecentReadings((current) => {
       const next = current.filter((entry) => entry.id !== entryId);
-      persistRecentReadings(next);
       return next;
     });
   };
 
+  const retryArchiveSync = async () => {
+    if (retryingArchiveSync) return;
+    setRetryingArchiveSync(true);
+    try {
+      for (const entry of tarotArchiveEntries.filter(item => item.syncFailed && !item.recordId)) {
+        await syncRecentReadingRecord(entry);
+      }
+    } finally { setRetryingArchiveSync(false); }
+  };
+
   const openHistoryModal = (entry) => {
-    if (!cardMeaningsModule) {
-      loadCardMeaningsModule()
-        .then((module) => setCardMeaningsModule(module))
-        .catch((error) => console.warn('Failed to load detailed history meanings:', error));
-    }
     setSelectedHistoryReading(entry);
     setShowHistoryModal(true);
   };
@@ -872,25 +901,6 @@ function App() {
 
     return () => unsubscribe();
   }, []);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(getRecentReadingsKey(activeNickname));
-
-    if (!stored) {
-      setRecentReadings([]);
-      return;
-    }
-
-    try {
-      const parsed = JSON.parse(stored);
-      const normalized = Array.isArray(parsed)
-        ? parsed.map((entry) => normalizeRecentReadingEntry(entry, t)).filter(Boolean).slice(0, 3)
-        : [];
-      setRecentReadings(normalized);
-    } catch {
-      setRecentReadings([]);
-    }
-  }, [activeNickname, language]);
 
   useEffect(() => {
     setUnityHistoryEntries(readUnityHistory(activeNickname, window.localStorage));
@@ -1098,8 +1108,9 @@ function App() {
     return getLocalizedTarotReading(data, card?.isReversed, language, getCardReading({ ...card, id: data.id }));
   };
 
+  const currentReplay = resolveTarotReadingSnapshot(tarotArchiveEntries.find(entry => entry.id === currentReadingEntryRef.current?.id), language);
   const structuredReading = drawSession?.phase === 'reading' && drawnCards.length > 0
-    ? buildStructuredReading({
+    ? currentReplay?.reading || buildStructuredReading({
         cards: drawnCards,
         question: userQuestion,
         spread: spreadForCards,
@@ -1112,22 +1123,6 @@ function App() {
       })
     : null;
 
-  const selectedHistoryStructuredReading = selectedHistoryReading && selectedHistorySpread
-    ? buildStructuredReading({
-        cards: selectedHistoryReading.cardsData,
-        question: selectedHistoryReading.question,
-        spread: selectedHistorySpread,
-        language,
-        t,
-        meaningArchive: cardMeaningsModule,
-        getFallbackReading: getReadingFallback,
-        getKeywords: getReadingCardKeywords,
-        choiceOptions: {
-          choiceA: selectedHistoryReading.choiceA,
-          choiceB: selectedHistoryReading.choiceB,
-        },
-      })
-    : null;
 
   const handleStartFreeReading = () => {
     setIsHumanMode(false);
@@ -1280,7 +1275,7 @@ function App() {
 
   const clearReadingArchive = () => {
     handleClearUnityHistory();
-    recentReadings.forEach(entry => deleteRecentReading(entry.id));
+    setRecentReadings([]);
   };
 
   const handleStartUnityFromHistory = () => {
@@ -1934,6 +1929,10 @@ function App() {
 
   return (
     <Suspense fallback={suspenseFallback}>
+      {user && <ArchiveSaveNotice status={tarotArchive.status} t={t} onRetry={tarotArchiveStore.retry} />}
+      {user && tarotArchiveEntries.some(entry => entry.syncFailed) && (
+        <ArchiveSaveNotice status="syncError" t={t} busy={retryingArchiveSync} onRetry={retryArchiveSync} />
+      )}
       {currentView}
 
       {showForgotPasswordModal ? (
@@ -1951,8 +1950,8 @@ function App() {
       {showHistoryModal && selectedHistoryReading && selectedHistorySpread ? (
         <Suspense fallback={null}>
           <HistoryModal
-            reading={selectedHistoryReading}
-            structuredReading={selectedHistoryStructuredReading}
+            replay={selectedHistoryReplay}
+            reading={selectedHistorySource}
             spread={selectedHistorySpread}
             onClose={() => setShowHistoryModal(false)}
             t={t}

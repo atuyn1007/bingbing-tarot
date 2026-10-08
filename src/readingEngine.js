@@ -57,7 +57,8 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
   const meaningLead = getMeaningLead(baseMeaning) || keywordText;
   const theme = getTheme(keywords, card?.name, t);
   const canonicalMeaning = getReadingFromMeaningArchive(card, Boolean(card?.isReversed), 'zh-CN', meaningArchive, '');
-  const careerContext = spread?.key === 'seasons' ? null : getCareerContext(question, canonicalMeaning, t);
+  const archiveCard = meaningArchive?.findTarotMeaningCard(card);
+  const careerContext = spread?.key === 'seasons' ? null : getCareerContext(question, canonicalMeaning, t, archiveCard, Boolean(card?.isReversed));
   // Keep this cue tied to the exact card and orientation. Do not replace missing
   // content with a career-category template or borrow daily-life advice.
   const sentences = String(baseMeaning || '').match(/[^。！？.!?\n]+[。！？.!?]?/gu) || [];
@@ -88,12 +89,8 @@ function buildCardSection({ card, index, spread, question, language, t, meaningA
       meaningLead,
     }),
     contextualMeaning: careerContext ? t('reading.career.context', { position: position.title, question, ...careerContext }) : '',
-    attention: careerContext && practice ? t('reading.attention', {
-      practice,
-      position: position.title,
-      keywords: keywordText,
-      meaningLead,
-    }) : '',
+    // The archive is already visible above; do not repeat its last sentence.
+    attention: '',
     boundary: t('reading.boundary'),
   };
 }
@@ -240,7 +237,8 @@ export function buildThreeCardIntegratedReading({ spread, cardSections = [], que
   const title = t('reading.integratedTitle');
   if (cardSections.length === 0) return { title, summary: '', paragraphs: [] };
   if (cardSections.length === 3 && cardSections.every(section => section.careerContext)) {
-    return careerThreeReading(cardSections, question, t);
+    const careerReading = careerThreeReading(cardSections, question, t);
+    if (careerReading) return careerReading;
   }
 
   const [first, middle = cardSections[0], last = cardSections.at(-1)] = cardSections;

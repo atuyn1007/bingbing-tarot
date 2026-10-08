@@ -2,6 +2,13 @@ import { readingEvidenceCopy } from '../readingEvidenceCopy.js';
 import { seasonalCopy } from '../seasonalCopy.js';
 
 const it = {
+  historySnapshot: { unavailable: 'L’interpretazione originale completa non è stata salvata per questa lettura. Di seguito trovi le carte originali.' },
+  archiveStorage: {
+    saveError: 'L’archivio dei tarocchi non è stato salvato su questo dispositivo. Le letture restano temporaneamente in questa pagina. Non ricaricare e non uscire dall’account; libera spazio nel browser e riprova.',
+    loadError: 'Impossibile leggere l’archivio dei tarocchi. I dati esistenti non sono stati sovrascritti. Le nuove letture restano in questa pagina: non ricaricare e non uscire dall’account.',
+    syncError: 'Alcuni riepiloghi dei tarocchi non sono stati sincronizzati nel cloud. Puoi riprovare. Controlla separatamente eventuali avvisi sul salvataggio locale.',
+    retry: 'Riprova il salvataggio locale', retrySync: 'Riprova la sincronizzazione',
+  },
   archive: { title: 'Archivio delle letture', all: 'Tutte', daily: 'Carta del giorno', tarot: 'Stese dei tarocchi', unity: 'Unità', open: 'Apri tutti i documenti', shareDaily: 'Condividi la carta del giorno', search: 'Cerca data, domanda, carta o numero dell’esagramma…', clear: 'Svuota le letture (conserva le carte giornaliere)', confirmClear: 'Eliminare le letture dei tarocchi e Unità? Le carte giornaliere saranno conservate.', dailyPreserved: 'Le carte giornaliere appartengono al calendario e non possono essere eliminate qui.' },
   meta: {
     locale: 'it',

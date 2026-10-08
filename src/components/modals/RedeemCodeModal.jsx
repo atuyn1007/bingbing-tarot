@@ -1,4 +1,5 @@
 import { Gift, X } from 'lucide-react';
+import useModalFocus from './useModalFocus';
 
 function RedeemCodeModal({
   redeemCodeValue,
@@ -8,9 +9,10 @@ function RedeemCodeModal({
   isRedeemingCode,
   t,
 }) {
+  const panel = useModalFocus(onClose);
   return (
     <div className="modal-mask" onClick={onClose}>
-      <div className="fortune-modal redeem-modal" onClick={(event) => event.stopPropagation()}>
+      <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-label={t('home.redeemTitle')} className="fortune-modal redeem-modal" onClick={(event) => event.stopPropagation()}>
         <div className="calendar-modal-head redeem-modal-head">
           <div>
             <p className="eyebrow">{t('home.redeemEyebrow')}</p>
@@ -31,7 +33,6 @@ function RedeemCodeModal({
             onChange={(event) => setRedeemCodeValue(event.target.value.toUpperCase())}
             placeholder={t('home.redeemPlaceholder')}
             className="field-input"
-            autoFocus
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 void onSubmit();

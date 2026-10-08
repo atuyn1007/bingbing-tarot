@@ -8,8 +8,13 @@ export default function DailyShareModal({ data, t, onClose, renderImage = render
   const [attempt, setAttempt] = useState(0);
   const [sharing, setSharing] = useState(false);
   useEffect(() => {
-    const previous = document.activeElement; dialog.current.showModal();
-    return () => previous?.focus();
+    const previous = document.activeElement;
+    const modal = dialog.current;
+    modal.showModal();
+    return () => {
+      modal.close();
+      if (previous?.isConnected) previous.focus({ preventScroll: true });
+    };
   }, []);
   useEffect(() => {
     const controller = new AbortController(); let url;
@@ -27,7 +32,7 @@ export default function DailyShareModal({ data, t, onClose, renderImage = render
     catch (err) { if (err.name !== 'AbortError') setError(true); }
     finally { setSharing(false); }
   };
-  return <dialog ref={dialog} className="monthly-share-dialog" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { event.stopPropagation(); if (event.target === dialog.current) onClose(); }}>
+  return <dialog ref={dialog} aria-label={t(titleKey)} className="monthly-share-dialog" onCancel={event => { event.preventDefault(); onClose(); }} onClick={event => { event.stopPropagation(); if (event.target === dialog.current) onClose(); }}>
     <div className="monthly-share-content">
       <header><h2>{t(titleKey)}</h2><button type="button" onClick={onClose} aria-label={t('common.close')}>×</button></header>
       {!result && !error && <p role="status">{t('calendar.shareLoading')}</p>}

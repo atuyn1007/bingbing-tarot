@@ -193,3 +193,80 @@ test('Work development grounds Emperor reversed, Two of Swords and Queen of Pent
   for (const card of sample) assert.ok(result.integratedReading.paragraphs.join('').includes(card.name));
   assert.equal(result.integratedReading.paragraphs.length, 3);
 });
+
+const careerSample = ['The Emperor', 'Two of Swords', 'Queen of Pentacles'].map((name, index) => ({ ...allTarotCards.find(card => card.englishName === name), isReversed: index === 0 }));
+const careerReading = (overrides = {}, language = 'zh-CN', dictionary = zh) => build(language, dictionary, {
+  cards: careerSample, question: '工作发展', spread: { key: 'three', ...dictionary.spreads.three }, ...overrides,
+});
+
+test('Career synthesis changes its interpretation, not just card labels, when each orientation changes', () => {
+  for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
+    const baseline = careerReading({}, language, dictionary);
+    for (let index = 0; index < 3; index++) {
+      const changed = careerReading({ cards: careerSample.map((card, i) => i === index ? { ...card, isReversed: !card.isReversed } : card) }, language, dictionary);
+      assert.notEqual(changed.integratedReading.summary, baseline.integratedReading.summary, `${language}: orientation must affect the conclusion`);
+      assert.notEqual(changed.cards[index].contextualMeaning, baseline.cards[index].contextualMeaning, `${language}: upright and reversed cannot receive the same work interpretation`);
+      assert.doesNotMatch(JSON.stringify(changed), /reading\.career|\{\w+\}/);
+    }
+  }
+});
+
+test('Career synthesis explains relationships without reprinting the archive or three generic checklists', () => {
+  const result = careerReading();
+  const text = result.integratedReading.paragraphs.join('\n');
+  for (const card of result.cards) {
+    assert.ok(text.includes(card.cardName));
+    assert.ok(text.includes(card.positionTitle));
+    assert.ok(!text.includes(card.meaningLead), 'the integrated section must not quote the single-card explanation again');
+    assert.equal(card.attention, '', 'do not repeat a sentence already visible in the base meaning');
+  }
+  assert.match(text, /控制|规则/);
+  assert.match(text, /犹豫|等待|决定/);
+  assert.match(text, /资源|投入|精力/);
+  assert.doesNotMatch(text, /三项核对|交叉检查|一项条件成立|如果权限已经明确|牌面当作升职|过去|未来/);
+});
+
+test('Career mapping uses archive identity and orientation, not a shared keyword', () => {
+  const emperor = careerReading().cards[0];
+  const hierarchy = { ...allTarotCards.find(card => card.englishName === 'King of Wands'), isReversed: false };
+  const other = careerReading({ cards: [hierarchy, ...careerSample.slice(1)] });
+  assert.notDeepEqual(other.cards[0].careerContext, emperor.careerContext);
+  assert.notEqual(other.integratedReading.summary, careerReading().integratedReading.summary);
+  assert.ok(other.integratedReading.paragraphs.join('').includes(hierarchy.name));
+  assert.ok(emperor.careerContext);
+  const missing = careerReading({ meaningArchive: undefined });
+  assert.ok(missing.cards.every(card => card.careerContext === null));
+});
+
+test('Pair relations follow the supplied positions even when the three cards are reordered', () => {
+  const result = careerReading({ cards: [careerSample[2], careerSample[0], careerSample[1]], spread: { key: 'three', positions: [{title:'甲线索'}, {title:'乙线索'}, {title:'丙线索'}] } });
+  const text = result.integratedReading.paragraphs.join(' ');
+  assert.match(text, /甲线索[^。]*星币皇后/);
+  assert.match(text, /乙线索[^。]*皇帝/);
+  assert.match(text, /丙线索[^。]*宝剑二/);
+  assert.doesNotMatch(text, /过去|未来|第一张|第三张/);
+});
+
+test('All eight orientation combinations and six orders retain three distinct supported relationships in every language', () => {
+  const orders = [[0,1,2], [0,2,1], [1,0,2], [1,2,0], [2,0,1], [2,1,0]];
+  for (const [language, dictionary] of [['zh-CN', zh], ['en', en], ['it', it]]) {
+    for (const order of orders) {
+      const summaries = new Set();
+      for (let mask = 0; mask < 8; mask++) {
+        const input = order.map(index => ({ ...careerSample[index], isReversed: Boolean(mask & (1 << index)) }));
+        const before = JSON.stringify(input);
+        const result = careerReading({ cards: input }, language, dictionary);
+        summaries.add(result.integratedReading.summary);
+        assert.equal(new Set(result.integratedReading.paragraphs).size, 3);
+        assert.doesNotMatch(JSON.stringify(result), /reading\.career|\{\w+\}|undefined/);
+        for (const section of result.cards) {
+          assert.ok(result.integratedReading.paragraphs.some(text => text.includes(section.cardName) && text.includes(section.positionTitle)));
+          const archived = meaningArchive.getLocalizedMeaningCard(meaningArchive.findTarotMeaningCard(input[section.positionIndex - 1]), language);
+          assert.equal(section.baseMeaning, (section.orientation === 'reversed' ? archived.displayReadingReversed : archived.displayReadingUpright).trim());
+        }
+        assert.equal(JSON.stringify(input), before);
+      }
+      assert.equal(summaries.size, 8, `${language}: all orientation changes must affect the summary for order ${order}`);
+    }
+  }
+});

@@ -7,7 +7,7 @@ import ReadingCardSection from '../components/ReadingCardSection';
 import IntegratedReadingSection from '../components/IntegratedReadingSection';
 import SpreadShareButton from '../components/SpreadShareButton';
 
-function ChoiceComparison({ comparison, t }) {
+export function ChoiceComparison({ comparison, t }) {
   if (!comparison) return null;
 
   return (
